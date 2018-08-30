@@ -296,7 +296,9 @@ class TypeAheadFormField<T> extends FormField<String> {
     validator: validator,
     autovalidate: autovalidate,
     initialValue: controller != null ? controller.text : (initialValue ?? ''),
-    builder: (FormFieldState<String> state) {
+    builder: (FormFieldState<String> field) {
+
+      final _TypeAheadFormFieldState state = field;
 
       return TypeAheadField(
         transitionBuilder: transitionBuilder,
@@ -319,7 +321,7 @@ class TypeAheadFormField<T> extends FormField<String> {
         autofocus: autofocus,
         keyboardType: keyboardType,
         enabled: enabled,
-        controller: controller,
+        controller: state._effectiveController,
         onSuggestionSelected: onSuggestionSelected,
         itemBuilder: itemBuilder,
         suggestionsCallback: suggestionsCallback,
@@ -347,6 +349,7 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
     super.initState();
     if (widget.controller == null) {
       _controller = TextEditingController(text: widget.initialValue);
+      print(widget.initialValue);
     } else {
       widget.controller.addListener(_handleControllerChanged);
     }
