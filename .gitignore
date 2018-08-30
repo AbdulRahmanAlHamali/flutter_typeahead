@@ -12,3 +12,5 @@ ios/Runner/GeneratedPluginRegistrant.*
 .idea
 pubspec.lock
 flutter_typeahead
+
+doc
