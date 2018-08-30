@@ -1,3 +1,8 @@
-## 0.1.0 - TODO: Add release date.
+## 0.1.0 - 31/08/2018
 
-* TODO: Describe initial release.
+* Initial Release.
+
+## 0.1.1 - 31/08/2018
+
+* Fixed CHANGELOG.
+* Small fix to documentation
