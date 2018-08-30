@@ -6,3 +6,7 @@
 
 * Fixed CHANGELOG.
 * Small fix to documentation
+
+## 0.1.2 - 31/08/2018
+
+* Small fix to README

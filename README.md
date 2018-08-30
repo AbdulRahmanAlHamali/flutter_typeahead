@@ -217,3 +217,5 @@ suggestionsBoxDecoration: BoxDecoration(
   )
 )
 ```
+## For more information
+Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
