@@ -142,7 +142,7 @@ and displays an error message if not. The `onSaved` callback is used to
 save the value of the field to the `_selectedCity` member variable.
 
 The `transitionBuilder` allows us to customize the animation of the
-suggestion box. In this example, we are returning the suggestionBox
+suggestion box. In this example, we are returning the suggestionsBox
 immediately, meaning that we don't want any animation.
 
 ## Customizations
@@ -159,7 +159,7 @@ TypeAhead provides default configurations for the suggestions box. You can,
 however, override most of them.
 
 #### Customizing the loader, the error and the "no items found" message
-You can use the loadingBuilder, errorBuilder and noItemsFoundBuilder to
+You can use the `loadingBuilder`, `errorBuilder` and `noItemsFoundBuilder` to
 customize their corresponding widgets. For example, to show a custom error
 widget:
 ```dart
@@ -207,10 +207,10 @@ configured using the `debounceDuration` parameter.
 
 #### Customizing the decoration of the suggestions box
 You can also customize the decoration of the suggestions box using the 
-`suggestionBoxDecoration` parameter. For example, to give it a blue border, 
+`suggestionsBoxDecoration` parameter. For example, to give it a blue border, 
 you can write:
 ```dart
-suggestionBoxDecoration: BoxDecoration(
+suggestionsBoxDecoration: BoxDecoration(
   border: Border.all(
     color: Colors.blue
   )

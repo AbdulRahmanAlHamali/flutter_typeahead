@@ -140,7 +140,7 @@
 /// save the value of the field to the `_selectedCity` member variable.
 ///
 /// The `transitionBuilder` allows us to customize the animation of the
-/// suggestion box. In this example, we are returning the suggestionBox
+/// suggestion box. In this example, we are returning the suggestionsBox
 /// immediately, meaning that we don't want any animation.
 ///
 /// ## Customizations
@@ -149,15 +149,15 @@
 ///
 /// ### Customizing the TextField
 /// You can customize the field with all the usual customizations available for
-/// `TextField` in Flutter. Examples include: decoration, style, controller,
-/// focusNode, autofocus, enabled, etc.
+/// `TextField` in Flutter. Examples include: `decoration`, `style`, `controller`,
+/// `focusNode`, `autofocus`, `enabled`, etc.
 ///
 /// ### Customizing the Suggestions Box
 /// TypeAhead provides default configurations for the suggestions box. You can,
 /// however, override most of them.
 ///
 /// #### Customizing the loader, the error and the "no items found" message
-/// You can use the loadingBuilder, errorBuilder and noItemsFoundBuilder to
+/// You can use the [loadingBuilder], [errorBuilder] and [noItemsFoundBuilder] to
 /// customize their corresponding widgets. For example, to show a custom error
 /// widget:
 /// ```dart
@@ -205,10 +205,10 @@
 ///
 /// #### Customizing the decoration of the suggestions box
 /// You can also customize the decoration of the suggestions box using the
-/// `suggestionBoxDecoration` parameter. For example, to give it a blue border,
+/// `suggestionsBoxDecoration` parameter. For example, to give it a blue border,
 /// you can write:
 /// ```dart
-/// suggestionBoxDecoration: BoxDecoration(
+/// suggestionsBoxDecoration: BoxDecoration(
 ///   border: Border.all(
 ///     color: Colors.blue
 ///   )
@@ -233,7 +233,7 @@ typedef AnimationTransitionBuilder(BuildContext context, Widget child, Animation
 ///
 /// See also:
 ///
-/// * [TypeAheadField], A widget that displays a [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
+/// * [TypeAheadField], A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
 /// that displays a list of suggestions as the user types
 class TypeAheadFormField<T> extends FormField<String> {
   /// Controls the text being edited.
@@ -271,7 +271,7 @@ class TypeAheadFormField<T> extends FormField<String> {
     WidgetBuilder noItemsFoundBuilder,
     WidgetBuilder loadingBuilder,
     Duration debounceDuration: const Duration(milliseconds: 300),
-    BoxDecoration suggestionBoxDecoration,
+    BoxDecoration suggestionsBoxDecoration,
     InputDecoration decoration,
     ValueChanged<String> onFieldSubmitted,
     bool obscureText: false,
@@ -306,7 +306,7 @@ class TypeAheadFormField<T> extends FormField<String> {
         noItemsFoundBuilder: noItemsFoundBuilder,
         loadingBuilder: loadingBuilder,
         debounceDuration: debounceDuration,
-        suggestionBoxDecoration: suggestionBoxDecoration,
+        suggestionsBoxDecoration: suggestionsBoxDecoration,
         decoration: decoration.copyWith(errorText: state.errorText),
         onSubmitted: onFieldSubmitted,
         onChanged: state.didChange,
@@ -396,13 +396,13 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
   }
 }
 
-/// A widget that displays a [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
+/// A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
 /// that displays a list of suggestions as the user types
 ///
 /// See also:
 ///
 /// * [TypeAheadFormField], a [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
-/// implementation of [TypeAheadField], that allows the value to be saved,
+/// implementation of [TypeAheadField] that allows the value to be saved,
 /// validated, etc.
 class TypeAheadField<T> extends StatefulWidget {
 
@@ -430,10 +430,10 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Called when a suggestion is tapped.
   ///
   /// This callback must not be null. It is called by the TypeAhead widget and
-  /// provided with the selected suggestion which is one of the suggestions that
-  /// were fetched using [suggestionsCallback].
+  /// provided with the value of the tapped suggestion.
   ///
-  /// For example, you might want to navigate to a specific location:
+  /// For example, you might want to navigate to a specific view when the user
+  /// tabs a suggestion:
   /// ```dart
   /// onSuggestionSelected: (suggestion) {
   ///   Navigator.of(context).push(MaterialPageRoute(
@@ -552,7 +552,7 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// If null, default decoration with black borders and white background is
   /// used
-  final BoxDecoration suggestionBoxDecoration;
+  final BoxDecoration suggestionsBoxDecoration;
   /// The duration to wait after the user stops typing before calling
   /// [suggestionsCallback]
   ///
@@ -575,7 +575,7 @@ class TypeAheadField<T> extends StatefulWidget {
   final WidgetBuilder loadingBuilder;
   /// Called when [suggestionsCallback] returns an empty array.
   ///
-  /// It is expected to return a widget to display while no suggestions are
+  /// It is expected to return a widget to display when no suggestions are
   /// avaiable.
   /// For example:
   /// ```dart
@@ -597,9 +597,9 @@ class TypeAheadField<T> extends StatefulWidget {
   /// }
   /// ```
   ///
-  /// If not specified, the error is shown in [errorColor](https://docs.flutter.io/flutter/material/ThemeData/errorColor.html)
+  /// If not specified, the error is shown in [ThemeData.errorColor](https://docs.flutter.io/flutter/material/ThemeData/errorColor.html)
   final ErrorBuilder errorBuilder;
-  /// Called to display animations when [suggestionCallback] returns suggestions
+  /// Called to display animations when [suggestionsCallback] returns suggestions
   ///
   /// It is provided with the suggestions box instance and the animation
   /// controller, and expected to return some animation that uses the controller
@@ -661,7 +661,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.obscureText: false,
     this.onChanged,
     this.onSubmitted,
-    this.suggestionBoxDecoration,
+    this.suggestionsBoxDecoration,
     this.debounceDuration: const Duration(milliseconds: 300),
     this.loadingBuilder,
     this.noItemsFoundBuilder,
@@ -724,7 +724,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
                   showWhenUnlinked: false,
                   offset: Offset(0.0, size.height),
                   child: _SuggestionsList<T>(
-                    decoration: widget.suggestionBoxDecoration,
+                    decoration: widget.suggestionsBoxDecoration,
                     debounceDuration: widget.debounceDuration,
                     controller: this._effectiveController,
                     loadingBuilder: widget.loadingBuilder,
