@@ -283,9 +283,9 @@ class TypeAheadFormField<T> extends FormField<String> {
     bool autofocus: false,
     TextInputType keyboardType: TextInputType.text,
     bool enabled: true,
-    SuggestionSelectionCallback<T> onSuggestionSelected,
-    ItemBuilder<T> itemBuilder,
-    SuggestionsCallback<T> suggestionsCallback,
+    @required SuggestionSelectionCallback<T> onSuggestionSelected,
+    @required ItemBuilder<T> itemBuilder,
+    @required SuggestionsCallback<T> suggestionsCallback,
     FocusNode focusNode,
     AnimationTransitionBuilder transitionBuilder,
     Duration animationDuration: const Duration(milliseconds: 500),
@@ -646,10 +646,10 @@ class TypeAheadField<T> extends StatefulWidget {
   TypeAheadField({
     Key key,
     this.decoration : const InputDecoration(),
-    this.suggestionsCallback,
-    this.itemBuilder,
+    @required this.suggestionsCallback,
+    @required this.itemBuilder,
     this.controller,
-    this.onSuggestionSelected,
+    @required this.onSuggestionSelected,
     this.focusNode,
     this.style,
     this.textAlign: TextAlign.start,
@@ -672,7 +672,21 @@ class TypeAheadField<T> extends StatefulWidget {
     this.transitionBuilder,
     this.animationStart: 0.25,
     this.animationDuration: const Duration (milliseconds: 500)
-  }): super(key: key);
+  }):
+      assert(suggestionsCallback != null),
+      assert(itemBuilder != null),
+      assert(onSuggestionSelected != null),
+      assert(animationStart != null && animationStart >= 0.0 && animationStart <= 1.0),
+      assert(animationDuration != null),
+      assert(debounceDuration != null),
+      assert(textAlign != null),
+      assert(autofocus != null),
+      assert(obscureText != null),
+      assert(autocorrect != null),
+      assert(maxLengthEnforced != null),
+      assert(maxLines == null || maxLines > 0),
+      assert(maxLength == null || maxLength > 0),
+      super(key: key);
 
   @override
   _TypeAheadFieldState createState() => _TypeAheadFieldState();
