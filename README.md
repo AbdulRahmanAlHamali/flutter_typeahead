@@ -1,4 +1,3 @@
-# Flutter TypeAhead
 A TypeAhead widget for Flutter, where you can show suggestions to
 users as they type
 
@@ -9,8 +8,8 @@ users as they type
 * Allows you to specify what the suggestions will look like through a
 builder function
 * Allows you to specify what happens when the user taps a suggestion
-* Accepts all the parameters that traditional `TextFields` accept, like
-decoration, custom `TextEditingController`, text styling, etc.
+* Accepts all the parameters that traditional TextFields accept, like
+decoration, custom TextEditingController, text styling, etc.
 * Provides two versions, a normal version and a [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 version that accepts validation, submitting, etc.
 * Provides high customizability; you can customize the suggestion box decoration,
@@ -20,12 +19,14 @@ the loading bar, the animation, the debounce duration, etc.
 See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead#-installing-tab-).
 
 ## Usage examples
-After you import the package:
+You can import the package with:
 ```dart
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 ```
 
-You can then use it as follows:
+and then use it as follows:
+
+### Example 1:
 ```dart
 TypeAheadField(
   autofocus: true,
@@ -36,7 +37,7 @@ TypeAheadField(
     border: OutlineInputBorder()
   ),
   suggestionsCallback: (pattern) async {
-    return BackendService.getSuggestions(pattern);
+    return await BackendService.getSuggestions(pattern);
   },
   itemBuilder: (context, suggestion) {
     return ListTile(
@@ -52,32 +53,32 @@ TypeAheadField(
   },
 )
 ```
-In the code above, the `autfocus`, `style` and `decoration` are the same as
+In the code above, the `autofocus`, `style` and `decoration` are the same as
 those of `TextField`, and are not mandatory.
 
-The `suggestionCallback` is called with the search string that the user
-types, and is expected to return a `List` of data, either synchronously or
-asynchronously. In this example, we call some function called
-`BackendService.getSuggestions` and provide it with the search pattern
+The `suggestionsCallback` is called with the search string that the user
+types, and is expected to return a `List` of data either synchronously or
+asynchronously. In this example, we are calling an asynchronous function
+called `BackendService.getSuggestions` which fetches the list of
+suggestions.
 
 The `itemBuilder` is called to build a widget for each suggestion.
 In this example, we build a simple `ListTile` that shows the name and the
 price of the item. Please note that you shouldn't provide an `onTap`
 callback here. The TypeAhead widget takes care of that.
 
-The `onSuggestionSelected` is a callback that provides us with the
-suggestion that the user tapped. In this example, when the user taps a
+The `onSuggestionSelected` is a callback called when the user taps a
+suggestion. In this example, when the user taps a
 suggestion, we navigate to a page that shows us the information of the
 tapped product.
 
+### Example 2:
 Here's another example, where we use the TypeAheadFormField inside a `Form`:
 ```dart
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 final TextEditingController _typeAheadController = TextEditingController();
 String _selectedCity;
 ...
-..
-.
 Form(
   key: this._formKey,
   child: Padding(
@@ -130,22 +131,22 @@ Form(
   ),
 )
 ```
-Here, we are assigning to the `controller` property a
-`TextEditingController` that we called `_typeAheadController`. We use this
-controller in the `onSuggestionSelected` callback to set the value of the
-`TextField` to the selected suggestion.
+Here, we assign to the `controller` property a `TextEditingController` that
+we call `_typeAheadController`. We use this controller in the
+`onSuggestionSelected` callback to set the value of the `TextField` to the
+selected suggestion.
 
-The `validator` callback can be used like any `FormField.validator` function.
-In our example, it checks whether a value has been entered, and displays an
-error message if not. The `onSaved` callback is used to save the value of
-the field to the `_selectedCity` member variable
+The `validator` callback can be used like any `FormField.validator`
+function. In our example, it checks whether a value has been entered,
+and displays an error message if not. The `onSaved` callback is used to
+save the value of the field to the `_selectedCity` member variable.
 
 The `transitionBuilder` allows us to customize the animation of the
-suggestion box. In this example, we are just returning the suggestionBox
+suggestion box. In this example, we are returning the suggestionBox
 immediately, meaning that we don't want any animation.
 
 ## Customizations
-TypeAhead widgets consist of a `TextField` and a suggestion box that shows
+TypeAhead widgets consist of a TextField and a suggestion box that shows
 as the user types. Both are highly customizable
 
 ### Customizing the TextField
@@ -172,8 +173,9 @@ errorBuilder: (BuildContext context, Object error) =>
 ```
 #### Customizing the animation
 You can customize the suggestion box animation through 3 parameters: the
-`animationDuration`, the `animationStart`, and the `transitionBuilder`. The
-`animationDuration` specifies how long the animation should take, while the
+`animationDuration`, the `animationStart`, and the `transitionBuilder`.
+
+The `animationDuration` specifies how long the animation should take, while the
 `animationStart` specified what point (between 0.0 and 1.0) the animation
 should start from. The `transitionBuilder` accepts the `suggestionsBox` and
 `animationController` as parameters, and should return a widget that uses
@@ -189,21 +191,26 @@ transitionBuilder: (context, suggestionsBox, animationController) =>
     ),
   )
 ```
-In order to fully remove the animation, this callback should simply return
-the `suggestionsBox`. This callback could also be used to wrap the
+This uses [FadeTransition](https://docs.flutter.io/flutter/widgets/FadeTransition-class.html)
+to fade the `suggestionsBox` into the view. Note how the
+`animationController` was provided as the parent of the animation.
+
+In order to fully remove the animation, `transitionBuilder` should simply
+return the `suggestionsBox`. This callback could also be used to wrap the
 `suggestionsBox` with any desired widgets, not necessarily for animation.
 
 #### Customizing the debounce duration
-The suggestion box does not fire for each character the user types. Instead,
-we wait until the user is idle for a duration of time, and then we call the
+The suggestions box does not fire for each character the user types. Instead,
+we wait until the user is idle for a duration of time, and then call the
 `suggestionsCallback`. The duration defaults to 300 milliseconds, but can be
-configured using the `debounceDuration` parameter
+configured using the `debounceDuration` parameter.
 
 #### Customizing the decoration of the suggestions box
-You can also customize the decoration of the suggestions box. For example,
-to give it a blue border, you can write:
+You can also customize the decoration of the suggestions box using the 
+`suggestionBoxDecoration` parameter. For example, to give it a blue border, 
+you can write:
 ```dart
-decoration: BoxDecoration(
+suggestionBoxDecoration: BoxDecoration(
   border: Border.all(
     color: Colors.blue
   )

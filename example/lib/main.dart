@@ -66,7 +66,7 @@ class NavigationExample extends StatelessWidget {
               border: OutlineInputBorder()
             ),
             suggestionsCallback: (pattern) async {
-              return BackendService.getSuggestions(pattern);
+              return await BackendService.getSuggestions(pattern);
             },
             itemBuilder: (context, suggestion) {
               return ListTile(
