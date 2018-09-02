@@ -567,10 +567,10 @@ class TypeAheadField<T> extends StatefulWidget {
 class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
 
   FocusNode _focusNode;
-  TextEditingController _controller;
+  TextEditingController _textEditingController;
   OverlayEntry _suggestionsOverlayEntry;
 
-  TextEditingController get _effectiveController => widget.textFieldConfiguration.controller ?? _controller;
+  TextEditingController get _effectiveController => widget.textFieldConfiguration.controller ?? _textEditingController;
   FocusNode get _effectiveFocusNode => widget.textFieldConfiguration.focusNode ?? _focusNode;
 
   final LayerLink _layerLink = LayerLink();
@@ -580,7 +580,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
     super.initState();
 
     if (widget.textFieldConfiguration.controller == null) {
-      this._controller = TextEditingController();
+      this._textEditingController = TextEditingController();
     }
 
     if (widget.textFieldConfiguration.focusNode == null) {
