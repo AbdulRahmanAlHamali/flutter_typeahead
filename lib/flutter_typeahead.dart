@@ -206,13 +206,11 @@
 ///
 /// #### Customizing the decoration of the suggestions box
 /// You can also customize the decoration of the suggestions box using the
-/// `suggestionsBoxDecoration` parameter. For example, to give it a blue border,
-/// you can write:
+/// `suggestionsBoxDecoration` property. For example, to remove the elevation
+/// of the suggestions box, you can write:
 /// ```dart
-/// suggestionsBoxDecoration: BoxDecoration(
-///   border: Border.all(
-///     color: Colors.blue
-///   )
+/// suggestionsBoxDecoration: SuggestionsBoxDecoration(
+///   elevation: 0.0
 /// )
 /// ```
 library flutter_typeahead;
@@ -272,7 +270,7 @@ class TypeAheadFormField<T> extends FormField<String> {
     WidgetBuilder noItemsFoundBuilder,
     WidgetBuilder loadingBuilder,
     Duration debounceDuration: const Duration(milliseconds: 300),
-    BoxDecoration suggestionsBoxDecoration,
+    SuggestionsBoxDecoration suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
     InputDecoration decoration,
     ValueChanged<String> onFieldSubmitted,
     bool obscureText: false,
@@ -552,11 +550,10 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// Same as [TextField.onSubmitted](https://docs.flutter.io/flutter/material/TextField/onSubmitted.html)
   final ValueChanged<String> onSubmitted;
-  /// The decoration of the container that contains the suggestions.
+  /// The decoration of the material sheet that contains the suggestions.
   ///
-  /// If null, default decoration with black borders and white background is
-  /// used
-  final BoxDecoration suggestionsBoxDecoration;
+  /// If null, default decoration with an elevation of 4.0 is used
+  final SuggestionsBoxDecoration suggestionsBoxDecoration;
   /// The duration to wait after the user stops typing before calling
   /// [suggestionsCallback]
   ///
@@ -665,7 +662,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.obscureText: false,
     this.onChanged,
     this.onSubmitted,
-    this.suggestionsBoxDecoration,
+    this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
     this.debounceDuration: const Duration(milliseconds: 300),
     this.loadingBuilder,
     this.noItemsFoundBuilder,
@@ -803,7 +800,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final SuggestionSelectionCallback<T> onSuggestionSelected;
   final SuggestionsCallback suggestionsCallback;
   final ItemBuilder itemBuilder;
-  final BoxDecoration decoration;
+  final SuggestionsBoxDecoration decoration;
   final Duration debounceDuration;
   final WidgetBuilder loadingBuilder;
   final WidgetBuilder noItemsFoundBuilder;
@@ -979,27 +976,63 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>> with SingleTic
 
     }
 
-    var container = Material(
-      child: Container(
-        decoration: widget.decoration ?? BoxDecoration(
-            border: Border.all(
-                color: Colors.black
-            ),
-            color: Colors.white
-        ),
-        child: child,
-      ),
-    );
-
-    return widget.transitionBuilder != null? widget.transitionBuilder(context, container, this._animationController) :
+    var animationChild = widget.transitionBuilder != null?
+      widget.transitionBuilder(context, child, this._animationController) :
       SizeTransition(
         axisAlignment: -1.0,
         sizeFactor: CurvedAnimation(
-          parent: this._animationController,
-          curve: Curves.fastOutSlowIn
+            parent: this._animationController,
+            curve: Curves.fastOutSlowIn
         ),
-        child: container,
+        child: child,
       );
+
+    var container = Material(
+      elevation: widget.decoration.elevation,
+      color: widget.decoration.color,
+      shape: widget.decoration.shape,
+      borderRadius: widget.decoration.borderRadius,
+      shadowColor: widget.decoration.shadowColor,
+      child: animationChild,
+    );
+
+    return container;
   }
 }
 
+/// Supply an instance of this class to the [TypeAhead.suggestionsBoxDecoration]
+/// property to configure the suggestions box decoration
+class SuggestionsBoxDecoration {
+  /// The z-coordinate at which to place the suggestions box. This controls the size
+  /// of the shadow below the box.
+  ///
+  /// Same as [Material.elevation](https://docs.flutter.io/flutter/material/Material/elevation.html)
+  final double elevation;
+  /// The color to paint the suggestions box.
+  ///
+  /// Same as [Material.color](https://docs.flutter.io/flutter/material/Material/color.html)
+  final Color color;
+  /// Defines the material's shape as well its shadow.
+  ///
+  /// Same as [Material.shape](https://docs.flutter.io/flutter/material/Material/shape.html)
+  final ShapeBorder shape;
+  /// If non-null, the corners of this box are rounded by this [BorderRadius](https://docs.flutter.io/flutter/painting/BorderRadius-class.html).
+  ///
+  /// Same as [Material.borderRadius](https://docs.flutter.io/flutter/material/Material/borderRadius.html)
+  final BorderRadius borderRadius;
+  /// The color to paint the shadow below the material.
+  ///
+  /// Same as [Material.shadowColor](https://docs.flutter.io/flutter/material/Material/shadowColor.html)
+  final Color shadowColor;
+
+  /// Creates a SuggestionsBoxDecoration
+  const SuggestionsBoxDecoration({
+    this.elevation: 4.0,
+    this.color,
+    this.shape,
+    this.borderRadius,
+    this.shadowColor: const Color(0xFF000000)
+  }) :
+    assert(shadowColor != null),
+    assert(elevation != null);
+}

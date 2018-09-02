@@ -10,3 +10,9 @@
 ## 0.1.2 - 31/08/2018
 
 * Small fix to README
+
+## 0.2.0 - 02/09/2018
+
+* Changed the suggestions box decoration
+to decorate a material sheet instead of 
+decorating a container

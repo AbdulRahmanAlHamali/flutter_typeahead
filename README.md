@@ -207,14 +207,12 @@ we wait until the user is idle for a duration of time, and then call the
 configured using the `debounceDuration` parameter.
 
 #### Customizing the decoration of the suggestions box
-You can also customize the decoration of the suggestions box using the 
-`suggestionsBoxDecoration` parameter. For example, to give it a blue border, 
-you can write:
+You can also customize the decoration of the suggestions box using the
+`suggestionsBoxDecoration` property. For example, to remove the elevation 
+of the suggestions box, you can write:
 ```dart
-suggestionsBoxDecoration: BoxDecoration(
-  border: Border.all(
-    color: Colors.blue
-  )
+suggestionsBoxDecoration: SuggestionsBoxDecoration(
+  elevation: 0.0
 )
 ```
 ## For more information
