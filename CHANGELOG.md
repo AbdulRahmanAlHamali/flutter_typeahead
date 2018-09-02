@@ -26,3 +26,4 @@ decrease the clutter in the interface
 * Added a configurable vertical offset for the 
 suggestions box
 * Changed the mechanism used to open/close the suggestions box
+* Added meta-tags to README for SEO

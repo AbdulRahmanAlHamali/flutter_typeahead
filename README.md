@@ -1,3 +1,5 @@
+<meta name='keywords' content='flutter, typeahead, autocomplete, customizable, floating'>
+
 # Flutter TypeAhead
 A TypeAhead widget for Flutter, where you can show suggestions to
 users as they type
