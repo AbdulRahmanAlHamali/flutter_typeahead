@@ -53,9 +53,6 @@ class NavigationExample extends StatelessWidget {
       padding: EdgeInsets.all(32.0),
       child: Column(
         children: <Widget>[
-          Text(
-            'What are you looking for?'
-          ),
           SizedBox(height: 10.0,),
           TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
@@ -64,7 +61,8 @@ class NavigationExample extends StatelessWidget {
                   fontStyle: FontStyle.italic
               ),
               decoration: InputDecoration(
-                  border: OutlineInputBorder()
+                border: OutlineInputBorder(),
+                hintText: 'What are you looking for?'
               ),
             ),
             suggestionsCallback: (pattern) async {
