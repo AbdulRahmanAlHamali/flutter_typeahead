@@ -211,6 +211,10 @@
 /// `suggestionsCallback`. The duration defaults to 300 milliseconds, but can be
 /// configured using the `debounceDuration` parameter.
 ///
+/// #### Customizing the offset of the suggestions box
+/// By default, the suggestions box is displayed 5 pixels below the `TextField`.
+/// You can change this by changing the `suggestionsBoxVerticalOffset` property.
+///
 /// #### Customizing the decoration of the suggestions box
 /// You can also customize the decoration of the suggestions box using the
 /// `suggestionsBoxDecoration` property. For example, to remove the elevation
@@ -261,6 +265,7 @@ class TypeAheadFormField<T> extends FormField<String> {
     @required SuggestionSelectionCallback<T> onSuggestionSelected,
     @required ItemBuilder<T> itemBuilder,
     @required SuggestionsCallback<T> suggestionsCallback,
+    double suggestionsBoxVerticalOffset,
     this.textFieldConfiguration: const TextFieldConfiguration(),
     AnimationTransitionBuilder transitionBuilder,
     Duration animationDuration: const Duration(milliseconds: 500),
@@ -287,6 +292,7 @@ class TypeAheadFormField<T> extends FormField<String> {
           onChanged: state.didChange,
           controller: state._effectiveController,
         ),
+        suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
         onSuggestionSelected: onSuggestionSelected,
         itemBuilder: itemBuilder,
         suggestionsCallback: suggestionsCallback,
@@ -521,6 +527,10 @@ class TypeAheadField<T> extends StatefulWidget {
   /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
   /// that the TypeAhead widget displays
   final TextFieldConfiguration textFieldConfiguration;
+  /// How far below the text field should the suggestions box be
+  ///
+  /// Defaults to 5.0
+  final double suggestionsBoxVerticalOffset;
 
   /// Creates a [TypeAheadField]
   TypeAheadField({
@@ -536,7 +546,8 @@ class TypeAheadField<T> extends StatefulWidget {
     this.errorBuilder,
     this.transitionBuilder,
     this.animationStart: 0.25,
-    this.animationDuration: const Duration (milliseconds: 500)
+    this.animationDuration: const Duration (milliseconds: 500),
+    this.suggestionsBoxVerticalOffset: 5.0
   }):
       assert(suggestionsCallback != null),
       assert(itemBuilder != null),
@@ -546,6 +557,7 @@ class TypeAheadField<T> extends StatefulWidget {
       assert(debounceDuration != null),
       assert(textFieldConfiguration != null),
       assert(suggestionsBoxDecoration != null),
+      assert(suggestionsBoxVerticalOffset != null),
       super(key: key);
 
   @override
@@ -599,7 +611,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
                 child: CompositedTransformFollower(
                   link: this._layerLink,
                   showWhenUnlinked: false,
-                  offset: Offset(0.0, size.height),
+                  offset: Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
                   child: _SuggestionsList<T>(
                     decoration: widget.suggestionsBoxDecoration,
                     debounceDuration: widget.debounceDuration,

@@ -213,6 +213,10 @@ we wait until the user is idle for a duration of time, and then call the
 `suggestionsCallback`. The duration defaults to 300 milliseconds, but can be
 configured using the `debounceDuration` parameter.
 
+#### Customizing the offset of the suggestions box
+By default, the suggestions box is displayed 5 pixels below the `TextField`.
+You can change this by changing the `suggestionsBoxVerticalOffset` property.
+
 #### Customizing the decoration of the suggestions box
 You can also customize the decoration of the suggestions box using the
 `suggestionsBoxDecoration` property. For example, to remove the elevation 

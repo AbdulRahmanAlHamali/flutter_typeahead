@@ -23,3 +23,5 @@ to the `TypeAhead` widgets through a
 decrease the clutter in the interface
 * Added more configuration properties to the 
 `TextField`
+* Added a configurable vertical offset for the 
+suggestions box
