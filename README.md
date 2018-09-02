@@ -230,3 +230,10 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
 ```
 ## For more information
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
+
+## How you can help
+* You can report any issues you find
+* You can suggest any missing features that could be useful to have
+* You can submit pull requests
+* You can share the package on social media, to let more people know about it:
+https://pub.dartlang.org/packages/flutter_typeahead
