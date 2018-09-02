@@ -265,7 +265,7 @@ class TypeAheadFormField<T> extends FormField<String> {
     @required SuggestionSelectionCallback<T> onSuggestionSelected,
     @required ItemBuilder<T> itemBuilder,
     @required SuggestionsCallback<T> suggestionsCallback,
-    double suggestionsBoxVerticalOffset,
+    double suggestionsBoxVerticalOffset: 5.0,
     this.textFieldConfiguration: const TextFieldConfiguration(),
     AnimationTransitionBuilder transitionBuilder,
     Duration animationDuration: const Duration(milliseconds: 500),
