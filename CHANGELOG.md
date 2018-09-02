@@ -25,3 +25,4 @@ decrease the clutter in the interface
 `TextField`
 * Added a configurable vertical offset for the 
 suggestions box
+* Changed the mechanism used to open/close the suggestions box

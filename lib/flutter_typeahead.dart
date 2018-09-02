@@ -319,7 +319,6 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
     super.initState();
     if (widget.textFieldConfiguration.controller == null) {
       _controller = TextEditingController(text: widget.initialValue);
-      print(widget.initialValue);
     } else {
       widget.textFieldConfiguration.controller.addListener(_handleControllerChanged);
     }
@@ -568,12 +567,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
 
   FocusNode _focusNode;
   TextEditingController _textEditingController;
-  OverlayEntry _suggestionsOverlayEntry;
-  SuggestionsBoxController _suggestionsBoxController;
+  _SuggestionsBoxController _suggestionsBoxController;
 
   TextEditingController get _effectiveController => widget.textFieldConfiguration.controller ?? _textEditingController;
   FocusNode get _effectiveFocusNode => widget.textFieldConfiguration.focusNode ?? _focusNode;
-  SuggestionsBoxController get _effectiveSuggestionsBoxController => widget.controller ?? this._controller;
+
   final LayerLink _layerLink = LayerLink();
 
   @override
@@ -588,59 +586,70 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
       this._focusNode = FocusNode();
     }
 
-    this._effectiveFocusNode.addListener(() async {
-      if (_effectiveFocusNode.hasFocus) {
+    this._suggestionsBoxController = _SuggestionsBoxController(context);
 
-        if (this._suggestionsOverlayEntry == null) {
+    (() async {
+      await this._initOverlayEntry();
 
-          RenderBox renderBox = context.findRenderObject();
+      this._effectiveFocusNode.addListener(() {
+        if (_effectiveFocusNode.hasFocus) {
+          this._suggestionsBoxController.open();
+        } else {
+          this._suggestionsBoxController.close();
+        }
+      });
 
-          while (!renderBox.hasSize) { // This happens in case of autofocus
-            // Keep waiting and checking if the renderbox has been laid out yet
-            // Not a very clean solution, a better one would have been to wait
-            // for some event that tells us that it has been laid out now.
-            // However, I couldn't find such event
-            await Future.delayed(Duration(milliseconds: 10));
-          }
+      // in case we already missed the focus event
+      if (this._effectiveFocusNode.hasFocus) {
+        this._suggestionsBoxController.open();
+      }
+    })();
+  }
 
-          var size = renderBox.size;
+  Future<void> _initOverlayEntry() async {
+    RenderBox renderBox = context.findRenderObject();
 
-          this._suggestionsOverlayEntry = OverlayEntry(
-            builder: (context) {
-              return Positioned(
-                width: size.width,
-                child: CompositedTransformFollower(
-                  link: this._layerLink,
-                  showWhenUnlinked: false,
-                  offset: Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
-                  child: _SuggestionsList<T>(
-                    decoration: widget.suggestionsBoxDecoration,
-                    debounceDuration: widget.debounceDuration,
-                    controller: this._effectiveController,
-                    loadingBuilder: widget.loadingBuilder,
-                    noItemsFoundBuilder: widget.noItemsFoundBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    transitionBuilder: widget.transitionBuilder,
-                    suggestionsCallback: widget.suggestionsCallback,
-                    animationDuration: widget.animationDuration,
-                    animationStart: widget.animationStart,
-                    onSuggestionSelected: (T selection) {
-                      this._effectiveFocusNode.unfocus();
-                      widget.onSuggestionSelected(selection);
-                    },
-                    itemBuilder: widget.itemBuilder,
-                  ),
-                ),
-              );
-            }
+    while (renderBox == null) {
+      await Future.delayed(Duration(milliseconds: 10));
+
+      renderBox = context.findRenderObject();
+    }
+
+    while (!renderBox.hasSize) {
+      await Future.delayed(Duration(milliseconds: 10));
+    }
+
+    var size = renderBox.size;
+
+    this._suggestionsBoxController._overlayEntry = OverlayEntry(
+        builder: (context) {
+          return Positioned(
+            width: size.width,
+            child: CompositedTransformFollower(
+              link: this._layerLink,
+              showWhenUnlinked: false,
+              offset: Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
+              child: _SuggestionsList<T>(
+                decoration: widget.suggestionsBoxDecoration,
+                debounceDuration: widget.debounceDuration,
+                controller: this._effectiveController,
+                loadingBuilder: widget.loadingBuilder,
+                noItemsFoundBuilder: widget.noItemsFoundBuilder,
+                errorBuilder: widget.errorBuilder,
+                transitionBuilder: widget.transitionBuilder,
+                suggestionsCallback: widget.suggestionsCallback,
+                animationDuration: widget.animationDuration,
+                animationStart: widget.animationStart,
+                onSuggestionSelected: (T selection) {
+                  this._effectiveFocusNode.unfocus();
+                  widget.onSuggestionSelected(selection);
+                },
+                itemBuilder: widget.itemBuilder,
+              ),
+            ),
           );
         }
-
-        Overlay.of(context).insert(this._suggestionsOverlayEntry);
-      } else {
-        this._suggestionsOverlayEntry.remove();
-      }
-    });
+    );
   }
 
   @override
@@ -734,6 +743,11 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>> with SingleTic
     this._isLoading = false;
     this._lastTextValue = widget.controller.text;
 
+    // If we started with some text, get suggestions immediately
+    if (widget.controller.text.isNotEmpty) {
+      this._getSuggestions();
+    }
+
     this._controllerListener = () {
 
       // If we came here because of a change in selected text, not because of
@@ -748,46 +762,50 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>> with SingleTic
         // If already closed
         if (!this.mounted) return;
 
-        setState(() {
-          this._animationController.forward(from: 1.0);
-
-          this._isLoading = true;
-          this._error = null;
-        });
-
-        var suggestions = [];
-        Object error;
-
-        final Object callbackIdentity = Object();
-        this._activeCallbackIdentity = callbackIdentity;
-
-        try {
-          suggestions = await widget.suggestionsCallback(widget.controller.text);
-        } catch (e) {
-          error = e;
-        }
-
-        // If another callback has been issued, omit this one
-        if (this._activeCallbackIdentity != callbackIdentity) return;
-
-        if (this.mounted) { // if it wasn't removed in the meantime
-          setState(() {
-            double animationStart = widget.animationStart;
-            if (error != null || suggestions.length == 0) {
-              animationStart = 1.0;
-            }
-            this._animationController.forward(from: animationStart);
-
-            this._error = error;
-            this._isLoading = false;
-            this._suggestions = suggestions;
-          });
-        }
+        await this._getSuggestions();
 
       });
     };
 
     widget.controller.addListener(this._controllerListener);
+  }
+
+  Future<void> _getSuggestions() async {
+    setState(() {
+      this._animationController.forward(from: 1.0);
+
+      this._isLoading = true;
+      this._error = null;
+    });
+
+    var suggestions = [];
+    Object error;
+
+    final Object callbackIdentity = Object();
+    this._activeCallbackIdentity = callbackIdentity;
+
+    try {
+      suggestions = await widget.suggestionsCallback(widget.controller.text);
+    } catch (e) {
+      error = e;
+    }
+
+    // If another callback has been issued, omit this one
+    if (this._activeCallbackIdentity != callbackIdentity) return;
+
+    if (this.mounted) { // if it wasn't removed in the meantime
+      setState(() {
+        double animationStart = widget.animationStart;
+        if (error != null || suggestions.length == 0) {
+          animationStart = 1.0;
+        }
+        this._animationController.forward(from: animationStart);
+
+        this._error = error;
+        this._isLoading = false;
+        this._suggestions = suggestions;
+      });
+    }
   }
 
   @override
@@ -1126,20 +1144,34 @@ class TextFieldConfiguration<T> {
   }
 }
 
-class SuggestionsBoxController {
+class _SuggestionsBoxController {
   final BuildContext context;
 
   OverlayEntry _overlayEntry;
 
-  SuggestionsBoxController({this.context});
+  bool _isOpened = false;
+
+  _SuggestionsBoxController(this.context);
 
   open() {
+    if (this._isOpened) return;
     assert(this._overlayEntry != null);
     Overlay.of(context).insert(this._overlayEntry);
+    this._isOpened = true;
   }
 
   close() {
+    if (!this._isOpened) return;
     assert(this._overlayEntry != null);
     this._overlayEntry.remove();
+    this._isOpened = false;
+  }
+
+  toggle() {
+    if (this._isOpened) {
+      this.close();
+    } else {
+      this.open();
+    }
   }
 }
