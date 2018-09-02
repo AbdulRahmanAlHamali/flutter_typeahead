@@ -569,10 +569,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
   FocusNode _focusNode;
   TextEditingController _textEditingController;
   OverlayEntry _suggestionsOverlayEntry;
+  SuggestionsBoxController _suggestionsBoxController;
 
   TextEditingController get _effectiveController => widget.textFieldConfiguration.controller ?? _textEditingController;
   FocusNode get _effectiveFocusNode => widget.textFieldConfiguration.focusNode ?? _focusNode;
-
+  SuggestionsBoxController get _effectiveSuggestionsBoxController => widget.controller ?? this._controller;
   final LayerLink _layerLink = LayerLink();
 
   @override
@@ -1122,5 +1123,23 @@ class TextFieldConfiguration<T> {
       textCapitalization: textCapitalization ?? this.textCapitalization,
       textInputAction: textInputAction ?? this.textInputAction
     );
+  }
+}
+
+class SuggestionsBoxController {
+  final BuildContext context;
+
+  OverlayEntry _overlayEntry;
+
+  SuggestionsBoxController({this.context});
+
+  open() {
+    assert(this._overlayEntry != null);
+    Overlay.of(context).insert(this._overlayEntry);
+  }
+
+  close() {
+    assert(this._overlayEntry != null);
+    this._overlayEntry.remove();
   }
 }
