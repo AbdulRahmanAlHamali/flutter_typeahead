@@ -16,3 +16,8 @@
 * Changed the suggestions box decoration
 to decorate a material sheet instead of 
 decorating a container
+* Moved the `TextField` properties inside a class
+called `TextFieldConfiguration`, which is provided
+to the `TypeAhead` widgets through a 
+`textFieldConfiguration` property. This was done to 
+decrease the clutter in the interface

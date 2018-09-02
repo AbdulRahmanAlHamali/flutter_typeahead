@@ -28,12 +28,14 @@
 /// ### Example 1:
 /// ```dart
 /// TypeAheadField(
-///   autofocus: true,
-///   style: DefaultTextStyle.of(context).style.copyWith(
-///     fontStyle: FontStyle.italic
-///   ),
-///   decoration: InputDecoration(
-///     border: OutlineInputBorder()
+///   textFieldConfiguration: TextFieldConfiguration(
+///     autofocus: true,
+///     style: DefaultTextStyle.of(context).style.copyWith(
+///       fontStyle: FontStyle.italic
+///     ),
+///     decoration: InputDecoration(
+///       border: OutlineInputBorder()
+///     )
 ///   ),
 ///   suggestionsCallback: (pattern) async {
 ///     return await BackendService.getSuggestions(pattern);
@@ -52,8 +54,9 @@
 ///   },
 /// )
 /// ```
-/// In the code above, the `autofocus`, `style` and `decoration` are the same as
-/// those of `TextField`, and are not mandatory.
+/// In the code above, the `textFieldConfiguration` property allows us to
+/// configure the displayed `TextField` as we want. In this example, we are
+/// configuring the `autofocus`, `style` and `decoration` properties.
 ///
 /// The `suggestionsCallback` is called with the search string that the user
 /// types, and is expected to return a `List` of data either synchronously or
@@ -88,9 +91,11 @@
 ///           'What is your favorite city?'
 ///         ),
 ///         TypeAheadFormField(
-///           controller: this._typeAheadController,
-///           decoration: InputDecoration(
-///             labelText: 'City'
+///           textFieldConfiguration: TextFieldConfiguration(
+///             controller: this._typeAheadController,
+///             decoration: InputDecoration(
+///               labelText: 'City'
+///             )
 ///           ),
 ///           suggestionsCallback: (pattern) {
 ///             return CitiesService.getSuggestions(pattern);
@@ -130,10 +135,10 @@
 ///   ),
 /// )
 /// ```
-/// Here, we assign to the `controller` property a `TextEditingController` that
-/// we call `_typeAheadController`. We use this controller in the
-/// `onSuggestionSelected` callback to set the value of the `TextField` to the
-/// selected suggestion.
+/// Here, we assign to the `controller` property of the `textFieldConfiguration`
+/// a `TextEditingController` that we call `_typeAheadController`.
+/// We use this controller in the `onSuggestionSelected` callback to set the
+/// value of the `TextField` to the selected suggestion.
 ///
 /// The `validator` callback can be used like any `FormField.validator`
 /// function. In our example, it checks whether a value has been entered,
@@ -149,9 +154,11 @@
 /// as the user types. Both are highly customizable
 ///
 /// ### Customizing the TextField
-/// You can customize the field with all the usual customizations available for
-/// `TextField` in Flutter. Examples include: `decoration`, `style`, `controller`,
-/// `focusNode`, `autofocus`, `enabled`, etc.
+/// You can customize the text field using the `textFieldConfiguration` property.
+/// You provide this property with an instance of `TextFieldConfiguration`,
+/// which allows you to configure all the usual properties of `TextField`, like
+/// `decoration`, `style`, `controller`, `focusNode`, `autofocus`, `enabled`,
+/// etc.
 ///
 /// ### Customizing the Suggestions Box
 /// TypeAhead provides default configurations for the suggestions box. You can,
@@ -235,26 +242,9 @@ typedef AnimationTransitionBuilder(BuildContext context, Widget child, Animation
 /// * [TypeAheadField], A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
 /// that displays a list of suggestions as the user types
 class TypeAheadFormField<T> extends FormField<String> {
-  /// Controls the text being edited.
-  ///
-  /// If null, this widget will create its own [TextEditingController](https://docs.flutter.io/flutter/widgets/TextEditingController-class.html).
-  /// A typical use case for this field in the TypeAhead widget is to set the
-  /// text of the widget when a suggestion is selected. For example:
-  ///
-  /// ```dart
-  /// final _controller = TextEditingController();
-  /// ...
-  /// ...
-  /// TypeAheadField(
-  ///   controller: _controller,
-  ///   ...
-  ///   ...
-  ///   onSuggestionSelected: (suggestion) {
-  ///     _controller.text = suggestion['city_name'];
-  ///   }
-  /// )
-  /// ```
-  final TextEditingController controller;
+  /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
+  /// that the TypeAhead widget displays
+  final TextFieldConfiguration textFieldConfiguration;
 
   /// Creates a [TypeAheadFormField]
   TypeAheadFormField({
@@ -263,29 +253,15 @@ class TypeAheadFormField<T> extends FormField<String> {
     bool autovalidate: false,
     FormFieldSetter<String> onSaved,
     FormFieldValidator<String> validator,
-    this.controller,
     ErrorBuilder errorBuilder,
-    TextAlign textAlign: TextAlign.start,
-    TextStyle style,
     WidgetBuilder noItemsFoundBuilder,
     WidgetBuilder loadingBuilder,
     Duration debounceDuration: const Duration(milliseconds: 300),
     SuggestionsBoxDecoration suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
-    InputDecoration decoration,
-    ValueChanged<String> onFieldSubmitted,
-    bool obscureText: false,
-    int maxLength,
-    bool maxLengthEnforced: true,
-    int maxLines: 1,
-    bool autocorrect: true,
-    List<TextInputFormatter> inputFormatters,
-    bool autofocus: false,
-    TextInputType keyboardType: TextInputType.text,
-    bool enabled: true,
     @required SuggestionSelectionCallback<T> onSuggestionSelected,
     @required ItemBuilder<T> itemBuilder,
     @required SuggestionsCallback<T> suggestionsCallback,
-    FocusNode focusNode,
+    this.textFieldConfiguration: const TextFieldConfiguration(),
     AnimationTransitionBuilder transitionBuilder,
     Duration animationDuration: const Duration(milliseconds: 500),
     double animationStart: 0.25
@@ -294,7 +270,7 @@ class TypeAheadFormField<T> extends FormField<String> {
     onSaved: onSaved,
     validator: validator,
     autovalidate: autovalidate,
-    initialValue: controller != null ? controller.text : (initialValue ?? ''),
+    initialValue: textFieldConfiguration.controller != null ? textFieldConfiguration.controller.text : (initialValue ?? ''),
     builder: (FormFieldState<String> field) {
 
       final _TypeAheadFormFieldState state = field;
@@ -302,29 +278,18 @@ class TypeAheadFormField<T> extends FormField<String> {
       return TypeAheadField(
         transitionBuilder: transitionBuilder,
         errorBuilder: errorBuilder,
-        textAlign: textAlign,
-        style: style,
         noItemsFoundBuilder: noItemsFoundBuilder,
         loadingBuilder: loadingBuilder,
         debounceDuration: debounceDuration,
         suggestionsBoxDecoration: suggestionsBoxDecoration,
-        decoration: decoration.copyWith(errorText: state.errorText),
-        onSubmitted: onFieldSubmitted,
-        onChanged: state.didChange,
-        obscureText: obscureText,
-        maxLength: maxLength,
-        maxLengthEnforced: maxLengthEnforced,
-        maxLines: maxLines,
-        autocorrect: autocorrect,
-        inputFormatters: inputFormatters,
-        autofocus: autofocus,
-        keyboardType: keyboardType,
-        enabled: enabled,
-        controller: state._effectiveController,
+        textFieldConfiguration: textFieldConfiguration.copyWith(
+          decoration: textFieldConfiguration.decoration.copyWith(errorText: state.errorText),
+          onChanged: state.didChange,
+          controller: state._effectiveController,
+        ),
         onSuggestionSelected: onSuggestionSelected,
         itemBuilder: itemBuilder,
         suggestionsCallback: suggestionsCallback,
-        focusNode: focusNode,
         animationStart: animationStart,
         animationDuration: animationDuration,
       );
@@ -338,7 +303,7 @@ class TypeAheadFormField<T> extends FormField<String> {
 class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
   TextEditingController _controller;
 
-  TextEditingController get _effectiveController => widget.controller ?? _controller;
+  TextEditingController get _effectiveController => widget.textFieldConfiguration.controller ?? _controller;
 
   @override
   TypeAheadFormField get widget => super.widget;
@@ -346,26 +311,26 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
   @override
   void initState() {
     super.initState();
-    if (widget.controller == null) {
+    if (widget.textFieldConfiguration.controller == null) {
       _controller = TextEditingController(text: widget.initialValue);
       print(widget.initialValue);
     } else {
-      widget.controller.addListener(_handleControllerChanged);
+      widget.textFieldConfiguration.controller.addListener(_handleControllerChanged);
     }
   }
 
   @override
   void didUpdateWidget(TypeAheadFormField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != oldWidget.controller) {
-      oldWidget.controller?.removeListener(_handleControllerChanged);
-      widget.controller?.addListener(_handleControllerChanged);
+    if (widget.textFieldConfiguration.controller != oldWidget.textFieldConfiguration.controller) {
+      oldWidget.textFieldConfiguration.controller?.removeListener(_handleControllerChanged);
+      widget.textFieldConfiguration.controller?.addListener(_handleControllerChanged);
 
-      if (oldWidget.controller != null && widget.controller == null)
-        _controller = TextEditingController.fromValue(oldWidget.controller.value);
-      if (widget.controller != null) {
-        setValue(widget.controller.text);
-        if (oldWidget.controller == null)
+      if (oldWidget.textFieldConfiguration.controller != null && widget.textFieldConfiguration.controller == null)
+        _controller = TextEditingController.fromValue(oldWidget.textFieldConfiguration.controller.value);
+      if (widget.textFieldConfiguration.controller != null) {
+        setValue(widget.textFieldConfiguration.controller.text);
+        if (oldWidget.textFieldConfiguration.controller == null)
           _controller = null;
       }
     }
@@ -373,7 +338,7 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
 
   @override
   void dispose() {
-    widget.controller?.removeListener(_handleControllerChanged);
+    widget.textFieldConfiguration.controller?.removeListener(_handleControllerChanged);
     super.dispose();
   }
 
@@ -407,11 +372,6 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
 /// implementation of [TypeAheadField] that allows the value to be saved,
 /// validated, etc.
 class TypeAheadField<T> extends StatefulWidget {
-
-  /// The decoration to show around the text field.
-  ///
-  /// Same as [TextField.decoration](https://docs.flutter.io/flutter/material/TextField/decoration.html)
-  final InputDecoration decoration;
   /// Called with the search pattern to get the search suggestions.
   ///
   /// This callback must not be null. It is be called by the TypeAhead widget
@@ -469,87 +429,6 @@ class TypeAheadField<T> extends StatefulWidget {
   /// }
   /// ```
   final ItemBuilder<T> itemBuilder;
-  /// Controls the text being edited.
-  ///
-  /// If null, this widget will create its own [TextEditingController](https://docs.flutter.io/flutter/widgets/TextEditingController-class.html).
-  /// A typical use case for this field in the TypeAhead widget is to set the
-  /// text of the widget when a suggestion is selected. For example:
-  ///
-  /// ```dart
-  /// final _controller = TextEditingController();
-  /// ...
-  /// ...
-  /// TypeAheadField(
-  ///   controller: _controller,
-  ///   ...
-  ///   ...
-  ///   onSuggestionSelected: (suggestion) {
-  ///     _controller.text = suggestion['city_name'];
-  ///   }
-  /// )
-  /// ```
-  final TextEditingController controller;
-  /// Controls whether this widget has keyboard focus.
-  ///
-  /// Same as [TextField.focusNode](https://docs.flutter.io/flutter/material/TextField/focusNode.html)
-  final FocusNode focusNode;
-  /// The style to use for the text being edited.
-  ///
-  /// Same as [TextField.style](https://docs.flutter.io/flutter/material/TextField/style.html)
-  final TextStyle style;
-  /// How the text being edited should be aligned horizontally.
-  ///
-  /// Same as [TextField.textAlign](https://docs.flutter.io/flutter/material/TextField/textAlign.html)
-  final TextAlign textAlign;
-  /// If false the textfield is "disabled": it ignores taps and its
-  /// [decoration] is rendered in grey.
-  ///
-  /// Same as [TextField.enabled](https://docs.flutter.io/flutter/material/TextField/enabled.html)
-  final bool enabled;
-  /// The type of keyboard to use for editing the text.
-  ///
-  /// Same as [TextField.keyboardType](https://docs.flutter.io/flutter/material/TextField/keyboardType.html)
-  final TextInputType keyboardType;
-  /// Whether this text field should focus itself if nothing else is already
-  /// focused.
-  ///
-  /// Same as [TextField.autofocus](https://docs.flutter.io/flutter/material/TextField/autofocus.html)
-  final bool autofocus;
-  /// Optional input validation and formatting overrides.
-  ///
-  /// Same as [TextField.inputFormatters](https://docs.flutter.io/flutter/material/TextField/inputFormatters.html)
-  final List<TextInputFormatter> inputFormatters;
-  /// Whether to enable autocorrection.
-  ///
-  /// Same as [TextField.autocorrect](https://docs.flutter.io/flutter/material/TextField/autocorrect.html)
-  final bool autocorrect;
-  /// The maximum number of lines for the text to span, wrapping if necessary.
-  ///
-  /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
-  final int maxLines;
-  /// The maximum number of characters (Unicode scalar values) to allow in the
-  /// text field.
-  ///
-  /// Same as [TextField.maxLength](https://docs.flutter.io/flutter/material/TextField/maxLength.html)
-  final int maxLength;
-  /// If true, prevents the field from allowing more than [maxLength]
-  /// characters.
-  ///
-  /// Same as [TextField.maxLengthEnforced](https://docs.flutter.io/flutter/material/TextField/maxLengthEnforced.html)
-  final bool maxLengthEnforced;
-  /// Whether to hide the text being edited (e.g., for passwords).
-  ///
-  /// Same as [TextField.obscureText](https://docs.flutter.io/flutter/material/TextField/obscureText.html)
-  final bool obscureText;
-  /// Called when the text being edited changes.
-  ///
-  /// Same as [TextField.onChanged](https://docs.flutter.io/flutter/material/TextField/onChanged.html)
-  final ValueChanged<String> onChanged;
-  /// Called when the user indicates that they are done editing the text in the
-  /// field.
-  ///
-  /// Same as [TextField.onSubmitted](https://docs.flutter.io/flutter/material/TextField/onSubmitted.html)
-  final ValueChanged<String> onSubmitted;
   /// The decoration of the material sheet that contains the suggestions.
   ///
   /// If null, default decoration with an elevation of 4.0 is used
@@ -639,29 +518,17 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// Defaults to 0.25.
   final double animationStart;
+  /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
+  /// that the TypeAhead widget displays
+  final TextFieldConfiguration textFieldConfiguration;
 
   /// Creates a [TypeAheadField]
   TypeAheadField({
     Key key,
-    this.decoration : const InputDecoration(),
     @required this.suggestionsCallback,
     @required this.itemBuilder,
-    this.controller,
     @required this.onSuggestionSelected,
-    this.focusNode,
-    this.style,
-    this.textAlign: TextAlign.start,
-    this.enabled,
-    this.keyboardType: TextInputType.text,
-    this.autofocus: false,
-    this.inputFormatters,
-    this.autocorrect: true,
-    this.maxLines: 1,
-    this.maxLength,
-    this.maxLengthEnforced: true,
-    this.obscureText: false,
-    this.onChanged,
-    this.onSubmitted,
+    this.textFieldConfiguration: const TextFieldConfiguration(),
     this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
     this.debounceDuration: const Duration(milliseconds: 300),
     this.loadingBuilder,
@@ -677,13 +544,7 @@ class TypeAheadField<T> extends StatefulWidget {
       assert(animationStart != null && animationStart >= 0.0 && animationStart <= 1.0),
       assert(animationDuration != null),
       assert(debounceDuration != null),
-      assert(textAlign != null),
-      assert(autofocus != null),
-      assert(obscureText != null),
-      assert(autocorrect != null),
-      assert(maxLengthEnforced != null),
-      assert(maxLines == null || maxLines > 0),
-      assert(maxLength == null || maxLength > 0),
+      assert(textFieldConfiguration != null),
       super(key: key);
 
   @override
@@ -696,8 +557,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
   TextEditingController _controller;
   OverlayEntry _suggestionsOverlayEntry;
 
-  TextEditingController get _effectiveController => widget.controller ?? _controller;
-  FocusNode get _effectiveFocusNode => widget.focusNode ?? _focusNode;
+  TextEditingController get _effectiveController => widget.textFieldConfiguration.controller ?? _controller;
+  FocusNode get _effectiveFocusNode => widget.textFieldConfiguration.focusNode ?? _focusNode;
 
   final LayerLink _layerLink = LayerLink();
 
@@ -705,11 +566,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
   void initState() {
     super.initState();
 
-    if (widget.controller == null) {
+    if (widget.textFieldConfiguration.controller == null) {
       this._controller = TextEditingController();
     }
 
-    if (widget.focusNode == null) {
+    if (widget.textFieldConfiguration.focusNode == null) {
       this._focusNode = FocusNode();
     }
 
@@ -775,20 +636,20 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
       child: TextField(
         focusNode: this._effectiveFocusNode,
         controller: this._effectiveController,
-        decoration: widget.decoration,
-        style: widget.style,
-        textAlign: widget.textAlign,
-        enabled: widget.enabled,
-        keyboardType: widget.keyboardType,
-        autofocus: widget.autofocus,
-        inputFormatters: widget.inputFormatters,
-        autocorrect: widget.autocorrect,
-        maxLines: widget.maxLines,
-        maxLength: widget.maxLength,
-        maxLengthEnforced: widget.maxLengthEnforced,
-        obscureText: widget.obscureText,
-        onChanged: widget.onChanged,
-        onSubmitted: widget.onSubmitted,
+        decoration: widget.textFieldConfiguration.decoration,
+        style: widget.textFieldConfiguration.style,
+        textAlign: widget.textFieldConfiguration.textAlign,
+        enabled: widget.textFieldConfiguration.enabled,
+        keyboardType: widget.textFieldConfiguration.keyboardType,
+        autofocus: widget.textFieldConfiguration.autofocus,
+        inputFormatters: widget.textFieldConfiguration.inputFormatters,
+        autocorrect: widget.textFieldConfiguration.autocorrect,
+        maxLines: widget.textFieldConfiguration.maxLines,
+        maxLength: widget.textFieldConfiguration.maxLength,
+        maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
+        obscureText: widget.textFieldConfiguration.obscureText,
+        onChanged: widget.textFieldConfiguration.onChanged,
+        onSubmitted: widget.textFieldConfiguration.onSubmitted,
       ),
     );
   }
@@ -1035,4 +896,161 @@ class SuggestionsBoxDecoration {
   }) :
     assert(shadowColor != null),
     assert(elevation != null);
+}
+
+/// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
+/// property to configure the displayed text field
+class TextFieldConfiguration {
+  /// The decoration to show around the text field.
+  ///
+  /// Same as [TextField.decoration](https://docs.flutter.io/flutter/material/TextField/decoration.html)
+  final InputDecoration decoration;
+  /// Controls the text being edited.
+  ///
+  /// If null, this widget will create its own [TextEditingController](https://docs.flutter.io/flutter/widgets/TextEditingController-class.html).
+  /// A typical use case for this field in the TypeAhead widget is to set the
+  /// text of the widget when a suggestion is selected. For example:
+  ///
+  /// ```dart
+  /// final _controller = TextEditingController();
+  /// ...
+  /// ...
+  /// TypeAheadField(
+  ///   controller: _controller,
+  ///   ...
+  ///   ...
+  ///   onSuggestionSelected: (suggestion) {
+  ///     _controller.text = suggestion['city_name'];
+  ///   }
+  /// )
+  /// ```
+  final TextEditingController controller;
+  /// Controls whether this widget has keyboard focus.
+  ///
+  /// Same as [TextField.focusNode](https://docs.flutter.io/flutter/material/TextField/focusNode.html)
+  final FocusNode focusNode;
+  /// The style to use for the text being edited.
+  ///
+  /// Same as [TextField.style](https://docs.flutter.io/flutter/material/TextField/style.html)
+  final TextStyle style;
+  /// How the text being edited should be aligned horizontally.
+  ///
+  /// Same as [TextField.textAlign](https://docs.flutter.io/flutter/material/TextField/textAlign.html)
+  final TextAlign textAlign;
+  /// If false the textfield is "disabled": it ignores taps and its
+  /// [decoration] is rendered in grey.
+  ///
+  /// Same as [TextField.enabled](https://docs.flutter.io/flutter/material/TextField/enabled.html)
+  final bool enabled;
+  /// The type of keyboard to use for editing the text.
+  ///
+  /// Same as [TextField.keyboardType](https://docs.flutter.io/flutter/material/TextField/keyboardType.html)
+  final TextInputType keyboardType;
+  /// Whether this text field should focus itself if nothing else is already
+  /// focused.
+  ///
+  /// Same as [TextField.autofocus](https://docs.flutter.io/flutter/material/TextField/autofocus.html)
+  final bool autofocus;
+  /// Optional input validation and formatting overrides.
+  ///
+  /// Same as [TextField.inputFormatters](https://docs.flutter.io/flutter/material/TextField/inputFormatters.html)
+  final List<TextInputFormatter> inputFormatters;
+  /// Whether to enable autocorrection.
+  ///
+  /// Same as [TextField.autocorrect](https://docs.flutter.io/flutter/material/TextField/autocorrect.html)
+  final bool autocorrect;
+  /// The maximum number of lines for the text to span, wrapping if necessary.
+  ///
+  /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
+  final int maxLines;
+  /// The maximum number of characters (Unicode scalar values) to allow in the
+  /// text field.
+  ///
+  /// Same as [TextField.maxLength](https://docs.flutter.io/flutter/material/TextField/maxLength.html)
+  final int maxLength;
+  /// If true, prevents the field from allowing more than [maxLength]
+  /// characters.
+  ///
+  /// Same as [TextField.maxLengthEnforced](https://docs.flutter.io/flutter/material/TextField/maxLengthEnforced.html)
+  final bool maxLengthEnforced;
+  /// Whether to hide the text being edited (e.g., for passwords).
+  ///
+  /// Same as [TextField.obscureText](https://docs.flutter.io/flutter/material/TextField/obscureText.html)
+  final bool obscureText;
+  /// Called when the text being edited changes.
+  ///
+  /// Same as [TextField.onChanged](https://docs.flutter.io/flutter/material/TextField/onChanged.html)
+  final ValueChanged<String> onChanged;
+  /// Called when the user indicates that they are done editing the text in the
+  /// field.
+  ///
+  /// Same as [TextField.onSubmitted](https://docs.flutter.io/flutter/material/TextField/onSubmitted.html)
+  final ValueChanged<String> onSubmitted;
+
+  /// Creates a TextFieldConfiguration
+  const TextFieldConfiguration({
+    this.decoration: const InputDecoration(),
+    this.style,
+    this.controller,
+    this.onChanged,
+    this.onSubmitted,
+    this.obscureText: false,
+    this.maxLengthEnforced: true,
+    this.maxLength,
+    this.maxLines: 1,
+    this.autocorrect: true,
+    this.inputFormatters,
+    this.autofocus: false,
+    this.keyboardType: TextInputType.text,
+    this.enabled: true,
+    this.textAlign: TextAlign.start,
+    this.focusNode
+  }):
+    assert(textAlign != null),
+    assert(autofocus != null),
+    assert(obscureText != null),
+    assert(autocorrect != null),
+    assert(maxLengthEnforced != null),
+    assert(maxLines == null || maxLines > 0),
+    assert(maxLength == null || maxLength > 0);
+
+  /// Copies the [TextFieldConfiguration] and only changes the specified
+  /// properties
+  copyWith({
+    decoration,
+    style,
+    controller,
+    onChanged,
+    onSubmitted,
+    obscureText,
+    maxLengthEnforced,
+    maxLength,
+    maxLines,
+    autocorrect,
+    inputFormatters,
+    autofocus,
+    keyboardType,
+    enabled,
+    textAlign,
+    focusNode
+  }) {
+    return TextFieldConfiguration(
+      decoration: decoration ?? this.decoration,
+      style: style ?? this.style,
+      controller: controller ?? this.controller,
+      onChanged: onChanged ?? this.onChanged,
+      onSubmitted: onSubmitted ?? this.onSubmitted,
+      obscureText: obscureText ?? this.obscureText,
+      maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
+      maxLength: maxLength ?? this.maxLength,
+      maxLines: maxLines ?? this.maxLines,
+      autocorrect: autocorrect ?? this.autocorrect,
+      inputFormatters: inputFormatters ?? this.inputFormatters,
+      autofocus: autofocus ?? this.autofocus,
+      keyboardType: keyboardType ?? this.keyboardType,
+      enabled: enabled ?? this.enabled,
+      textAlign: textAlign ?? this.textAlign,
+      focusNode: focusNode ?? this.focusNode
+    );
+  }
 }

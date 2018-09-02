@@ -30,12 +30,14 @@ and then use it as follows:
 ### Example 1:
 ```dart
 TypeAheadField(
-  autofocus: true,
-  style: DefaultTextStyle.of(context).style.copyWith(
-    fontStyle: FontStyle.italic
-  ),
-  decoration: InputDecoration(
-    border: OutlineInputBorder()
+  textFieldConfiguration: TextFieldConfiguration(
+    autofocus: true,
+    style: DefaultTextStyle.of(context).style.copyWith(
+      fontStyle: FontStyle.italic
+    ),
+    decoration: InputDecoration(
+      border: OutlineInputBorder()
+    )
   ),
   suggestionsCallback: (pattern) async {
     return await BackendService.getSuggestions(pattern);
@@ -54,8 +56,9 @@ TypeAheadField(
   },
 )
 ```
-In the code above, the `autofocus`, `style` and `decoration` are the same as
-those of `TextField`, and are not mandatory.
+In the code above, the `textFieldConfiguration` property allows us to 
+configure the displayed `TextField` as we want. In this example, we are 
+configuring the `autofocus`, `style` and `decoration` properties.
 
 The `suggestionsCallback` is called with the search string that the user
 types, and is expected to return a `List` of data either synchronously or
@@ -90,10 +93,12 @@ Form(
           'What is your favorite city?'
         ),
         TypeAheadFormField(
-          controller: this._typeAheadController,
-          decoration: InputDecoration(
-            labelText: 'City'
-          ),
+          textFieldConfiguration: TextFieldConfiguration(
+            controller: this._typeAheadController,
+            decoration: InputDecoration(
+              labelText: 'City'
+            )
+          ),          
           suggestionsCallback: (pattern) {
             return CitiesService.getSuggestions(pattern);
           },
@@ -132,10 +137,10 @@ Form(
   ),
 )
 ```
-Here, we assign to the `controller` property a `TextEditingController` that
-we call `_typeAheadController`. We use this controller in the
-`onSuggestionSelected` callback to set the value of the `TextField` to the
-selected suggestion.
+Here, we assign to the `controller` property of the `textFieldConfiguration` 
+a `TextEditingController` that we call `_typeAheadController`. 
+We use this controller in the `onSuggestionSelected` callback to set the 
+value of the `TextField` to the selected suggestion.
 
 The `validator` callback can be used like any `FormField.validator`
 function. In our example, it checks whether a value has been entered,
@@ -151,9 +156,11 @@ TypeAhead widgets consist of a TextField and a suggestion box that shows
 as the user types. Both are highly customizable
 
 ### Customizing the TextField
-You can customize the field with all the usual customizations available for
-`TextField` in Flutter. Examples include: decoration, style, controller,
-focusNode, autofocus, enabled, etc.
+You can customize the text field using the `textFieldConfiguration` property. 
+You provide this property with an instance of `TextFieldConfiguration`, 
+which allows you to configure all the usual properties of `TextField`, like
+`decoration`, `style`, `controller`, `focusNode`, `autofocus`, `enabled`, 
+etc.
 
 ### Customizing the Suggestions Box
 TypeAhead provides default configurations for the suggestions box. You can,

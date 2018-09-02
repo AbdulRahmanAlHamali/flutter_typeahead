@@ -58,12 +58,14 @@ class NavigationExample extends StatelessWidget {
           ),
           SizedBox(height: 10.0,),
           TypeAheadField(
-            autofocus: true,
-            style: DefaultTextStyle.of(context).style.copyWith(
-              fontStyle: FontStyle.italic
-            ),
-            decoration: InputDecoration(
-              border: OutlineInputBorder()
+            textFieldConfiguration: TextFieldConfiguration(
+              autofocus: true,
+              style: DefaultTextStyle.of(context).style.copyWith(
+                  fontStyle: FontStyle.italic
+              ),
+              decoration: InputDecoration(
+                  border: OutlineInputBorder()
+              ),
             ),
             suggestionsCallback: (pattern) async {
               return await BackendService.getSuggestions(pattern);
@@ -111,9 +113,11 @@ class _FormExampleState extends State<FormExample> {
               'What is your favorite city?'
             ),
             TypeAheadFormField(
-              controller: this._typeAheadController,
-              decoration: InputDecoration(
-                labelText: 'City'
+              textFieldConfiguration: TextFieldConfiguration(
+                decoration: InputDecoration(
+                    labelText: 'City'
+                ),
+                controller: this._typeAheadController,
               ),
               suggestionsCallback: (pattern) {
                 return CitiesService.getSuggestions(pattern);
