@@ -651,6 +651,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
         obscureText: widget.textFieldConfiguration.obscureText,
         onChanged: widget.textFieldConfiguration.onChanged,
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
+        onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
+        scrollPadding: widget.textFieldConfiguration.scrollPadding,
+        textInputAction: widget.textFieldConfiguration.textInputAction,
+        textCapitalization: widget.textFieldConfiguration.textCapitalization,
+        keyboardAppearance: widget.textFieldConfiguration.keyboardAppearance,
+        cursorWidth: widget.textFieldConfiguration.cursorWidth,
+        cursorRadius: widget.textFieldConfiguration.cursorRadius,
+        cursorColor: widget.textFieldConfiguration.cursorColor,
       ),
     );
   }
@@ -901,7 +909,7 @@ class SuggestionsBoxDecoration {
 
 /// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
 /// property to configure the displayed text field
-class TextFieldConfiguration {
+class TextFieldConfiguration<T> {
   /// The decoration to show around the text field.
   ///
   /// Same as [TextField.decoration](https://docs.flutter.io/flutter/material/TextField/decoration.html)
@@ -981,12 +989,44 @@ class TextFieldConfiguration {
   /// Called when the text being edited changes.
   ///
   /// Same as [TextField.onChanged](https://docs.flutter.io/flutter/material/TextField/onChanged.html)
-  final ValueChanged<String> onChanged;
+  final ValueChanged<T> onChanged;
   /// Called when the user indicates that they are done editing the text in the
   /// field.
   ///
   /// Same as [TextField.onSubmitted](https://docs.flutter.io/flutter/material/TextField/onSubmitted.html)
-  final ValueChanged<String> onSubmitted;
+  final ValueChanged<T> onSubmitted;
+  /// The color to use when painting the cursor.
+  ///
+  /// Same as [TextField.cursorColor](https://docs.flutter.io/flutter/material/TextField/cursorColor.html)
+  final Color cursorColor;
+  /// How rounded the corners of the cursor should be. By default, the cursor has a null Radius
+  ///
+  /// Same as [TextField.cursorRadius](https://docs.flutter.io/flutter/material/TextField/cursorRadius.html)
+  final Radius cursorRadius;
+  /// How thick the cursor will be.
+  ///
+  /// Same as [TextField.cursorWidth](https://docs.flutter.io/flutter/material/TextField/cursorWidth.html)
+  final double cursorWidth;
+  /// The appearance of the keyboard.
+  ///
+  /// Same as [TextField.keyboardAppearance](https://docs.flutter.io/flutter/material/TextField/keyboardAppearance.html)
+  final Brightness keyboardAppearance;
+  /// Called when the user submits editable content (e.g., user presses the "done" button on the keyboard).
+  ///
+  /// Same as [TextField.onEditingComplete](https://docs.flutter.io/flutter/material/TextField/onEditingComplete.html)
+  final VoidCallback onEditingComplete;
+  /// Configures padding to edges surrounding a Scrollable when the Textfield scrolls into view.
+  ///
+  /// Same as [TextField.scrollPadding](https://docs.flutter.io/flutter/material/TextField/scrollPadding.html)
+  final EdgeInsets scrollPadding;
+  /// Configures how the platform keyboard will select an uppercase or lowercase keyboard.
+  ///
+  /// Same as [TextField.TextCapitalization](https://docs.flutter.io/flutter/material/TextField/textCapitalization.html)
+  final TextCapitalization textCapitalization;
+  /// The type of action button to use for the keyboard.
+  ///
+  /// Same as [TextField.textInputAction](https://docs.flutter.io/flutter/material/TextField/textInputAction.html)
+  final TextInputAction textInputAction;
 
   /// Creates a TextFieldConfiguration
   const TextFieldConfiguration({
@@ -1005,35 +1045,44 @@ class TextFieldConfiguration {
     this.keyboardType: TextInputType.text,
     this.enabled: true,
     this.textAlign: TextAlign.start,
-    this.focusNode
-  }):
-    assert(textAlign != null),
-    assert(autofocus != null),
-    assert(obscureText != null),
-    assert(autocorrect != null),
-    assert(maxLengthEnforced != null),
-    assert(maxLines == null || maxLines > 0),
-    assert(maxLength == null || maxLength > 0);
+    this.focusNode,
+    this.cursorColor,
+    this.cursorRadius,
+    this.textInputAction,
+    this.textCapitalization: TextCapitalization.none,
+    this.cursorWidth: 2.0,
+    this.keyboardAppearance,
+    this.onEditingComplete,
+    this.scrollPadding: const EdgeInsets.all(20.0)
+  });
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties
   copyWith({
-    decoration,
-    style,
-    controller,
-    onChanged,
-    onSubmitted,
-    obscureText,
-    maxLengthEnforced,
-    maxLength,
-    maxLines,
-    autocorrect,
-    inputFormatters,
-    autofocus,
-    keyboardType,
-    enabled,
-    textAlign,
-    focusNode
+    InputDecoration decoration,
+    TextStyle style,
+    TextEditingController controller,
+    ValueChanged<T> onChanged,
+    ValueChanged<T> onSubmitted,
+    bool obscureText,
+    bool maxLengthEnforced,
+    int maxLength,
+    int maxLines,
+    bool autocorrect,
+    List<TextInputFormatter> inputFormatters,
+    bool autofocus,
+    TextInputType keyboardType,
+    bool enabled,
+    TextAlign textAlign,
+    FocusNode focusNode,
+    Color cursorColor,
+    Radius cursorRadius,
+    double cursorWidth,
+    Brightness keyboardAppearance,
+    VoidCallback onEditingComplete,
+    EdgeInsets scrollPadding,
+    TextCapitalization textCapitalization,
+    TextInputAction textInputAction
   }) {
     return TextFieldConfiguration(
       decoration: decoration ?? this.decoration,
@@ -1051,7 +1100,15 @@ class TextFieldConfiguration {
       keyboardType: keyboardType ?? this.keyboardType,
       enabled: enabled ?? this.enabled,
       textAlign: textAlign ?? this.textAlign,
-      focusNode: focusNode ?? this.focusNode
+      focusNode: focusNode ?? this.focusNode,
+      cursorColor: cursorColor ?? this.cursorColor,
+      cursorRadius: cursorRadius ?? this.cursorRadius,
+      cursorWidth: cursorWidth ?? this.cursorWidth,
+      keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
+      onEditingComplete: onEditingComplete ?? this.onEditingComplete,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
+      textCapitalization: textCapitalization ?? this.textCapitalization,
+      textInputAction: textInputAction ?? this.textInputAction
     );
   }
 }

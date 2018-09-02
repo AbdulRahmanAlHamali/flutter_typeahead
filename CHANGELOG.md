@@ -21,3 +21,5 @@ called `TextFieldConfiguration`, which is provided
 to the `TypeAhead` widgets through a 
 `textFieldConfiguration` property. This was done to 
 decrease the clutter in the interface
+* Added more configuration properties to the 
+`TextField`
