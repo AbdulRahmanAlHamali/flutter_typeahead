@@ -545,6 +545,7 @@ class TypeAheadField<T> extends StatefulWidget {
       assert(animationDuration != null),
       assert(debounceDuration != null),
       assert(textFieldConfiguration != null),
+      assert(suggestionsBoxDecoration != null),
       super(key: key);
 
   @override
