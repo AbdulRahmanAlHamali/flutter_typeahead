@@ -29,3 +29,7 @@ suggestions box
 * Added meta-tags to README for SEO
 * Updated the GIF to show the changes
 * Added "How you can help" section to README
+
+## 0.2.1 - 04/09/2018
+
+* Added mention of 'autocomplete' in README
