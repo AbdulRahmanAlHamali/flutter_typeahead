@@ -32,4 +32,5 @@ suggestions box
 
 ## 0.2.1 - 04/09/2018
 
-* Added mention of 'autocomplete' in README
+* Added mention of 'autocomplete' in README and pubspec
+* Executed 'flutter format'
