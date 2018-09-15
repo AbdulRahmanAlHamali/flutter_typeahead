@@ -906,7 +906,12 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       shape: widget.decoration.shape,
       borderRadius: widget.decoration.borderRadius,
       shadowColor: widget.decoration.shadowColor,
-      child: animationChild,
+      child: widget.decoration.constraints != null
+          ? ConstrainedBox(
+              constraints: widget.decoration.constraints,
+              child: animationChild,
+            )
+          : animationChild,
     );
 
     return container;
@@ -942,13 +947,17 @@ class SuggestionsBoxDecoration {
   /// Same as [Material.shadowColor](https://docs.flutter.io/flutter/material/Material/shadowColor.html)
   final Color shadowColor;
 
+  /// The constraints to be applied to the suggestions box
+  final BoxConstraints constraints;
+
   /// Creates a SuggestionsBoxDecoration
   const SuggestionsBoxDecoration(
       {this.elevation: 4.0,
       this.color,
       this.shape,
       this.borderRadius,
-      this.shadowColor: const Color(0xFF000000)})
+      this.shadowColor: const Color(0xFF000000),
+      this.constraints})
       : assert(shadowColor != null),
         assert(elevation != null);
 }

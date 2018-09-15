@@ -34,3 +34,8 @@ suggestions box
 
 * Added mention of 'autocomplete' in README and pubspec
 * Executed 'flutter format'
+
+## 0.3.0 - 15/09/2018
+
+* Added a constraints property to the `SuggestionsBoxDecorations`
+which allows to set the height and width of the suggestions box
