@@ -46,3 +46,7 @@ which allows to set the height and width of the suggestions box
 suggestions before the user types
 * Added assertion in the form field to disallow having `initialValue`
 and `textFieldConfiguration.controller` defined at the same time
+
+## 0.4.1 - 20/09/2018
+
+* Added property `getImmediateSuggestions` to the form field implementation
