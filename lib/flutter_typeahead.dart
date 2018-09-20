@@ -554,6 +554,16 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to 5.0
   final double suggestionsBoxVerticalOffset;
 
+  /// If set to true, suggestions will be fetched immediately when the field is
+  /// added to the view.
+  ///
+  /// But the suggestions box will only be shown when the field receives focus.
+  /// To make the field receive focus immediately, you can set the `autofocus`
+  /// property in the [textFieldConfiguration] to true
+  ///
+  /// Defaults to false
+  final bool getImmediateSuggestions;
+
   /// Creates a [TypeAheadField]
   TypeAheadField(
       {Key key,
@@ -569,6 +579,7 @@ class TypeAheadField<T> extends StatefulWidget {
       this.transitionBuilder,
       this.animationStart: 0.25,
       this.animationDuration: const Duration(milliseconds: 500),
+      this.getImmediateSuggestions: false,
       this.suggestionsBoxVerticalOffset: 5.0})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
@@ -666,6 +677,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
             suggestionsCallback: widget.suggestionsCallback,
             animationDuration: widget.animationDuration,
             animationStart: widget.animationStart,
+            getImmediateSuggestions: widget.getImmediateSuggestions,
             onSuggestionSelected: (T selection) {
               this._effectiveFocusNode.unfocus();
               widget.onSuggestionSelected(selection);
@@ -724,9 +736,11 @@ class _SuggestionsList<T> extends StatefulWidget {
   final AnimationTransitionBuilder transitionBuilder;
   final Duration animationDuration;
   final double animationStart;
+  final bool getImmediateSuggestions;
 
   _SuggestionsList({
     this.controller,
+    this.getImmediateSuggestions: false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
     this.itemBuilder,
@@ -768,7 +782,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     this._lastTextValue = widget.controller.text;
 
     // If we started with some text, get suggestions immediately
-    if (widget.controller.text.isNotEmpty) {
+    if (widget.controller.text.isNotEmpty || widget.getImmediateSuggestions) {
       this._getSuggestions();
     }
 
