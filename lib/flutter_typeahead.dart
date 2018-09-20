@@ -273,7 +273,8 @@ class TypeAheadFormField<T> extends FormField<String> {
       AnimationTransitionBuilder transitionBuilder,
       Duration animationDuration: const Duration(milliseconds: 500),
       double animationStart: 0.25})
-      : assert(initialValue == null || textFieldConfiguration.controller == null),
+      : assert(
+            initialValue == null || textFieldConfiguration.controller == null),
         super(
             key: key,
             onSaved: onSaved,
