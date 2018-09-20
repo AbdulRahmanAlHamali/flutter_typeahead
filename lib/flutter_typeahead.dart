@@ -255,6 +255,7 @@ class TypeAheadFormField<T> extends FormField<String> {
   TypeAheadFormField(
       {Key key,
       String initialValue,
+      bool getImmediateSuggestions: false,
       bool autovalidate: false,
       FormFieldSetter<String> onSaved,
       FormFieldValidator<String> validator,
@@ -285,6 +286,7 @@ class TypeAheadFormField<T> extends FormField<String> {
               final _TypeAheadFormFieldState state = field;
 
               return TypeAheadField(
+                getImmediateSuggestions: getImmediateSuggestions,
                 transitionBuilder: transitionBuilder,
                 errorBuilder: errorBuilder,
                 noItemsFoundBuilder: noItemsFoundBuilder,
