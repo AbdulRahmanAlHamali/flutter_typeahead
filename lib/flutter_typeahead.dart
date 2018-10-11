@@ -982,7 +982,7 @@ class SuggestionsBoxDecoration {
       {this.elevation: 4.0,
       this.color,
       this.shape,
-      this.scrollbar:true,
+      this.scrollbar: true,
       this.borderRadius,
       this.shadowColor: const Color(0xFF000000),
       this.constraints})
