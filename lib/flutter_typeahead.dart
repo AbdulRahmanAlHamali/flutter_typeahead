@@ -907,6 +907,10 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
           );
         }).toList(),
       );
+
+      if(widget.decoration.hasScrollbar) {
+        child = Scrollbar(child: child);
+        }
     }
 
     var animationChild = widget.transitionBuilder != null
@@ -955,6 +959,9 @@ class SuggestionsBoxDecoration {
   /// Same as [Material.shape](https://docs.flutter.io/flutter/material/Material/shape.html)
   final ShapeBorder shape;
 
+  /// Defines if a scrollbar will be displayed or not.
+  final bool hasScrollbar;
+
   /// If non-null, the corners of this box are rounded by this [BorderRadius](https://docs.flutter.io/flutter/painting/BorderRadius-class.html).
   ///
   /// Same as [Material.borderRadius](https://docs.flutter.io/flutter/material/Material/borderRadius.html)
@@ -973,6 +980,7 @@ class SuggestionsBoxDecoration {
       {this.elevation: 4.0,
       this.color,
       this.shape,
+      this.hasScrollbar: true,
       this.borderRadius,
       this.shadowColor: const Color(0xFF000000),
       this.constraints})
