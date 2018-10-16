@@ -19,31 +19,42 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: TabBar(
-            tabs: [
-              Tab(
-                text: 'Example 1: Navigation',
-              ),
-              Tab(text: 'Example 2: Form')
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: TabBar(
+              tabs: [
+                Tab(
+                  text: 'Example 1: Navigation',
+                ),
+                Tab(text: 'Example 2: Form')
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              NavigationExample(),
+              FormExample(),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            NavigationExample(),
-            FormExample(),
-          ],
         ),
       ),
     );
   }
 }
 
-class NavigationExample extends StatelessWidget {
+class NavigationExample extends StatefulWidget {
+  @override
+  _NavigationExampleState createState() => _NavigationExampleState();
+}
+
+class _NavigationExampleState extends State<NavigationExample> {
+  AxisDirection _direction = AxisDirection.down;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -79,6 +90,19 @@ class NavigationExample extends StatelessWidget {
                 ),
               );
             },
+            direction: _direction,
+          ),
+          FlatButton(
+            onPressed: () {
+              setState(() {
+                _direction = _direction == AxisDirection.down
+                    ? AxisDirection.up
+                    : AxisDirection.down;
+              });
+            },
+            child: Text(
+              'toggle direction to ${_direction == AxisDirection.down ? AxisDirection.up : AxisDirection.down}',
+            ),
           ),
         ],
       ),
@@ -96,6 +120,7 @@ class _FormExampleState extends State<FormExample> {
   final TextEditingController _typeAheadController = TextEditingController();
 
   String _selectedCity;
+  AxisDirection _direction = AxisDirection.down;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +129,7 @@ class _FormExampleState extends State<FormExample> {
       child: Padding(
         padding: EdgeInsets.all(32.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('What is your favorite city?'),
             TypeAheadFormField(
@@ -131,6 +157,7 @@ class _FormExampleState extends State<FormExample> {
                 }
               },
               onSaved: (value) => this._selectedCity = value,
+              direction: _direction,
             ),
             SizedBox(
               height: 10.0,
@@ -145,7 +172,19 @@ class _FormExampleState extends State<FormExample> {
                           Text('Your Favorite City is ${this._selectedCity}')));
                 }
               },
-            )
+            ),
+            FlatButton(
+              onPressed: () {
+                setState(() {
+                  _direction = _direction == AxisDirection.down
+                      ? AxisDirection.up
+                      : AxisDirection.down;
+                });
+              },
+              child: Text(
+                'toggle direction to ${_direction == AxisDirection.down ? AxisDirection.up : AxisDirection.down}',
+              ),
+            ),
           ],
         ),
       ),
