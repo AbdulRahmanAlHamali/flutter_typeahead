@@ -602,7 +602,7 @@ class TypeAheadField<T> extends StatefulWidget {
   _TypeAheadFieldState createState() => _TypeAheadFieldState();
 }
 
-class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
+class _TypeAheadFieldState<T>  extends State<TypeAheadField<T>> with WidgetsBindingObserver {
   FocusNode _focusNode;
   TextEditingController _textEditingController;
   _SuggestionsBoxController _suggestionsBoxController;
@@ -615,8 +615,22 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
   final LayerLink _layerLink = LayerLink();
 
   @override
+  void didChangeMetrics(){
+    // catch keyboard event and resize suggestions list
+    this._suggestionsBoxController.resize();
+  }
+
+  @override
+  void dispose() {
+    this._suggestionsBoxController.widgetMounted = false;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     if (widget.textFieldConfiguration.controller == null) {
       this._textEditingController = TextEditingController();
@@ -628,7 +642,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
 
     this._suggestionsBoxController = _SuggestionsBoxController(context);
 
-    (() async {
+    WidgetsBinding.instance.addPostFrameCallback((duration) async {
       await this._initOverlayEntry();
 
       this._effectiveFocusNode.addListener(() {
@@ -643,54 +657,45 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
       if (this._effectiveFocusNode.hasFocus) {
         this._suggestionsBoxController.open();
       }
-    })();
+    });
   }
 
   Future<void> _initOverlayEntry() async {
     RenderBox renderBox = context.findRenderObject();
-
-    while (renderBox == null) {
-      await Future.delayed(Duration(milliseconds: 10));
-
-      renderBox = context.findRenderObject();
-    }
-
-    while (!renderBox.hasSize) {
-      await Future.delayed(Duration(milliseconds: 10));
-    }
-
     var size = renderBox.size;
 
     this._suggestionsBoxController._overlayEntry =
         OverlayEntry(builder: (context) {
-      return Positioned(
-        width: size.width,
-        child: CompositedTransformFollower(
-          link: this._layerLink,
-          showWhenUnlinked: false,
-          offset:
-              Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
-          child: _SuggestionsList<T>(
-            decoration: widget.suggestionsBoxDecoration,
-            debounceDuration: widget.debounceDuration,
-            controller: this._effectiveController,
-            loadingBuilder: widget.loadingBuilder,
-            noItemsFoundBuilder: widget.noItemsFoundBuilder,
-            errorBuilder: widget.errorBuilder,
-            transitionBuilder: widget.transitionBuilder,
-            suggestionsCallback: widget.suggestionsCallback,
-            animationDuration: widget.animationDuration,
-            animationStart: widget.animationStart,
-            getImmediateSuggestions: widget.getImmediateSuggestions,
-            onSuggestionSelected: (T selection) {
-              this._effectiveFocusNode.unfocus();
-              widget.onSuggestionSelected(selection);
-            },
-            itemBuilder: widget.itemBuilder,
-          ),
-        ),
+          return Positioned(
+            width: size.width,
+            child: CompositedTransformFollower(
+              link: this._layerLink,
+              showWhenUnlinked: false,
+              offset:
+                  Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
+              child: _SuggestionsList<T>(
+                suggestionsBoxController: _suggestionsBoxController,
+                decoration: widget.suggestionsBoxDecoration,
+                debounceDuration: widget.debounceDuration,
+                controller: this._effectiveController,
+                loadingBuilder: widget.loadingBuilder,
+                noItemsFoundBuilder: widget.noItemsFoundBuilder,
+                errorBuilder: widget.errorBuilder,
+                transitionBuilder: widget.transitionBuilder,
+                suggestionsCallback: widget.suggestionsCallback,
+                animationDuration: widget.animationDuration,
+                animationStart: widget.animationStart,
+                getImmediateSuggestions: widget.getImmediateSuggestions,
+                onSuggestionSelected: (T selection) {
+                  this._effectiveFocusNode.unfocus();
+                  widget.onSuggestionSelected(selection);
+                },
+                itemBuilder: widget.itemBuilder,
+              ),
+            ),
+          );
+        }
       );
-    });
   }
 
   @override
@@ -728,6 +733,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> {
 }
 
 class _SuggestionsList<T> extends StatefulWidget {
+  final _SuggestionsBoxController suggestionsBoxController;
   final TextEditingController controller;
   final SuggestionSelectionCallback<T> onSuggestionSelected;
   final SuggestionsCallback suggestionsCallback;
@@ -743,6 +749,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool getImmediateSuggestions;
 
   _SuggestionsList({
+    @required this.suggestionsBoxController,
     this.controller,
     this.getImmediateSuggestions: false,
     this.onSuggestionSelected,
@@ -918,18 +925,29 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
             child: child,
           );
 
+    TypeAheadField typeAheadField = context.ancestorWidgetOfExactType(TypeAheadField);
+
+    BoxConstraints constraints;
+    if (widget.decoration.constraints == null) {
+      constraints = BoxConstraints(
+        maxHeight: widget.suggestionsBoxController.maxHeight,
+      );
+    } else {
+      constraints = widget.decoration.constraints.copyWith(
+        maxHeight: widget.suggestionsBoxController.maxHeight,
+      );
+    }
+
     var container = Material(
       elevation: widget.decoration.elevation,
       color: widget.decoration.color,
       shape: widget.decoration.shape,
       borderRadius: widget.decoration.borderRadius,
       shadowColor: widget.decoration.shadowColor,
-      child: widget.decoration.constraints != null
-          ? ConstrainedBox(
-              constraints: widget.decoration.constraints,
-              child: animationChild,
-            )
-          : animationChild,
+      child: ConstrainedBox(
+        constraints: constraints,
+        child: animationChild,
+      ),
     );
 
     return container;
@@ -1212,6 +1230,8 @@ class _SuggestionsBoxController {
   OverlayEntry _overlayEntry;
 
   bool _isOpened = false;
+  bool widgetMounted = true;
+  double maxHeight = 300.0;
 
   _SuggestionsBoxController(this.context);
 
@@ -1234,6 +1254,44 @@ class _SuggestionsBoxController {
       this.close();
     } else {
       this.open();
+    }
+  }
+
+  Future<void> _waitKeyboardToggled() async {
+    if (widgetMounted) {
+      // initial viewInsets which are before the keyboard is toggled
+      EdgeInsets initial = MediaQuery.of(context).viewInsets;
+
+      // keyboard has toggled once viewInsets have changed
+      while (widgetMounted && MediaQuery.of(context).viewInsets == initial) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+    }
+  }
+
+  Future<void> resize() async {
+    // wait for the keyboard to finish toggling
+    await _waitKeyboardToggled();
+
+    // check to see if widget is still mounted
+    // user may have closed the widget with the keyboard still open
+    if (widgetMounted) {
+      // height of window
+      double h = MediaQuery.of(context).size.height;
+
+      RenderBox box = context.findRenderObject();
+      // top of text box
+      double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+      double textBoxHeight = box.size.height;
+
+      // height of keyboard
+      double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+      TypeAheadField widget = context.widget as TypeAheadField;
+
+      maxHeight = h - keyboardHeight - textBoxHeight - textBoxAbsY - 2 * widget.suggestionsBoxVerticalOffset;
+
+      _overlayEntry.markNeedsBuild();
     }
   }
 }
