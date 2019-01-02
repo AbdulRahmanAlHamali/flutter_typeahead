@@ -925,8 +925,6 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
             child: child,
           );
 
-    TypeAheadField typeAheadField = context.ancestorWidgetOfExactType(TypeAheadField);
-
     BoxConstraints constraints;
     if (widget.decoration.constraints == null) {
       constraints = BoxConstraints(
