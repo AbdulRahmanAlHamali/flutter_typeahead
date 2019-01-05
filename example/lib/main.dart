@@ -218,11 +218,20 @@ class CitiesService {
   static getSuggestions(String query) {
     final cities = CitiesService.cities;
 
-    cities.sort((a, b) {
-      return CitiesService._distance(query, a) - CitiesService._distance(query, b);
-    });
+    List<String> suggestion = new List<String>();
+    
+    for (int i = 0; i < cities.length; i++) {
+      var item = cities[i];
 
-    return cities.take(4).toList();
+      if (item.toLowerCase().contains(query.toLowerCase())) {
+        suggestion.add(item);
+      }
+    }
+
+    cities.where((test){
+      test.contains(query);
+    });
+    return suggestion;
   }
 
   // source: https://github.com/kseo/edit_distance/blob/master/lib/src/levenshtein.dart
