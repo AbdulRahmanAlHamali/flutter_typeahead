@@ -228,9 +228,6 @@ class CitiesService {
       }
     }
 
-    cities.where((test){
-      test.contains(query);
-    });
     return suggestion;
   }
 
