@@ -231,6 +231,11 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
 ## For more information
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
 
+## Shout out to the contributors!
+* [KaYBlitZ](https://github.com/KaYBlitZ) for fixing the problem of the suggestions box being hidden behind the keyboard
+* [miguelpruivo](https://github.com/miguelpruivo) for adding the `hasScrollbar` property to the suggestions box decoration
+* [stt106](https://github.com/stt106) for fixing the problem of disposing the animations controller
+
 ## How you can help
 * You can report any issues you find
 * You can suggest any missing features that could be useful to have
