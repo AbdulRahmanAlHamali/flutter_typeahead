@@ -17,31 +17,20 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: TabBar(
-              tabs: [
-                Tab(
-                  text: 'Example 1: Navigation',
-                ),
-                Tab(
-                    text: 'Example 2: Form'
-                )
-              ]
+          appBar: AppBar(
+            title: TabBar(tabs: [
+              Tab(
+                text: 'Example 1: Navigation',
+              ),
+              Tab(text: 'Example 2: Form')
+            ]),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            NavigationExample(),
-            FormExample()
-          ]
-        )
-      ),
+          body: TabBarView(children: [NavigationExample(), FormExample()])),
     );
   }
 }
@@ -53,17 +42,18 @@ class NavigationExample extends StatelessWidget {
       padding: EdgeInsets.all(32.0),
       child: Column(
         children: <Widget>[
-          SizedBox(height: 10.0,),
+          SizedBox(
+            height: 10.0,
+          ),
           TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
               autofocus: true,
-              style: DefaultTextStyle.of(context).style.copyWith(
-                  fontStyle: FontStyle.italic
-              ),
+              style: DefaultTextStyle.of(context)
+                  .style
+                  .copyWith(fontStyle: FontStyle.italic),
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'What are you looking for?'
-              ),
+                  border: OutlineInputBorder(),
+                  hintText: 'What are you looking for?'),
             ),
             suggestionsCallback: (pattern) async {
               return await BackendService.getSuggestions(pattern);
@@ -77,8 +67,7 @@ class NavigationExample extends StatelessWidget {
             },
             onSuggestionSelected: (suggestion) {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProductPage(product: suggestion)
-              ));
+                  builder: (context) => ProductPage(product: suggestion)));
             },
           ),
         ],
@@ -93,7 +82,6 @@ class FormExample extends StatefulWidget {
 }
 
 class _FormExampleState extends State<FormExample> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
 
@@ -107,14 +95,10 @@ class _FormExampleState extends State<FormExample> {
         padding: EdgeInsets.all(32.0),
         child: Column(
           children: <Widget>[
-            Text(
-              'What is your favorite city?'
-            ),
+            Text('What is your favorite city?'),
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
-                decoration: InputDecoration(
-                    labelText: 'City'
-                ),
+                decoration: InputDecoration(labelText: 'City'),
                 controller: this._typeAheadController,
               ),
               suggestionsCallback: (pattern) {
@@ -138,15 +122,17 @@ class _FormExampleState extends State<FormExample> {
               },
               onSaved: (value) => this._selectedCity = value,
             ),
-            SizedBox(height: 10.0,),
+            SizedBox(
+              height: 10.0,
+            ),
             RaisedButton(
               child: Text('Submit'),
               onPressed: () {
                 if (this._formKey.currentState.validate()) {
                   this._formKey.currentState.save();
                   Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Your Favorite City is ${this._selectedCity}')
-                  ));
+                      content:
+                          Text('Your Favorite City is ${this._selectedCity}')));
                 }
               },
             )
@@ -157,9 +143,7 @@ class _FormExampleState extends State<FormExample> {
   }
 }
 
-
 class ProductPage extends StatelessWidget {
-
   final Map<String, dynamic> product;
 
   ProductPage({this.product});
@@ -186,22 +170,17 @@ class ProductPage extends StatelessWidget {
   }
 }
 
-
 class BackendService {
   static Future<List> getSuggestions(String query) async {
     await Future.delayed(Duration(seconds: 1));
 
     return List.generate(3, (index) {
-      return {
-        'name': query + index.toString(),
-        'price': Random().nextInt(100)
-      };
+      return {'name': query + index.toString(), 'price': Random().nextInt(100)};
     });
   }
 }
 
 class CitiesService {
-
   static final cities = [
     'Beirut',
     'Damascus',
@@ -219,7 +198,8 @@ class CitiesService {
     final cities = CitiesService.cities;
 
     cities.sort((a, b) {
-      return CitiesService._distance(query, a) - CitiesService._distance(query, b);
+      return CitiesService._distance(query, a) -
+          CitiesService._distance(query, b);
     });
 
     return cities.take(4).toList();

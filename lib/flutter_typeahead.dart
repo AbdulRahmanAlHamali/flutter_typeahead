@@ -602,7 +602,8 @@ class TypeAheadField<T> extends StatefulWidget {
   _TypeAheadFieldState createState() => _TypeAheadFieldState();
 }
 
-class _TypeAheadFieldState<T>  extends State<TypeAheadField<T>> with WidgetsBindingObserver {
+class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
+    with WidgetsBindingObserver {
   FocusNode _focusNode;
   TextEditingController _textEditingController;
   _SuggestionsBoxController _suggestionsBoxController;
@@ -615,7 +616,7 @@ class _TypeAheadFieldState<T>  extends State<TypeAheadField<T>> with WidgetsBind
   final LayerLink _layerLink = LayerLink();
 
   @override
-  void didChangeMetrics(){
+  void didChangeMetrics() {
     // catch keyboard event and resize suggestions list
     this._suggestionsBoxController.resize();
   }
@@ -666,36 +667,35 @@ class _TypeAheadFieldState<T>  extends State<TypeAheadField<T>> with WidgetsBind
 
     this._suggestionsBoxController._overlayEntry =
         OverlayEntry(builder: (context) {
-          return Positioned(
-            width: size.width,
-            child: CompositedTransformFollower(
-              link: this._layerLink,
-              showWhenUnlinked: false,
-              offset:
-                  Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
-              child: _SuggestionsList<T>(
-                suggestionsBoxController: _suggestionsBoxController,
-                decoration: widget.suggestionsBoxDecoration,
-                debounceDuration: widget.debounceDuration,
-                controller: this._effectiveController,
-                loadingBuilder: widget.loadingBuilder,
-                noItemsFoundBuilder: widget.noItemsFoundBuilder,
-                errorBuilder: widget.errorBuilder,
-                transitionBuilder: widget.transitionBuilder,
-                suggestionsCallback: widget.suggestionsCallback,
-                animationDuration: widget.animationDuration,
-                animationStart: widget.animationStart,
-                getImmediateSuggestions: widget.getImmediateSuggestions,
-                onSuggestionSelected: (T selection) {
-                  this._effectiveFocusNode.unfocus();
-                  widget.onSuggestionSelected(selection);
-                },
-                itemBuilder: widget.itemBuilder,
-              ),
-            ),
-          );
-        }
+      return Positioned(
+        width: size.width,
+        child: CompositedTransformFollower(
+          link: this._layerLink,
+          showWhenUnlinked: false,
+          offset:
+              Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
+          child: _SuggestionsList<T>(
+            suggestionsBoxController: _suggestionsBoxController,
+            decoration: widget.suggestionsBoxDecoration,
+            debounceDuration: widget.debounceDuration,
+            controller: this._effectiveController,
+            loadingBuilder: widget.loadingBuilder,
+            noItemsFoundBuilder: widget.noItemsFoundBuilder,
+            errorBuilder: widget.errorBuilder,
+            transitionBuilder: widget.transitionBuilder,
+            suggestionsCallback: widget.suggestionsCallback,
+            animationDuration: widget.animationDuration,
+            animationStart: widget.animationStart,
+            getImmediateSuggestions: widget.getImmediateSuggestions,
+            onSuggestionSelected: (T selection) {
+              this._effectiveFocusNode.unfocus();
+              widget.onSuggestionSelected(selection);
+            },
+            itemBuilder: widget.itemBuilder,
+          ),
+        ),
       );
+    });
   }
 
   @override
@@ -916,9 +916,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         }).toList(),
       );
 
-      if(widget.decoration.hasScrollbar) {
+      if (widget.decoration.hasScrollbar) {
         child = Scrollbar(child: child);
-        }
+      }
     }
 
     var animationChild = widget.transitionBuilder != null
@@ -1296,7 +1296,11 @@ class _SuggestionsBoxController {
 
       TypeAheadField widget = context.widget as TypeAheadField;
 
-      maxHeight = h - keyboardHeight - textBoxHeight - textBoxAbsY - 2 * widget.suggestionsBoxVerticalOffset;
+      maxHeight = h -
+          keyboardHeight -
+          textBoxHeight -
+          textBoxAbsY -
+          2 * widget.suggestionsBoxVerticalOffset;
 
       _overlayEntry.markNeedsBuild();
     }
