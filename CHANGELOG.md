@@ -50,3 +50,9 @@ and `textFieldConfiguration.controller` defined at the same time
 ## 0.4.1 - 20/09/2018
 
 * Added property `getImmediateSuggestions` to the form field implementation
+
+## 0.5.0 - 05/01/2019
+
+* Added the hasScrollbar property which allows the optional display of a `Scrollbar`
+* Fixed the case where the suggestion box becomes hidden behind the keyboard
+* Fixed the bug of not disposing the animations controller
