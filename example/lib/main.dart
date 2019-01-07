@@ -39,7 +39,7 @@ class NavigationExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(32.0),
+      padding: EdgeInsets.fromLTRB(32, 150, 32, 32),
       child: Column(
         children: <Widget>[
           SizedBox(

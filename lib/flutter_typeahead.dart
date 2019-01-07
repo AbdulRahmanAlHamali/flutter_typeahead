@@ -272,7 +272,9 @@ class TypeAheadFormField<T> extends FormField<String> {
       this.textFieldConfiguration: const TextFieldConfiguration(),
       AnimationTransitionBuilder transitionBuilder,
       Duration animationDuration: const Duration(milliseconds: 500),
-      double animationStart: 0.25})
+      double animationStart: 0.25,
+      AxisDirection direction,
+      bool noResize: false})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         super(
@@ -306,6 +308,8 @@ class TypeAheadFormField<T> extends FormField<String> {
                 suggestionsCallback: suggestionsCallback,
                 animationStart: animationStart,
                 animationDuration: animationDuration,
+                direction: direction,
+                noResize: noResize,
               );
             });
 
@@ -541,6 +545,23 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to 500 milliseconds.
   final Duration animationDuration;
 
+  /// Determine the [SuggestionBox]'s direction.
+  ///
+  /// if [AxisDirection.down], the [SuggestionBox] will below the [TextField]
+  /// and the [_SuggestionsList] will grow **down**.
+  ///
+  /// if [AxisDirection.up], the [SuggestionBox] will below the [TextField]
+  /// and the [_SuggestionsList] will grow **up**.
+  ///
+  /// [AxisDirection.left] and [AxisDirection.right] are not allowed.
+  final AxisDirection direction;
+
+  /// Determine if [SuggestionBox] should resize or show on the opposite direction
+  /// when the items collapse with the keyboard
+  ///
+  /// Defaults to false
+  final bool noResize;
+
   /// The value at which the [transitionBuilder] animation starts.
   ///
   /// This argument is best used with [transitionBuilder] and [animationDuration]
@@ -584,7 +605,9 @@ class TypeAheadField<T> extends StatefulWidget {
       this.animationStart: 0.25,
       this.animationDuration: const Duration(milliseconds: 500),
       this.getImmediateSuggestions: false,
-      this.suggestionsBoxVerticalOffset: 5.0})
+      this.suggestionsBoxVerticalOffset: 5.0,
+      this.direction: AxisDirection.down,
+      this.noResize: false})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -596,6 +619,9 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(textFieldConfiguration != null),
         assert(suggestionsBoxDecoration != null),
         assert(suggestionsBoxVerticalOffset != null),
+        assert(direction != AxisDirection.left &&
+            direction != AxisDirection.right),
+        assert(noResize != null),
         super(key: key);
 
   @override
@@ -605,6 +631,7 @@ class TypeAheadField<T> extends StatefulWidget {
 class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     with WidgetsBindingObserver {
   FocusNode _focusNode;
+  AxisDirection _direction;
   TextEditingController _textEditingController;
   _SuggestionsBoxController _suggestionsBoxController;
 
@@ -618,7 +645,12 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   @override
   void didChangeMetrics() {
     // catch keyboard event and resize suggestions list
-    this._suggestionsBoxController.resize();
+    if (!widget.noResize)
+      this._suggestionsBoxController.resize();
+    else
+      this._direction = this._direction == AxisDirection.up
+          ? AxisDirection.down
+          : AxisDirection.up;
   }
 
   @override
@@ -640,6 +672,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     if (widget.textFieldConfiguration.focusNode == null) {
       this._focusNode = FocusNode();
     }
+
+    this._direction = widget.direction;
 
     this._suggestionsBoxController = _SuggestionsBoxController(context);
 
@@ -665,6 +699,26 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     RenderBox renderBox = context.findRenderObject();
     var size = renderBox.size;
 
+    final suggestionList = _SuggestionsList<T>(
+      decoration: widget.suggestionsBoxDecoration,
+      debounceDuration: widget.debounceDuration,
+      controller: this._effectiveController,
+      loadingBuilder: widget.loadingBuilder,
+      noItemsFoundBuilder: widget.noItemsFoundBuilder,
+      errorBuilder: widget.errorBuilder,
+      transitionBuilder: widget.transitionBuilder,
+      suggestionsCallback: widget.suggestionsCallback,
+      animationDuration: widget.animationDuration,
+      animationStart: widget.animationStart,
+      getImmediateSuggestions: widget.getImmediateSuggestions,
+      onSuggestionSelected: (T selection) {
+        this._effectiveFocusNode.unfocus();
+        widget.onSuggestionSelected(selection);
+      },
+      itemBuilder: widget.itemBuilder,
+      suggestionsBoxController: _suggestionsBoxController,
+    );
+
     this._suggestionsBoxController._overlayEntry =
         OverlayEntry(builder: (context) {
       return Positioned(
@@ -672,27 +726,18 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         child: CompositedTransformFollower(
           link: this._layerLink,
           showWhenUnlinked: false,
-          offset:
-              Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
-          child: _SuggestionsList<T>(
-            suggestionsBoxController: _suggestionsBoxController,
-            decoration: widget.suggestionsBoxDecoration,
-            debounceDuration: widget.debounceDuration,
-            controller: this._effectiveController,
-            loadingBuilder: widget.loadingBuilder,
-            noItemsFoundBuilder: widget.noItemsFoundBuilder,
-            errorBuilder: widget.errorBuilder,
-            transitionBuilder: widget.transitionBuilder,
-            suggestionsCallback: widget.suggestionsCallback,
-            animationDuration: widget.animationDuration,
-            animationStart: widget.animationStart,
-            getImmediateSuggestions: widget.getImmediateSuggestions,
-            onSuggestionSelected: (T selection) {
-              this._effectiveFocusNode.unfocus();
-              widget.onSuggestionSelected(selection);
-            },
-            itemBuilder: widget.itemBuilder,
+          offset: Offset(
+            0.0,
+            this._direction == AxisDirection.down
+                ? size.height + widget.suggestionsBoxVerticalOffset
+                : -widget.suggestionsBoxVerticalOffset,
           ),
+          child: this._direction == AxisDirection.down
+              ? suggestionList
+              : FractionalTranslation(
+                  translation: Offset(0.0, -1.0),
+                  child: suggestionList,
+                ),
         ),
       );
     });
