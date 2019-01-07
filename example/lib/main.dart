@@ -46,6 +46,7 @@ class NavigationExample extends StatelessWidget {
             height: 10.0,
           ),
           TypeAheadField(
+            noResize: true,
             textFieldConfiguration: TextFieldConfiguration(
               autofocus: true,
               style: DefaultTextStyle.of(context)

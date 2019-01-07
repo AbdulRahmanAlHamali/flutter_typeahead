@@ -717,6 +717,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       },
       itemBuilder: widget.itemBuilder,
       suggestionsBoxController: _suggestionsBoxController,
+      direction: _direction,
     );
 
     this._suggestionsBoxController._overlayEntry =
@@ -792,6 +793,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final Duration animationDuration;
   final double animationStart;
   final bool getImmediateSuggestions;
+  final AxisDirection direction;
 
   _SuggestionsList({
     @required this.suggestionsBoxController,
@@ -808,6 +810,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.transitionBuilder,
     this.animationDuration,
     this.animationStart,
+    this.direction,
   });
 
   @override
@@ -896,7 +899,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
         this._error = error;
         this._isLoading = false;
-        this._suggestions = suggestions;
+        this._suggestions = widget.direction == AxisDirection.down
+            ? suggestions.reversed.toList()
+            : suggestions;
       });
     }
   }
