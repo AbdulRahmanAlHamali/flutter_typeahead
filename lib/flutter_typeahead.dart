@@ -1232,13 +1232,15 @@ class TextFieldConfiguration<T> {
 }
 
 class _SuggestionsBoxController {
+  static const double defaultHeight = 300.0;
+
   final BuildContext context;
 
   OverlayEntry _overlayEntry;
 
   bool _isOpened = false;
   bool widgetMounted = true;
-  double maxHeight = 300.0;
+  double maxHeight = defaultHeight;
 
   _SuggestionsBoxController(this.context);
 
@@ -1301,6 +1303,8 @@ class _SuggestionsBoxController {
           textBoxHeight -
           textBoxAbsY -
           2 * widget.suggestionsBoxVerticalOffset;
+
+      if (maxHeight <= 0) maxHeight = defaultHeight;
 
       _overlayEntry.markNeedsBuild();
     }
