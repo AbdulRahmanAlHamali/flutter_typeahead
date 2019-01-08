@@ -1304,7 +1304,7 @@ class _SuggestionsBoxController {
           textBoxAbsY -
           2 * widget.suggestionsBoxVerticalOffset;
 
-      if (maxHeight <= 0) maxHeight = defaultHeight;
+      if (maxHeight < 0) maxHeight = 0;
 
       _overlayEntry.markNeedsBuild();
     }
