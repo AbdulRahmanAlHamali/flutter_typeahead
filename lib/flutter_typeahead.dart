@@ -619,7 +619,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   @override
   void didChangeMetrics() {
     // catch keyboard event and resize suggestions list
-    this._suggestionsBoxController.resize();
+    this._suggestionsBoxController.onKeyboardToggled();
   }
 
   @override
@@ -646,6 +646,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
     WidgetsBinding.instance.addPostFrameCallback((duration) async {
       await this._initOverlayEntry();
+      // calculate initial suggestions list size
+      await this._suggestionsBoxController.resize();
 
       this._effectiveFocusNode.addListener(() {
         if (_effectiveFocusNode.hasFocus) {
@@ -1281,9 +1283,6 @@ class _SuggestionsBoxController {
   }
 
   Future<void> resize() async {
-    // wait for the keyboard to finish toggling
-    await _waitKeyboardToggled();
-
     // check to see if widget is still mounted
     // user may have closed the widget with the keyboard still open
     if (widgetMounted) {
@@ -1310,5 +1309,12 @@ class _SuggestionsBoxController {
 
       _overlayEntry.markNeedsBuild();
     }
+  }
+
+  Future<void> onKeyboardToggled() async {
+    // wait for the keyboard to finish toggling
+    await _waitKeyboardToggled();
+
+    await resize();
   }
 }
