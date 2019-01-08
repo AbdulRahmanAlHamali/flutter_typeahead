@@ -227,6 +227,7 @@
 library flutter_typeahead;
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -937,6 +938,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       );
     } else {
       constraints = widget.decoration.constraints.copyWith(
+        minHeight: min(widget.decoration.constraints.minHeight, widget.suggestionsBoxController.maxHeight),
         maxHeight: widget.suggestionsBoxController.maxHeight,
       );
     }
