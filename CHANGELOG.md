@@ -56,3 +56,7 @@ and `textFieldConfiguration.controller` defined at the same time
 * Added the hasScrollbar property which allows the optional display of a `Scrollbar`
 * Fixed the case where the suggestion box becomes hidden behind the keyboard
 * Fixed the bug of not disposing the animations controller
+
+## 0.5.1 - 10/01/2019
+
+* Bug fixes

@@ -227,6 +227,7 @@
 library flutter_typeahead;
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -644,9 +645,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   @override
   void didChangeMetrics() {
-    // catch keyboard event and resize suggestions list
+    // Catch keyboard event and orientation change; resize suggestions list
     if (!widget.noResize)
-      this._suggestionsBoxController.resize();
+      this._suggestionsBoxController.onChangeMetrics();
     else
       this._direction = this._direction == AxisDirection.up
           ? AxisDirection.down
@@ -679,6 +680,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
     WidgetsBinding.instance.addPostFrameCallback((duration) async {
       await this._initOverlayEntry();
+      // calculate initial suggestions list size
+      this._suggestionsBoxController.resize();
 
       this._effectiveFocusNode.addListener(() {
         if (_effectiveFocusNode.hasFocus) {
@@ -987,6 +990,8 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       );
     } else {
       constraints = widget.decoration.constraints.copyWith(
+        minHeight: min(widget.decoration.constraints.minHeight,
+            widget.suggestionsBoxController.maxHeight),
         maxHeight: widget.suggestionsBoxController.maxHeight,
       );
     }
@@ -1282,13 +1287,16 @@ class TextFieldConfiguration<T> {
 }
 
 class _SuggestionsBoxController {
+  static const double defaultHeight = 300.0;
+  static const int waitMetricsTimeoutMillis = 1000;
+
   final BuildContext context;
 
   OverlayEntry _overlayEntry;
 
   bool _isOpened = false;
   bool widgetMounted = true;
-  double maxHeight = 300.0;
+  double maxHeight = defaultHeight;
 
   _SuggestionsBoxController(this.context);
 
@@ -1314,22 +1322,42 @@ class _SuggestionsBoxController {
     }
   }
 
-  Future<void> _waitKeyboardToggled() async {
+  MediaQuery _findRootMediaQuery() {
+    MediaQuery rootMediaQuery;
+    context.visitAncestorElements((element) {
+      if (element.widget is MediaQuery) {
+        rootMediaQuery = element.widget as MediaQuery;
+      }
+      return true;
+    });
+
+    return rootMediaQuery;
+  }
+
+  /// Delays until the keyboard has toggled or the orientation has fully changed
+  Future<bool> _waitChangeMetrics() async {
     if (widgetMounted) {
       // initial viewInsets which are before the keyboard is toggled
       EdgeInsets initial = MediaQuery.of(context).viewInsets;
+      // initial MediaQuery for orientation change
+      MediaQuery initialRootMediaQuery = _findRootMediaQuery();
 
-      // keyboard has toggled once viewInsets have changed
-      while (widgetMounted && MediaQuery.of(context).viewInsets == initial) {
+      int timer = 0;
+      // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
+      while (widgetMounted && timer < waitMetricsTimeoutMillis) {
+        if (MediaQuery.of(context).viewInsets != initial ||
+            _findRootMediaQuery() != initialRootMediaQuery) {
+          return true;
+        }
         await Future.delayed(const Duration(milliseconds: 10));
+        timer += 10;
       }
     }
+
+    return false;
   }
 
-  Future<void> resize() async {
-    // wait for the keyboard to finish toggling
-    await _waitKeyboardToggled();
-
+  void resize() {
     // check to see if widget is still mounted
     // user may have closed the widget with the keyboard still open
     if (widgetMounted) {
@@ -1344,15 +1372,35 @@ class _SuggestionsBoxController {
       // height of keyboard
       double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
+      // we need to find the root MediaQuery for the unsafe area height
+      // we cannot use BuildContext.ancestorWidgetOfExactType because
+      // widgets like SafeArea creates a new MediaQuery with the padding removed
+      MediaQuery rootMediaQuery = _findRootMediaQuery();
+
+      // unsafe area, ie: iPhone X 'home button'
+      // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
+      double unsafeAreaHeight = keyboardHeight == 0 && rootMediaQuery != null
+          ? rootMediaQuery.data.padding.bottom
+          : 0;
+
       TypeAheadField widget = context.widget as TypeAheadField;
 
       maxHeight = h -
           keyboardHeight -
+          unsafeAreaHeight -
           textBoxHeight -
           textBoxAbsY -
           2 * widget.suggestionsBoxVerticalOffset;
 
+      if (maxHeight < 0) maxHeight = 0;
+
       _overlayEntry.markNeedsBuild();
+    }
+  }
+
+  Future<void> onChangeMetrics() async {
+    if (await _waitChangeMetrics()) {
+      resize();
     }
   }
 }
