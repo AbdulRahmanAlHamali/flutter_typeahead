@@ -611,8 +611,8 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(textFieldConfiguration != null),
         assert(suggestionsBoxDecoration != null),
         assert(suggestionsBoxVerticalOffset != null),
-        assert(direction != AxisDirection.left &&
-            direction != AxisDirection.right),
+        assert(
+            direction == AxisDirection.down || direction == AxisDirection.up),
         super(key: key);
 
   @override
