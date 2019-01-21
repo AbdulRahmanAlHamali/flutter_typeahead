@@ -273,7 +273,8 @@ class TypeAheadFormField<T> extends FormField<String> {
       this.textFieldConfiguration: const TextFieldConfiguration(),
       AnimationTransitionBuilder transitionBuilder,
       Duration animationDuration: const Duration(milliseconds: 500),
-      double animationStart: 0.25})
+      double animationStart: 0.25,
+      AxisDirection direction: AxisDirection.down})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         super(
@@ -307,6 +308,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 suggestionsCallback: suggestionsCallback,
                 animationStart: animationStart,
                 animationDuration: animationDuration,
+                direction: direction,
               );
             });
 
@@ -542,6 +544,17 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to 500 milliseconds.
   final Duration animationDuration;
 
+  /// Determine the [SuggestionBox]'s direction.
+  ///
+  /// If [AxisDirection.down], the [SuggestionBox] will be below the [TextField]
+  /// and the [_SuggestionsList] will grow **down**.
+  ///
+  /// If [AxisDirection.up], the [SuggestionBox] will be above the [TextField]
+  /// and the [_SuggestionsList] will grow **up**.
+  ///
+  /// [AxisDirection.left] and [AxisDirection.right] are not allowed.
+  final AxisDirection direction;
+
   /// The value at which the [transitionBuilder] animation starts.
   ///
   /// This argument is best used with [transitionBuilder] and [animationDuration]
@@ -585,7 +598,8 @@ class TypeAheadField<T> extends StatefulWidget {
       this.animationStart: 0.25,
       this.animationDuration: const Duration(milliseconds: 500),
       this.getImmediateSuggestions: false,
-      this.suggestionsBoxVerticalOffset: 5.0})
+      this.suggestionsBoxVerticalOffset: 5.0,
+      this.direction: AxisDirection.down})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -597,6 +611,8 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(textFieldConfiguration != null),
         assert(suggestionsBoxDecoration != null),
         assert(suggestionsBoxVerticalOffset != null),
+        assert(direction != AxisDirection.left &&
+            direction != AxisDirection.right),
         super(key: key);
 
   @override
@@ -642,7 +658,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBoxController = _SuggestionsBoxController(context);
+    this._suggestionsBoxController =
+        _SuggestionsBoxController(context, widget.direction);
 
     WidgetsBinding.instance.addPostFrameCallback((duration) async {
       await this._initOverlayEntry();
@@ -670,32 +687,44 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
     this._suggestionsBoxController._overlayEntry =
         OverlayEntry(builder: (context) {
+      final suggestionsList = _SuggestionsList<T>(
+        suggestionsBoxController: _suggestionsBoxController,
+        decoration: widget.suggestionsBoxDecoration,
+        debounceDuration: widget.debounceDuration,
+        controller: this._effectiveController,
+        loadingBuilder: widget.loadingBuilder,
+        noItemsFoundBuilder: widget.noItemsFoundBuilder,
+        errorBuilder: widget.errorBuilder,
+        transitionBuilder: widget.transitionBuilder,
+        suggestionsCallback: widget.suggestionsCallback,
+        animationDuration: widget.animationDuration,
+        animationStart: widget.animationStart,
+        getImmediateSuggestions: widget.getImmediateSuggestions,
+        onSuggestionSelected: (T selection) {
+          this._effectiveFocusNode.unfocus();
+          widget.onSuggestionSelected(selection);
+        },
+        itemBuilder: widget.itemBuilder,
+        direction: widget.direction,
+      );
+
       return Positioned(
         width: size.width,
         child: CompositedTransformFollower(
           link: this._layerLink,
           showWhenUnlinked: false,
-          offset:
-              Offset(0.0, size.height + widget.suggestionsBoxVerticalOffset),
-          child: _SuggestionsList<T>(
-            suggestionsBoxController: _suggestionsBoxController,
-            decoration: widget.suggestionsBoxDecoration,
-            debounceDuration: widget.debounceDuration,
-            controller: this._effectiveController,
-            loadingBuilder: widget.loadingBuilder,
-            noItemsFoundBuilder: widget.noItemsFoundBuilder,
-            errorBuilder: widget.errorBuilder,
-            transitionBuilder: widget.transitionBuilder,
-            suggestionsCallback: widget.suggestionsCallback,
-            animationDuration: widget.animationDuration,
-            animationStart: widget.animationStart,
-            getImmediateSuggestions: widget.getImmediateSuggestions,
-            onSuggestionSelected: (T selection) {
-              this._effectiveFocusNode.unfocus();
-              widget.onSuggestionSelected(selection);
-            },
-            itemBuilder: widget.itemBuilder,
-          ),
+          offset: Offset(
+              0.0,
+              widget.direction == AxisDirection.down
+                  ? size.height + widget.suggestionsBoxVerticalOffset
+                  : -widget.suggestionsBoxVerticalOffset),
+          child: widget.direction == AxisDirection.down
+              ? suggestionsList
+              : FractionalTranslation(
+                  translation:
+                      Offset(0.0, -1.0), // visually flips list to go up
+                  child: suggestionsList,
+                ),
         ),
       );
     });
@@ -738,6 +767,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 class _SuggestionsList<T> extends StatefulWidget {
   final _SuggestionsBoxController suggestionsBoxController;
   final TextEditingController controller;
+  final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T> onSuggestionSelected;
   final SuggestionsCallback suggestionsCallback;
   final ItemBuilder itemBuilder;
@@ -749,7 +779,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final AnimationTransitionBuilder transitionBuilder;
   final Duration animationDuration;
   final double animationStart;
-  final bool getImmediateSuggestions;
+  final AxisDirection direction;
 
   _SuggestionsList({
     @required this.suggestionsBoxController,
@@ -766,6 +796,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.transitionBuilder,
     this.animationDuration,
     this.animationStart,
+    this.direction,
   });
 
   @override
@@ -909,6 +940,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         padding: EdgeInsets.zero,
         primary: false,
         shrinkWrap: true,
+        reverse: widget.direction == AxisDirection.down
+            ? false
+            : true, // reverses the list to start at the bottom
         children: this._suggestions.map((T suggestion) {
           return InkWell(
             child: widget.itemBuilder(context, suggestion),
@@ -1241,6 +1275,7 @@ class _SuggestionsBoxController {
   static const int waitMetricsTimeoutMillis = 1000;
 
   final BuildContext context;
+  final AxisDirection direction;
 
   OverlayEntry _overlayEntry;
 
@@ -1248,7 +1283,7 @@ class _SuggestionsBoxController {
   bool widgetMounted = true;
   double maxHeight = defaultHeight;
 
-  _SuggestionsBoxController(this.context);
+  _SuggestionsBoxController(this.context, this.direction);
 
   open() {
     if (this._isOpened) return;
@@ -1311,36 +1346,55 @@ class _SuggestionsBoxController {
     // check to see if widget is still mounted
     // user may have closed the widget with the keyboard still open
     if (widgetMounted) {
-      // height of window
-      double h = MediaQuery.of(context).size.height;
-
-      RenderBox box = context.findRenderObject();
-      // top of text box
-      double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
-      double textBoxHeight = box.size.height;
-
-      // height of keyboard
-      double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-
-      // we need to find the root MediaQuery for the unsafe area height
-      // we cannot use BuildContext.ancestorWidgetOfExactType because
-      // widgets like SafeArea creates a new MediaQuery with the padding removed
-      MediaQuery rootMediaQuery = _findRootMediaQuery();
-
-      // unsafe area, ie: iPhone X 'home button'
-      // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
-      double unsafeAreaHeight = keyboardHeight == 0 && rootMediaQuery != null
-          ? rootMediaQuery.data.padding.bottom
-          : 0;
-
       TypeAheadField widget = context.widget as TypeAheadField;
 
-      maxHeight = h -
-          keyboardHeight -
-          unsafeAreaHeight -
-          textBoxHeight -
-          textBoxAbsY -
-          2 * widget.suggestionsBoxVerticalOffset;
+      if (direction == AxisDirection.down) {
+        // height of window
+        double h = MediaQuery.of(context).size.height;
+
+        RenderBox box = context.findRenderObject();
+        // top of text box
+        double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+        double textBoxHeight = box.size.height;
+
+        // height of keyboard
+        double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+        // we need to find the root MediaQuery for the unsafe area height
+        // we cannot use BuildContext.ancestorWidgetOfExactType because
+        // widgets like SafeArea creates a new MediaQuery with the padding removed
+        MediaQuery rootMediaQuery = _findRootMediaQuery();
+
+        // unsafe area, ie: iPhone X 'home button'
+        // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
+        double unsafeAreaHeight = keyboardHeight == 0 && rootMediaQuery != null
+            ? rootMediaQuery.data.padding.bottom
+            : 0;
+
+        maxHeight = h -
+            keyboardHeight -
+            unsafeAreaHeight -
+            textBoxHeight -
+            textBoxAbsY -
+            2 * widget.suggestionsBoxVerticalOffset;
+      } else {
+        // AxisDirection.up
+        RenderBox box = context.findRenderObject();
+        // top of text box
+        double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+
+        // we need to find the root MediaQuery for the unsafe area height
+        // we cannot use BuildContext.ancestorWidgetOfExactType because
+        // widgets like SafeArea creates a new MediaQuery with the padding removed
+        MediaQuery rootMediaQuery = _findRootMediaQuery();
+
+        // unsafe area, ie: iPhone X notch
+        double unsafeAreaHeight = rootMediaQuery.data.padding.top;
+
+        maxHeight = textBoxAbsY -
+            unsafeAreaHeight -
+            2 * widget.suggestionsBoxVerticalOffset;
+      }
 
       if (maxHeight < 0) maxHeight = 0;
 
