@@ -58,8 +58,8 @@ TypeAheadField(
   },
 )
 ```
-In the code above, the `textFieldConfiguration` property allows us to 
-configure the displayed `TextField` as we want. In this example, we are 
+In the code above, the `textFieldConfiguration` property allows us to
+configure the displayed `TextField` as we want. In this example, we are
 configuring the `autofocus`, `style` and `decoration` properties.
 
 The `suggestionsCallback` is called with the search string that the user
@@ -139,9 +139,9 @@ Form(
   ),
 )
 ```
-Here, we assign to the `controller` property of the `textFieldConfiguration` 
-a `TextEditingController` that we call `_typeAheadController`. 
-We use this controller in the `onSuggestionSelected` callback to set the 
+Here, we assign to the `controller` property of the `textFieldConfiguration`
+a `TextEditingController` that we call `_typeAheadController`.
+We use this controller in the `onSuggestionSelected` callback to set the
 value of the `TextField` to the selected suggestion.
 
 The `validator` callback can be used like any `FormField.validator`
@@ -158,10 +158,10 @@ TypeAhead widgets consist of a TextField and a suggestion box that shows
 as the user types. Both are highly customizable
 
 ### Customizing the TextField
-You can customize the text field using the `textFieldConfiguration` property. 
-You provide this property with an instance of `TextFieldConfiguration`, 
+You can customize the text field using the `textFieldConfiguration` property.
+You provide this property with an instance of `TextFieldConfiguration`,
 which allows you to configure all the usual properties of `TextField`, like
-`decoration`, `style`, `controller`, `focusNode`, `autofocus`, `enabled`, 
+`decoration`, `style`, `controller`, `focusNode`, `autofocus`, `enabled`,
 etc.
 
 ### Customizing the Suggestions Box
@@ -221,7 +221,7 @@ You can change this by changing the `suggestionsBoxVerticalOffset` property.
 
 #### Customizing the decoration of the suggestions box
 You can also customize the decoration of the suggestions box using the
-`suggestionsBoxDecoration` property. For example, to remove the elevation 
+`suggestionsBoxDecoration` property. For example, to remove the elevation
 of the suggestions box, you can write:
 ```dart
 suggestionsBoxDecoration: SuggestionsBoxDecoration(
@@ -235,6 +235,8 @@ Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typ
 * [KaYBlitZ](https://github.com/KaYBlitZ) for fixing the problem of the suggestions box being hidden behind the keyboard
 * [miguelpruivo](https://github.com/miguelpruivo) for adding the `hasScrollbar` property to the suggestions box decoration
 * [stt106](https://github.com/stt106) for fixing the problem of disposing the animations controller
+* [yohom](https://github.com/yohom) for adding the `direction` property
+* [Rassell](https://github.com/Rassell) for fixes for the `direction` property
 
 ## How you can help
 * You can report any issues you find

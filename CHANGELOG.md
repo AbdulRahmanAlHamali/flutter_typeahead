@@ -1,3 +1,7 @@
+## 0.6.0 - 23/01/2019
+
+- Added property `direction` to allow the suggestions to grow either up or down
+
 ## 0.5.2 - 19/01/2019
 
 - Added contributing guidelines and reverse sorted the CHANGLELOG.md file.
