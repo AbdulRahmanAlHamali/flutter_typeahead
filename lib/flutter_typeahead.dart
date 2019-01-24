@@ -616,7 +616,7 @@ class TypeAheadField<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _TypeAheadFieldState createState() => _TypeAheadFieldState();
+  _TypeAheadFieldState createState() => _TypeAheadFieldState<T>();
 }
 
 class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
@@ -770,7 +770,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T> onSuggestionSelected;
   final SuggestionsCallback suggestionsCallback;
-  final ItemBuilder itemBuilder;
+  final ItemBuilder<T> itemBuilder;
   final SuggestionsBoxDecoration decoration;
   final Duration debounceDuration;
   final WidgetBuilder loadingBuilder;
