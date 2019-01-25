@@ -313,7 +313,7 @@ class TypeAheadFormField<T> extends FormField<String> {
             });
 
   @override
-  _TypeAheadFormFieldState<T> createState() => _TypeAheadFormFieldState();
+  _TypeAheadFormFieldState<T> createState() => _TypeAheadFormFieldState<T>();
 }
 
 class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
@@ -616,7 +616,7 @@ class TypeAheadField<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _TypeAheadFieldState createState() => _TypeAheadFieldState();
+  _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
 }
 
 class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
@@ -769,8 +769,8 @@ class _SuggestionsList<T> extends StatefulWidget {
   final TextEditingController controller;
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T> onSuggestionSelected;
-  final SuggestionsCallback suggestionsCallback;
-  final ItemBuilder itemBuilder;
+  final SuggestionsCallback<T> suggestionsCallback;
+  final ItemBuilder<T> itemBuilder;
   final SuggestionsBoxDecoration decoration;
   final Duration debounceDuration;
   final WidgetBuilder loadingBuilder;
@@ -800,7 +800,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   });
 
   @override
-  _SuggestionsListState createState() => _SuggestionsListState();
+  _SuggestionsListState<T> createState() => _SuggestionsListState<T>();
 }
 
 class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
