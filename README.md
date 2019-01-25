@@ -228,6 +228,10 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
   elevation: 0.0
 )
 ```
+
+#### Customizing the growth direction of the suggestions list
+By default, the list grows towards the bottom. However, you can use the `direction` property to customize the growth direction to be one of `AxisDirection.down` or `AxisDirection.up`, the latter of which will cause the list to grow up, where the first suggestion is at the bottom of the list, and the last suggestion is at the top. 
+
 ## For more information
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
 
