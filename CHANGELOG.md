@@ -1,3 +1,8 @@
+## 0.6.1 - 26/01/2019
+
+- Allow types <T> to properly work.
+- Add documentation for direction: option.
+
 ## 0.6.0 - 23/01/2019
 
 - Added property `direction` to allow the suggestions to grow either up or down

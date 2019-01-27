@@ -228,19 +228,20 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
   elevation: 0.0
 )
 ```
+
+#### Customizing the growth direction of the suggestions list
+By default, the list grows towards the bottom. However, you can use the `direction` property to customize the growth direction to be one of `AxisDirection.down` or `AxisDirection.up`, the latter of which will cause the list to grow up, where the first suggestion is at the bottom of the list, and the last suggestion is at the top. 
+
 ## For more information
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
 
+## Team:
+| [<img src="https://avatars.githubusercontent.com/u/16646600?v=3" width="100px;"/>](https://github.com/AbdulRahmanAlHamali)|[<img src="https://avatars.githubusercontent.com/u/2034925?v=3" width="100px;"/>](https://github.com/sjmcdowall)|[<img src="https://avatars.githubusercontent.com/u/5499214?v=3" width="100px;"/>](https://github.com/KaYBlitZ)|
+|---|---|---|
+|AbdulRahman AlHamali|S McDowall|Kenneth Liang|
+
 ## Shout out to the contributors!
-* [KaYBlitZ](https://github.com/KaYBlitZ) for fixing the problem of the suggestions box being hidden behind the keyboard
-* [miguelpruivo](https://github.com/miguelpruivo) for adding the `hasScrollbar` property to the suggestions box decoration
-* [stt106](https://github.com/stt106) for fixing the problem of disposing the animations controller
-* [yohom](https://github.com/yohom) for adding the `direction` property
-* [Rassell](https://github.com/Rassell) for fixes for the `direction` property
+This project is the result of the collective effort of contributors who participated effectively by submitting pull requests, reporting issues, and answering questions. Thank you for your proactiveness, and we hope flutter_typeahead made your lifes at least a little easier!
 
 ## How you can help
-* You can report any issues you find
-* You can suggest any missing features that could be useful to have
-* You can submit pull requests
-* You can share the package on social media, to let more people know about it:
-https://pub.dartlang.org/packages/flutter_typeahead
+[Contribution Guidelines](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/blob/master/CONTRIBUTING.md)
