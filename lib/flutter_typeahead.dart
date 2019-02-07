@@ -1021,10 +1021,11 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         maxHeight: widget.suggestionsBoxController.maxHeight,
       );
     } else {
+      double maxHeight = min(widget.decoration.constraints.maxHeight,
+          widget.suggestionsBoxController.maxHeight);
       constraints = widget.decoration.constraints.copyWith(
-        minHeight: min(widget.decoration.constraints.minHeight,
-            widget.suggestionsBoxController.maxHeight),
-        maxHeight: widget.suggestionsBoxController.maxHeight,
+        minHeight: min(widget.decoration.constraints.minHeight, maxHeight),
+        maxHeight: maxHeight,
       );
     }
 
