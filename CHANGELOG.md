@@ -1,4 +1,4 @@
-## 0.7.0 - 05/02/2019
+## 1.0.1 - 06/02/2019
 
 - Added properties `hideOnLoading`, `hideOnEmpty`, and `hideOnError` to hide the suggestions box
 
