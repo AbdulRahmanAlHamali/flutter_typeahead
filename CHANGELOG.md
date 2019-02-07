@@ -1,3 +1,7 @@
+## 1.0.1 - 06/02/2019
+
+- Added properties `hideOnLoading`, `hideOnEmpty`, and `hideOnError` to hide the suggestions box
+
 ## 0.6.1 - 26/01/2019
 
 - Allow types <T> to properly work.

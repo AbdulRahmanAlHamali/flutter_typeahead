@@ -274,7 +274,10 @@ class TypeAheadFormField<T> extends FormField<String> {
       AnimationTransitionBuilder transitionBuilder,
       Duration animationDuration: const Duration(milliseconds: 500),
       double animationStart: 0.25,
-      AxisDirection direction: AxisDirection.down})
+      AxisDirection direction: AxisDirection.down,
+      bool hideOnLoading: false,
+      bool hideOnEmpty: false,
+      bool hideOnError: false})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         super(
@@ -309,6 +312,9 @@ class TypeAheadFormField<T> extends FormField<String> {
                 animationStart: animationStart,
                 animationDuration: animationDuration,
                 direction: direction,
+                hideOnLoading: hideOnLoading,
+                hideOnEmpty: hideOnEmpty,
+                hideOnError: hideOnError,
               );
             });
 
@@ -582,6 +588,24 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool getImmediateSuggestions;
 
+  /// If set to true, no loading box will be shown while suggestions are
+  /// being fetched. [loadingBuilder] will also be ignored.
+  ///
+  /// Defaults to false.
+  final bool hideOnLoading;
+
+  /// If set to true, nothing will be shown if there are no results.
+  /// [noItemsFoundBuilder] will also be ignored.
+  ///
+  /// Defaults to false.
+  final bool hideOnEmpty;
+
+  /// If set to true, nothing will be shown if there is an error.
+  /// [errorBuilder] will also be ignored.
+  ///
+  /// Defaults to false.
+  final bool hideOnError;
+
   /// Creates a [TypeAheadField]
   TypeAheadField(
       {Key key,
@@ -599,7 +623,10 @@ class TypeAheadField<T> extends StatefulWidget {
       this.animationDuration: const Duration(milliseconds: 500),
       this.getImmediateSuggestions: false,
       this.suggestionsBoxVerticalOffset: 5.0,
-      this.direction: AxisDirection.down})
+      this.direction: AxisDirection.down,
+      this.hideOnLoading: false,
+      this.hideOnEmpty: false,
+      this.hideOnError: false})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -706,6 +733,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         },
         itemBuilder: widget.itemBuilder,
         direction: widget.direction,
+        hideOnLoading: widget.hideOnLoading,
+        hideOnEmpty: widget.hideOnEmpty,
+        hideOnError: widget.hideOnError,
       );
 
       return Positioned(
@@ -780,6 +810,9 @@ class _SuggestionsList<T> extends StatefulWidget {
   final Duration animationDuration;
   final double animationStart;
   final AxisDirection direction;
+  final bool hideOnLoading;
+  final bool hideOnEmpty;
+  final bool hideOnError;
 
   _SuggestionsList({
     @required this.suggestionsBoxController,
@@ -797,6 +830,9 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.animationDuration,
     this.animationStart,
     this.direction,
+    this.hideOnLoading,
+    this.hideOnEmpty,
+    this.hideOnError,
   });
 
   @override
@@ -904,37 +940,49 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
     Widget child;
     if (this._isLoading) {
-      child = widget.loadingBuilder != null
-          ? widget.loadingBuilder(context)
-          : Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: CircularProgressIndicator(),
-              ),
-            );
+      if (widget.hideOnLoading) {
+        child = Container(height: 0);
+      } else {
+        child = widget.loadingBuilder != null
+            ? widget.loadingBuilder(context)
+            : Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+      }
     } else if (this._error != null) {
-      child = widget.errorBuilder != null
-          ? widget.errorBuilder(context, this._error)
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Error: ${this._error}',
-                style: TextStyle(color: Theme.of(context).errorColor),
-              ),
-            );
+      if (widget.hideOnError) {
+        child = Container(height: 0);
+      } else {
+        child = widget.errorBuilder != null
+            ? widget.errorBuilder(context, this._error)
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Error: ${this._error}',
+                  style: TextStyle(color: Theme.of(context).errorColor),
+                ),
+              );
+      }
     } else if (this._suggestions.length == 0) {
-      child = widget.noItemsFoundBuilder != null
-          ? widget.noItemsFoundBuilder(context)
-          : Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'No Items Found!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Theme.of(context).disabledColor, fontSize: 18.0),
-              ),
-            );
+      if (widget.hideOnEmpty) {
+        child = Container(height: 0);
+      } else {
+        child = widget.noItemsFoundBuilder != null
+            ? widget.noItemsFoundBuilder(context)
+            : Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'No Items Found!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Theme.of(context).disabledColor, fontSize: 18.0),
+                ),
+              );
+      }
     } else {
       child = ListView(
         padding: EdgeInsets.zero,
