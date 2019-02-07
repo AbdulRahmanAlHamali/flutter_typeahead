@@ -1,3 +1,7 @@
+## 1.0.2 - 07/02/2019
+
+- Bug fix for `maxHeight` property
+
 ## 1.0.1 - 06/02/2019
 
 - Added properties `hideOnLoading`, `hideOnEmpty`, and `hideOnError` to hide the suggestions box
