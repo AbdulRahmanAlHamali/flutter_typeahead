@@ -705,6 +705,23 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       if (this._effectiveFocusNode.hasFocus) {
         this._suggestionsBoxController.open();
       }
+
+      ScrollableState scrollableState = Scrollable.of(context);
+      if (scrollableState != null) { // The TypeAheadField is inside a scrollable widget
+        Timer timer;
+        scrollableState.position.isScrollingNotifier.addListener(() {
+          bool isScrolling =
+              Scrollable.of(context).position.isScrollingNotifier.value;
+          timer?.cancel();
+          if (isScrolling) { // Scroll started
+            timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+              _suggestionsBoxController.resize();
+            });
+          } else { // Scroll finished
+            _suggestionsBoxController.resize();
+          }
+        });
+      }
     });
   }
 
@@ -895,7 +912,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       this._error = null;
     });
 
-    var suggestions = [];
+    List<T> suggestions = [];
     Object error;
 
     final Object callbackIdentity = Object();
