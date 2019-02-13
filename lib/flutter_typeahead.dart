@@ -707,17 +707,20 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       }
 
       ScrollableState scrollableState = Scrollable.of(context);
-      if (scrollableState != null) { // The TypeAheadField is inside a scrollable widget
+      if (scrollableState != null) {
+        // The TypeAheadField is inside a scrollable widget
         Timer timer;
         scrollableState.position.isScrollingNotifier.addListener(() {
           bool isScrolling =
-              Scrollable.of(context).position.isScrollingNotifier.value;
+              scrollableState.position.isScrollingNotifier.value;
           timer?.cancel();
-          if (isScrolling) { // Scroll started
+          if (isScrolling) {
+            // Scroll started
             timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
               _suggestionsBoxController.resize();
             });
-          } else { // Scroll finished
+          } else {
+            // Scroll finished
             _suggestionsBoxController.resize();
           }
         });
