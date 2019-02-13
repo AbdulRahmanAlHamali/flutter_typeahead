@@ -659,6 +659,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   final LayerLink _layerLink = LayerLink();
 
+  // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
+  Timer _resizeOnScrollTimer;
+
   @override
   void didChangeMetrics() {
     // Catch keyboard event and orientation change; resize suggestions list
@@ -669,6 +672,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void dispose() {
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
+    this._resizeOnScrollTimer?.cancel();
     super.dispose();
   }
 
@@ -709,14 +713,13 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       ScrollableState scrollableState = Scrollable.of(context);
       if (scrollableState != null) {
         // The TypeAheadField is inside a scrollable widget
-        Timer timer;
         scrollableState.position.isScrollingNotifier.addListener(() {
-          bool isScrolling =
-              scrollableState.position.isScrollingNotifier.value;
-          timer?.cancel();
+          bool isScrolling = scrollableState.position.isScrollingNotifier.value;
+          _resizeOnScrollTimer?.cancel();
           if (isScrolling) {
             // Scroll started
-            timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+            _resizeOnScrollTimer =
+                Timer.periodic(Duration(milliseconds: 500), (timer) {
               _suggestionsBoxController.resize();
             });
           } else {
