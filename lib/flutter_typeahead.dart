@@ -661,6 +661,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
   Timer _resizeOnScrollTimer;
+  // The rate at which the suggestion box will resize when the user is scrolling
+  final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
 
   @override
   void didChangeMetrics() {
@@ -672,7 +674,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void dispose() {
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
-    this._resizeOnScrollTimer?.cancel();
+    _resizeOnScrollTimer?.cancel();
     super.dispose();
   }
 
@@ -719,7 +721,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           if (isScrolling) {
             // Scroll started
             _resizeOnScrollTimer =
-                Timer.periodic(Duration(milliseconds: 500), (timer) {
+                Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
               _suggestionsBoxController.resize();
             });
           } else {
