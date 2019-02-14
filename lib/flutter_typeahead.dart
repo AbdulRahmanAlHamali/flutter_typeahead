@@ -659,6 +659,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   final LayerLink _layerLink = LayerLink();
 
+  // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
+  Timer _resizeOnScrollTimer;
+  // The rate at which the suggestion box will resize when the user is scrolling
+  final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
+
   @override
   void didChangeMetrics() {
     // Catch keyboard event and orientation change; resize suggestions list
@@ -669,6 +674,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void dispose() {
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
+    _resizeOnScrollTimer?.cancel();
     super.dispose();
   }
 
@@ -704,6 +710,25 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       // in case we already missed the focus event
       if (this._effectiveFocusNode.hasFocus) {
         this._suggestionsBoxController.open();
+      }
+
+      ScrollableState scrollableState = Scrollable.of(context);
+      if (scrollableState != null) {
+        // The TypeAheadField is inside a scrollable widget
+        scrollableState.position.isScrollingNotifier.addListener(() {
+          bool isScrolling = scrollableState.position.isScrollingNotifier.value;
+          _resizeOnScrollTimer?.cancel();
+          if (isScrolling) {
+            // Scroll started
+            _resizeOnScrollTimer =
+                Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+              _suggestionsBoxController.resize();
+            });
+          } else {
+            // Scroll finished
+            _suggestionsBoxController.resize();
+          }
+        });
       }
     });
   }
@@ -895,7 +920,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       this._error = null;
     });
 
-    var suggestions = [];
+    List<T> suggestions = [];
     Object error;
 
     final Object callbackIdentity = Object();

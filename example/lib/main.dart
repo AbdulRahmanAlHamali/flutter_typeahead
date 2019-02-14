@@ -20,17 +20,22 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
           appBar: AppBar(
             title: TabBar(tabs: [
               Tab(
                 text: 'Example 1: Navigation',
               ),
-              Tab(text: 'Example 2: Form')
+              Tab(text: 'Example 2: Form'),
+              Tab(text: 'Example 3: Scroll')
             ]),
           ),
-          body: TabBarView(children: [NavigationExample(), FormExample()])),
+          body: TabBarView(children: [
+            NavigationExample(),
+            FormExample(),
+            ScrollExample(),
+          ])),
     );
   }
 }
@@ -140,6 +145,45 @@ class _FormExampleState extends State<FormExample> {
         ),
       ),
     );
+  }
+}
+
+class ScrollExample extends StatelessWidget {
+  final List<String> items = List.generate(5, (index) => "Item $index");
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(children: [
+      Center(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text("Suggestion box will resize when scrolling"),
+      )),
+      SizedBox(height: 200),
+      TypeAheadField<String>(
+        getImmediateSuggestions: true,
+        textFieldConfiguration: TextFieldConfiguration(
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'What are you looking for?'),
+        ),
+        suggestionsCallback: (String pattern) async {
+          return items
+              .where((item) =>
+                  item.toLowerCase().startsWith(pattern.toLowerCase()))
+              .toList();
+        },
+        itemBuilder: (context, String suggestion) {
+          return ListTile(
+            title: Text(suggestion),
+          );
+        },
+        onSuggestionSelected: (String suggestion) {
+          print("Suggestion selected");
+        },
+      ),
+      SizedBox(height: 500),
+    ]);
   }
 }
 
