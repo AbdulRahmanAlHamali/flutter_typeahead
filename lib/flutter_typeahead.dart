@@ -675,6 +675,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _resizeOnScrollTimer?.cancel();
+    _effectiveFocusNode.dispose();
     super.dispose();
   }
 
@@ -1486,7 +1487,7 @@ class _SuggestionsBoxController {
       resize();
     }
     // hide the suggestions box if keyboard is hidden
-    if (_keyboardClosed()) {
+    if (widgetMounted && _keyboardClosed()) {
       focusNode.unfocus();
     }
   }
