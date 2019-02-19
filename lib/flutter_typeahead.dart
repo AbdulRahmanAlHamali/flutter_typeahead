@@ -675,6 +675,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _resizeOnScrollTimer?.cancel();
+    _effectiveFocusNode.dispose();
     super.dispose();
   }
 
@@ -692,7 +693,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     }
 
     this._suggestionsBoxController =
-        _SuggestionsBoxController(context, widget.direction);
+        _SuggestionsBoxController(context, _effectiveFocusNode, widget.direction);
 
     WidgetsBinding.instance.addPostFrameCallback((duration) async {
       await this._initOverlayEntry();
@@ -1349,6 +1350,7 @@ class _SuggestionsBoxController {
   static const int waitMetricsTimeoutMillis = 1000;
 
   final BuildContext context;
+  final FocusNode focusNode;
   final AxisDirection direction;
 
   OverlayEntry _overlayEntry;
@@ -1357,7 +1359,7 @@ class _SuggestionsBoxController {
   bool widgetMounted = true;
   double maxHeight = defaultHeight;
 
-  _SuggestionsBoxController(this.context, this.direction);
+  _SuggestionsBoxController(this.context, this.focusNode, this.direction);
 
   open() {
     if (this._isOpened) return;
@@ -1476,9 +1478,17 @@ class _SuggestionsBoxController {
     }
   }
 
+  bool _keyboardClosed() {
+    return MediaQuery.of(context).viewInsets.bottom <= 0;
+  }
+
   Future<void> onChangeMetrics() async {
     if (await _waitChangeMetrics()) {
       resize();
+    }
+    // hide the suggestions box if keyboard is hidden
+    if (widgetMounted && _keyboardClosed()) {
+      focusNode.unfocus();
     }
   }
 }
