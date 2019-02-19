@@ -1,3 +1,11 @@
+## 1.0.4 - 16/02/2019
+
+- Hide the suggestions box when keyboard is hidden
+
+## 1.0.3 - 12/02/2019
+
+- Resize suggestion box when scrolling
+
 ## 1.0.2 - 07/02/2019
 
 - Bug fix for `maxHeight` property
