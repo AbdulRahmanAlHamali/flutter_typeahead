@@ -887,8 +887,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     this._isLoading = false;
     this._lastTextValue = widget.controller.text;
 
-    // If we started with some text, get suggestions immediately
-    if (widget.controller.text.isNotEmpty || widget.getImmediateSuggestions) {
+    if (widget.getImmediateSuggestions) {
       this._getSuggestions();
     }
 

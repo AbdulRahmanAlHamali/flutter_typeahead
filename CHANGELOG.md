@@ -1,3 +1,7 @@
+## 1.0.4 - 21/02/2019
+
+- Fix suggestions being called on TextBox focus
+
 ## 1.0.3 - 12/02/2019
 
 - Resize suggestion box when scrolling
