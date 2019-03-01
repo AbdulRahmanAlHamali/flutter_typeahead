@@ -1,7 +1,10 @@
 ## 1.1.0 - 01/03/2019
 
-- Suggestions box now closes on keyboard hide
+- Suggestions box now closes on keyboard hide by default
 - Added property `hideSuggestionsOnKeyboardHide'
+- Width now properly resizes on orientation changes
+- Suggestions box will display above keyboard when keyboard hides the box for AxisDirection.Up
+- Properly dispose of focus node
 
 ## 1.0.4/5 - 21/02/2019
 
