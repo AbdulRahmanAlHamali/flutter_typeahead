@@ -1,3 +1,8 @@
+## 1.1.0 - 01/03/2019
+
+- Suggestions box now closes on keyboard hide
+- Added property `hideSuggestionsOnKeyboardHide'
+
 ## 1.0.4/5 - 21/02/2019
 
 - Fix suggestions being called on TextBox focus

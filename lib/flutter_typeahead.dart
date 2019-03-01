@@ -231,6 +231,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
@@ -277,7 +278,8 @@ class TypeAheadFormField<T> extends FormField<String> {
       AxisDirection direction: AxisDirection.down,
       bool hideOnLoading: false,
       bool hideOnEmpty: false,
-      bool hideOnError: false})
+      bool hideOnError: false,
+      bool hideSuggestionsOnKeyboardHide: true})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         super(
@@ -315,6 +317,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 hideOnLoading: hideOnLoading,
                 hideOnEmpty: hideOnEmpty,
                 hideOnError: hideOnError,
+                hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
               );
             });
 
@@ -606,6 +609,12 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false.
   final bool hideOnError;
 
+  /// If set to false, the suggestions box will stay opened after
+  /// the keyboard is closed.
+  ///
+  /// Defaults to true.
+  final bool hideSuggestionsOnKeyboardHide;
+
   /// Creates a [TypeAheadField]
   TypeAheadField(
       {Key key,
@@ -626,7 +635,8 @@ class TypeAheadField<T> extends StatefulWidget {
       this.direction: AxisDirection.down,
       this.hideOnLoading: false,
       this.hideOnEmpty: false,
-      this.hideOnError: false})
+      this.hideOnError: false,
+      this.hideSuggestionsOnKeyboardHide: true})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -664,6 +674,10 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   // The rate at which the suggestion box will resize when the user is scrolling
   final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
 
+  // Keyboard detection
+  KeyboardVisibilityNotification _keyboardVisibility = new KeyboardVisibilityNotification();
+  int _keyboardVisibilityId;
+
   @override
   void didChangeMetrics() {
     // Catch keyboard event and orientation change; resize suggestions list
@@ -674,6 +688,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void dispose() {
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
+    _keyboardVisibility.removeListener(_keyboardVisibilityId);
+    _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
     super.dispose();
   }
@@ -693,6 +709,15 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
     this._suggestionsBoxController =
         _SuggestionsBoxController(context, widget.direction);
+
+    // hide suggestions box on keyboard closed
+    this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
+      onChange: (bool visible) {
+        if (widget.hideSuggestionsOnKeyboardHide && !visible) {
+          _effectiveFocusNode.unfocus();
+        }
+      },
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((duration) async {
       await this._initOverlayEntry();
