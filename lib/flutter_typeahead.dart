@@ -1459,13 +1459,13 @@ class _SuggestionsBoxController {
         double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
         double textBoxHeight = box.size.height;
 
-        // height of keyboard
-        double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-
         // we need to find the root MediaQuery for the unsafe area height
         // we cannot use BuildContext.ancestorWidgetOfExactType because
         // widgets like SafeArea creates a new MediaQuery with the padding removed
         MediaQuery rootMediaQuery = _findRootMediaQuery();
+
+        // height of keyboard
+        double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
 
         // unsafe area, ie: iPhone X 'home button'
         // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
@@ -1485,8 +1485,13 @@ class _SuggestionsBoxController {
         // height of window
         double h = MediaQuery.of(context).size.height;
 
+        // we need to find the root MediaQuery for the unsafe area height
+        // we cannot use BuildContext.ancestorWidgetOfExactType because
+        // widgets like SafeArea creates a new MediaQuery with the padding removed
+        MediaQuery rootMediaQuery = _findRootMediaQuery();
+
         // height of keyboard
-        double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+        double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
 
         // recalculate keyboard absolute y value
         double keyboardAbsY = h - keyboardHeight;
@@ -1497,11 +1502,6 @@ class _SuggestionsBoxController {
         directionUpOffset = textBoxAbsY > keyboardAbsY
             ? keyboardAbsY - textBoxAbsY - widget.suggestionsBoxVerticalOffset
             : -widget.suggestionsBoxVerticalOffset;
-
-        // we need to find the root MediaQuery for the unsafe area height
-        // we cannot use BuildContext.ancestorWidgetOfExactType because
-        // widgets like SafeArea creates a new MediaQuery with the padding removed
-        MediaQuery rootMediaQuery = _findRootMediaQuery();
 
         // unsafe area, ie: iPhone X notch
         double unsafeAreaHeight = rootMediaQuery.data.padding.top;
