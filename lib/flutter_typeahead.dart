@@ -666,6 +666,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       widget.textFieldConfiguration.controller ?? _textEditingController;
   FocusNode get _effectiveFocusNode =>
       widget.textFieldConfiguration.focusNode ?? _focusNode;
+  VoidCallback _focusNodeListener;
 
   final LayerLink _layerLink = LayerLink();
 
@@ -690,6 +691,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibility.removeListener(_keyboardVisibilityId);
+    _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
     super.dispose();
@@ -720,18 +722,20 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       },
     );
 
+    this._focusNodeListener = () {
+      if (_effectiveFocusNode.hasFocus) {
+        this._suggestionsBoxController.open();
+      } else {
+        this._suggestionsBoxController.close();
+      }
+    };
+
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       this._initOverlayEntry();
       // calculate initial suggestions list size
       this._suggestionsBoxController.resize();
 
-      this._effectiveFocusNode.addListener(() {
-        if (_effectiveFocusNode.hasFocus) {
-          this._suggestionsBoxController.open();
-        } else {
-          this._suggestionsBoxController.close();
-        }
-      });
+      this._effectiveFocusNode.addListener(_focusNodeListener);
 
       // in case we already missed the focus event
       if (this._effectiveFocusNode.hasFocus) {

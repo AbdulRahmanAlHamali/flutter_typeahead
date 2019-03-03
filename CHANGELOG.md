@@ -4,7 +4,8 @@
 - Added property `hideSuggestionsOnKeyboardHide'
 - Width now properly resizes on orientation changes
 - Suggestions box will display above keyboard when keyboard hides the box for AxisDirection.Up
-- Properly dispose of focus node
+- Fix FocusNode errors
+- Fix keyboard height calculation
 
 ## 1.0.4/5 - 21/02/2019
 
