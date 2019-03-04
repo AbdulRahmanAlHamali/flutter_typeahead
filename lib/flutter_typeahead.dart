@@ -231,6 +231,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
@@ -277,7 +278,8 @@ class TypeAheadFormField<T> extends FormField<String> {
       AxisDirection direction: AxisDirection.down,
       bool hideOnLoading: false,
       bool hideOnEmpty: false,
-      bool hideOnError: false})
+      bool hideOnError: false,
+      bool hideSuggestionsOnKeyboardHide: true})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         super(
@@ -315,6 +317,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 hideOnLoading: hideOnLoading,
                 hideOnEmpty: hideOnEmpty,
                 hideOnError: hideOnError,
+                hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
               );
             });
 
@@ -606,6 +609,12 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false.
   final bool hideOnError;
 
+  /// If set to false, the suggestions box will stay opened after
+  /// the keyboard is closed.
+  ///
+  /// Defaults to true.
+  final bool hideSuggestionsOnKeyboardHide;
+
   /// Creates a [TypeAheadField]
   TypeAheadField(
       {Key key,
@@ -626,7 +635,8 @@ class TypeAheadField<T> extends StatefulWidget {
       this.direction: AxisDirection.down,
       this.hideOnLoading: false,
       this.hideOnEmpty: false,
-      this.hideOnError: false})
+      this.hideOnError: false,
+      this.hideSuggestionsOnKeyboardHide: true})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -656,6 +666,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       widget.textFieldConfiguration.controller ?? _textEditingController;
   FocusNode get _effectiveFocusNode =>
       widget.textFieldConfiguration.focusNode ?? _focusNode;
+  VoidCallback _focusNodeListener;
 
   final LayerLink _layerLink = LayerLink();
 
@@ -663,6 +674,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   Timer _resizeOnScrollTimer;
   // The rate at which the suggestion box will resize when the user is scrolling
   final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
+
+  // Keyboard detection
+  KeyboardVisibilityNotification _keyboardVisibility =
+      new KeyboardVisibilityNotification();
+  int _keyboardVisibilityId;
 
   @override
   void didChangeMetrics() {
@@ -674,6 +690,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void dispose() {
     this._suggestionsBoxController.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
+    _keyboardVisibility.removeListener(_keyboardVisibilityId);
+    _effectiveFocusNode.removeListener(_focusNodeListener);
+    _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
     super.dispose();
   }
@@ -694,18 +713,29 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBoxController =
         _SuggestionsBoxController(context, widget.direction);
 
-    WidgetsBinding.instance.addPostFrameCallback((duration) async {
-      await this._initOverlayEntry();
+    // hide suggestions box on keyboard closed
+    this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
+      onChange: (bool visible) {
+        if (widget.hideSuggestionsOnKeyboardHide && !visible) {
+          _effectiveFocusNode.unfocus();
+        }
+      },
+    );
+
+    this._focusNodeListener = () {
+      if (_effectiveFocusNode.hasFocus) {
+        this._suggestionsBoxController.open();
+      } else {
+        this._suggestionsBoxController.close();
+      }
+    };
+
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      this._initOverlayEntry();
       // calculate initial suggestions list size
       this._suggestionsBoxController.resize();
 
-      this._effectiveFocusNode.addListener(() {
-        if (_effectiveFocusNode.hasFocus) {
-          this._suggestionsBoxController.open();
-        } else {
-          this._suggestionsBoxController.close();
-        }
-      });
+      this._effectiveFocusNode.addListener(_focusNodeListener);
 
       // in case we already missed the focus event
       if (this._effectiveFocusNode.hasFocus) {
@@ -733,10 +763,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     });
   }
 
-  Future<void> _initOverlayEntry() async {
-    RenderBox renderBox = context.findRenderObject();
-    var size = renderBox.size;
-
+  void _initOverlayEntry() {
     this._suggestionsBoxController._overlayEntry =
         OverlayEntry(builder: (context) {
       final suggestionsList = _SuggestionsList<T>(
@@ -764,15 +791,16 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       );
 
       return Positioned(
-        width: size.width,
+        width: _suggestionsBoxController.textBoxWidth,
         child: CompositedTransformFollower(
           link: this._layerLink,
           showWhenUnlinked: false,
           offset: Offset(
               0.0,
               widget.direction == AxisDirection.down
-                  ? size.height + widget.suggestionsBoxVerticalOffset
-                  : -widget.suggestionsBoxVerticalOffset),
+                  ? _suggestionsBoxController.textBoxHeight +
+                      widget.suggestionsBoxVerticalOffset
+                  : _suggestionsBoxController.directionUpOffset),
           child: widget.direction == AxisDirection.down
               ? suggestionsList
               : FractionalTranslation(
@@ -1344,7 +1372,6 @@ class TextFieldConfiguration<T> {
 }
 
 class _SuggestionsBoxController {
-  static const double defaultHeight = 300.0;
   static const int waitMetricsTimeoutMillis = 1000;
 
   final BuildContext context;
@@ -1354,7 +1381,10 @@ class _SuggestionsBoxController {
 
   bool _isOpened = false;
   bool widgetMounted = true;
-  double maxHeight = defaultHeight;
+  double maxHeight = 300.0;
+  double textBoxWidth = 100.0;
+  double textBoxHeight = 100.0;
+  double directionUpOffset;
 
   _SuggestionsBoxController(this.context, this.direction);
 
@@ -1421,22 +1451,25 @@ class _SuggestionsBoxController {
     if (widgetMounted) {
       TypeAheadField widget = context.widget as TypeAheadField;
 
+      RenderBox box = context.findRenderObject();
+      textBoxWidth = box.size.width;
+      textBoxHeight = box.size.height;
+
       if (direction == AxisDirection.down) {
         // height of window
         double h = MediaQuery.of(context).size.height;
 
-        RenderBox box = context.findRenderObject();
         // top of text box
         double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
         double textBoxHeight = box.size.height;
-
-        // height of keyboard
-        double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
         // we need to find the root MediaQuery for the unsafe area height
         // we cannot use BuildContext.ancestorWidgetOfExactType because
         // widgets like SafeArea creates a new MediaQuery with the padding removed
         MediaQuery rootMediaQuery = _findRootMediaQuery();
+
+        // height of keyboard
+        double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
 
         // unsafe area, ie: iPhone X 'home button'
         // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
@@ -1452,21 +1485,38 @@ class _SuggestionsBoxController {
             2 * widget.suggestionsBoxVerticalOffset;
       } else {
         // AxisDirection.up
-        RenderBox box = context.findRenderObject();
-        // top of text box
-        double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+        // Calculate offset when the keyboard is covering the suggestions box
+        // height of window
+        double h = MediaQuery.of(context).size.height;
 
         // we need to find the root MediaQuery for the unsafe area height
         // we cannot use BuildContext.ancestorWidgetOfExactType because
         // widgets like SafeArea creates a new MediaQuery with the padding removed
         MediaQuery rootMediaQuery = _findRootMediaQuery();
 
+        // height of keyboard
+        double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
+
+        // recalculate keyboard absolute y value
+        double keyboardAbsY = h - keyboardHeight;
+
+        // top of text box
+        double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+
+        directionUpOffset = textBoxAbsY > keyboardAbsY
+            ? keyboardAbsY - textBoxAbsY - widget.suggestionsBoxVerticalOffset
+            : -widget.suggestionsBoxVerticalOffset;
+
         // unsafe area, ie: iPhone X notch
         double unsafeAreaHeight = rootMediaQuery.data.padding.top;
 
-        maxHeight = textBoxAbsY -
-            unsafeAreaHeight -
-            2 * widget.suggestionsBoxVerticalOffset;
+        maxHeight = textBoxAbsY > keyboardAbsY
+            ? keyboardAbsY -
+                unsafeAreaHeight -
+                2 * widget.suggestionsBoxVerticalOffset
+            : textBoxAbsY -
+                unsafeAreaHeight -
+                2 * widget.suggestionsBoxVerticalOffset;
       }
 
       if (maxHeight < 0) maxHeight = 0;

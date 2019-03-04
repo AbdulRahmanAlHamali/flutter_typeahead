@@ -190,6 +190,9 @@ to true to hide the box when there are no suggestions. This will also ignore
 the `noItemsFoundBuilder`. Set `hideOnError` to true to hide the box when there 
 is an error retrieving suggestions. This will also ignore the `errorBuilder`.
 
+By default, the suggestions box will automatically hide when the keyboard is hidden. 
+To change this behavior, set `hideSuggestionsOnKeyboardHide` to false.
+
 #### Customizing the animation
 You can customize the suggestion box animation through 3 parameters: the
 `animationDuration`, the `animationStart`, and the `transitionBuilder`.
