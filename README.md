@@ -181,6 +181,11 @@ errorBuilder: (BuildContext context, Object error) =>
     )
   )
 ```
+
+By default, the suggestions box will maintain the old suggestions while new 
+suggestions are being retrieved. To show a circular progress indicator 
+during retrieval instead, set `keepSuggestionsOnLoading` to false.
+
 #### Hiding the Suggestions Box
 There are three scenarios when you can hide the suggestions box.
 
