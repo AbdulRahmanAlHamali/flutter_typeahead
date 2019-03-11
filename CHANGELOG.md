@@ -1,7 +1,13 @@
+## 1.2.0 - 05/03/2019
+
+- Added property `keepSuggestionsOnLoading`
+- Changed default behavior: suggestions box will no longer
+show circular progress indicator when loading; it will maintain previous results if available
+
 ## 1.1.0 - 01/03/2019
 
 - Suggestions box now closes on keyboard hide by default
-- Added property `hideSuggestionsOnKeyboardHide'
+- Added property `hideSuggestionsOnKeyboardHide`
 - Width now properly resizes on orientation changes
 - Suggestions box will display above keyboard when keyboard hides the box for AxisDirection.Up
 - Fix FocusNode errors
