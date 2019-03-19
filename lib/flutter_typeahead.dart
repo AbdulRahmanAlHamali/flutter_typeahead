@@ -940,6 +940,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
       this._lastTextValue = widget.controller.text;
 
+      this._debounceTimer?.cancel();
       this._debounceTimer = Timer(widget.debounceDuration, () async {
         if (this._debounceTimer.isActive) return;
 
