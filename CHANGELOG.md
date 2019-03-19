@@ -2,6 +2,10 @@
 
 - Limit number of suggestionsCallbacks until current call is finished
 
+## 1.2.1 - 19/03/2019
+
+- Bug fixes & optimizations
+
 ## 1.2.0 - 05/03/2019
 
 - Added property `keepSuggestionsOnLoading`
