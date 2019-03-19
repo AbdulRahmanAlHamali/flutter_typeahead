@@ -909,7 +909,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   List<T> _suggestions;
   VoidCallback _controllerListener;
   Timer _debounceTimer;
-  bool _isLoading;
+  bool _isLoading, _isQueued;
   Object _error;
   AnimationController _animationController;
   String _lastTextValue;
@@ -925,6 +925,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     );
 
     this._isLoading = false;
+    this._isQueued = false;
     this._lastTextValue = widget.controller.text;
 
     if (widget.getImmediateSuggestions) {
@@ -940,11 +941,16 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
       this._debounceTimer = Timer(widget.debounceDuration, () async {
         if (this._debounceTimer.isActive) return;
-
-        // If already closed
-        if (!this.mounted) return;
+        if (_isLoading) {
+          _isQueued = true;
+          return;
+        }
 
         await this._getSuggestions();
+        while (_isQueued) {
+          _isQueued = false;
+          await this._getSuggestions();
+        }
       });
     };
 
@@ -952,41 +958,43 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   }
 
   Future<void> _getSuggestions() async {
-    setState(() {
-      this._animationController.forward(from: 1.0);
-
-      this._isLoading = true;
-      this._error = null;
-    });
-
-    List<T> suggestions = [];
-    Object error;
-
-    final Object callbackIdentity = Object();
-    this._activeCallbackIdentity = callbackIdentity;
-
-    try {
-      suggestions = await widget.suggestionsCallback(widget.controller.text);
-    } catch (e) {
-      error = e;
-    }
-
-    // If another callback has been issued, omit this one
-    if (this._activeCallbackIdentity != callbackIdentity) return;
-
-    if (this.mounted) {
-      // if it wasn't removed in the meantime
+    if (mounted) {
       setState(() {
-        double animationStart = widget.animationStart;
-        if (error != null || suggestions.length == 0) {
-          animationStart = 1.0;
-        }
-        this._animationController.forward(from: animationStart);
+        this._animationController.forward(from: 1.0);
 
-        this._error = error;
-        this._isLoading = false;
-        this._suggestions = suggestions;
+        this._isLoading = true;
+        this._error = null;
       });
+
+      List<T> suggestions = [];
+      Object error;
+
+      final Object callbackIdentity = Object();
+      this._activeCallbackIdentity = callbackIdentity;
+
+      try {
+        suggestions = await widget.suggestionsCallback(widget.controller.text);
+      } catch (e) {
+        error = e;
+      }
+
+      // If another callback has been issued, omit this one
+      if (this._activeCallbackIdentity != callbackIdentity) return;
+
+      if (this.mounted) {
+        // if it wasn't removed in the meantime
+        setState(() {
+          double animationStart = widget.animationStart;
+          if (error != null || suggestions.length == 0) {
+            animationStart = 1.0;
+          }
+          this._animationController.forward(from: animationStart);
+
+          this._error = error;
+          this._isLoading = false;
+          this._suggestions = suggestions;
+        });
+      }
     }
   }
 
@@ -1078,41 +1086,41 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder(context)
           : Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: CircularProgressIndicator(),
-        ),
-      );
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: CircularProgressIndicator(),
+              ),
+            );
     }
 
     return child;
   }
 
   Widget createErrorWidget() {
-   return widget.errorBuilder != null
-       ? widget.errorBuilder(context, this._error)
-       : Padding(
-     padding: const EdgeInsets.all(8.0),
-     child: Text(
-       'Error: ${this._error}',
-       style: TextStyle(color: Theme.of(context).errorColor),
-     ),
-   );
+    return widget.errorBuilder != null
+        ? widget.errorBuilder(context, this._error)
+        : Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Error: ${this._error}',
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+          );
   }
 
   Widget createNoItemsFoundWidget() {
     return widget.noItemsFoundBuilder != null
         ? widget.noItemsFoundBuilder(context)
         : Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        'No Items Found!',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Theme.of(context).disabledColor, fontSize: 18.0),
-      ),
-    );
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'No Items Found!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Theme.of(context).disabledColor, fontSize: 18.0),
+            ),
+          );
   }
 
   Widget createSuggestionsWidget() {
