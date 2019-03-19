@@ -1069,14 +1069,12 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     Widget child;
 
     if (widget.keepSuggestionsOnLoading && this._suggestions != null) {
-      print('Create suggestions on loading');
       if (this._suggestions.isEmpty) {
         child = createNoItemsFoundWidget();
       } else {
         child = createSuggestionsWidget();
       }
     } else {
-      print('Show progress on loading');
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder(context)
           : Align(
