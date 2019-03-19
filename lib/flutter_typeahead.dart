@@ -740,34 +740,36 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     };
 
     WidgetsBinding.instance.addPostFrameCallback((duration) {
-      this._initOverlayEntry();
-      // calculate initial suggestions list size
-      this._suggestionsBoxController.resize();
+      if (mounted) {
+        this._initOverlayEntry();
+        // calculate initial suggestions list size
+        this._suggestionsBoxController.resize();
 
-      this._effectiveFocusNode.addListener(_focusNodeListener);
+        this._effectiveFocusNode.addListener(_focusNodeListener);
 
-      // in case we already missed the focus event
-      if (this._effectiveFocusNode.hasFocus) {
-        this._suggestionsBoxController.open();
-      }
+        // in case we already missed the focus event
+        if (this._effectiveFocusNode.hasFocus) {
+          this._suggestionsBoxController.open();
+        }
 
-      ScrollableState scrollableState = Scrollable.of(context);
-      if (scrollableState != null) {
-        // The TypeAheadField is inside a scrollable widget
-        scrollableState.position.isScrollingNotifier.addListener(() {
-          bool isScrolling = scrollableState.position.isScrollingNotifier.value;
-          _resizeOnScrollTimer?.cancel();
-          if (isScrolling) {
-            // Scroll started
-            _resizeOnScrollTimer =
-                Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+        ScrollableState scrollableState = Scrollable.of(context);
+        if (scrollableState != null) {
+          // The TypeAheadField is inside a scrollable widget
+          scrollableState.position.isScrollingNotifier.addListener(() {
+            bool isScrolling = scrollableState.position.isScrollingNotifier.value;
+            _resizeOnScrollTimer?.cancel();
+            if (isScrolling) {
+              // Scroll started
+              _resizeOnScrollTimer =
+                  Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+                _suggestionsBoxController.resize();
+              });
+            } else {
+              // Scroll finished
               _suggestionsBoxController.resize();
-            });
-          } else {
-            // Scroll finished
-            _suggestionsBoxController.resize();
-          }
-        });
+            }
+          });
+        }
       }
     });
   }
