@@ -1,3 +1,7 @@
+## 1.3.0 - 19/03/2019
+
+- Limit number of suggestionsCallbacks until current call is finished
+
 ## 1.2.1 - 19/03/2019
 
 - Bug fixes & optimizations
