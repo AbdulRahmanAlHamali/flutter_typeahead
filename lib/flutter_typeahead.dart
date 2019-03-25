@@ -237,6 +237,9 @@ typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
 typedef void SuggestionSelectionCallback<T>(T suggestion);
 typedef Widget ErrorBuilder(BuildContext context, Object error);
+
+const MIN_OVERLAY_SPACE = 64.0;
+
 typedef AnimationTransitionBuilder(
     BuildContext context, Widget child, AnimationController controller);
 
@@ -623,6 +626,14 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to true.
   final bool keepSuggestionsOnLoading;
 
+  /// If set to true, in the case where the suggestions box has less than
+  /// MIN_OVERLAY_SPACE to grow in the desired [direction], the direction axis
+  /// will be temporarily flipped if there's more room available in the opposite
+  /// direction.
+  ///
+  /// Defaults to false
+  final bool autoFlipAxis;
+
   /// Creates a [TypeAheadField]
   TypeAheadField(
       {Key key,
@@ -645,7 +656,8 @@ class TypeAheadField<T> extends StatefulWidget {
       this.hideOnEmpty: false,
       this.hideOnError: false,
       this.hideSuggestionsOnKeyboardHide: true,
-      this.keepSuggestionsOnLoading: true})
+      this.keepSuggestionsOnLoading: true,
+      this.autoFlipAxis: false})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -719,8 +731,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBoxController =
-        _SuggestionsBoxController(context, widget.direction);
+    this._suggestionsBoxController = _SuggestionsBoxController(
+        context, widget.direction, widget.autoFlipAxis);
 
     // hide suggestions box on keyboard closed
     this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
@@ -795,7 +807,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           widget.onSuggestionSelected(selection);
         },
         itemBuilder: widget.itemBuilder,
-        direction: widget.direction,
+        direction: _suggestionsBoxController.direction,
         hideOnLoading: widget.hideOnLoading,
         hideOnEmpty: widget.hideOnEmpty,
         hideOnError: widget.hideOnError,
@@ -809,11 +821,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           showWhenUnlinked: false,
           offset: Offset(
               0.0,
-              widget.direction == AxisDirection.down
+              _suggestionsBoxController.direction == AxisDirection.down
                   ? _suggestionsBoxController.textBoxHeight +
                       widget.suggestionsBoxVerticalOffset
                   : _suggestionsBoxController.directionUpOffset),
-          child: widget.direction == AxisDirection.down
+          child: _suggestionsBoxController.direction == AxisDirection.down
               ? suggestionsList
               : FractionalTranslation(
                   translation:
@@ -1428,7 +1440,9 @@ class _SuggestionsBoxController {
   static const int waitMetricsTimeoutMillis = 1000;
 
   final BuildContext context;
-  final AxisDirection direction;
+  AxisDirection direction;
+  final AxisDirection desiredDirection;
+  final bool autoFlipAxis;
 
   OverlayEntry _overlayEntry;
 
@@ -1439,7 +1453,8 @@ class _SuggestionsBoxController {
   double textBoxHeight = 100.0;
   double directionUpOffset;
 
-  _SuggestionsBoxController(this.context, this.direction);
+  _SuggestionsBoxController(this.context, this.direction, this.autoFlipAxis)
+      : desiredDirection = direction;
 
   open() {
     if (this._isOpened) return;
@@ -1508,74 +1523,115 @@ class _SuggestionsBoxController {
       textBoxWidth = box.size.width;
       textBoxHeight = box.size.height;
 
-      if (direction == AxisDirection.down) {
-        // height of window
-        double h = MediaQuery.of(context).size.height;
-
-        // top of text box
-        double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
-        double textBoxHeight = box.size.height;
-
-        // we need to find the root MediaQuery for the unsafe area height
-        // we cannot use BuildContext.ancestorWidgetOfExactType because
-        // widgets like SafeArea creates a new MediaQuery with the padding removed
-        MediaQuery rootMediaQuery = _findRootMediaQuery();
-
-        // height of keyboard
-        double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
-
-        // unsafe area, ie: iPhone X 'home button'
-        // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
-        double unsafeAreaHeight = keyboardHeight == 0 && rootMediaQuery != null
-            ? rootMediaQuery.data.padding.bottom
-            : 0;
-
-        maxHeight = h -
-            keyboardHeight -
-            unsafeAreaHeight -
-            textBoxHeight -
-            textBoxAbsY -
-            2 * widget.suggestionsBoxVerticalOffset;
-      } else {
-        // AxisDirection.up
-        // Calculate offset when the keyboard is covering the suggestions box
-        // height of window
-        double h = MediaQuery.of(context).size.height;
-
-        // we need to find the root MediaQuery for the unsafe area height
-        // we cannot use BuildContext.ancestorWidgetOfExactType because
-        // widgets like SafeArea creates a new MediaQuery with the padding removed
-        MediaQuery rootMediaQuery = _findRootMediaQuery();
-
-        // height of keyboard
-        double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
-
-        // recalculate keyboard absolute y value
-        double keyboardAbsY = h - keyboardHeight;
-
-        // top of text box
-        double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
-
-        directionUpOffset = textBoxAbsY > keyboardAbsY
-            ? keyboardAbsY - textBoxAbsY - widget.suggestionsBoxVerticalOffset
-            : -widget.suggestionsBoxVerticalOffset;
-
-        // unsafe area, ie: iPhone X notch
-        double unsafeAreaHeight = rootMediaQuery.data.padding.top;
-
-        maxHeight = textBoxAbsY > keyboardAbsY
-            ? keyboardAbsY -
-                unsafeAreaHeight -
-                2 * widget.suggestionsBoxVerticalOffset
-            : textBoxAbsY -
-                unsafeAreaHeight -
-                2 * widget.suggestionsBoxVerticalOffset;
-      }
+      _adjustMaxHeightAndOrientation(desiredDirection, box, widget);
 
       if (maxHeight < 0) maxHeight = 0;
 
       _overlayEntry.markNeedsBuild();
     }
+  }
+
+  // See if there's enough room in the desired direction for the overlay to display
+  // correctly. If not, try the opposite direction if things look more roomy there
+  void _adjustMaxHeightAndOrientation(
+      AxisDirection desiredDirection, RenderBox box, TypeAheadField widget) {
+    // height of window
+    double h = MediaQuery.of(context).size.height;
+
+    // we need to find the root MediaQuery for the unsafe area height
+    // we cannot use BuildContext.ancestorWidgetOfExactType because
+    // widgets like SafeArea creates a new MediaQuery with the padding removed
+    MediaQuery rootMediaQuery = _findRootMediaQuery();
+    // height of keyboard
+    double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
+
+    double maxHDesired = _calculateMaxHeight(
+        desiredDirection, box, widget, h, rootMediaQuery, keyboardHeight);
+
+    // if there's enough room in the desired direction, update the direction and the max height
+    if (maxHDesired >= MIN_OVERLAY_SPACE || !autoFlipAxis) {
+      direction = desiredDirection;
+      maxHeight = maxHDesired;
+      return;
+    } else {
+      // There's not enough room in the desired direction so see how much room is in the opposite direction
+      AxisDirection flipped = flipAxisDirection(desiredDirection);
+      double maxHFlipped = _calculateMaxHeight(
+          flipped, box, widget, h, rootMediaQuery, keyboardHeight);
+
+      // if there's more room in this opposite direction, update the direction and maxHeight
+      if (maxHFlipped > maxHDesired) {
+        direction = flipped;
+        maxHeight = maxHFlipped;
+        return;
+      }
+    }
+  }
+
+  double _calculateMaxHeight(
+      AxisDirection direction,
+      RenderBox box,
+      TypeAheadField widget,
+      double h,
+      MediaQuery rootMediaQuery,
+      double keyboardHeight) {
+    return direction == AxisDirection.down
+        ? _tryDown(direction, box, widget, h, rootMediaQuery, keyboardHeight)
+        : _tryUp(direction, box, widget, h, rootMediaQuery, keyboardHeight);
+  }
+
+  double _tryDown(
+      AxisDirection desiredDirection,
+      RenderBox box,
+      TypeAheadField widget,
+      double h,
+      MediaQuery rootMediaQuery,
+      double keyboardHeight) {
+    // top of text box
+    double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+    double textBoxHeight = box.size.height;
+
+    // unsafe area, ie: iPhone X 'home button'
+    // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
+    double unsafeAreaHeight = keyboardHeight == 0 && rootMediaQuery != null
+        ? rootMediaQuery.data.padding.bottom
+        : 0;
+
+    return h -
+        keyboardHeight -
+        unsafeAreaHeight -
+        textBoxHeight -
+        textBoxAbsY -
+        2 * widget.suggestionsBoxVerticalOffset;
+  }
+
+  double _tryUp(
+      AxisDirection desiredDirection,
+      RenderBox box,
+      TypeAheadField widget,
+      double h,
+      MediaQuery rootMediaQuery,
+      double keyboardHeight) {
+    // recalculate keyboard absolute y value
+    double keyboardAbsY = h - keyboardHeight;
+
+    // top of text box
+    double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+
+    directionUpOffset = textBoxAbsY > keyboardAbsY
+        ? keyboardAbsY - textBoxAbsY - widget.suggestionsBoxVerticalOffset
+        : -widget.suggestionsBoxVerticalOffset;
+
+    // unsafe area, ie: iPhone X notch
+    double unsafeAreaHeight = rootMediaQuery.data.padding.top;
+
+    return textBoxAbsY > keyboardAbsY
+        ? keyboardAbsY -
+            unsafeAreaHeight -
+            2 * widget.suggestionsBoxVerticalOffset
+        : textBoxAbsY -
+            unsafeAreaHeight -
+            2 * widget.suggestionsBoxVerticalOffset;
   }
 
   Future<void> onChangeMetrics() async {
