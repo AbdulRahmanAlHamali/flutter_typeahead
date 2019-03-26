@@ -1,3 +1,8 @@
+## 1.4.0 - 26/03/2019
+
+- Added property `autoFlipDirection` to allow automatic direction flipping if 
+there is not enough space for the suggestions list
+
 ## 1.3.0 - 19/03/2019
 
 - Limit number of suggestionsCallbacks until current call is finished
