@@ -247,7 +247,9 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
 ```
 
 #### Customizing the growth direction of the suggestions list
-By default, the list grows towards the bottom. However, you can use the `direction` property to customize the growth direction to be one of `AxisDirection.down` or `AxisDirection.up`, the latter of which will cause the list to grow up, where the first suggestion is at the bottom of the list, and the last suggestion is at the top. 
+By default, the list grows towards the bottom. However, you can use the `direction` property to customize the growth direction to be one of `AxisDirection.down` or `AxisDirection.up`, the latter of which will cause the list to grow up, where the first suggestion is at the bottom of the list, and the last suggestion is at the top.
+
+Set `autoFlipDirection` to true to allow the suggestions list to automatically flip direction whenever it detects that there is not enough space for the current direction. This is useful for scenarios where the TypeAheadField is in a scrollable widget or when the developer wants to ensure the list is always viewable despite different user screen sizes.
 
 ## For more information
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
