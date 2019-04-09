@@ -166,7 +166,8 @@ etc.
 
 ### Customizing the Suggestions Box
 TypeAhead provides default configurations for the suggestions box. You can,
-however, override most of them.
+however, override most of them. This is done by passing a `SuggestionsBoxDecoration` 
+to the `suggestionsBoxDecoration` property.
 
 #### Customizing the loader, the error and the "no items found" message
 You can use the `loadingBuilder`, `errorBuilder` and `noItemsFoundBuilder` to

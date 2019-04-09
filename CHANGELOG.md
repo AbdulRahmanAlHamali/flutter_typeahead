@@ -1,3 +1,7 @@
+## 1.4.1 09/04/2019
+
+- Fixed BoxConstraints width parameters being ignored in `SuggestionsBoxDecoration`
+
 ## 1.4.0 - 26/03/2019
 
 - Added property `autoFlipDirection` to allow automatic direction flipping if 
