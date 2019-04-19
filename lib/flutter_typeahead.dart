@@ -815,8 +815,27 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
       );
 
+      double w = _suggestionsBoxController.textBoxWidth;
+      if (widget.suggestionsBoxDecoration.constraints != null) {
+        if (widget.suggestionsBoxDecoration.constraints.minWidth != 0.0 &&
+            widget.suggestionsBoxDecoration.constraints.maxWidth !=
+                double.infinity) {
+          w = (widget.suggestionsBoxDecoration.constraints.minWidth +
+                  widget.suggestionsBoxDecoration.constraints.maxWidth) /
+              2;
+        } else if (widget.suggestionsBoxDecoration.constraints.minWidth !=
+                0.0 &&
+            widget.suggestionsBoxDecoration.constraints.minWidth > w) {
+          w = widget.suggestionsBoxDecoration.constraints.minWidth;
+        } else if (widget.suggestionsBoxDecoration.constraints.maxWidth !=
+                double.infinity &&
+            widget.suggestionsBoxDecoration.constraints.maxWidth < w) {
+          w = widget.suggestionsBoxDecoration.constraints.maxWidth;
+        }
+      }
+
       return Positioned(
-        width: _suggestionsBoxController.textBoxWidth,
+        width: w,
         child: CompositedTransformFollower(
           link: this._layerLink,
           showWhenUnlinked: false,
