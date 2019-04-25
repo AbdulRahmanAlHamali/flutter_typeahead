@@ -1,3 +1,9 @@
+## 1.5.0 25/04/2019
+
+- Added `suggestionsBoxController` property and `SuggestionsBoxController` class to
+allow manual control of the suggestions box
+- Fix suggestions box height problems in dialogs
+
 ## 1.4.1 09/04/2019
 
 - Fixed BoxConstraints width parameters being ignored in `SuggestionsBoxDecoration`
