@@ -153,6 +153,38 @@ The `transitionBuilder` allows us to customize the animation of the
 suggestion box. In this example, we are returning the suggestionsBox
 immediately, meaning that we don't want any animation.
 
+## Warnings
+
+### Animations
+Placing TypeAheadField in widgets with animations may cause the suggestions box 
+to resize incorrectly. Since animation times are variable, this has to be 
+corrected manually at the end of the animation. You will need to add a 
+SuggestionsBoxController described below and the following code for the 
+AnimationController.
+```dart
+void Function(AnimationStatus) _statusListener;
+
+@override
+void initState() {
+  super.initState();
+  _statusListener = (AnimationStatus status) {
+    if (status == AnimationStatus.completed ||
+        status == AnimationStatus.dismissed) {
+      _suggestionsBoxController.resize();
+    }
+  };
+
+  _animationController.addStatusListener(_statusListener);
+}
+
+@override
+  void dispose() {
+    _animationController.removeStatusListener(_statusListener);
+    _animationController.dispose();
+    super.dispose();
+}
+```
+
 ## Customizations
 TypeAhead widgets consist of a TextField and a suggestion box that shows
 as the user types. Both are highly customizable
@@ -164,7 +196,7 @@ which allows you to configure all the usual properties of `TextField`, like
 `decoration`, `style`, `controller`, `focusNode`, `autofocus`, `enabled`,
 etc.
 
-### Customizing the Suggestions Box
+### Customizing the suggestions box
 TypeAhead provides default configurations for the suggestions box. You can,
 however, override most of them. This is done by passing a `SuggestionsBoxDecoration` 
 to the `suggestionsBoxDecoration` property.
@@ -187,7 +219,7 @@ By default, the suggestions box will maintain the old suggestions while new
 suggestions are being retrieved. To show a circular progress indicator 
 during retrieval instead, set `keepSuggestionsOnLoading` to false.
 
-#### Hiding the Suggestions Box
+#### Hiding the suggestions box
 There are three scenarios when you can hide the suggestions box.
 
 Set `hideOnLoading` to true to hide the box while suggestions are being 
@@ -251,6 +283,11 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
 By default, the list grows towards the bottom. However, you can use the `direction` property to customize the growth direction to be one of `AxisDirection.down` or `AxisDirection.up`, the latter of which will cause the list to grow up, where the first suggestion is at the bottom of the list, and the last suggestion is at the top.
 
 Set `autoFlipDirection` to true to allow the suggestions list to automatically flip direction whenever it detects that there is not enough space for the current direction. This is useful for scenarios where the TypeAheadField is in a scrollable widget or when the developer wants to ensure the list is always viewable despite different user screen sizes.
+
+#### Controlling the suggestions box
+Manual control of the suggestions box can be achieved by creating an instance of `SuggestionsBoxController` and 
+passing it to the `suggestionsBoxController` property. This will allow you to manually open, close, toggle, or 
+resize the suggestions box.
 
 ## For more information
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
