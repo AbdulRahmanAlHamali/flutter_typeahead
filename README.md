@@ -153,7 +153,7 @@ The `transitionBuilder` allows us to customize the animation of the
 suggestion box. In this example, we are returning the suggestionsBox
 immediately, meaning that we don't want any animation.
 
-## Warnings
+## Known Issues
 
 ### Animations
 Placing TypeAheadField in widgets with animations may cause the suggestions box 
@@ -184,6 +184,9 @@ void initState() {
     super.dispose();
 }
 ```
+
+#### Dialogs
+There is a known issue with opening dialogs where the suggestions box will sometimes appear too small. This is a timing issue caused by the animations described above. Currently, `showDialog` has a duration of 150 ms for the animations. TypeAheadField has a delay of 170 ms to compensate for this. Until the end of the animation can be properly detected and fixed using the solution above, this temporary fix will work most of the time. If the suggestions box is too small, closing and reopening the keyboard will usually fix the issue.
 
 ## Customizations
 TypeAhead widgets consist of a TextField and a suggestion box that shows
