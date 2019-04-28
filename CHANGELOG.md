@@ -3,6 +3,7 @@
 - Added `suggestionsBoxController` property and `SuggestionsBoxController` class to
 allow manual control of the suggestions box
 - Fix suggestions box height problems in dialogs
+- Add `textDirection` property to `TextFieldConfiguration`
 
 ## 1.4.1 09/04/2019
 
