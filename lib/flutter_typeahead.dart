@@ -1539,13 +1539,14 @@ class _SuggestionsBox {
       int timer = 0;
       // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
       while (widgetMounted && timer < waitMetricsTimeoutMillis) {
+        // TODO: reduce delay if showDialog ever exposes detection of animation end
+        await Future.delayed(const Duration(milliseconds: 170));
+        timer += 170;
+        
         if (MediaQuery.of(context).viewInsets != initial ||
             _findRootMediaQuery() != initialRootMediaQuery) {
           return true;
         }
-        // TODO: reduce delay if showDialog ever exposes detection of animation end
-        await Future.delayed(const Duration(milliseconds: 150));
-        timer += 150;
       }
     }
 
