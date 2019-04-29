@@ -1275,7 +1275,7 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.textAlign](https://docs.flutter.io/flutter/material/TextField/textAlign.html)
   final TextAlign textAlign;
 
-  /// Same as [TextField.textDirection]
+  /// Same as [TextField.textDirection](https://docs.flutter.io/flutter/material/TextField/textDirection.html)
   ///
   /// Defaults to null
   final TextDirection textDirection;
