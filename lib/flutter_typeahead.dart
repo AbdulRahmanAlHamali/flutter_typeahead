@@ -886,6 +886,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         cursorWidth: widget.textFieldConfiguration.cursorWidth,
         cursorRadius: widget.textFieldConfiguration.cursorRadius,
         cursorColor: widget.textFieldConfiguration.cursorColor,
+        textDirection: widget.textFieldConfiguration.textDirection,
       ),
     );
   }
@@ -1274,6 +1275,11 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.textAlign](https://docs.flutter.io/flutter/material/TextField/textAlign.html)
   final TextAlign textAlign;
 
+  /// Same as [TextField.textDirection](https://docs.flutter.io/flutter/material/TextField/textDirection.html)
+  ///
+  /// Defaults to null
+  final TextDirection textDirection;
+
   /// If false the textfield is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
   ///
@@ -1399,6 +1405,7 @@ class TextFieldConfiguration<T> {
       this.cursorWidth: 2.0,
       this.keyboardAppearance,
       this.onEditingComplete,
+      this.textDirection,
       this.scrollPadding: const EdgeInsets.all(20.0)});
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
@@ -1427,6 +1434,7 @@ class TextFieldConfiguration<T> {
       VoidCallback onEditingComplete,
       EdgeInsets scrollPadding,
       TextCapitalization textCapitalization,
+      TextDirection textDirection,
       TextInputAction textInputAction}) {
     return TextFieldConfiguration(
         decoration: decoration ?? this.decoration,
@@ -1452,7 +1460,8 @@ class TextFieldConfiguration<T> {
         onEditingComplete: onEditingComplete ?? this.onEditingComplete,
         scrollPadding: scrollPadding ?? this.scrollPadding,
         textCapitalization: textCapitalization ?? this.textCapitalization,
-        textInputAction: textInputAction ?? this.textInputAction);
+        textInputAction: textInputAction ?? this.textInputAction,
+        textDirection: textDirection ?? this.textDirection);
   }
 }
 
