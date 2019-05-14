@@ -1543,8 +1543,8 @@ class _SuggestionsBox {
         await Future.delayed(const Duration(milliseconds: 170));
         timer += 170;
         
-        if (MediaQuery.of(context).viewInsets != initial ||
-            _findRootMediaQuery() != initialRootMediaQuery) {
+        if (widgetMounted && (MediaQuery.of(context).viewInsets != initial ||
+            _findRootMediaQuery() != initialRootMediaQuery)) {
           return true;
         }
       }
