@@ -1029,7 +1029,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         // if it wasn't removed in the meantime
         setState(() {
           double animationStart = widget.animationStart;
-          if (error != null || suggestions.length == 0) {
+          if (error != null || suggestions == null || suggestions.length == 0) {
             animationStart = 1.0;
           }
           this._animationController.forward(from: animationStart);
