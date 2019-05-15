@@ -283,6 +283,7 @@ class TypeAheadFormField<T> extends FormField<String> {
       bool hideOnError: false,
       bool hideSuggestionsOnKeyboardHide: true,
       bool keepSuggestionsOnLoading: true,
+      bool keepSuggestionsOnSuggestionSelected: false,
       bool autoFlipDirection: false})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
@@ -324,6 +325,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 hideOnError: hideOnError,
                 hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
                 keepSuggestionsOnLoading: keepSuggestionsOnLoading,
+                keepSuggestionsOnSuggestionSelected: keepSuggestionsOnSuggestionSelected,
                 autoFlipDirection: autoFlipDirection,
               );
             });
@@ -632,6 +634,19 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to true.
   final bool keepSuggestionsOnLoading;
 
+  /// If set to true, the suggestions box will remain opened even after
+  /// selecting a suggestion.
+  /// 
+  /// Note that if this is enabled, the only way
+  /// to close the suggestions box is either manually via the 
+  /// `SuggestionsBoxController` or when the user closes the software 
+  /// keyboard if `hideSuggestionsOnKeyboardHide` is set to true. Users 
+  /// with a physical keyboard will be unable to close the
+  /// box without a manual way via `SuggestionsBoxController`.
+  /// 
+  /// Defaults to false.
+  final bool keepSuggestionsOnSuggestionSelected;
+
   /// If set to true, in the case where the suggestions box has less than
   /// _SuggestionsBoxController.minOverlaySpace to grow in the desired [direction], the direction axis
   /// will be temporarily flipped if there's more room available in the opposite
@@ -664,6 +679,7 @@ class TypeAheadField<T> extends StatefulWidget {
       this.hideOnError: false,
       this.hideSuggestionsOnKeyboardHide: true,
       this.keepSuggestionsOnLoading: true,
+      this.keepSuggestionsOnSuggestionSelected: false,
       this.autoFlipDirection: false})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
@@ -811,8 +827,10 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         animationStart: widget.animationStart,
         getImmediateSuggestions: widget.getImmediateSuggestions,
         onSuggestionSelected: (T selection) {
-          this._effectiveFocusNode.unfocus();
-          this._suggestionsBox.close();
+          if (!widget.keepSuggestionsOnSuggestionSelected) {
+            this._effectiveFocusNode.unfocus();
+            this._suggestionsBox.close();
+          }
           widget.onSuggestionSelected(selection);
         },
         itemBuilder: widget.itemBuilder,
