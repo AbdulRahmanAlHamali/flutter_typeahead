@@ -551,7 +551,7 @@ class TypeAheadField<T> extends StatefulWidget {
   /// This argument is best used with [animationDuration] and [animationStart]
   /// to fully control the animation.
   ///
-  /// To fully remove the animation, just return `suggstionsBox`
+  /// To fully remove the animation, just return `suggestionsBox`
   ///
   /// If not specified, a [SizeTransition](https://docs.flutter.io/flutter/widgets/SizeTransition-class.html) is shown.
   final AnimationTransitionBuilder transitionBuilder;
@@ -1542,7 +1542,7 @@ class _SuggestionsBox {
         // TODO: reduce delay if showDialog ever exposes detection of animation end
         await Future.delayed(const Duration(milliseconds: 170));
         timer += 170;
-        
+
         if (MediaQuery.of(context).viewInsets != initial ||
             _findRootMediaQuery() != initialRootMediaQuery) {
           return true;
@@ -1677,6 +1677,8 @@ class _SuggestionsBox {
   }
 }
 
+/// Supply an instance of this class to the [TypeAhead.suggestionsBoxController]
+/// property to manually control the suggestions box
 class SuggestionsBoxController {
   _SuggestionsBox _suggestionsBox;
 
