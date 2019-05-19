@@ -27,9 +27,14 @@ You can import the package with:
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 ```
 
-and then use it as follows:
+For Cupertino users import:
+```dart
+import 'package:flutter_typeahead/cupertino_flutter_typeahead.dart';
+```
 
-### Example 1:
+Use it as follows:
+
+### Material Example 1:
 ```dart
 TypeAheadField(
   textFieldConfiguration: TextFieldConfiguration(
@@ -78,7 +83,7 @@ suggestion. In this example, when the user taps a
 suggestion, we navigate to a page that shows us the information of the
 tapped product.
 
-### Example 2:
+### Material Example 2:
 Here's another example, where we use the TypeAheadFormField inside a `Form`:
 ```dart
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -153,6 +158,9 @@ The `transitionBuilder` allows us to customize the animation of the
 suggestion box. In this example, we are returning the suggestionsBox
 immediately, meaning that we don't want any animation.
 
+### Cupertino Example:
+Please see the Cupertino code in the example project.
+
 ## Known Issues
 
 ### Animations
@@ -184,6 +192,9 @@ void initState() {
     super.dispose();
 }
 ```
+
+### Cupertino
+The Cupertino classes in TypeAhead are still new. There are also differences in the Cupertino widgets vs the Material ones. Some behavior will not translate when moving between the two.
 
 #### Dialogs
 There is a known issue with opening dialogs where the suggestions box will sometimes appear too small. This is a timing issue caused by the animations described above. Currently, `showDialog` has a duration of 150 ms for the animations. TypeAheadField has a delay of 170 ms to compensate for this. Until the end of the animation can be properly detected and fixed using the solution above, this temporary fix will work most of the time. If the suggestions box is too small, closing and reopening the keyboard will usually fix the issue.

@@ -12,6 +12,7 @@ If you plan to submit a PR please do the following:
 - Create a feature branch from the **develop** branch!
 - Following the coding guidlines below
 - Submit the PR against the **develop** branch.
+- Update both Material and Cupertino code if applicable
 
 ## General coding guidlines
 
