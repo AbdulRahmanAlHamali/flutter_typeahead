@@ -115,7 +115,10 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                 suggestionsBoxDecoration: suggestionsBoxDecoration,
                 suggestionsBoxController: suggestionsBoxController,
                 textFieldConfiguration: textFieldConfiguration.copyWith(
-                  onChanged: state.didChange,
+                  onChanged: (text) {
+                    state.didChange(text);
+                    textFieldConfiguration.onChanged(text);
+                  },
                   controller: state._effectiveController,
                 ),
                 suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,

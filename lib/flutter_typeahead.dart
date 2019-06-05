@@ -310,7 +310,10 @@ class TypeAheadFormField<T> extends FormField<String> {
                 textFieldConfiguration: textFieldConfiguration.copyWith(
                   decoration: textFieldConfiguration.decoration
                       .copyWith(errorText: state.errorText),
-                  onChanged: state.didChange,
+                  onChanged: (text) {
+                    state.didChange(text);
+                    textFieldConfiguration.onChanged(text);
+                  },
                   controller: state._effectiveController,
                 ),
                 suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
@@ -325,7 +328,8 @@ class TypeAheadFormField<T> extends FormField<String> {
                 hideOnError: hideOnError,
                 hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
                 keepSuggestionsOnLoading: keepSuggestionsOnLoading,
-                keepSuggestionsOnSuggestionSelected: keepSuggestionsOnSuggestionSelected,
+                keepSuggestionsOnSuggestionSelected:
+                    keepSuggestionsOnSuggestionSelected,
                 autoFlipDirection: autoFlipDirection,
               );
             });
@@ -636,14 +640,14 @@ class TypeAheadField<T> extends StatefulWidget {
 
   /// If set to true, the suggestions box will remain opened even after
   /// selecting a suggestion.
-  /// 
+  ///
   /// Note that if this is enabled, the only way
-  /// to close the suggestions box is either manually via the 
-  /// `SuggestionsBoxController` or when the user closes the software 
-  /// keyboard if `hideSuggestionsOnKeyboardHide` is set to true. Users 
+  /// to close the suggestions box is either manually via the
+  /// `SuggestionsBoxController` or when the user closes the software
+  /// keyboard if `hideSuggestionsOnKeyboardHide` is set to true. Users
   /// with a physical keyboard will be unable to close the
   /// box without a manual way via `SuggestionsBoxController`.
-  /// 
+  ///
   /// Defaults to false.
   final bool keepSuggestionsOnSuggestionSelected;
 
@@ -1561,8 +1565,9 @@ class _SuggestionsBox {
         await Future.delayed(const Duration(milliseconds: 170));
         timer += 170;
 
-        if (widgetMounted && (MediaQuery.of(context).viewInsets != initial ||
-            _findRootMediaQuery() != initialRootMediaQuery)) {
+        if (widgetMounted &&
+            (MediaQuery.of(context).viewInsets != initial ||
+                _findRootMediaQuery() != initialRootMediaQuery)) {
           return true;
         }
       }
