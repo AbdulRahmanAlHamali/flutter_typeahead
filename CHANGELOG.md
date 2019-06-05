@@ -1,3 +1,7 @@
+## 1.6.1 - 05/06/2019
+
+- Fixed onChanged not being called for TypeAheadFormField
+
 ## 1.6.0 - 19/05/2019
 
 - Added CupertinoTypeAheadField for Cupertino users
