@@ -193,6 +193,9 @@ void initState() {
 }
 ```
 
+### Cupertino
+The Cupertino classes in TypeAhead are still new. There are also differences in the Cupertino widgets vs the Material ones. Some behavior will not translate when moving between the two.
+
 #### Dialogs
 There is a known issue with opening dialogs where the suggestions box will sometimes appear too small. This is a timing issue caused by the animations described above. Currently, `showDialog` has a duration of 150 ms for the animations. TypeAheadField has a delay of 170 ms to compensate for this. Until the end of the animation can be properly detected and fixed using the solution above, this temporary fix will work most of the time. If the suggestions box is too small, closing and reopening the keyboard will usually fix the issue.
 
