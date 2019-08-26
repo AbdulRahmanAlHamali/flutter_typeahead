@@ -736,7 +736,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   @override
   void dispose() {
-    this._suggestionsBox._overlayEntry?.remove();
+    if (this._suggestionsBox._isOpened)
+      this._suggestionsBox._overlayEntry?.remove();
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibility.removeListener(_keyboardVisibilityId);
