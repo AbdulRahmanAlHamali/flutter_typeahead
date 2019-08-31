@@ -1706,7 +1706,7 @@ class SuggestionsBoxController {
   _SuggestionsBox _suggestionsBox;
 
   /// Returns opened state
-  bool get isOpened() {
+  bool get isOpened {
     return _suggestionsBox?._isOpened;
   }
 
