@@ -1705,6 +1705,12 @@ class _SuggestionsBox {
 class SuggestionsBoxController {
   _SuggestionsBox _suggestionsBox;
 
+  /// Returns opened state
+  bool get isOpened() {
+    return _suggestionsBox?._isOpened;
+  }
+
+
   /// Opens the suggestions box
   void open() {
     _suggestionsBox?.open();
