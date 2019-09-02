@@ -40,11 +40,11 @@
 ///   suggestionsCallback: (pattern) async {
 ///     return await BackendService.getSuggestions(pattern);
 ///   },
-///   itemBuilder: (context, suggestion) {
+///   itemBuilder: (context, suggestions, index) {
 ///     return ListTile(
 ///       leading: Icon(Icons.shopping_cart),
-///       title: Text(suggestion['name']),
-///       subtitle: Text('\$${suggestion['price']}'),
+///       title: Text(suggestions[index]['name']),
+///       subtitle: Text('\$${suggestions[index]['price']}'),
 ///     );
 ///   },
 ///   onSuggestionSelected: (suggestion) {
@@ -100,9 +100,9 @@
 ///           suggestionsCallback: (pattern) {
 ///             return CitiesService.getSuggestions(pattern);
 ///           },
-///           itemBuilder: (context, suggestion) {
+///           itemBuilder: (context, suggestions, index) {
 ///             return ListTile(
-///               title: Text(suggestion),
+///               title: Text(suggestions[index]),
 ///             );
 ///           },
 ///           transitionBuilder: (context, suggestionsBox, controller) {
@@ -234,12 +234,11 @@ import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
-typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
+typedef Widget ItemBuilder<T>(BuildContext context, List<T> items, int index);
 typedef void SuggestionSelectionCallback<T>(T suggestion);
 typedef Widget ErrorBuilder(BuildContext context, Object error);
 
-typedef AnimationTransitionBuilder(
-    BuildContext context, Widget child, AnimationController controller);
+typedef AnimationTransitionBuilder(BuildContext context, Widget child, AnimationController controller);
 
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 /// implementation of [TypeAheadField], that allows the value to be saved,
@@ -255,37 +254,36 @@ class TypeAheadFormField<T> extends FormField<String> {
   final TextFieldConfiguration textFieldConfiguration;
 
   /// Creates a [TypeAheadFormField]
-  TypeAheadFormField(
-      {Key key,
-        String initialValue,
-        bool getImmediateSuggestions: false,
-        bool autovalidate: false,
-        FormFieldSetter<String> onSaved,
-        FormFieldValidator<String> validator,
-        ErrorBuilder errorBuilder,
-        WidgetBuilder noItemsFoundBuilder,
-        WidgetBuilder loadingBuilder,
-        Duration debounceDuration: const Duration(milliseconds: 300),
-        SuggestionsBoxDecoration suggestionsBoxDecoration:
-        const SuggestionsBoxDecoration(),
-        SuggestionsBoxController suggestionsBoxController,
-        @required SuggestionSelectionCallback<T> onSuggestionSelected,
-        @required ItemBuilder<T> itemBuilder,
-        @required SuggestionsCallback<T> suggestionsCallback,
-        double suggestionsBoxHorizontalOffset: 0.0,
-        double suggestionsBoxVerticalOffset: 5.0,
-        this.textFieldConfiguration: const TextFieldConfiguration(),
-        AnimationTransitionBuilder transitionBuilder,
-        Duration animationDuration: const Duration(milliseconds: 500),
-        double animationStart: 0.25,
-        AxisDirection direction: AxisDirection.down,
-        bool hideOnLoading: false,
-        bool hideOnEmpty: false,
-        bool hideOnError: false,
-        bool hideSuggestionsOnKeyboardHide: true,
-        bool keepSuggestionsOnLoading: true,
-        bool keepSuggestionsOnSuggestionSelected: false,
-        bool autoFlipDirection: false})
+  TypeAheadFormField({Key key,
+    String initialValue,
+    bool getImmediateSuggestions: false,
+    bool autovalidate: false,
+    FormFieldSetter<String> onSaved,
+    FormFieldValidator<String> validator,
+    ErrorBuilder errorBuilder,
+    WidgetBuilder noItemsFoundBuilder,
+    WidgetBuilder loadingBuilder,
+    Duration debounceDuration: const Duration(milliseconds: 300),
+    SuggestionsBoxDecoration suggestionsBoxDecoration:
+    const SuggestionsBoxDecoration(),
+    SuggestionsBoxController suggestionsBoxController,
+    @required SuggestionSelectionCallback<T> onSuggestionSelected,
+    @required ItemBuilder<T> itemBuilder,
+    @required SuggestionsCallback<T> suggestionsCallback,
+    double suggestionsBoxHorizontalOffset: 0.0,
+    double suggestionsBoxVerticalOffset: 5.0,
+    this.textFieldConfiguration: const TextFieldConfiguration(),
+    AnimationTransitionBuilder transitionBuilder,
+    Duration animationDuration: const Duration(milliseconds: 500),
+    double animationStart: 0.25,
+    AxisDirection direction: AxisDirection.down,
+    bool hideOnLoading: false,
+    bool hideOnEmpty: false,
+    bool hideOnError: false,
+    bool hideSuggestionsOnKeyboardHide: true,
+    bool keepSuggestionsOnLoading: true,
+    bool keepSuggestionsOnSuggestionSelected: false,
+    bool autoFlipDirection: false})
       : assert(
   initialValue == null || textFieldConfiguration.controller == null),
         super(
@@ -470,10 +468,10 @@ class TypeAheadField<T> extends StatefulWidget {
   /// suggestion's info. For example:
   ///
   /// ```dart
-  /// itemBuilder: (context, suggestion) {
+  /// itemBuilder: (context, suggestions, index) {
   ///   return ListTile(
   ///     title: Text(suggestion['name']),
-  ///     subtitle: Text('USD' + suggestion['price'].toString())
+  ///     subtitle: Text('USD' + suggestion[index]['price'].toString())
   ///   );
   /// }
   /// ```
@@ -667,32 +665,31 @@ class TypeAheadField<T> extends StatefulWidget {
   final bool autoFlipDirection;
 
   /// Creates a [TypeAheadField]
-  TypeAheadField(
-      {Key key,
-        @required this.suggestionsCallback,
-        @required this.itemBuilder,
-        @required this.onSuggestionSelected,
-        this.textFieldConfiguration: const TextFieldConfiguration(),
-        this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
-        this.debounceDuration: const Duration(milliseconds: 300),
-        this.suggestionsBoxController,
-        this.loadingBuilder,
-        this.noItemsFoundBuilder,
-        this.errorBuilder,
-        this.transitionBuilder,
-        this.animationStart: 0.25,
-        this.animationDuration: const Duration(milliseconds: 500),
-        this.getImmediateSuggestions: false,
-        this.suggestionsBoxHorizontalOffset: 0.0,
-        this.suggestionsBoxVerticalOffset: 5.0,
-        this.direction: AxisDirection.down,
-        this.hideOnLoading: false,
-        this.hideOnEmpty: false,
-        this.hideOnError: false,
-        this.hideSuggestionsOnKeyboardHide: true,
-        this.keepSuggestionsOnLoading: true,
-        this.keepSuggestionsOnSuggestionSelected: false,
-        this.autoFlipDirection: false})
+  TypeAheadField({Key key,
+    @required this.suggestionsCallback,
+    @required this.itemBuilder,
+    @required this.onSuggestionSelected,
+    this.textFieldConfiguration: const TextFieldConfiguration(),
+    this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
+    this.debounceDuration: const Duration(milliseconds: 300),
+    this.suggestionsBoxController,
+    this.loadingBuilder,
+    this.noItemsFoundBuilder,
+    this.errorBuilder,
+    this.transitionBuilder,
+    this.animationStart: 0.25,
+    this.animationDuration: const Duration(milliseconds: 500),
+    this.getImmediateSuggestions: false,
+    this.suggestionsBoxHorizontalOffset: 0.0,
+    this.suggestionsBoxVerticalOffset: 5.0,
+    this.direction: AxisDirection.down,
+    this.hideOnLoading: false,
+    this.hideOnEmpty: false,
+    this.hideOnError: false,
+    this.hideSuggestionsOnKeyboardHide: true,
+    this.keepSuggestionsOnLoading: true,
+    this.keepSuggestionsOnSuggestionSelected: false,
+    this.autoFlipDirection: false})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -721,6 +718,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   TextEditingController get _effectiveController =>
       widget.textFieldConfiguration.controller ?? _textEditingController;
+
   FocusNode get _effectiveFocusNode =>
       widget.textFieldConfiguration.focusNode ?? _focusNode;
   VoidCallback _focusNodeListener;
@@ -729,6 +727,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
   Timer _resizeOnScrollTimer;
+
   // The rate at which the suggestion box will resize when the user is scrolling
   final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
 
@@ -1177,7 +1176,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       padding: const EdgeInsets.all(8.0),
       child: Text(
         'Error: ${this._error}',
-        style: TextStyle(color: Theme.of(context).errorColor),
+        style: TextStyle(color: Theme
+            .of(context)
+            .errorColor),
       ),
     );
   }
@@ -1191,7 +1192,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         'No Items Found!',
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: Theme.of(context).disabledColor, fontSize: 18.0),
+            color: Theme
+                .of(context)
+                .disabledColor, fontSize: 18.0),
       ),
     );
   }
@@ -1203,10 +1206,11 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       shrinkWrap: true,
       reverse: widget.suggestionsBox.direction == AxisDirection.down
           ? false
-          : true, // reverses the list to start at the bottom
+          : true,
+      // reverses the list to start at the bottom
       children: this._suggestions.map((T suggestion) {
         return InkWell(
-          child: widget.itemBuilder(context, suggestion),
+          child: widget.itemBuilder(context, this._suggestions, this._suggestions.indexOf(suggestion)),
           onTap: () {
             widget.onSuggestionSelected(suggestion);
           },
@@ -1258,14 +1262,13 @@ class SuggestionsBoxDecoration {
   final BoxConstraints constraints;
 
   /// Creates a SuggestionsBoxDecoration
-  const SuggestionsBoxDecoration(
-      {this.elevation: 4.0,
-        this.color,
-        this.shape,
-        this.hasScrollbar: true,
-        this.borderRadius,
-        this.shadowColor: const Color(0xFF000000),
-        this.constraints})
+  const SuggestionsBoxDecoration({this.elevation: 4.0,
+    this.color,
+    this.shape,
+    this.hasScrollbar: true,
+    this.borderRadius,
+    this.shadowColor: const Color(0xFF000000),
+    this.constraints})
       : assert(shadowColor != null),
         assert(elevation != null);
 }
@@ -1420,61 +1423,59 @@ class TextFieldConfiguration<T> {
   final TextInputAction textInputAction;
 
   /// Creates a TextFieldConfiguration
-  const TextFieldConfiguration(
-      {this.decoration: const InputDecoration(),
-        this.style,
-        this.controller,
-        this.onChanged,
-        this.onSubmitted,
-        this.obscureText: false,
-        this.maxLengthEnforced: true,
-        this.maxLength,
-        this.maxLines: 1,
-        this.autocorrect: true,
-        this.inputFormatters,
-        this.autofocus: false,
-        this.keyboardType: TextInputType.text,
-        this.enabled: true,
-        this.textAlign: TextAlign.start,
-        this.focusNode,
-        this.cursorColor,
-        this.cursorRadius,
-        this.textInputAction,
-        this.textCapitalization: TextCapitalization.none,
-        this.cursorWidth: 2.0,
-        this.keyboardAppearance,
-        this.onEditingComplete,
-        this.textDirection,
-        this.scrollPadding: const EdgeInsets.all(20.0)});
+  const TextFieldConfiguration({this.decoration: const InputDecoration(),
+    this.style,
+    this.controller,
+    this.onChanged,
+    this.onSubmitted,
+    this.obscureText: false,
+    this.maxLengthEnforced: true,
+    this.maxLength,
+    this.maxLines: 1,
+    this.autocorrect: true,
+    this.inputFormatters,
+    this.autofocus: false,
+    this.keyboardType: TextInputType.text,
+    this.enabled: true,
+    this.textAlign: TextAlign.start,
+    this.focusNode,
+    this.cursorColor,
+    this.cursorRadius,
+    this.textInputAction,
+    this.textCapitalization: TextCapitalization.none,
+    this.cursorWidth: 2.0,
+    this.keyboardAppearance,
+    this.onEditingComplete,
+    this.textDirection,
+    this.scrollPadding: const EdgeInsets.all(20.0)});
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties
-  copyWith(
-      {InputDecoration decoration,
-        TextStyle style,
-        TextEditingController controller,
-        ValueChanged<T> onChanged,
-        ValueChanged<T> onSubmitted,
-        bool obscureText,
-        bool maxLengthEnforced,
-        int maxLength,
-        int maxLines,
-        bool autocorrect,
-        List<TextInputFormatter> inputFormatters,
-        bool autofocus,
-        TextInputType keyboardType,
-        bool enabled,
-        TextAlign textAlign,
-        FocusNode focusNode,
-        Color cursorColor,
-        Radius cursorRadius,
-        double cursorWidth,
-        Brightness keyboardAppearance,
-        VoidCallback onEditingComplete,
-        EdgeInsets scrollPadding,
-        TextCapitalization textCapitalization,
-        TextDirection textDirection,
-        TextInputAction textInputAction}) {
+  copyWith({InputDecoration decoration,
+    TextStyle style,
+    TextEditingController controller,
+    ValueChanged<T> onChanged,
+    ValueChanged<T> onSubmitted,
+    bool obscureText,
+    bool maxLengthEnforced,
+    int maxLength,
+    int maxLines,
+    bool autocorrect,
+    List<TextInputFormatter> inputFormatters,
+    bool autofocus,
+    TextInputType keyboardType,
+    bool enabled,
+    TextAlign textAlign,
+    FocusNode focusNode,
+    Color cursorColor,
+    Radius cursorRadius,
+    double cursorWidth,
+    Brightness keyboardAppearance,
+    VoidCallback onEditingComplete,
+    EdgeInsets scrollPadding,
+    TextCapitalization textCapitalization,
+    TextDirection textDirection,
+    TextInputAction textInputAction}) {
     return TextFieldConfiguration(
         decoration: decoration ?? this.decoration,
         style: style ?? this.style,
@@ -1563,7 +1564,9 @@ class _SuggestionsBox {
   Future<bool> _waitChangeMetrics() async {
     if (widgetMounted) {
       // initial viewInsets which are before the keyboard is toggled
-      EdgeInsets initial = MediaQuery.of(context).viewInsets;
+      EdgeInsets initial = MediaQuery
+          .of(context)
+          .viewInsets;
       // initial MediaQuery for orientation change
       MediaQuery initialRootMediaQuery = _findRootMediaQuery();
 
@@ -1575,7 +1578,9 @@ class _SuggestionsBox {
         timer += 170;
 
         if (widgetMounted &&
-            (MediaQuery.of(context).viewInsets != initial ||
+            (MediaQuery
+                .of(context)
+                .viewInsets != initial ||
                 _findRootMediaQuery() != initialRootMediaQuery)) {
           return true;
         }
@@ -1604,10 +1609,15 @@ class _SuggestionsBox {
     textBoxHeight = box.size.height;
 
     // top of text box
-    double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
+    double textBoxAbsY = box
+        .localToGlobal(Offset.zero)
+        .dy;
 
     // height of window
-    double windowHeight = MediaQuery.of(context).size.height;
+    double windowHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
 
     // we need to find the root MediaQuery for the unsafe area height
     // we cannot use BuildContext.ancestorWidgetOfExactType because
@@ -1617,8 +1627,14 @@ class _SuggestionsBox {
     // height of keyboard
     double keyboardHeight = rootMediaQuery.data.viewInsets.bottom;
 
-    double maxHDesired = _calculateMaxHeight(desiredDirection, box, widget,
-        windowHeight, rootMediaQuery, keyboardHeight, textBoxAbsY);
+    double maxHDesired = _calculateMaxHeight(
+        desiredDirection,
+        box,
+        widget,
+        windowHeight,
+        rootMediaQuery,
+        keyboardHeight,
+        textBoxAbsY);
 
     // if there's enough room in the desired direction, update the direction and the max height
     if (maxHDesired >= minOverlaySpace || !autoFlipDirection) {
@@ -1627,8 +1643,14 @@ class _SuggestionsBox {
     } else {
       // There's not enough room in the desired direction so see how much room is in the opposite direction
       AxisDirection flipped = flipAxisDirection(desiredDirection);
-      double maxHFlipped = _calculateMaxHeight(flipped, box, widget,
-          windowHeight, rootMediaQuery, keyboardHeight, textBoxAbsY);
+      double maxHFlipped = _calculateMaxHeight(
+          flipped,
+          box,
+          widget,
+          windowHeight,
+          rootMediaQuery,
+          keyboardHeight,
+          textBoxAbsY);
 
       // if there's more room in this opposite direction, update the direction and maxHeight
       if (maxHFlipped > maxHDesired) {
@@ -1640,8 +1662,7 @@ class _SuggestionsBox {
     if (maxHeight < 0) maxHeight = 0;
   }
 
-  double _calculateMaxHeight(
-      AxisDirection direction,
+  double _calculateMaxHeight(AxisDirection direction,
       RenderBox box,
       TypeAheadField widget,
       double windowHeight,
@@ -1655,8 +1676,7 @@ class _SuggestionsBox {
         keyboardHeight, textBoxAbsY);
   }
 
-  double _calculateMaxHeightDown(
-      RenderBox box,
+  double _calculateMaxHeightDown(RenderBox box,
       TypeAheadField widget,
       double windowHeight,
       MediaQuery rootMediaQuery,
@@ -1676,8 +1696,7 @@ class _SuggestionsBox {
         2 * widget.suggestionsBoxVerticalOffset;
   }
 
-  double _calculateMaxHeightUp(
-      RenderBox box,
+  double _calculateMaxHeightUp(RenderBox box,
       TypeAheadField widget,
       double windowHeight,
       MediaQuery rootMediaQuery,
