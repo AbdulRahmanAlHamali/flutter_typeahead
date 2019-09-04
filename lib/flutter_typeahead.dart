@@ -261,6 +261,7 @@ class TypeAheadFormField<T> extends FormField<String> {
     FormFieldSetter<String> onSaved,
     FormFieldValidator<String> validator,
     ErrorBuilder errorBuilder,
+    bool showErrorText: true,
     WidgetBuilder noItemsFoundBuilder,
     WidgetBuilder loadingBuilder,
     Duration debounceDuration: const Duration(milliseconds: 300),
@@ -308,7 +309,7 @@ class TypeAheadFormField<T> extends FormField<String> {
               suggestionsBoxController: suggestionsBoxController,
               textFieldConfiguration: textFieldConfiguration.copyWith(
                 decoration: textFieldConfiguration.decoration
-                    .copyWith(errorText: state.errorText),
+                    .copyWith(errorText: showErrorText ? state.errorText : null),
                 onChanged: (text) {
                   state.didChange(text);
                   textFieldConfiguration.onChanged(text);
@@ -830,6 +831,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         decoration: widget.suggestionsBoxDecoration,
         debounceDuration: widget.debounceDuration,
         controller: this._effectiveController,
+        scrollController: this.widget.suggestionsBoxController?.scrollController,
         loadingBuilder: widget.loadingBuilder,
         noItemsFoundBuilder: widget.noItemsFoundBuilder,
         errorBuilder: widget.errorBuilder,
@@ -933,6 +935,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 class _SuggestionsList<T> extends StatefulWidget {
   final _SuggestionsBox suggestionsBox;
   final TextEditingController controller;
+  final ScrollController scrollController;
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T> onSuggestionSelected;
   final SuggestionsCallback<T> suggestionsCallback;
@@ -954,6 +957,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   _SuggestionsList({
     @required this.suggestionsBox,
     this.controller,
+    this.scrollController,
     this.getImmediateSuggestions: false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
@@ -1201,6 +1205,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
   Widget createSuggestionsWidget() {
     Widget child = ListView(
+      controller: widget.scrollController,
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
@@ -1731,7 +1736,12 @@ class _SuggestionsBox {
 /// Supply an instance of this class to the [TypeAhead.suggestionsBoxController]
 /// property to manually control the suggestions box
 class SuggestionsBoxController {
+
+  SuggestionsBoxController({this.scrollController});
+
   _SuggestionsBox _suggestionsBox;
+
+  final ScrollController scrollController;
 
   /// Returns opened state
   bool get isOpened {
