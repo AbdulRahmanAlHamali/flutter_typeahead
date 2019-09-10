@@ -728,6 +728,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         cursorColor: widget.textFieldConfiguration.cursorColor,
         keyboardAppearance: widget.textFieldConfiguration.keyboardAppearance,
         scrollPadding: widget.textFieldConfiguration.scrollPadding,
+        enableInteractiveSelection:
+            widget.textFieldConfiguration.enableInteractiveSelection,
       ),
     );
   }
@@ -1108,6 +1110,7 @@ class CupertinoTextFieldConfiguration<T> {
   final Color cursorColor;
   final Brightness keyboardAppearance;
   final EdgeInsets scrollPadding;
+  final bool enableInteractiveSelection;
 
   /// Creates a CupertinoTextFieldConfiguration
   const CupertinoTextFieldConfiguration({
@@ -1142,41 +1145,44 @@ class CupertinoTextFieldConfiguration<T> {
     this.cursorColor,
     this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20.0),
+    this.enableInteractiveSelection = true,
   });
 
   /// Copies the [CupertinoTextFieldConfiguration] and only changes the specified properties
-  copyWith(
-      {TextEditingController controller,
-      FocusNode focusNode,
-      BoxDecoration decoration,
-      EdgeInsetsGeometry padding,
-      String placeholder,
-      Widget prefix,
-      OverlayVisibilityMode prefixMode,
-      Widget suffix,
-      OverlayVisibilityMode suffixMode,
-      OverlayVisibilityMode clearButtonMode,
-      TextInputType keyboardType,
-      TextInputAction textInputAction,
-      TextCapitalization textCapitalization,
-      TextStyle style,
-      TextAlign textAlign,
-      bool autofocus,
-      bool obscureText,
-      bool autocorrect,
-      int maxLines,
-      int maxLength,
-      bool maxLengthEnforced,
-      ValueChanged<String> onChanged,
-      VoidCallback onEditingComplete,
-      ValueChanged<String> onSubmitted,
-      List<TextInputFormatter> inputFormatters,
-      bool enabled,
-      double cursorWidth,
-      Radius cursorRadius,
-      Color cursorColor,
-      Brightness keyboardAppearance,
-      EdgeInsets scrollPadding}) {
+  copyWith({
+    TextEditingController controller,
+    FocusNode focusNode,
+    BoxDecoration decoration,
+    EdgeInsetsGeometry padding,
+    String placeholder,
+    Widget prefix,
+    OverlayVisibilityMode prefixMode,
+    Widget suffix,
+    OverlayVisibilityMode suffixMode,
+    OverlayVisibilityMode clearButtonMode,
+    TextInputType keyboardType,
+    TextInputAction textInputAction,
+    TextCapitalization textCapitalization,
+    TextStyle style,
+    TextAlign textAlign,
+    bool autofocus,
+    bool obscureText,
+    bool autocorrect,
+    int maxLines,
+    int maxLength,
+    bool maxLengthEnforced,
+    ValueChanged<String> onChanged,
+    VoidCallback onEditingComplete,
+    ValueChanged<String> onSubmitted,
+    List<TextInputFormatter> inputFormatters,
+    bool enabled,
+    double cursorWidth,
+    Radius cursorRadius,
+    Color cursorColor,
+    Brightness keyboardAppearance,
+    EdgeInsets scrollPadding,
+    bool enableInteractiveSelection,
+  }) {
     return CupertinoTextFieldConfiguration(
       controller: controller ?? this.controller,
       focusNode: focusNode ?? this.focusNode,
@@ -1209,6 +1215,8 @@ class CupertinoTextFieldConfiguration<T> {
       cursorColor: cursorColor ?? this.cursorColor,
       keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
       scrollPadding: scrollPadding ?? this.scrollPadding,
+      enableInteractiveSelection:
+          enableInteractiveSelection ?? this.enableInteractiveSelection,
     );
   }
 }
