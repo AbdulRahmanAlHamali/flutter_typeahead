@@ -917,6 +917,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         cursorRadius: widget.textFieldConfiguration.cursorRadius,
         cursorColor: widget.textFieldConfiguration.cursorColor,
         textDirection: widget.textFieldConfiguration.textDirection,
+        enableInteractiveSelection:
+            widget.textFieldConfiguration.enableInteractiveSelection,
       ),
     );
   }
@@ -1410,33 +1412,37 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.textInputAction](https://docs.flutter.io/flutter/material/TextField/textInputAction.html)
   final TextInputAction textInputAction;
 
+  final bool enableInteractiveSelection;
+
   /// Creates a TextFieldConfiguration
-  const TextFieldConfiguration(
-      {this.decoration: const InputDecoration(),
-      this.style,
-      this.controller,
-      this.onChanged,
-      this.onSubmitted,
-      this.obscureText: false,
-      this.maxLengthEnforced: true,
-      this.maxLength,
-      this.maxLines: 1,
-      this.autocorrect: true,
-      this.inputFormatters,
-      this.autofocus: false,
-      this.keyboardType: TextInputType.text,
-      this.enabled: true,
-      this.textAlign: TextAlign.start,
-      this.focusNode,
-      this.cursorColor,
-      this.cursorRadius,
-      this.textInputAction,
-      this.textCapitalization: TextCapitalization.none,
-      this.cursorWidth: 2.0,
-      this.keyboardAppearance,
-      this.onEditingComplete,
-      this.textDirection,
-      this.scrollPadding: const EdgeInsets.all(20.0)});
+  const TextFieldConfiguration({
+    this.decoration: const InputDecoration(),
+    this.style,
+    this.controller,
+    this.onChanged,
+    this.onSubmitted,
+    this.obscureText: false,
+    this.maxLengthEnforced: true,
+    this.maxLength,
+    this.maxLines: 1,
+    this.autocorrect: true,
+    this.inputFormatters,
+    this.autofocus: false,
+    this.keyboardType: TextInputType.text,
+    this.enabled: true,
+    this.textAlign: TextAlign.start,
+    this.focusNode,
+    this.cursorColor,
+    this.cursorRadius,
+    this.textInputAction,
+    this.textCapitalization: TextCapitalization.none,
+    this.cursorWidth: 2.0,
+    this.keyboardAppearance,
+    this.onEditingComplete,
+    this.textDirection,
+    this.scrollPadding: const EdgeInsets.all(20.0),
+    this.enableInteractiveSelection: true,
+  });
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties
@@ -1465,33 +1471,37 @@ class TextFieldConfiguration<T> {
       EdgeInsets scrollPadding,
       TextCapitalization textCapitalization,
       TextDirection textDirection,
-      TextInputAction textInputAction}) {
+      TextInputAction textInputAction,
+      bool enableInteractiveSelection}) {
     return TextFieldConfiguration(
-        decoration: decoration ?? this.decoration,
-        style: style ?? this.style,
-        controller: controller ?? this.controller,
-        onChanged: onChanged ?? this.onChanged,
-        onSubmitted: onSubmitted ?? this.onSubmitted,
-        obscureText: obscureText ?? this.obscureText,
-        maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
-        maxLength: maxLength ?? this.maxLength,
-        maxLines: maxLines ?? this.maxLines,
-        autocorrect: autocorrect ?? this.autocorrect,
-        inputFormatters: inputFormatters ?? this.inputFormatters,
-        autofocus: autofocus ?? this.autofocus,
-        keyboardType: keyboardType ?? this.keyboardType,
-        enabled: enabled ?? this.enabled,
-        textAlign: textAlign ?? this.textAlign,
-        focusNode: focusNode ?? this.focusNode,
-        cursorColor: cursorColor ?? this.cursorColor,
-        cursorRadius: cursorRadius ?? this.cursorRadius,
-        cursorWidth: cursorWidth ?? this.cursorWidth,
-        keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
-        onEditingComplete: onEditingComplete ?? this.onEditingComplete,
-        scrollPadding: scrollPadding ?? this.scrollPadding,
-        textCapitalization: textCapitalization ?? this.textCapitalization,
-        textInputAction: textInputAction ?? this.textInputAction,
-        textDirection: textDirection ?? this.textDirection);
+      decoration: decoration ?? this.decoration,
+      style: style ?? this.style,
+      controller: controller ?? this.controller,
+      onChanged: onChanged ?? this.onChanged,
+      onSubmitted: onSubmitted ?? this.onSubmitted,
+      obscureText: obscureText ?? this.obscureText,
+      maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
+      maxLength: maxLength ?? this.maxLength,
+      maxLines: maxLines ?? this.maxLines,
+      autocorrect: autocorrect ?? this.autocorrect,
+      inputFormatters: inputFormatters ?? this.inputFormatters,
+      autofocus: autofocus ?? this.autofocus,
+      keyboardType: keyboardType ?? this.keyboardType,
+      enabled: enabled ?? this.enabled,
+      textAlign: textAlign ?? this.textAlign,
+      focusNode: focusNode ?? this.focusNode,
+      cursorColor: cursorColor ?? this.cursorColor,
+      cursorRadius: cursorRadius ?? this.cursorRadius,
+      cursorWidth: cursorWidth ?? this.cursorWidth,
+      keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
+      onEditingComplete: onEditingComplete ?? this.onEditingComplete,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
+      textCapitalization: textCapitalization ?? this.textCapitalization,
+      textInputAction: textInputAction ?? this.textInputAction,
+      textDirection: textDirection ?? this.textDirection,
+      enableInteractiveSelection:
+          enableInteractiveSelection ?? this.enableInteractiveSelection,
+    );
   }
 }
 
