@@ -827,7 +827,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void _initOverlayEntry() {
     this._suggestionsBox._bgOverlayEntry = OverlayEntry(builder: (context) {
       return GestureDetector(
-          behavior: HitTestBehavior.translucent,
+          behavior: HitTestBehavior.opaque,
           onTap: () {
             this._suggestionsBox.close();
           },
