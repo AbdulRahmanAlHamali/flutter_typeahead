@@ -11,7 +11,7 @@ authors:
 dependencies:
   flutter:
     sdk: flutter
-  keyboard_visibility: ^0.5.1
+  flutter_keyboard_visibility: ^0.7.0
 
 dev_dependencies:
   flutter_test:
