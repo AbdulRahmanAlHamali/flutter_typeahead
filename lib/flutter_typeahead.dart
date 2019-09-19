@@ -825,6 +825,16 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   }
 
   void _initOverlayEntry() {
+    this._suggestionsBox._bgOverlayEntry = OverlayEntry(builder: (context) {
+      return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            this._suggestionsBox.close();
+          },
+          child: Container()
+      );
+    });
+
     this._suggestionsBox._overlayEntry = OverlayEntry(builder: (context) {
       final suggestionsList = _SuggestionsList<T>(
         suggestionsBox: _suggestionsBox,
@@ -1519,6 +1529,7 @@ class _SuggestionsBox {
   final bool autoFlipDirection;
 
   OverlayEntry _overlayEntry;
+  OverlayEntry _bgOverlayEntry;
   AxisDirection direction;
 
   bool _isOpened = false;
@@ -1534,6 +1545,7 @@ class _SuggestionsBox {
   void open() {
     if (this._isOpened) return;
     assert(this._overlayEntry != null);
+    Overlay.of(context).insert(this._bgOverlayEntry);
     Overlay.of(context).insert(this._overlayEntry);
     this._isOpened = true;
   }
@@ -1542,6 +1554,7 @@ class _SuggestionsBox {
     if (!this._isOpened) return;
     assert(this._overlayEntry != null);
     this._overlayEntry.remove();
+    this._bgOverlayEntry.remove();
     this._isOpened = false;
   }
 
@@ -1601,6 +1614,7 @@ class _SuggestionsBox {
     if (widgetMounted) {
       _adjustMaxHeightAndOrientation();
       _overlayEntry.markNeedsBuild();
+      _bgOverlayEntry.markNeedsBuild();
     }
   }
 
