@@ -722,6 +722,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   Timer _resizeOnScrollTimer;
   // The rate at which the suggestion box will resize when the user is scrolling
   final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
+  // Will have a value if the typeahead is inside a scrollable widget
+  ScrollPosition _scrollPosition;
 
   // Keyboard detection
   KeyboardVisibilityNotification _keyboardVisibility =
@@ -742,6 +744,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
+    _scrollPosition?.removeListener(_scrollResizeListener);
     super.dispose();
   }
 
@@ -791,28 +794,36 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         if (this._effectiveFocusNode.hasFocus) {
           this._suggestionsBox.open();
         }
-
-        ScrollableState scrollableState = Scrollable.of(context);
-        if (scrollableState != null) {
-          // The TypeAheadField is inside a scrollable widget
-          scrollableState.position.isScrollingNotifier.addListener(() {
-            bool isScrolling =
-                scrollableState.position.isScrollingNotifier.value;
-            _resizeOnScrollTimer?.cancel();
-            if (isScrolling) {
-              // Scroll started
-              _resizeOnScrollTimer =
-                  Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
-                _suggestionsBox.resize();
-              });
-            } else {
-              // Scroll finished
-              _suggestionsBox.resize();
-            }
-          });
-        }
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ScrollableState scrollableState = Scrollable.of(context);
+    if (scrollableState != null) {
+      // The TypeAheadField is inside a scrollable widget
+      _scrollPosition = scrollableState.position;
+
+      _scrollPosition.removeListener(_scrollResizeListener);
+      _scrollPosition.isScrollingNotifier.addListener(_scrollResizeListener);
+    }
+  }
+
+  void _scrollResizeListener() {
+    bool isScrolling = _scrollPosition.isScrollingNotifier.value;
+    _resizeOnScrollTimer?.cancel();
+    if (isScrolling) {
+      // Scroll started
+      _resizeOnScrollTimer =
+          Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+        _suggestionsBox.resize();
+      });
+    } else {
+      // Scroll finished
+      _suggestionsBox.resize();
+    }
   }
 
   void _initOverlayEntry() {
