@@ -1,3 +1,12 @@
+## 1.7.0 - 16/10/2019
+
+- Updated keyboard_visibility dependency
+- Scolling bug fix
+- Added new property `enableInteractiveSelection`
+- Fix disposing overlay
+
+Thanks to MisterJimson, davidmartos96, pparadox11, diegoveloper 
+
 ## 1.6.1 - 05/06/2019
 
 - Fixed onChanged not being called for TypeAheadFormField

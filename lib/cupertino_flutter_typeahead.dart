@@ -21,7 +21,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
@@ -527,6 +527,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
   Timer _resizeOnScrollTimer;
   // The rate at which the suggestion box will resize when the user is scrolling
   final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
+  // Will have a value if the typeahead is inside a scrollable widget
+  ScrollPosition _scrollPosition;
 
   // Keyboard detection
   KeyboardVisibilityNotification _keyboardVisibility =
@@ -541,12 +543,14 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
 
   @override
   void dispose() {
+    this._suggestionsBox.close();
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibility.removeListener(_keyboardVisibilityId);
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
+    _scrollPosition?.removeListener(_scrollResizeListener);
     super.dispose();
   }
 
@@ -596,28 +600,36 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         if (this._effectiveFocusNode.hasFocus) {
           this._suggestionsBox.open();
         }
-
-        ScrollableState scrollableState = Scrollable.of(context);
-        if (scrollableState != null) {
-          // The TypeAheadField is inside a scrollable widget
-          scrollableState.position.isScrollingNotifier.addListener(() {
-            bool isScrolling =
-                scrollableState.position.isScrollingNotifier.value;
-            _resizeOnScrollTimer?.cancel();
-            if (isScrolling) {
-              // Scroll started
-              _resizeOnScrollTimer =
-                  Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
-                _suggestionsBox.resize();
-              });
-            } else {
-              // Scroll finished
-              _suggestionsBox.resize();
-            }
-          });
-        }
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ScrollableState scrollableState = Scrollable.of(context);
+    if (scrollableState != null) {
+      // The TypeAheadField is inside a scrollable widget
+      _scrollPosition = scrollableState.position;
+
+      _scrollPosition.removeListener(_scrollResizeListener);
+      _scrollPosition.isScrollingNotifier.addListener(_scrollResizeListener);
+    }
+  }
+
+  void _scrollResizeListener() {
+    bool isScrolling = _scrollPosition.isScrollingNotifier.value;
+    _resizeOnScrollTimer?.cancel();
+    if (isScrolling) {
+      // Scroll started
+      _resizeOnScrollTimer =
+          Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+        _suggestionsBox.resize();
+      });
+    } else {
+      // Scroll finished
+      _suggestionsBox.resize();
+    }
   }
 
   void _initOverlayEntry() {
@@ -728,6 +740,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         cursorColor: widget.textFieldConfiguration.cursorColor,
         keyboardAppearance: widget.textFieldConfiguration.keyboardAppearance,
         scrollPadding: widget.textFieldConfiguration.scrollPadding,
+        enableInteractiveSelection:
+            widget.textFieldConfiguration.enableInteractiveSelection,
       ),
     );
   }
@@ -1108,6 +1122,7 @@ class CupertinoTextFieldConfiguration<T> {
   final Color cursorColor;
   final Brightness keyboardAppearance;
   final EdgeInsets scrollPadding;
+  final bool enableInteractiveSelection;
 
   /// Creates a CupertinoTextFieldConfiguration
   const CupertinoTextFieldConfiguration({
@@ -1142,41 +1157,44 @@ class CupertinoTextFieldConfiguration<T> {
     this.cursorColor,
     this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20.0),
+    this.enableInteractiveSelection = true,
   });
 
   /// Copies the [CupertinoTextFieldConfiguration] and only changes the specified properties
-  copyWith(
-      {TextEditingController controller,
-      FocusNode focusNode,
-      BoxDecoration decoration,
-      EdgeInsetsGeometry padding,
-      String placeholder,
-      Widget prefix,
-      OverlayVisibilityMode prefixMode,
-      Widget suffix,
-      OverlayVisibilityMode suffixMode,
-      OverlayVisibilityMode clearButtonMode,
-      TextInputType keyboardType,
-      TextInputAction textInputAction,
-      TextCapitalization textCapitalization,
-      TextStyle style,
-      TextAlign textAlign,
-      bool autofocus,
-      bool obscureText,
-      bool autocorrect,
-      int maxLines,
-      int maxLength,
-      bool maxLengthEnforced,
-      ValueChanged<String> onChanged,
-      VoidCallback onEditingComplete,
-      ValueChanged<String> onSubmitted,
-      List<TextInputFormatter> inputFormatters,
-      bool enabled,
-      double cursorWidth,
-      Radius cursorRadius,
-      Color cursorColor,
-      Brightness keyboardAppearance,
-      EdgeInsets scrollPadding}) {
+  copyWith({
+    TextEditingController controller,
+    FocusNode focusNode,
+    BoxDecoration decoration,
+    EdgeInsetsGeometry padding,
+    String placeholder,
+    Widget prefix,
+    OverlayVisibilityMode prefixMode,
+    Widget suffix,
+    OverlayVisibilityMode suffixMode,
+    OverlayVisibilityMode clearButtonMode,
+    TextInputType keyboardType,
+    TextInputAction textInputAction,
+    TextCapitalization textCapitalization,
+    TextStyle style,
+    TextAlign textAlign,
+    bool autofocus,
+    bool obscureText,
+    bool autocorrect,
+    int maxLines,
+    int maxLength,
+    bool maxLengthEnforced,
+    ValueChanged<String> onChanged,
+    VoidCallback onEditingComplete,
+    ValueChanged<String> onSubmitted,
+    List<TextInputFormatter> inputFormatters,
+    bool enabled,
+    double cursorWidth,
+    Radius cursorRadius,
+    Color cursorColor,
+    Brightness keyboardAppearance,
+    EdgeInsets scrollPadding,
+    bool enableInteractiveSelection,
+  }) {
     return CupertinoTextFieldConfiguration(
       controller: controller ?? this.controller,
       focusNode: focusNode ?? this.focusNode,
@@ -1209,6 +1227,8 @@ class CupertinoTextFieldConfiguration<T> {
       cursorColor: cursorColor ?? this.cursorColor,
       keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
       scrollPadding: scrollPadding ?? this.scrollPadding,
+      enableInteractiveSelection:
+          enableInteractiveSelection ?? this.enableInteractiveSelection,
     );
   }
 }

@@ -231,7 +231,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
@@ -722,6 +722,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   Timer _resizeOnScrollTimer;
   // The rate at which the suggestion box will resize when the user is scrolling
   final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
+  // Will have a value if the typeahead is inside a scrollable widget
+  ScrollPosition _scrollPosition;
 
   // Keyboard detection
   KeyboardVisibilityNotification _keyboardVisibility =
@@ -736,12 +738,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   @override
   void dispose() {
+    this._suggestionsBox.close();
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibility.removeListener(_keyboardVisibilityId);
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
+    _scrollPosition?.removeListener(_scrollResizeListener);
     super.dispose();
   }
 
@@ -791,28 +795,36 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         if (this._effectiveFocusNode.hasFocus) {
           this._suggestionsBox.open();
         }
-
-        ScrollableState scrollableState = Scrollable.of(context);
-        if (scrollableState != null) {
-          // The TypeAheadField is inside a scrollable widget
-          scrollableState.position.isScrollingNotifier.addListener(() {
-            bool isScrolling =
-                scrollableState.position.isScrollingNotifier.value;
-            _resizeOnScrollTimer?.cancel();
-            if (isScrolling) {
-              // Scroll started
-              _resizeOnScrollTimer =
-                  Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
-                _suggestionsBox.resize();
-              });
-            } else {
-              // Scroll finished
-              _suggestionsBox.resize();
-            }
-          });
-        }
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ScrollableState scrollableState = Scrollable.of(context);
+    if (scrollableState != null) {
+      // The TypeAheadField is inside a scrollable widget
+      _scrollPosition = scrollableState.position;
+
+      _scrollPosition.removeListener(_scrollResizeListener);
+      _scrollPosition.isScrollingNotifier.addListener(_scrollResizeListener);
+    }
+  }
+
+  void _scrollResizeListener() {
+    bool isScrolling = _scrollPosition.isScrollingNotifier.value;
+    _resizeOnScrollTimer?.cancel();
+    if (isScrolling) {
+      // Scroll started
+      _resizeOnScrollTimer =
+          Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+        _suggestionsBox.resize();
+      });
+    } else {
+      // Scroll finished
+      _suggestionsBox.resize();
+    }
   }
 
   void _initOverlayEntry() {
@@ -917,6 +929,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         cursorRadius: widget.textFieldConfiguration.cursorRadius,
         cursorColor: widget.textFieldConfiguration.cursorColor,
         textDirection: widget.textFieldConfiguration.textDirection,
+        enableInteractiveSelection:
+            widget.textFieldConfiguration.enableInteractiveSelection,
       ),
     );
   }
@@ -1410,33 +1424,37 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.textInputAction](https://docs.flutter.io/flutter/material/TextField/textInputAction.html)
   final TextInputAction textInputAction;
 
+  final bool enableInteractiveSelection;
+
   /// Creates a TextFieldConfiguration
-  const TextFieldConfiguration(
-      {this.decoration: const InputDecoration(),
-      this.style,
-      this.controller,
-      this.onChanged,
-      this.onSubmitted,
-      this.obscureText: false,
-      this.maxLengthEnforced: true,
-      this.maxLength,
-      this.maxLines: 1,
-      this.autocorrect: true,
-      this.inputFormatters,
-      this.autofocus: false,
-      this.keyboardType: TextInputType.text,
-      this.enabled: true,
-      this.textAlign: TextAlign.start,
-      this.focusNode,
-      this.cursorColor,
-      this.cursorRadius,
-      this.textInputAction,
-      this.textCapitalization: TextCapitalization.none,
-      this.cursorWidth: 2.0,
-      this.keyboardAppearance,
-      this.onEditingComplete,
-      this.textDirection,
-      this.scrollPadding: const EdgeInsets.all(20.0)});
+  const TextFieldConfiguration({
+    this.decoration: const InputDecoration(),
+    this.style,
+    this.controller,
+    this.onChanged,
+    this.onSubmitted,
+    this.obscureText: false,
+    this.maxLengthEnforced: true,
+    this.maxLength,
+    this.maxLines: 1,
+    this.autocorrect: true,
+    this.inputFormatters,
+    this.autofocus: false,
+    this.keyboardType: TextInputType.text,
+    this.enabled: true,
+    this.textAlign: TextAlign.start,
+    this.focusNode,
+    this.cursorColor,
+    this.cursorRadius,
+    this.textInputAction,
+    this.textCapitalization: TextCapitalization.none,
+    this.cursorWidth: 2.0,
+    this.keyboardAppearance,
+    this.onEditingComplete,
+    this.textDirection,
+    this.scrollPadding: const EdgeInsets.all(20.0),
+    this.enableInteractiveSelection: true,
+  });
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties
@@ -1465,33 +1483,37 @@ class TextFieldConfiguration<T> {
       EdgeInsets scrollPadding,
       TextCapitalization textCapitalization,
       TextDirection textDirection,
-      TextInputAction textInputAction}) {
+      TextInputAction textInputAction,
+      bool enableInteractiveSelection}) {
     return TextFieldConfiguration(
-        decoration: decoration ?? this.decoration,
-        style: style ?? this.style,
-        controller: controller ?? this.controller,
-        onChanged: onChanged ?? this.onChanged,
-        onSubmitted: onSubmitted ?? this.onSubmitted,
-        obscureText: obscureText ?? this.obscureText,
-        maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
-        maxLength: maxLength ?? this.maxLength,
-        maxLines: maxLines ?? this.maxLines,
-        autocorrect: autocorrect ?? this.autocorrect,
-        inputFormatters: inputFormatters ?? this.inputFormatters,
-        autofocus: autofocus ?? this.autofocus,
-        keyboardType: keyboardType ?? this.keyboardType,
-        enabled: enabled ?? this.enabled,
-        textAlign: textAlign ?? this.textAlign,
-        focusNode: focusNode ?? this.focusNode,
-        cursorColor: cursorColor ?? this.cursorColor,
-        cursorRadius: cursorRadius ?? this.cursorRadius,
-        cursorWidth: cursorWidth ?? this.cursorWidth,
-        keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
-        onEditingComplete: onEditingComplete ?? this.onEditingComplete,
-        scrollPadding: scrollPadding ?? this.scrollPadding,
-        textCapitalization: textCapitalization ?? this.textCapitalization,
-        textInputAction: textInputAction ?? this.textInputAction,
-        textDirection: textDirection ?? this.textDirection);
+      decoration: decoration ?? this.decoration,
+      style: style ?? this.style,
+      controller: controller ?? this.controller,
+      onChanged: onChanged ?? this.onChanged,
+      onSubmitted: onSubmitted ?? this.onSubmitted,
+      obscureText: obscureText ?? this.obscureText,
+      maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
+      maxLength: maxLength ?? this.maxLength,
+      maxLines: maxLines ?? this.maxLines,
+      autocorrect: autocorrect ?? this.autocorrect,
+      inputFormatters: inputFormatters ?? this.inputFormatters,
+      autofocus: autofocus ?? this.autofocus,
+      keyboardType: keyboardType ?? this.keyboardType,
+      enabled: enabled ?? this.enabled,
+      textAlign: textAlign ?? this.textAlign,
+      focusNode: focusNode ?? this.focusNode,
+      cursorColor: cursorColor ?? this.cursorColor,
+      cursorRadius: cursorRadius ?? this.cursorRadius,
+      cursorWidth: cursorWidth ?? this.cursorWidth,
+      keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
+      onEditingComplete: onEditingComplete ?? this.onEditingComplete,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
+      textCapitalization: textCapitalization ?? this.textCapitalization,
+      textInputAction: textInputAction ?? this.textInputAction,
+      textDirection: textDirection ?? this.textDirection,
+      enableInteractiveSelection:
+          enableInteractiveSelection ?? this.enableInteractiveSelection,
+    );
   }
 }
 
