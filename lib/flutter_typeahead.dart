@@ -228,10 +228,10 @@ library flutter_typeahead;
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
@@ -725,15 +725,15 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   // Will have a value if the typeahead is inside a scrollable widget
   ScrollPosition _scrollPosition;
 
-  // Keyboard detection
-  KeyboardVisibilityNotification _keyboardVisibility =
-      new KeyboardVisibilityNotification();
-  int _keyboardVisibilityId;
-
   @override
   void didChangeMetrics() {
     // Catch keyboard event and orientation change; resize suggestions list
     this._suggestionsBox.onChangeMetrics();
+
+    // Removes focus when on-screen keyboard is not present
+    if (widget.hideSuggestionsOnKeyboardHide && window.viewInsets.bottom == 0) {
+      _effectiveFocusNode.unfocus();
+    }
   }
 
   @override
@@ -741,7 +741,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBox.close();
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
-    _keyboardVisibility.removeListener(_keyboardVisibilityId);
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
@@ -765,15 +764,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBox =
         _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-
-    // hide suggestions box on keyboard closed
-    this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
-      onChange: (bool visible) {
-        if (widget.hideSuggestionsOnKeyboardHide && !visible) {
-          _effectiveFocusNode.unfocus();
-        }
-      },
-    );
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode.hasFocus) {

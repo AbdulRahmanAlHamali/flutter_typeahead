@@ -1,7 +1,11 @@
+## 1.7.1 - 20/11/2019
+- Removed `flutter_keyboard_visibility` dependency
+- Supports Flutter Web
+
 ## 1.7.0 - 16/10/2019
 
 - Updated keyboard_visibility dependency
-- Scolling bug fix
+- Scrolling bug fix
 - Added new property `enableInteractiveSelection`
 - Fix disposing overlay
 
