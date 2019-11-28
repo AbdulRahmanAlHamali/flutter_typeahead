@@ -1081,8 +1081,11 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   @override
   void dispose() {
     _animationController.dispose();
+    try {
+      widget.controller.removeListener(this._controllerListener);
+    } catch (e) {}
+
     super.dispose();
-    widget.controller.removeListener(this._controllerListener);
   }
 
   @override
