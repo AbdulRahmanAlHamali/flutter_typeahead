@@ -1538,6 +1538,8 @@ class _SuggestionsBox {
   double textBoxHeight = 100.0;
   double directionUpOffset;
 
+  get isOpened => _isOpened;
+
   _SuggestionsBox(this.context, this.direction, this.autoFlipDirection)
       : desiredDirection = direction;
 
@@ -1729,6 +1731,8 @@ class _SuggestionsBox {
 /// property to manually control the suggestions box
 class SuggestionsBoxController {
   _SuggestionsBox _suggestionsBox;
+
+  get isOpened => _suggestionsBox.isOpened;
 
   /// Opens the suggestions box
   void open() {
