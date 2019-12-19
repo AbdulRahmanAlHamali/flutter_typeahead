@@ -915,6 +915,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         inputFormatters: widget.textFieldConfiguration.inputFormatters,
         autocorrect: widget.textFieldConfiguration.autocorrect,
         maxLines: widget.textFieldConfiguration.maxLines,
+        minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
         obscureText: widget.textFieldConfiguration.obscureText,
@@ -1355,6 +1356,11 @@ class TextFieldConfiguration<T> {
   ///
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
   final int maxLines;
+  
+  /// The minimum number of lines to occupy when the content spans fewer lines.
+  ///
+  /// Same as [TextField.minLines](https://docs.flutter.io/flutter/material/TextField/minLines.html)
+  final int minLines;
 
   /// The maximum number of characters (Unicode scalar values) to allow in the
   /// text field.
@@ -1437,6 +1443,7 @@ class TextFieldConfiguration<T> {
     this.maxLengthEnforced: true,
     this.maxLength,
     this.maxLines: 1,
+    this.minLines,
     this.autocorrect: true,
     this.inputFormatters,
     this.autofocus: false,
@@ -1468,6 +1475,7 @@ class TextFieldConfiguration<T> {
       bool maxLengthEnforced,
       int maxLength,
       int maxLines,
+      int minLines,
       bool autocorrect,
       List<TextInputFormatter> inputFormatters,
       bool autofocus,
@@ -1495,6 +1503,7 @@ class TextFieldConfiguration<T> {
       maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
       maxLength: maxLength ?? this.maxLength,
       maxLines: maxLines ?? this.maxLines,
+      minLines: minLines ?? this.minLines,
       autocorrect: autocorrect ?? this.autocorrect,
       inputFormatters: inputFormatters ?? this.inputFormatters,
       autofocus: autofocus ?? this.autofocus,
