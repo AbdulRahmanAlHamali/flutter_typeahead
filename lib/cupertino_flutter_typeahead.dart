@@ -25,6 +25,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
+typedef void OnTapCallback();
 typedef void SuggestionSelectionCallback<T>(T suggestion);
 typedef Widget ErrorBuilder(BuildContext context, Object error);
 
@@ -76,6 +77,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
       CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration:
           const CupertinoSuggestionsBoxDecoration(),
       CupertinoSuggestionsBoxController suggestionsBoxController,
+      OnTapCallback onTap,
       @required SuggestionSelectionCallback<T> onSuggestionSelected,
       @required ItemBuilder<T> itemBuilder,
       @required SuggestionsCallback<T> suggestionsCallback,
@@ -122,6 +124,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                   controller: state._effectiveController,
                 ),
                 suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
+                onTap: onTap,
                 onSuggestionSelected: onSuggestionSelected,
                 itemBuilder: itemBuilder,
                 suggestionsCallback: suggestionsCallback,
@@ -240,6 +243,19 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// }
   /// ```
   final SuggestionsCallback<T> suggestionsCallback;
+
+  /// Called when the [TypeAheadField] is tapped.
+  ///
+  /// This callback must not be null. It is called by the TypeAhead widget and
+  /// will execute the function specified.
+  ///
+  /// For example:
+  /// ```dart
+  /// onTap: () {
+  ///   print("TypeAheadField was tapped");
+  /// }
+  /// ```
+  final OnTapCallback onTap;
 
   /// Called when a suggestion is tapped.
   ///
@@ -469,6 +485,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
       @required this.suggestionsCallback,
       @required this.itemBuilder,
       @required this.onSuggestionSelected,
+      this.onTap,
       this.textFieldConfiguration: const CupertinoTextFieldConfiguration(),
       this.suggestionsBoxDecoration: const CupertinoSuggestionsBoxDecoration(),
       this.debounceDuration: const Duration(milliseconds: 300),
@@ -711,6 +728,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       child: CupertinoTextField(
         controller: this._effectiveController,
         focusNode: this._effectiveFocusNode,
+        onTap: widget.onTap,
         decoration: widget.textFieldConfiguration.decoration,
         padding: widget.textFieldConfiguration.padding,
         placeholder: widget.textFieldConfiguration.placeholder,

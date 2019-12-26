@@ -55,6 +55,9 @@ class NavigationExample extends StatelessWidget {
                   border: OutlineInputBorder(),
                   hintText: 'What are you looking for?'),
             ),
+            onTap: () {
+              print("TypeAheadField was tapped");
+            },
             suggestionsCallback: (pattern) async {
               return await BackendService.getSuggestions(pattern);
             },

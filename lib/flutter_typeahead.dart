@@ -235,6 +235,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
+typedef void OnTapCallback();
 typedef void SuggestionSelectionCallback<T>(T suggestion);
 typedef Widget ErrorBuilder(BuildContext context, Object error);
 
@@ -269,6 +270,7 @@ class TypeAheadFormField<T> extends FormField<String> {
       SuggestionsBoxDecoration suggestionsBoxDecoration:
           const SuggestionsBoxDecoration(),
       SuggestionsBoxController suggestionsBoxController,
+      OnTapCallback onTap,
       @required SuggestionSelectionCallback<T> onSuggestionSelected,
       @required ItemBuilder<T> itemBuilder,
       @required SuggestionsCallback<T> suggestionsCallback,
@@ -317,6 +319,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                   controller: state._effectiveController,
                 ),
                 suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
+                onTap: onTap,
                 onSuggestionSelected: onSuggestionSelected,
                 itemBuilder: itemBuilder,
                 suggestionsCallback: suggestionsCallback,
@@ -434,6 +437,19 @@ class TypeAheadField<T> extends StatefulWidget {
   /// }
   /// ```
   final SuggestionsCallback<T> suggestionsCallback;
+
+  /// Called when the [TypeAheadField] is tapped.
+  ///
+  /// This callback must not be null. It is called by the TypeAhead widget and
+  /// will execute the function specified.
+  ///
+  /// For example:
+  /// ```dart
+  /// onTap: () {
+  ///   print("TypeAheadField was tapped");
+  /// }
+  /// ```
+  final OnTapCallback onTap;
 
   /// Called when a suggestion is tapped.
   ///
@@ -665,6 +681,7 @@ class TypeAheadField<T> extends StatefulWidget {
       @required this.suggestionsCallback,
       @required this.itemBuilder,
       @required this.onSuggestionSelected,
+      this.onTap,
       this.textFieldConfiguration: const TextFieldConfiguration(),
       this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
       this.debounceDuration: const Duration(milliseconds: 300),
@@ -906,6 +923,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       child: TextField(
         focusNode: this._effectiveFocusNode,
         controller: this._effectiveController,
+        onTap: widget.onTap,
         decoration: widget.textFieldConfiguration.decoration,
         style: widget.textFieldConfiguration.style,
         textAlign: widget.textFieldConfiguration.textAlign,

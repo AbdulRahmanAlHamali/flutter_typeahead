@@ -45,6 +45,9 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
               textFieldConfiguration: CupertinoTextFieldConfiguration(
                 controller: _typeAheadController,
               ),
+              onTap: () {
+                print("TypeAheadField was tapped");
+              },
               suggestionsCallback: (pattern) {
                 return Future.delayed(
                   Duration(seconds: 1),
