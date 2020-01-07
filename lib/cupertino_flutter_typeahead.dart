@@ -23,7 +23,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
+typedef FutureOr<Iterable<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
 typedef void SuggestionSelectionCallback<T>(T suggestion);
 typedef Widget ErrorBuilder(BuildContext context, Object error);
@@ -805,7 +805,7 @@ class _SuggestionsList<T> extends StatefulWidget {
 
 class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     with SingleTickerProviderStateMixin {
-  List<T> _suggestions;
+  Iterable<T> _suggestions;
   VoidCallback _controllerListener;
   Timer _debounceTimer;
   bool _isLoading, _isQueued;
@@ -866,7 +866,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         this._error = null;
       });
 
-      List<T> suggestions = [];
+      Iterable<T> suggestions = [];
       Object error;
 
       final Object callbackIdentity = Object();
@@ -885,7 +885,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         // if it wasn't removed in the meantime
         setState(() {
           double animationStart = widget.animationStart;
-          if (error != null || suggestions == null || suggestions.length == 0) {
+          if (error != null || suggestions == null || suggestions.isEmpty) {
             animationStart = 1.0;
           }
           this._animationController.forward(from: animationStart);
@@ -924,7 +924,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       } else {
         child = createErrorWidget();
       }
-    } else if (this._suggestions.length == 0) {
+    } else if (this._suggestions.isEmpty) {
       if (widget.hideOnEmpty) {
         child = Container(height: 0);
       } else {
