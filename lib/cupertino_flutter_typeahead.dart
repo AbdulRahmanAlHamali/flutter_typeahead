@@ -23,7 +23,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
+typedef FutureOr<Iterable<T>> SuggestionsCallback<T>(String pattern);
 typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
 typedef void SuggestionSelectionCallback<T>(T suggestion);
 typedef Widget ErrorBuilder(BuildContext context, Object error);
@@ -33,7 +33,10 @@ typedef AnimationTransitionBuilder(
 
 // Cupertino BoxDecoration taken from flutter/lib/src/cupertino/text_field.dart
 const BorderSide _kDefaultRoundedBorderSide = BorderSide(
-  color: CupertinoColors.lightBackgroundGray,
+  color: CupertinoDynamicColor.withBrightness(
+    color: Color(0x33000000),
+    darkColor: Color(0x33FFFFFF),
+  ),
   style: BorderStyle.solid,
   width: 0.0,
 );
@@ -44,8 +47,12 @@ const Border _kDefaultRoundedBorder = Border(
   right: _kDefaultRoundedBorderSide,
 );
 const BoxDecoration _kDefaultRoundedBorderDecoration = BoxDecoration(
+  color: CupertinoDynamicColor.withBrightness(
+    color: CupertinoColors.white,
+    darkColor: CupertinoColors.black,
+  ),
   border: _kDefaultRoundedBorder,
-  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+  borderRadius: BorderRadius.all(Radius.circular(5.0)),
 );
 
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
@@ -798,7 +805,7 @@ class _SuggestionsList<T> extends StatefulWidget {
 
 class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     with SingleTickerProviderStateMixin {
-  List<T> _suggestions;
+  Iterable<T> _suggestions;
   VoidCallback _controllerListener;
   Timer _debounceTimer;
   bool _isLoading, _isQueued;
@@ -859,7 +866,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         this._error = null;
       });
 
-      List<T> suggestions = [];
+      Iterable<T> suggestions = [];
       Object error;
 
       final Object callbackIdentity = Object();
@@ -878,7 +885,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         // if it wasn't removed in the meantime
         setState(() {
           double animationStart = widget.animationStart;
-          if (error != null || suggestions == null || suggestions.length == 0) {
+          if (error != null || suggestions == null || suggestions.isEmpty) {
             animationStart = 1.0;
           }
           this._animationController.forward(from: animationStart);
@@ -917,7 +924,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       } else {
         child = createErrorWidget();
       }
-    } else if (this._suggestions.length == 0) {
+    } else if (this._suggestions.isEmpty) {
       if (widget.hideOnEmpty) {
         child = Container(height: 0);
       } else {
@@ -1042,11 +1049,18 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   Widget createSuggestionsWidget() {
     Widget child = Container(
       decoration: BoxDecoration(
-        color: CupertinoColors.white,
-        border: Border.all(
-          color: CupertinoColors.extraLightBackgroundGray,
-          width: 1.0,
-        ),
+        color: widget.decoration.color != null
+            ? widget.decoration.color
+            : CupertinoColors.white,
+        border: widget.decoration.border != null
+            ? widget.decoration.border
+            : Border.all(
+                color: CupertinoColors.extraLightBackgroundGray,
+                width: 1.0,
+              ),
+        borderRadius: widget.decoration.borderRadius != null
+            ? widget.decoration.borderRadius
+            : null,
       ),
       child: ListView(
         padding: EdgeInsets.zero,
@@ -1057,6 +1071,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
             : true, // reverses the list to start at the bottom
         children: this._suggestions.map((T suggestion) {
           return GestureDetector(
+            behavior: HitTestBehavior.translucent,
             child: widget.itemBuilder(context, suggestion),
             onTap: () {
               widget.onSuggestionSelected(suggestion);
@@ -1082,6 +1097,9 @@ class CupertinoSuggestionsBoxDecoration {
 
   /// The constraints to be applied to the suggestions box
   final BoxConstraints constraints;
+  final Color color;
+  final BoxBorder border;
+  final BorderRadiusGeometry borderRadius;
 
   /// Adds an offset to the suggestions box
   final double offsetX;
@@ -1090,6 +1108,9 @@ class CupertinoSuggestionsBoxDecoration {
   const CupertinoSuggestionsBoxDecoration({
     this.hasScrollbar: true,
     this.constraints,
+    this.color,
+    this.border,
+    this.borderRadius,
     this.offsetX: 0.0
   });
 }
