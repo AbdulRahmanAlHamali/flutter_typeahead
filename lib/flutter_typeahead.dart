@@ -922,6 +922,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         onChanged: widget.textFieldConfiguration.onChanged,
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
+        onTap: widget.textFieldConfiguration.onTap,
         scrollPadding: widget.textFieldConfiguration.scrollPadding,
         textInputAction: widget.textFieldConfiguration.textInputAction,
         textCapitalization: widget.textFieldConfiguration.textCapitalization,
@@ -1415,6 +1416,11 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.onEditingComplete](https://docs.flutter.io/flutter/material/TextField/onEditingComplete.html)
   final VoidCallback onEditingComplete;
 
+  /// Called for each distinct tap except for every second tap of a double tap.
+  ///
+  /// Same as [TextField.onTap](https://docs.flutter.io/flutter/material/TextField/onTap.html)
+  final GestureTapCallback onTap;
+
   /// Configures padding to edges surrounding a Scrollable when the Textfield scrolls into view.
   ///
   /// Same as [TextField.scrollPadding](https://docs.flutter.io/flutter/material/TextField/scrollPadding.html)
@@ -1458,6 +1464,7 @@ class TextFieldConfiguration<T> {
     this.cursorWidth: 2.0,
     this.keyboardAppearance,
     this.onEditingComplete,
+    this.onTap,
     this.textDirection,
     this.scrollPadding: const EdgeInsets.all(20.0),
     this.enableInteractiveSelection: true,
@@ -1488,6 +1495,7 @@ class TextFieldConfiguration<T> {
       double cursorWidth,
       Brightness keyboardAppearance,
       VoidCallback onEditingComplete,
+      GestureTapCallback onTap,
       EdgeInsets scrollPadding,
       TextCapitalization textCapitalization,
       TextDirection textDirection,
@@ -1516,6 +1524,7 @@ class TextFieldConfiguration<T> {
       cursorWidth: cursorWidth ?? this.cursorWidth,
       keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
       onEditingComplete: onEditingComplete ?? this.onEditingComplete,
+      onTap: onTap ?? this.onTap,
       scrollPadding: scrollPadding ?? this.scrollPadding,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       textInputAction: textInputAction ?? this.textInputAction,
