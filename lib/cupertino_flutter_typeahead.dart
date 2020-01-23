@@ -567,9 +567,19 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBox = _CupertinoSuggestionsBox(
-        context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox = _CupertinoSuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
+    widget.suggestionsBoxController?._effectiveFocusNode = this._effectiveFocusNode;
+
+    this._focusNodeListener = () {
+      if (_effectiveFocusNode.hasFocus) {
+        this._suggestionsBox.open();
+      } else {
+        this._suggestionsBox.close();
+      }
+    };
+
+    this._effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
     this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
@@ -580,21 +590,11 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       },
     );
 
-    this._focusNodeListener = () {
-      if (_effectiveFocusNode.hasFocus) {
-        this._suggestionsBox.open();
-      } else {
-        this._suggestionsBox.close();
-      }
-    };
-
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       if (mounted) {
         this._initOverlayEntry();
         // calculate initial suggestions list size
         this._suggestionsBox.resize();
-
-        this._effectiveFocusNode.addListener(_focusNodeListener);
 
         // in case we already missed the focus event
         if (this._effectiveFocusNode.hasFocus) {
@@ -894,8 +894,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   @override
   void dispose() {
     _animationController.dispose();
+    // when this suggestions list is closed, text changes are no longer being listened for
+    widget.controller?.removeListener(this._controllerListener);
     super.dispose();
-    widget.controller.removeListener(this._controllerListener);
   }
 
   @override
@@ -1456,24 +1457,29 @@ class _CupertinoSuggestionsBox {
 /// property to manually control the suggestions box
 class CupertinoSuggestionsBoxController {
   _CupertinoSuggestionsBox _suggestionsBox;
+  FocusNode _effectiveFocusNode;
 
   /// Opens the suggestions box
   void open() {
-    _suggestionsBox?.open();
+    _effectiveFocusNode.requestFocus();
   }
 
   /// Closes the suggestions box
   void close() {
-    _suggestionsBox?.close();
+    _effectiveFocusNode.unfocus();
   }
 
   /// Opens the suggestions box if closed and vice-versa
   void toggle() {
-    _suggestionsBox?.toggle();
+    if (_suggestionsBox._isOpened) {
+      close();
+    } else {
+      open();
+    }
   }
 
   /// Recalculates the height of the suggestions box
   void resize() {
-    _suggestionsBox?.resize();
+    _suggestionsBox.resize();
   }
 }
