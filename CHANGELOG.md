@@ -1,6 +1,7 @@
 ## 1.8.0 - 23/01/2020
 
 - Added `onTap` property to `TextFieldConfiguration`
+- Added `offsetX` property to `SuggestionsBoxDecoration` and `CupertinoSuggestionsBoxDecoration`
 
 ## 1.7.0 - 16/10/2019
 

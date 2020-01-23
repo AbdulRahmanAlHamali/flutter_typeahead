@@ -882,7 +882,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           link: this._layerLink,
           showWhenUnlinked: false,
           offset: Offset(
-              0.0,
+              widget.suggestionsBoxDecoration.offsetX,
               _suggestionsBox.direction == AxisDirection.down
                   ? _suggestionsBox.textBoxHeight +
                       widget.suggestionsBoxVerticalOffset
@@ -1264,6 +1264,9 @@ class SuggestionsBoxDecoration {
   /// The constraints to be applied to the suggestions box
   final BoxConstraints constraints;
 
+  /// Adds an offset to the suggestions box
+  final double offsetX;
+
   /// Creates a SuggestionsBoxDecoration
   const SuggestionsBoxDecoration(
       {this.elevation: 4.0,
@@ -1272,7 +1275,8 @@ class SuggestionsBoxDecoration {
       this.hasScrollbar: true,
       this.borderRadius,
       this.shadowColor: const Color(0xFF000000),
-      this.constraints})
+      this.constraints,
+      this.offsetX: 0.0})
       : assert(shadowColor != null),
         assert(elevation != null);
 }
