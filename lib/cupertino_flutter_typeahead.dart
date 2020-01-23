@@ -574,9 +574,19 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBox = _CupertinoSuggestionsBox(
-        context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox = _CupertinoSuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
+    widget.suggestionsBoxController?._effectiveFocusNode = this._effectiveFocusNode;
+
+    this._focusNodeListener = () {
+      if (_effectiveFocusNode.hasFocus) {
+        this._suggestionsBox.open();
+      } else {
+        this._suggestionsBox.close();
+      }
+    };
+
+    this._effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
     this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
@@ -587,21 +597,11 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       },
     );
 
-    this._focusNodeListener = () {
-      if (_effectiveFocusNode.hasFocus) {
-        this._suggestionsBox.open();
-      } else {
-        this._suggestionsBox.close();
-      }
-    };
-
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       if (mounted) {
         this._initOverlayEntry();
         // calculate initial suggestions list size
         this._suggestionsBox.resize();
-
-        this._effectiveFocusNode.addListener(_focusNodeListener);
 
         // in case we already missed the focus event
         if (this._effectiveFocusNode.hasFocus) {
@@ -694,7 +694,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
           link: this._layerLink,
           showWhenUnlinked: false,
           offset: Offset(
-              0.0,
+              widget.suggestionsBoxDecoration.offsetX,
               _suggestionsBox.direction == AxisDirection.down
                   ? _suggestionsBox.textBoxHeight +
                       widget.suggestionsBoxVerticalOffset
@@ -735,10 +735,12 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         obscureText: widget.textFieldConfiguration.obscureText,
         autocorrect: widget.textFieldConfiguration.autocorrect,
         maxLines: widget.textFieldConfiguration.maxLines,
+        minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
         onChanged: widget.textFieldConfiguration.onChanged,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
+        onTap: widget.textFieldConfiguration.onTap,
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
         inputFormatters: widget.textFieldConfiguration.inputFormatters,
         enabled: widget.textFieldConfiguration.enabled,
@@ -899,8 +901,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   @override
   void dispose() {
     _animationController.dispose();
+    // when this suggestions list is closed, text changes are no longer being listened for
+    widget.controller?.removeListener(this._controllerListener);
     super.dispose();
-    widget.controller.removeListener(this._controllerListener);
   }
 
   @override
@@ -1098,6 +1101,9 @@ class CupertinoSuggestionsBoxDecoration {
   final BoxBorder border;
   final BorderRadiusGeometry borderRadius;
 
+  /// Adds an offset to the suggestions box
+  final double offsetX;
+
   /// Creates a [CupertinoSuggestionsBoxDecoration]
   const CupertinoSuggestionsBoxDecoration({
     this.hasScrollbar: true,
@@ -1105,6 +1111,7 @@ class CupertinoSuggestionsBoxDecoration {
     this.color,
     this.border,
     this.borderRadius,
+    this.offsetX: 0.0
   });
 }
 
@@ -1131,10 +1138,12 @@ class CupertinoTextFieldConfiguration<T> {
   final bool obscureText;
   final bool autocorrect;
   final int maxLines;
+  final int minLines;
   final int maxLength;
   final bool maxLengthEnforced;
   final ValueChanged<String> onChanged;
   final VoidCallback onEditingComplete;
+  final GestureTapCallback onTap;
   final ValueChanged<String> onSubmitted;
   final List<TextInputFormatter> inputFormatters;
   final bool enabled;
@@ -1166,10 +1175,12 @@ class CupertinoTextFieldConfiguration<T> {
     this.obscureText = false,
     this.autocorrect = true,
     this.maxLines = 1,
+    this.minLines,
     this.maxLength,
     this.maxLengthEnforced = true,
     this.onChanged,
     this.onEditingComplete,
+    this.onTap,
     this.onSubmitted,
     this.inputFormatters,
     this.enabled,
@@ -1202,10 +1213,12 @@ class CupertinoTextFieldConfiguration<T> {
     bool obscureText,
     bool autocorrect,
     int maxLines,
+    int minLines,
     int maxLength,
     bool maxLengthEnforced,
     ValueChanged<String> onChanged,
     VoidCallback onEditingComplete,
+    GestureTapCallback onTap,
     ValueChanged<String> onSubmitted,
     List<TextInputFormatter> inputFormatters,
     bool enabled,
@@ -1236,10 +1249,12 @@ class CupertinoTextFieldConfiguration<T> {
       obscureText: obscureText ?? this.obscureText,
       autocorrect: autocorrect ?? this.autocorrect,
       maxLines: maxLines ?? this.maxLines,
+      minLines: minLines ?? this.minLines,
       maxLength: maxLength ?? this.maxLength,
       maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
       onChanged: onChanged ?? this.onChanged,
       onEditingComplete: onEditingComplete ?? this.onEditingComplete,
+      onTap: onTap ?? this.onTap,
       onSubmitted: onSubmitted ?? this.onSubmitted,
       inputFormatters: inputFormatters ?? this.inputFormatters,
       enabled: enabled ?? this.enabled,
@@ -1463,24 +1478,29 @@ class _CupertinoSuggestionsBox {
 /// property to manually control the suggestions box
 class CupertinoSuggestionsBoxController {
   _CupertinoSuggestionsBox _suggestionsBox;
+  FocusNode _effectiveFocusNode;
 
   /// Opens the suggestions box
   void open() {
-    _suggestionsBox?.open();
+    _effectiveFocusNode.requestFocus();
   }
 
   /// Closes the suggestions box
   void close() {
-    _suggestionsBox?.close();
+    _effectiveFocusNode.unfocus();
   }
 
   /// Opens the suggestions box if closed and vice-versa
   void toggle() {
-    _suggestionsBox?.toggle();
+    if (_suggestionsBox._isOpened) {
+      close();
+    } else {
+      open();
+    }
   }
 
   /// Recalculates the height of the suggestions box
   void resize() {
-    _suggestionsBox?.resize();
+    _suggestionsBox.resize();
   }
 }
