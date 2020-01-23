@@ -728,6 +728,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         obscureText: widget.textFieldConfiguration.obscureText,
         autocorrect: widget.textFieldConfiguration.autocorrect,
         maxLines: widget.textFieldConfiguration.maxLines,
+        minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
         onChanged: widget.textFieldConfiguration.onChanged,
@@ -1111,6 +1112,7 @@ class CupertinoTextFieldConfiguration<T> {
   final bool obscureText;
   final bool autocorrect;
   final int maxLines;
+  final int minLines;
   final int maxLength;
   final bool maxLengthEnforced;
   final ValueChanged<String> onChanged;
@@ -1147,6 +1149,7 @@ class CupertinoTextFieldConfiguration<T> {
     this.obscureText = false,
     this.autocorrect = true,
     this.maxLines = 1,
+    this.minLines,
     this.maxLength,
     this.maxLengthEnforced = true,
     this.onChanged,
@@ -1184,6 +1187,7 @@ class CupertinoTextFieldConfiguration<T> {
     bool obscureText,
     bool autocorrect,
     int maxLines,
+    int minLines,
     int maxLength,
     bool maxLengthEnforced,
     ValueChanged<String> onChanged,
@@ -1219,6 +1223,7 @@ class CupertinoTextFieldConfiguration<T> {
       obscureText: obscureText ?? this.obscureText,
       autocorrect: autocorrect ?? this.autocorrect,
       maxLines: maxLines ?? this.maxLines,
+      minLines: minLines ?? this.minLines,
       maxLength: maxLength ?? this.maxLength,
       maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
       onChanged: onChanged ?? this.onChanged,
