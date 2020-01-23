@@ -687,7 +687,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
           link: this._layerLink,
           showWhenUnlinked: false,
           offset: Offset(
-              0.0,
+              widget.suggestionsBoxDecoration.offsetX,
               _suggestionsBox.direction == AxisDirection.down
                   ? _suggestionsBox.textBoxHeight +
                       widget.suggestionsBoxVerticalOffset
@@ -1082,10 +1082,14 @@ class CupertinoSuggestionsBoxDecoration {
   /// The constraints to be applied to the suggestions box
   final BoxConstraints constraints;
 
+  /// Adds an offset to the suggestions box
+  final double offsetX;
+
   /// Creates a [CupertinoSuggestionsBoxDecoration]
   const CupertinoSuggestionsBoxDecoration({
     this.hasScrollbar: true,
     this.constraints,
+    this.offsetX: 0.0
   });
 }
 
