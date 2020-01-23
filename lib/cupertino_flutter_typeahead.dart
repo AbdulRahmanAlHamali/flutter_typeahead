@@ -732,6 +732,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
         onChanged: widget.textFieldConfiguration.onChanged,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
+        onTap: widget.textFieldConfiguration.onTap,
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
         inputFormatters: widget.textFieldConfiguration.inputFormatters,
         enabled: widget.textFieldConfiguration.enabled,
@@ -1114,6 +1115,7 @@ class CupertinoTextFieldConfiguration<T> {
   final bool maxLengthEnforced;
   final ValueChanged<String> onChanged;
   final VoidCallback onEditingComplete;
+  final GestureTapCallback onTap;
   final ValueChanged<String> onSubmitted;
   final List<TextInputFormatter> inputFormatters;
   final bool enabled;
@@ -1149,6 +1151,7 @@ class CupertinoTextFieldConfiguration<T> {
     this.maxLengthEnforced = true,
     this.onChanged,
     this.onEditingComplete,
+    this.onTap,
     this.onSubmitted,
     this.inputFormatters,
     this.enabled,
@@ -1185,6 +1188,7 @@ class CupertinoTextFieldConfiguration<T> {
     bool maxLengthEnforced,
     ValueChanged<String> onChanged,
     VoidCallback onEditingComplete,
+    GestureTapCallback onTap,
     ValueChanged<String> onSubmitted,
     List<TextInputFormatter> inputFormatters,
     bool enabled,
@@ -1219,6 +1223,7 @@ class CupertinoTextFieldConfiguration<T> {
       maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
       onChanged: onChanged ?? this.onChanged,
       onEditingComplete: onEditingComplete ?? this.onEditingComplete,
+      onTap: onTap ?? this.onTap,
       onSubmitted: onSubmitted ?? this.onSubmitted,
       inputFormatters: inputFormatters ?? this.inputFormatters,
       enabled: enabled ?? this.enabled,

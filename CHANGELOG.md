@@ -1,3 +1,7 @@
+## 1.8.0 - 23/01/2020
+
+- Added `onTap` property to `TextFieldConfiguration`
+
 ## 1.7.0 - 16/10/2019
 
 - Updated keyboard_visibility dependency
