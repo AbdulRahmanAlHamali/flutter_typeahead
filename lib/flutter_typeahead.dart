@@ -1551,7 +1551,7 @@ class _SuggestionsBox {
   OverlayEntry _overlayEntry;
   AxisDirection direction;
 
-  bool _isOpened = false;
+  bool isOpened = false;
   bool widgetMounted = true;
   double maxHeight = 300.0;
   double textBoxWidth = 100.0;
@@ -1562,21 +1562,21 @@ class _SuggestionsBox {
       : desiredDirection = direction;
 
   void open() {
-    if (this._isOpened) return;
+    if (this.isOpened) return;
     assert(this._overlayEntry != null);
     Overlay.of(context).insert(this._overlayEntry);
-    this._isOpened = true;
+    this.isOpened = true;
   }
 
   void close() {
-    if (!this._isOpened) return;
+    if (!this.isOpened) return;
     assert(this._overlayEntry != null);
     this._overlayEntry.remove();
-    this._isOpened = false;
+    this.isOpened = false;
   }
 
   void toggle() {
-    if (this._isOpened) {
+    if (this.isOpened) {
       this.close();
     } else {
       this.open();
@@ -1763,7 +1763,7 @@ class SuggestionsBoxController {
 
   /// Opens the suggestions box if closed and vice-versa
   void toggle() {
-    if (_suggestionsBox._isOpened) {
+    if (_suggestionsBox.isOpened) {
       close();
     } else {
       open();

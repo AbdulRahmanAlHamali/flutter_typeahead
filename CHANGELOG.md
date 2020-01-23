@@ -1,7 +1,9 @@
 ## 1.8.0 - 23/01/2020
 
+- Change from List to Iterable for flexibility
 - Added `onTap` property to `TextFieldConfiguration`
 - Added `offsetX` property to `SuggestionsBoxDecoration` and `CupertinoSuggestionsBoxDecoration`
+- Support iOS 13 dark mode
 - Bug fixes
 
 ## 1.7.0 - 16/10/2019
