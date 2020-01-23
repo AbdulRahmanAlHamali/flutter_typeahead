@@ -2,6 +2,7 @@
 
 - Added `onTap` property to `TextFieldConfiguration`
 - Added `offsetX` property to `SuggestionsBoxDecoration` and `CupertinoSuggestionsBoxDecoration`
+- Bug fixes
 
 ## 1.7.0 - 16/10/2019
 
