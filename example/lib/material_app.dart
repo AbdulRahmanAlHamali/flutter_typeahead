@@ -132,7 +132,7 @@ class _FormExampleState extends State<FormExample> {
                   this._formKey.currentState.save();
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content:
-                      Text('Your Favorite City is ${this._selectedCity}')));
+                          Text('Your Favorite City is ${this._selectedCity}')));
                 }
               },
             )
@@ -150,10 +150,11 @@ class ScrollExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(children: [
       Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Suggestion box will resize when scrolling"),
-          )),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Suggestion box will resize when scrolling"),
+        ),
+      ),
       SizedBox(height: 200),
       TypeAheadField<String>(
         getImmediateSuggestions: true,
@@ -165,7 +166,7 @@ class ScrollExample extends StatelessWidget {
         suggestionsCallback: (String pattern) async {
           return items
               .where((item) =>
-              item.toLowerCase().startsWith(pattern.toLowerCase()))
+                  item.toLowerCase().startsWith(pattern.toLowerCase()))
               .toList();
         },
         itemBuilder: (context, String suggestion) {
