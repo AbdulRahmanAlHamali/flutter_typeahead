@@ -116,9 +116,7 @@ class _FormExampleState extends State<FormExample> {
                 this._typeAheadController.text = suggestion;
               },
               validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please select a city';
-                }
+                return (value.isEmpty) ? 'Please select a city' : null;
               },
               onSaved: (value) => this._selectedCity = value,
             ),
