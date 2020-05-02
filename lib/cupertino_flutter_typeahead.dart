@@ -538,9 +538,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
   ScrollPosition _scrollPosition;
 
   // Keyboard detection
-  KeyboardVisibilityNotification _keyboardVisibility =
-      new KeyboardVisibilityNotification();
-  int _keyboardVisibilityId;
+  final Stream<bool> _keyboardVisibility = KeyboardVisibility.onChange;
+  StreamSubscription<bool> _keyboardVisibilitySubscription;
 
   @override
   void didChangeMetrics() {
@@ -553,7 +552,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
     this._suggestionsBox.close();
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
-    _keyboardVisibility.removeListener(_keyboardVisibilityId);
+    _keyboardVisibilitySubscription.cancel();
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
@@ -589,13 +588,11 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
     this._effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
-      onChange: (bool visible) {
-        if (widget.hideSuggestionsOnKeyboardHide && !visible) {
-          _effectiveFocusNode.unfocus();
-        }
-      },
-    );
+    this._keyboardVisibilitySubscription = _keyboardVisibility.listen((bool isVisible) {
+      if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
+        _effectiveFocusNode.unfocus();
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       if (mounted) {
