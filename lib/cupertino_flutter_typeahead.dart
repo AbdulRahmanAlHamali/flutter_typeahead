@@ -574,9 +574,11 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBox = _CupertinoSuggestionsBox(context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox = _CupertinoSuggestionsBox(
+        context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-    widget.suggestionsBoxController?._effectiveFocusNode = this._effectiveFocusNode;
+    widget.suggestionsBoxController?._effectiveFocusNode =
+        this._effectiveFocusNode;
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode.hasFocus) {
@@ -1111,7 +1113,7 @@ class CupertinoSuggestionsBoxDecoration {
     this.color,
     this.border,
     this.borderRadius,
-    this.offsetX: 0.0
+    this.offsetX: 0.0,
   });
 }
 

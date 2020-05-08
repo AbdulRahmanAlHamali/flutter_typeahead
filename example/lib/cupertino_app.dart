@@ -63,9 +63,7 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                 _typeAheadController.text = suggestion;
               },
               validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please select a city';
-                }
+                return (value.isEmpty) ? 'Please select a city' : null;
               },
             ),
             SizedBox(

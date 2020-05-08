@@ -1,3 +1,7 @@
+## 2.0.0 - 01/03/2020
+
+- Fix `onChange` and `onSubmitted` callbacks of `TextFormFieldConfiguration`
+
 ## 1.8.0 - 23/01/2020
 
 - Change from List to Iterable for flexibility

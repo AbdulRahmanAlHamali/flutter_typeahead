@@ -762,9 +762,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBox = _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox =
+        _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-    widget.suggestionsBoxController?._effectiveFocusNode = this._effectiveFocusNode;
+    widget.suggestionsBoxController?._effectiveFocusNode =
+        this._effectiveFocusNode;
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode.hasFocus) {
@@ -790,7 +792,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         this._initOverlayEntry();
         // calculate initial suggestions list size
         this._suggestionsBox.resize();
-        
+
         // in case we already missed the focus event
         if (this._effectiveFocusNode.hasFocus) {
           this._suggestionsBox.open();
@@ -1284,7 +1286,7 @@ class SuggestionsBoxDecoration {
 
 /// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
 /// property to configure the displayed text field
-class TextFieldConfiguration<T> {
+class TextFieldConfiguration {
   /// The decoration to show around the text field.
   ///
   /// Same as [TextField.decoration](https://docs.flutter.io/flutter/material/TextField/decoration.html)
@@ -1362,7 +1364,7 @@ class TextFieldConfiguration<T> {
   ///
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
   final int maxLines;
-  
+
   /// The minimum number of lines to occupy when the content spans fewer lines.
   ///
   /// Same as [TextField.minLines](https://docs.flutter.io/flutter/material/TextField/minLines.html)
@@ -1388,13 +1390,13 @@ class TextFieldConfiguration<T> {
   /// Called when the text being edited changes.
   ///
   /// Same as [TextField.onChanged](https://docs.flutter.io/flutter/material/TextField/onChanged.html)
-  final ValueChanged<T> onChanged;
+  final ValueChanged<String> onChanged;
 
   /// Called when the user indicates that they are done editing the text in the
   /// field.
   ///
   /// Same as [TextField.onSubmitted](https://docs.flutter.io/flutter/material/TextField/onSubmitted.html)
-  final ValueChanged<T> onSubmitted;
+  final ValueChanged<String> onSubmitted;
 
   /// The color to use when painting the cursor.
   ///
@@ -1477,12 +1479,12 @@ class TextFieldConfiguration<T> {
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties
-  copyWith(
+  TextFieldConfiguration copyWith(
       {InputDecoration decoration,
       TextStyle style,
       TextEditingController controller,
-      ValueChanged<T> onChanged,
-      ValueChanged<T> onSubmitted,
+      ValueChanged<String> onChanged,
+      ValueChanged<String> onSubmitted,
       bool obscureText,
       bool maxLengthEnforced,
       int maxLength,
