@@ -815,6 +815,18 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   Object _activeCallbackIdentity;
 
   @override
+  void didUpdateWidget(_SuggestionsList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _getSuggestions();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getSuggestions();
+  }
+
+  @override
   void initState() {
     super.initState();
 
