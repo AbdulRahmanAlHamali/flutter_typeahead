@@ -3,10 +3,6 @@ version: 1.8.1
 
 description: A highly customizable typeahead (autocomplete) text input field for Flutter
 homepage: https://github.com/AbdulRahmanAlHamali/flutter_typeahead
-authors:
-  - AbdulRahman AlHamali <a.alhamali93@gmail.com>
-  - Kenneth Liang <kennethliang0@gmail.com>
-  - Steven McDowall <sjm@hawoods.org>
 
 dependencies:
   flutter:
