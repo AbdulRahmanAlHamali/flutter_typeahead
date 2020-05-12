@@ -1,3 +1,6 @@
+## 1.8.1 - 08/04/2020
+- Bug fixes
+
 ## 1.8.0 - 23/01/2020
 
 - Change from List to Iterable for flexibility
