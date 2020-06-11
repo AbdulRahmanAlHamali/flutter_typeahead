@@ -1,3 +1,6 @@
+## 1.8.3 - 11/06/2020
+- Bug Fix : PR to address keyboard visibility issues from @alphamikle
+
 ## 1.8.1 - 08/04/2020
 - Bug fixes
 
