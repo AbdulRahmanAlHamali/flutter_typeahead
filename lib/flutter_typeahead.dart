@@ -726,9 +726,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   ScrollPosition _scrollPosition;
 
   // Keyboard detection
-  KeyboardVisibilityNotification _keyboardVisibility =
-      new KeyboardVisibilityNotification();
-  int _keyboardVisibilityId;
+  final Stream<bool> _keyboardVisibility = KeyboardVisibility.onChange;
+  StreamSubscription<bool> _keyboardVisibilitySubscription;
 
   @override
   void didChangeMetrics() {
@@ -741,7 +740,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBox.close();
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
-    _keyboardVisibility.removeListener(_keyboardVisibilityId);
+    _keyboardVisibilitySubscription.cancel();
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
@@ -777,20 +776,18 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    this._keyboardVisibilityId = _keyboardVisibility.addNewListener(
-      onChange: (bool visible) {
-        if (widget.hideSuggestionsOnKeyboardHide && !visible) {
-          _effectiveFocusNode.unfocus();
-        }
-      },
-    );
+    this._keyboardVisibilitySubscription = _keyboardVisibility.listen((bool isVisible) {
+      if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
+        _effectiveFocusNode.unfocus();
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       if (mounted) {
         this._initOverlayEntry();
         // calculate initial suggestions list size
         this._suggestionsBox.resize();
-        
+
         // in case we already missed the focus event
         if (this._effectiveFocusNode.hasFocus) {
           this._suggestionsBox.open();
@@ -1374,7 +1371,7 @@ class TextFieldConfiguration<T> {
   ///
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
   final int maxLines;
-  
+
   /// The minimum number of lines to occupy when the content spans fewer lines.
   ///
   /// Same as [TextField.minLines](https://docs.flutter.io/flutter/material/TextField/minLines.html)
