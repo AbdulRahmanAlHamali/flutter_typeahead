@@ -312,7 +312,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                       .copyWith(errorText: state.errorText),
                   onChanged: (text) {
                     state.didChange(text);
-                    textFieldConfiguration.onChanged(text);
+                    textFieldConfiguration.onChanged?.call(text);
                   },
                   controller: state._effectiveController,
                 ),
