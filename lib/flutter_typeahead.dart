@@ -993,9 +993,35 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   String _lastTextValue;
   Object _activeCallbackIdentity;
 
+  _SuggestionsListState () {
+    this._controllerListener = () {
+      // If we came here because of a change in selected text, not because of
+      // actual change in text
+      if (widget.controller.text == this._lastTextValue) return;
+
+      this._lastTextValue = widget.controller.text;
+
+      this._debounceTimer?.cancel();
+      this._debounceTimer = Timer(widget.debounceDuration, () async {
+        if (this._debounceTimer.isActive) return;
+        if (_isLoading) {
+          _isQueued = true;
+          return;
+        }
+
+        await this._getSuggestions();
+        while (_isQueued) {
+          _isQueued = false;
+          await this._getSuggestions();
+        }
+      });
+    };
+  }
+
   @override
   void didUpdateWidget(_SuggestionsList oldWidget) {
     super.didUpdateWidget(oldWidget);
+    widget.controller.addListener(this._controllerListener);
     _getSuggestions();
   }
 
@@ -1021,29 +1047,6 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     if (widget.getImmediateSuggestions) {
       this._getSuggestions();
     }
-
-    this._controllerListener = () {
-      // If we came here because of a change in selected text, not because of
-      // actual change in text
-      if (widget.controller.text == this._lastTextValue) return;
-
-      this._lastTextValue = widget.controller.text;
-
-      this._debounceTimer?.cancel();
-      this._debounceTimer = Timer(widget.debounceDuration, () async {
-        if (this._debounceTimer.isActive) return;
-        if (_isLoading) {
-          _isQueued = true;
-          return;
-        }
-
-        await this._getSuggestions();
-        while (_isQueued) {
-          _isQueued = false;
-          await this._getSuggestions();
-        }
-      });
-    };
 
     widget.controller.addListener(this._controllerListener);
   }
