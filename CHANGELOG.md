@@ -1,3 +1,6 @@
+## 1.8.4 - 30/07/2020
+- Bug Fix : Merged 3 PRs for various bug fixes.
+
 ## 1.8.3 - 11/06/2020
 - Bug Fix : PR to address keyboard visibility issues from @alphamikle
 
