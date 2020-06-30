@@ -1157,6 +1157,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       shape: widget.decoration.shape,
       borderRadius: widget.decoration.borderRadius,
       shadowColor: widget.decoration.shadowColor,
+      clipBehavior: widget.decoration.clipBehavior,
       child: ConstrainedBox(
         constraints: constraints,
         child: animationChild,
@@ -1280,6 +1281,11 @@ class SuggestionsBoxDecoration {
   /// Adds an offset to the suggestions box
   final double offsetX;
 
+  /// The content will be clipped (or not) according to this option.
+  ///
+  /// Same as [Material.clipBehavior](https://api.flutter.dev/flutter/material/Material/clipBehavior.html)
+  final Clip clipBehavior;
+
   /// Creates a SuggestionsBoxDecoration
   const SuggestionsBoxDecoration(
       {this.elevation: 4.0,
@@ -1289,6 +1295,7 @@ class SuggestionsBoxDecoration {
       this.borderRadius,
       this.shadowColor: const Color(0xFF000000),
       this.constraints,
+      this.clipBehavior: Clip.none,
       this.offsetX: 0.0})
       : assert(shadowColor != null),
         assert(elevation != null);
