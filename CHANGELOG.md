@@ -1,4 +1,7 @@
-## 1.8.4 - 30/07/2020
+## 1.8.5 - 01/07/2020
+- Dependency Update : Updated flutter_Keyboard_visibility to ^3.0.0 from ^2.0.0
+
+## 1.8.4 - 30/06/2020
 - Bug Fix : Merged 3 PRs for various bug fixes.
 
 ## 1.8.3 - 11/06/2020
