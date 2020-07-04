@@ -803,13 +803,13 @@ class _SuggestionsList<T> extends StatefulWidget {
 class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     with SingleTickerProviderStateMixin {
   Iterable<T> _suggestions;
+  bool _suggestionsValid;
   VoidCallback _controllerListener;
   Timer _debounceTimer;
   bool _isLoading, _isQueued;
   Object _error;
   AnimationController _animationController;
   String _lastTextValue;
-  Object _activeCallbackIdentity;
 
   @override
   void didUpdateWidget(_SuggestionsList oldWidget) {
@@ -832,6 +832,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       duration: widget.animationDuration,
     );
 
+    this._suggestionsValid = false;
     this._isLoading = false;
     this._isQueued = false;
     this._lastTextValue = widget.controller.text;
@@ -855,10 +856,10 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
           return;
         }
 
-        await this._getSuggestions();
+        await this.invalidateSuggestions();
         while (_isQueued) {
           _isQueued = false;
-          await this._getSuggestions();
+          await this.invalidateSuggestions();
         }
       });
     };
@@ -866,7 +867,15 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     widget.controller.addListener(this._controllerListener);
   }
 
+  Future<void> invalidateSuggestions() async {
+    _suggestionsValid = false;
+    _getSuggestions();
+  }
+
   Future<void> _getSuggestions() async {
+    if (_suggestionsValid) return;
+    _suggestionsValid = true;
+
     if (mounted) {
       setState(() {
         this._animationController.forward(from: 1.0);
@@ -878,17 +887,11 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       Iterable<T> suggestions = [];
       Object error;
 
-      final Object callbackIdentity = Object();
-      this._activeCallbackIdentity = callbackIdentity;
-
       try {
         suggestions = await widget.suggestionsCallback(widget.controller.text);
       } catch (e) {
         error = e;
       }
-
-      // If another callback has been issued, omit this one
-      if (this._activeCallbackIdentity != callbackIdentity) return;
 
       if (this.mounted) {
         // if it wasn't removed in the meantime
