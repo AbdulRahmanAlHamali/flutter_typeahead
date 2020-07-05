@@ -1777,7 +1777,7 @@ class SuggestionsBoxController {
 
   /// Closes the suggestions box
   void close() {
-    _effectiveFocusNode.unfocus();
+    _suggestionsBox.close();
   }
 
   /// Opens the suggestions box if closed and vice-versa
