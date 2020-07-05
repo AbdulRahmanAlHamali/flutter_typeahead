@@ -1,3 +1,6 @@
+## 1.8.6 - 05/07/2020
+- Merged PR to fix "flashing" bug.
+
 ## 1.8.5 - 01/07/2020
 - Dependency Update : Updated flutter_Keyboard_visibility to ^3.0.0 from ^2.0.0
 
