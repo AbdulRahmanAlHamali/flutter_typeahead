@@ -745,6 +745,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
     _scrollPosition?.removeListener(_scrollResizeListener);
+    _textEditingController?.dispose();
     super.dispose();
   }
 
@@ -1098,8 +1099,6 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   @override
   void dispose() {
     _animationController.dispose();
-    // when this suggestions list is closed, text changes are no longer being listened for
-    widget.controller?.removeListener(this._controllerListener);
     super.dispose();
   }
 
