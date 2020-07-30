@@ -1,3 +1,6 @@
+## 1.8.7 - 30-July-2020
+- Merged PR to fix dipose() error in tests.
+
 ## 1.8.6 - 05/07/2020
 - Merged PR to fix "flashing" bug.
 
