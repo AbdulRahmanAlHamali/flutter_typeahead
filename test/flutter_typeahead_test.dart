@@ -65,7 +65,7 @@ class TestPageState extends State<TestPage> {
 }
 
 void main() {
-  testWidgets('RewardShopPage no rewards', (WidgetTester tester) async {
+  testWidgets('Tes load and dispose TypeAheadFormField', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: TestPage()));
     await tester.pumpAndSettle();
 
