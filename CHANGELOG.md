@@ -1,3 +1,6 @@
+## 1.8.8 - 12-August-2020
+- Merged PR to fix typo and validator tests and examples using deprecated consts.
+
 ## 1.8.7 - 30-July-2020
 - Merged PR to fix dispose() error in tests.
 
