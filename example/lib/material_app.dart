@@ -115,11 +115,8 @@ class _FormExampleState extends State<FormExample> {
               onSuggestionSelected: (suggestion) {
                 this._typeAheadController.text = suggestion;
               },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please select a city';
-                }
-              },
+              validator: (value) =>
+                  value.isEmpty ? 'Please select a city' : null,
               onSaved: (value) => this._selectedCity = value,
             ),
             SizedBox(
@@ -130,9 +127,12 @@ class _FormExampleState extends State<FormExample> {
               onPressed: () {
                 if (this._formKey.currentState.validate()) {
                   this._formKey.currentState.save();
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
                       content:
-                      Text('Your Favorite City is ${this._selectedCity}')));
+                          Text('Your Favorite City is ${this._selectedCity}'),
+                    ),
+                  );
                 }
               },
             )
@@ -150,10 +150,11 @@ class ScrollExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(children: [
       Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Suggestion box will resize when scrolling"),
-          )),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Suggestion box will resize when scrolling"),
+        ),
+      ),
       SizedBox(height: 200),
       TypeAheadField<String>(
         getImmediateSuggestions: true,
@@ -165,7 +166,7 @@ class ScrollExample extends StatelessWidget {
         suggestionsCallback: (String pattern) async {
           return items
               .where((item) =>
-              item.toLowerCase().startsWith(pattern.toLowerCase()))
+                  item.toLowerCase().startsWith(pattern.toLowerCase()))
               .toList();
         },
         itemBuilder: (context, String suggestion) {
@@ -196,11 +197,11 @@ class ProductPage extends StatelessWidget {
           children: [
             Text(
               this.product['name'],
-              style: Theme.of(context).textTheme.headline,
+              style: Theme.of(context).textTheme.headline5,
             ),
             Text(
               this.product['price'].toString() + ' USD',
-              style: Theme.of(context).textTheme.subhead,
+              style: Theme.of(context).textTheme.subtitle1,
             )
           ],
         ),
