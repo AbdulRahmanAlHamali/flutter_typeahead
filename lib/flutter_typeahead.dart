@@ -259,7 +259,12 @@ class TypeAheadFormField<T> extends FormField<String> {
       {Key key,
       String initialValue,
       bool getImmediateSuggestions: false,
-      bool autovalidate: false,
+      @Deprecated('Use autoValidateMode parameter which provides more specific '
+          'behavior related to auto validation. '
+          'This feature was deprecated after Flutter v1.19.0.')
+          bool autovalidate: false,
+      bool enabled: true,
+      AutovalidateMode autovalidateMode,
       FormFieldSetter<String> onSaved,
       FormFieldValidator<String> validator,
       ErrorBuilder errorBuilder,
@@ -269,9 +274,12 @@ class TypeAheadFormField<T> extends FormField<String> {
       SuggestionsBoxDecoration suggestionsBoxDecoration:
           const SuggestionsBoxDecoration(),
       SuggestionsBoxController suggestionsBoxController,
-      @required SuggestionSelectionCallback<T> onSuggestionSelected,
-      @required ItemBuilder<T> itemBuilder,
-      @required SuggestionsCallback<T> suggestionsCallback,
+      @required
+          SuggestionSelectionCallback<T> onSuggestionSelected,
+      @required
+          ItemBuilder<T> itemBuilder,
+      @required
+          SuggestionsCallback<T> suggestionsCallback,
       double suggestionsBoxVerticalOffset: 5.0,
       this.textFieldConfiguration: const TextFieldConfiguration(),
       AnimationTransitionBuilder transitionBuilder,
@@ -291,10 +299,12 @@ class TypeAheadFormField<T> extends FormField<String> {
             key: key,
             onSaved: onSaved,
             validator: validator,
-            autovalidate: autovalidate,
             initialValue: textFieldConfiguration.controller != null
                 ? textFieldConfiguration.controller.text
                 : (initialValue ?? ''),
+            autovalidate: autovalidate,
+            enabled: enabled,
+            autovalidateMode: autovalidateMode,
             builder: (FormFieldState<String> field) {
               final _TypeAheadFormFieldState state = field;
 
@@ -762,9 +772,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBox = _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox =
+        _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-    widget.suggestionsBoxController?._effectiveFocusNode = this._effectiveFocusNode;
+    widget.suggestionsBoxController?._effectiveFocusNode =
+        this._effectiveFocusNode;
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode.hasFocus) {
@@ -777,7 +789,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    this._keyboardVisibilitySubscription = _keyboardVisibility.listen((bool isVisible) {
+    this._keyboardVisibilitySubscription =
+        _keyboardVisibility.listen((bool isVisible) {
       if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
         _effectiveFocusNode.unfocus();
       }
@@ -994,7 +1007,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   AnimationController _animationController;
   String _lastTextValue;
 
-  _SuggestionsListState () {
+  _SuggestionsListState() {
     this._controllerListener = () {
       // If we came here because of a change in selected text, not because of
       // actual change in text
