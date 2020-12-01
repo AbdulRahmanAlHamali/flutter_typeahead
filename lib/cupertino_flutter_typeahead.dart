@@ -105,7 +105,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
             key: key,
             onSaved: onSaved,
             validator: validator,
-            autovalidate: autovalidate,
+            autovalidateMode: AutovalidateMode.always,
             initialValue: textFieldConfiguration.controller != null
                 ? textFieldConfiguration.controller.text
                 : (initialValue ?? ''),
@@ -538,7 +538,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
   ScrollPosition _scrollPosition;
 
   // Keyboard detection
-  final Stream<bool> _keyboardVisibility = KeyboardVisibility.onChange;
+  final Stream<bool> _keyboardVisibility =
+      KeyboardVisibilityController().onChange;
   StreamSubscription<bool> _keyboardVisibilitySubscription;
 
   @override
@@ -573,9 +574,11 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBox = _CupertinoSuggestionsBox(context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox = _CupertinoSuggestionsBox(
+        context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-    widget.suggestionsBoxController?._effectiveFocusNode = this._effectiveFocusNode;
+    widget.suggestionsBoxController?._effectiveFocusNode =
+        this._effectiveFocusNode;
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode.hasFocus) {
@@ -588,7 +591,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
     this._effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    this._keyboardVisibilitySubscription = _keyboardVisibility.listen((bool isVisible) {
+    this._keyboardVisibilitySubscription =
+        _keyboardVisibility.listen((bool isVisible) {
       if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
         _effectiveFocusNode.unfocus();
       }
@@ -828,7 +832,6 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     super.initState();
 
     this._animationController = AnimationController(
-      vsync: this,
       duration: widget.animationDuration,
     );
 
@@ -1117,14 +1120,13 @@ class CupertinoSuggestionsBoxDecoration {
   final double offsetX;
 
   /// Creates a [CupertinoSuggestionsBoxDecoration]
-  const CupertinoSuggestionsBoxDecoration({
-    this.hasScrollbar: true,
-    this.constraints,
-    this.color,
-    this.border,
-    this.borderRadius,
-    this.offsetX: 0.0
-  });
+  const CupertinoSuggestionsBoxDecoration(
+      {this.hasScrollbar: true,
+      this.constraints,
+      this.color,
+      this.border,
+      this.borderRadius,
+      this.offsetX: 0.0});
 }
 
 /// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
