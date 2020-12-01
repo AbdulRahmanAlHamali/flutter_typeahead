@@ -1172,6 +1172,7 @@ class CupertinoTextFieldConfiguration<T> {
   final ValueChanged<String> onSubmitted;
   final List<TextInputFormatter> inputFormatters;
   final bool enabled;
+  final bool enableSuggestions;
   final double cursorWidth;
   final Radius cursorRadius;
   final Color cursorColor;
@@ -1208,7 +1209,8 @@ class CupertinoTextFieldConfiguration<T> {
     this.onTap,
     this.onSubmitted,
     this.inputFormatters,
-    this.enabled,
+    this.enabled: true,
+    this.enableSuggestions: true,
     this.cursorWidth = 2.0,
     this.cursorRadius = const Radius.circular(2.0),
     this.cursorColor,
@@ -1283,6 +1285,7 @@ class CupertinoTextFieldConfiguration<T> {
       onSubmitted: onSubmitted ?? this.onSubmitted,
       inputFormatters: inputFormatters ?? this.inputFormatters,
       enabled: enabled ?? this.enabled,
+      enableSuggestions: enableSuggestions ?? this.enableSuggestions,
       cursorWidth: cursorWidth ?? this.cursorWidth,
       cursorRadius: cursorRadius ?? this.cursorRadius,
       cursorColor: cursorColor ?? this.cursorColor,

@@ -1375,6 +1375,11 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.enabled](https://docs.flutter.io/flutter/material/TextField/enabled.html)
   final bool enabled;
 
+  /// Whether to show input suggestions as the user types.
+  ///
+  /// Same as [TextField.enableSuggestions](https://api.flutter.dev/flutter/material/TextField/enableSuggestions.html)
+  final bool enableSuggestions;
+
   /// The type of keyboard to use for editing the text.
   ///
   /// Same as [TextField.keyboardType](https://docs.flutter.io/flutter/material/TextField/keyboardType.html)
@@ -1498,6 +1503,7 @@ class TextFieldConfiguration<T> {
     this.autofocus: false,
     this.keyboardType: TextInputType.text,
     this.enabled: true,
+    this.enableSuggestions: true,
     this.textAlign: TextAlign.start,
     this.focusNode,
     this.cursorColor,
@@ -1531,6 +1537,7 @@ class TextFieldConfiguration<T> {
       bool autofocus,
       TextInputType keyboardType,
       bool enabled,
+      bool enableSuggestions,
       TextAlign textAlign,
       FocusNode focusNode,
       Color cursorColor,
@@ -1560,6 +1567,7 @@ class TextFieldConfiguration<T> {
       autofocus: autofocus ?? this.autofocus,
       keyboardType: keyboardType ?? this.keyboardType,
       enabled: enabled ?? this.enabled,
+      enableSuggestions: enableSuggestions ?? this.enableSuggestions,
       textAlign: textAlign ?? this.textAlign,
       focusNode: focusNode ?? this.focusNode,
       cursorColor: cursorColor ?? this.cursorColor,
