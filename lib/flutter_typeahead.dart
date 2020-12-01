@@ -259,7 +259,12 @@ class TypeAheadFormField<T> extends FormField<String> {
       {Key key,
       String initialValue,
       bool getImmediateSuggestions: false,
-      bool autovalidate: false,
+      @Deprecated('Use autoValidateMode parameter which provides more specific '
+          'behavior related to auto validation. '
+          'This feature was deprecated after Flutter v1.19.0.')
+          bool autovalidate: false,
+      bool enabled: true,
+      AutovalidateMode autovalidateMode,
       FormFieldSetter<String> onSaved,
       FormFieldValidator<String> validator,
       ErrorBuilder errorBuilder,
@@ -269,9 +274,12 @@ class TypeAheadFormField<T> extends FormField<String> {
       SuggestionsBoxDecoration suggestionsBoxDecoration:
           const SuggestionsBoxDecoration(),
       SuggestionsBoxController suggestionsBoxController,
-      @required SuggestionSelectionCallback<T> onSuggestionSelected,
-      @required ItemBuilder<T> itemBuilder,
-      @required SuggestionsCallback<T> suggestionsCallback,
+      @required
+          SuggestionSelectionCallback<T> onSuggestionSelected,
+      @required
+          ItemBuilder<T> itemBuilder,
+      @required
+          SuggestionsCallback<T> suggestionsCallback,
       double suggestionsBoxVerticalOffset: 5.0,
       this.textFieldConfiguration: const TextFieldConfiguration(),
       AnimationTransitionBuilder transitionBuilder,
@@ -284,7 +292,8 @@ class TypeAheadFormField<T> extends FormField<String> {
       bool hideSuggestionsOnKeyboardHide: true,
       bool keepSuggestionsOnLoading: true,
       bool keepSuggestionsOnSuggestionSelected: false,
-      bool autoFlipDirection: false})
+      bool autoFlipDirection: false,
+      bool hideKeyboard: false})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         super(
@@ -295,43 +304,45 @@ class TypeAheadFormField<T> extends FormField<String> {
             initialValue: textFieldConfiguration.controller != null
                 ? textFieldConfiguration.controller.text
                 : (initialValue ?? ''),
+            enabled: enabled,
+            autovalidateMode: autovalidateMode,
             builder: (FormFieldState<String> field) {
               final _TypeAheadFormFieldState state = field;
 
               return TypeAheadField(
-                getImmediateSuggestions: getImmediateSuggestions,
-                transitionBuilder: transitionBuilder,
-                errorBuilder: errorBuilder,
-                noItemsFoundBuilder: noItemsFoundBuilder,
-                loadingBuilder: loadingBuilder,
-                debounceDuration: debounceDuration,
-                suggestionsBoxDecoration: suggestionsBoxDecoration,
-                suggestionsBoxController: suggestionsBoxController,
-                textFieldConfiguration: textFieldConfiguration.copyWith(
-                  decoration: textFieldConfiguration.decoration
-                      .copyWith(errorText: state.errorText),
-                  onChanged: (text) {
-                    state.didChange(text);
-                    textFieldConfiguration.onChanged?.call(text);
-                  },
-                  controller: state._effectiveController,
-                ),
-                suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
-                onSuggestionSelected: onSuggestionSelected,
-                itemBuilder: itemBuilder,
-                suggestionsCallback: suggestionsCallback,
-                animationStart: animationStart,
-                animationDuration: animationDuration,
-                direction: direction,
-                hideOnLoading: hideOnLoading,
-                hideOnEmpty: hideOnEmpty,
-                hideOnError: hideOnError,
-                hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
-                keepSuggestionsOnLoading: keepSuggestionsOnLoading,
-                keepSuggestionsOnSuggestionSelected:
-                    keepSuggestionsOnSuggestionSelected,
-                autoFlipDirection: autoFlipDirection,
-              );
+                  getImmediateSuggestions: getImmediateSuggestions,
+                  transitionBuilder: transitionBuilder,
+                  errorBuilder: errorBuilder,
+                  noItemsFoundBuilder: noItemsFoundBuilder,
+                  loadingBuilder: loadingBuilder,
+                  debounceDuration: debounceDuration,
+                  suggestionsBoxDecoration: suggestionsBoxDecoration,
+                  suggestionsBoxController: suggestionsBoxController,
+                  textFieldConfiguration: textFieldConfiguration.copyWith(
+                    decoration: textFieldConfiguration.decoration
+                        .copyWith(errorText: state.errorText),
+                    onChanged: (text) {
+                      state.didChange(text);
+                      textFieldConfiguration.onChanged?.call(text);
+                    },
+                    controller: state._effectiveController,
+                  ),
+                  suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
+                  onSuggestionSelected: onSuggestionSelected,
+                  itemBuilder: itemBuilder,
+                  suggestionsCallback: suggestionsCallback,
+                  animationStart: animationStart,
+                  animationDuration: animationDuration,
+                  direction: direction,
+                  hideOnLoading: hideOnLoading,
+                  hideOnEmpty: hideOnEmpty,
+                  hideOnError: hideOnError,
+                  hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
+                  keepSuggestionsOnLoading: keepSuggestionsOnLoading,
+                  keepSuggestionsOnSuggestionSelected:
+                      keepSuggestionsOnSuggestionSelected,
+                  autoFlipDirection: autoFlipDirection,
+                  hideKeyboard: hideKeyboard);
             });
 
   @override
@@ -658,6 +669,7 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// Defaults to false
   final bool autoFlipDirection;
+  final bool hideKeyboard;
 
   /// Creates a [TypeAheadField]
   TypeAheadField(
@@ -684,7 +696,8 @@ class TypeAheadField<T> extends StatefulWidget {
       this.hideSuggestionsOnKeyboardHide: true,
       this.keepSuggestionsOnLoading: true,
       this.keepSuggestionsOnSuggestionSelected: false,
-      this.autoFlipDirection: false})
+      this.autoFlipDirection: false,
+      this.hideKeyboard: false})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
         assert(onSuggestionSelected != null),
@@ -935,6 +948,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         textDirection: widget.textFieldConfiguration.textDirection,
         enableInteractiveSelection:
             widget.textFieldConfiguration.enableInteractiveSelection,
+        readOnly: widget.hideKeyboard,
       ),
     );
   }
@@ -1362,6 +1376,11 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.enabled](https://docs.flutter.io/flutter/material/TextField/enabled.html)
   final bool enabled;
 
+  /// Whether to show input suggestions as the user types.
+  ///
+  /// Same as [TextField.enableSuggestions](https://api.flutter.dev/flutter/material/TextField/enableSuggestions.html)
+  final bool enableSuggestions;
+
   /// The type of keyboard to use for editing the text.
   ///
   /// Same as [TextField.keyboardType](https://docs.flutter.io/flutter/material/TextField/keyboardType.html)
@@ -1485,6 +1504,7 @@ class TextFieldConfiguration<T> {
     this.autofocus: false,
     this.keyboardType: TextInputType.text,
     this.enabled: true,
+    this.enableSuggestions: true,
     this.textAlign: TextAlign.start,
     this.focusNode,
     this.cursorColor,
@@ -1518,6 +1538,7 @@ class TextFieldConfiguration<T> {
       bool autofocus,
       TextInputType keyboardType,
       bool enabled,
+      bool enableSuggestions,
       TextAlign textAlign,
       FocusNode focusNode,
       Color cursorColor,
@@ -1547,6 +1568,7 @@ class TextFieldConfiguration<T> {
       autofocus: autofocus ?? this.autofocus,
       keyboardType: keyboardType ?? this.keyboardType,
       enabled: enabled ?? this.enabled,
+      enableSuggestions: enableSuggestions ?? this.enableSuggestions,
       textAlign: textAlign ?? this.textAlign,
       focusNode: focusNode ?? this.focusNode,
       cursorColor: cursorColor ?? this.cursorColor,

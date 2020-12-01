@@ -73,7 +73,12 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
       {Key key,
       String initialValue,
       bool getImmediateSuggestions: false,
-      bool autovalidate: false,
+      @Deprecated('Use autoValidateMode parameter which provides more specific '
+          'behavior related to auto validation. '
+          'This feature was deprecated after Flutter v1.19.0.')
+          bool autovalidate: false,
+      bool enabled: true,
+      AutovalidateMode autovalidateMode,
       FormFieldSetter<String> onSaved,
       FormFieldValidator<String> validator,
       ErrorBuilder errorBuilder,
@@ -83,9 +88,12 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
       CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration:
           const CupertinoSuggestionsBoxDecoration(),
       CupertinoSuggestionsBoxController suggestionsBoxController,
-      @required SuggestionSelectionCallback<T> onSuggestionSelected,
-      @required ItemBuilder<T> itemBuilder,
-      @required SuggestionsCallback<T> suggestionsCallback,
+      @required
+          SuggestionSelectionCallback<T> onSuggestionSelected,
+      @required
+          ItemBuilder<T> itemBuilder,
+      @required
+          SuggestionsCallback<T> suggestionsCallback,
       double suggestionsBoxVerticalOffset: 5.0,
       this.textFieldConfiguration: const CupertinoTextFieldConfiguration(),
       AnimationTransitionBuilder transitionBuilder,
@@ -109,6 +117,8 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
             initialValue: textFieldConfiguration.controller != null
                 ? textFieldConfiguration.controller.text
                 : (initialValue ?? ''),
+            enabled: enabled,
+            autovalidateMode: autovalidateMode,
             builder: (FormFieldState<String> field) {
               final _CupertinoTypeAheadFormFieldState state = field;
 
@@ -1162,6 +1172,7 @@ class CupertinoTextFieldConfiguration<T> {
   final ValueChanged<String> onSubmitted;
   final List<TextInputFormatter> inputFormatters;
   final bool enabled;
+  final bool enableSuggestions;
   final double cursorWidth;
   final Radius cursorRadius;
   final Color cursorColor;
@@ -1198,7 +1209,8 @@ class CupertinoTextFieldConfiguration<T> {
     this.onTap,
     this.onSubmitted,
     this.inputFormatters,
-    this.enabled,
+    this.enabled: true,
+    this.enableSuggestions: true,
     this.cursorWidth = 2.0,
     this.cursorRadius = const Radius.circular(2.0),
     this.cursorColor,
@@ -1273,6 +1285,7 @@ class CupertinoTextFieldConfiguration<T> {
       onSubmitted: onSubmitted ?? this.onSubmitted,
       inputFormatters: inputFormatters ?? this.inputFormatters,
       enabled: enabled ?? this.enabled,
+      enableSuggestions: enableSuggestions ?? this.enableSuggestions,
       cursorWidth: cursorWidth ?? this.cursorWidth,
       cursorRadius: cursorRadius ?? this.cursorRadius,
       cursorColor: cursorColor ?? this.cursorColor,
