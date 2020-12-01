@@ -832,6 +832,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     super.initState();
 
     this._animationController = AnimationController(
+      vsync: this,
       duration: widget.animationDuration,
     );
 
