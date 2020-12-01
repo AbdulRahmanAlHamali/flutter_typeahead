@@ -300,10 +300,10 @@ class TypeAheadFormField<T> extends FormField<String> {
             key: key,
             onSaved: onSaved,
             validator: validator,
+            autovalidateMode: AutovalidateMode.always,
             initialValue: textFieldConfiguration.controller != null
                 ? textFieldConfiguration.controller.text
                 : (initialValue ?? ''),
-            autovalidate: autovalidate,
             enabled: enabled,
             autovalidateMode: autovalidateMode,
             builder: (FormFieldState<String> field) {
@@ -739,7 +739,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   ScrollPosition _scrollPosition;
 
   // Keyboard detection
-  final Stream<bool> _keyboardVisibility = KeyboardVisibility.onChange;
+  final Stream<bool> _keyboardVisibility =
+      KeyboardVisibilityController().onChange;
   StreamSubscription<bool> _keyboardVisibilitySubscription;
 
   @override
