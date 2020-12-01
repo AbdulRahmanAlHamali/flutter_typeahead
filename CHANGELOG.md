@@ -1,3 +1,10 @@
+## 1.9.0 - 01-December-2020
+- Merged 4 PRs:
+-- #238 : Added hideKeyboard even if textfield has focus (edge case)
+-- #248 : Added enabled and autovalidateMode properties.  Resolves Issue #247
+-- #249 : Added enableSuggestions to Textfield Configuration.  Resolves Issue #210
+-- #255 : Update to use flutter_keyboard_visibility 4.X from 3.X
+
 ## 1.8.8 - 12-August-2020
 - Merged PR to fix typo and validator tests and examples using deprecated consts.
 
