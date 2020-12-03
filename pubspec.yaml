@@ -1,7 +1,7 @@
 name: flutter_typeahead
-version: 1.9.0
+version: 1.9.1
 
-description: A highly customizable typeahead (autocomplete) text input field for Flutter
+description: Ahighly customizable typeahead (autocomplete) text input field for Flutter
 homepage: https://github.com/AbdulRahmanAlHamali/flutter_typeahead
 
 dependencies:
