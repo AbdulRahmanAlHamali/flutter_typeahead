@@ -1142,7 +1142,7 @@ class CupertinoSuggestionsBoxDecoration {
 /// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
 /// property to configure the displayed text field. See [documentation](https://docs.flutter.io/flutter/cupertino/CupertinoTextField-class.html)
 /// for more information on properties.
-class CupertinoTextFieldConfiguration<T> {
+class CupertinoTextFieldConfiguration {
   final TextEditingController controller;
   final FocusNode focusNode;
   final BoxDecoration decoration;
