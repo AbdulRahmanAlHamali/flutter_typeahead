@@ -1,3 +1,7 @@
+## 1.9.2 - 06-January-2021
+
+-- #267 : Remove undeeded typecasts and add String types
+
 ## 1.9.1 - 03-December-2020
 
 -- #256 : Change default to disabled for autovalidateMode and fix typo
