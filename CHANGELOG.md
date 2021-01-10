@@ -1,4 +1,8 @@
-## 1.9.2 - 06-January-2021
+1.9.3 - 10-January-2021
+
+-- REVERT : Reverting back to 1.9.1 as 1.9.3. 1.9.2 will become 2.0.0
+
+1.9.2 - 06-January-2021
 
 -- #267 : Remove undeeded typecasts and add String types
 

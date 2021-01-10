@@ -1322,7 +1322,7 @@ class SuggestionsBoxDecoration {
 
 /// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
 /// property to configure the displayed text field
-class TextFieldConfiguration {
+class TextFieldConfiguration<T> {
   /// The decoration to show around the text field.
   ///
   /// Same as [TextField.decoration](https://docs.flutter.io/flutter/material/TextField/decoration.html)
@@ -1431,13 +1431,13 @@ class TextFieldConfiguration {
   /// Called when the text being edited changes.
   ///
   /// Same as [TextField.onChanged](https://docs.flutter.io/flutter/material/TextField/onChanged.html)
-  final ValueChanged<String> onChanged;
+  final ValueChanged<T> onChanged;
 
   /// Called when the user indicates that they are done editing the text in the
   /// field.
   ///
   /// Same as [TextField.onSubmitted](https://docs.flutter.io/flutter/material/TextField/onSubmitted.html)
-  final ValueChanged<String> onSubmitted;
+  final ValueChanged<T> onSubmitted;
 
   /// The color to use when painting the cursor.
   ///
@@ -1525,8 +1525,8 @@ class TextFieldConfiguration {
       {InputDecoration decoration,
       TextStyle style,
       TextEditingController controller,
-      ValueChanged<String> onChanged,
-      ValueChanged<String> onSubmitted,
+      ValueChanged<T> onChanged,
+      ValueChanged<T> onSubmitted,
       bool obscureText,
       bool maxLengthEnforced,
       int maxLength,
