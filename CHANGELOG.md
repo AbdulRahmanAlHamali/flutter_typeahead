@@ -1,3 +1,8 @@
+2.0.0 - 11-January-2021
+
+-- NOTE!! BREAKING CHANGE! Not major but changed Types for some calls
+-- RE-APPLY : 1.9.2 will become 2.0.0
+
 1.9.3 - 10-January-2021
 
 -- REVERT : Reverting back to 1.9.1 as 1.9.3. 1.9.2 will become 2.0.0
