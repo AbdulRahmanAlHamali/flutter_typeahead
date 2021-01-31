@@ -1,3 +1,7 @@
+2.1.0-nullsafety.0 - 31-January-2021
+
+-- PR #290 Null-safety
+
 2.0.0 - 11-January-2021
 
 -- NOTE!! BREAKING CHANGE! Not major but changed Types for some calls
