@@ -1072,7 +1072,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
   Future<void> invalidateSuggestions() async {
     _suggestionsValid = false;
-    _getSuggestions();
+    await _getSuggestions();
   }
 
   Future<void> _getSuggestions() async {
