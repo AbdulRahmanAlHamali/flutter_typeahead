@@ -1,6 +1,6 @@
-2.1.0-nullsafety.0 - 31-January-2021
+3.0.0-nullsafety.0 - 9-Feburary-2021
 
--- PR #290 Null-safety
+-- PR #290 Null-safety pre-release
 
 2.0.0 - 11-January-2021
 
