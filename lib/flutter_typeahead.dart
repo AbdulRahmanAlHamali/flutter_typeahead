@@ -988,9 +988,9 @@ class _SuggestionsList<T> extends StatefulWidget {
   _SuggestionsListState<T> createState() => _SuggestionsListState<T>();
 }
 
-class _SuggestionsListState<T> extends State<_SuggestionsList<T?>>
+class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     with SingleTickerProviderStateMixin {
-  Iterable<T?>? _suggestions;
+  Iterable<T>? _suggestions;
   late bool _suggestionsValid;
   late VoidCallback _controllerListener;
   Timer? _debounceTimer;
@@ -1075,7 +1075,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T?>>
         this._error = null;
       });
 
-      Iterable<T?> suggestions = [];
+      Iterable<T> suggestions = [];
       Object? error;
 
       try {
@@ -1234,7 +1234,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T?>>
       reverse: widget.suggestionsBox!.direction == AxisDirection.down
           ? false
           : true, // reverses the list to start at the bottom
-      children: this._suggestions!.map((T? suggestion) {
+      children: this._suggestions!.map((T suggestion) {
         return InkWell(
           child: widget.itemBuilder!(context, suggestion),
           onTap: () {
