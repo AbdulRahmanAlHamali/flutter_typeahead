@@ -1788,6 +1788,10 @@ class SuggestionsBoxController {
   void open() {
     _effectiveFocusNode!.requestFocus();
   }
+    
+  bool isOpened() {
+    return _suggestionsBox!.isOpened;
+  }
 
   /// Closes the suggestions box
   void close() {
