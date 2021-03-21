@@ -21,6 +21,8 @@ the loading bar, the animation, the debounce duration, etc.
 ## Installation
 See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead#-installing-tab-).
 
+Note: As for Typeahead 3.X this package is based on Dart 2.12 (null-safety). You may also want to explore the new built in Flutter 2 widgets that have similar behavior. 
+
 ## Usage examples
 You can import the package with:
 ```dart
