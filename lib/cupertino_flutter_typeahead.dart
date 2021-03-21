@@ -753,6 +753,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         scrollPadding: widget.textFieldConfiguration.scrollPadding,
         enableInteractiveSelection:
             widget.textFieldConfiguration.enableInteractiveSelection,
+        autofillHints: widget.textFieldConfiguration.autofillHints,
       ),
     );
   }
@@ -1155,6 +1156,7 @@ class CupertinoTextFieldConfiguration<T> {
   final Brightness keyboardAppearance;
   final EdgeInsets scrollPadding;
   final bool enableInteractiveSelection;
+  final Iterable<String> autofillHints;
 
   /// Creates a CupertinoTextFieldConfiguration
   const CupertinoTextFieldConfiguration({
@@ -1192,6 +1194,7 @@ class CupertinoTextFieldConfiguration<T> {
     this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20.0),
     this.enableInteractiveSelection = true,
+    this.autofillHints,
   });
 
   /// Copies the [CupertinoTextFieldConfiguration] and only changes the specified properties
@@ -1230,6 +1233,7 @@ class CupertinoTextFieldConfiguration<T> {
     Brightness keyboardAppearance,
     EdgeInsets scrollPadding,
     bool enableInteractiveSelection,
+    Iterable<String> autofillHints,
   }) {
     return CupertinoTextFieldConfiguration(
       controller: controller ?? this.controller,
@@ -1267,6 +1271,7 @@ class CupertinoTextFieldConfiguration<T> {
       scrollPadding: scrollPadding ?? this.scrollPadding,
       enableInteractiveSelection:
           enableInteractiveSelection ?? this.enableInteractiveSelection,
+      autofillHints: autofillHints ?? this.autofillHints,
     );
   }
 }
