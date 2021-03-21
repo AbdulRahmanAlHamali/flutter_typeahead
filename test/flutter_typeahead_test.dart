@@ -73,4 +73,9 @@ void main() {
     expect(find.text('Type Ahead'), findsOneWidget);
     expect(find.text('Default text'), findsOneWidget);
   });
+
+  testWidgets('entering text works', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: TestPage()));
+    await tester.enterText(find.byType(TypeAheadFormField), 'new text');
+  });
 }
