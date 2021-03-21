@@ -1,3 +1,13 @@
+3.1.0 - 21-March-2021
+
+-- PR #295 - autoFillHints for TextFieldConfiguration
+-- PR #294 - Check if the overlay is open
+-- PR #292 - Various bug fixes, including null safety
+-- PR #291 - Check for platform and run the correct example demo
+-- PR #287 - Cancel the debounce timer when widget is destroyed
+-- PR #285 - Fix possible race condition by doing an await
+
+
 3.0.0-nullsafety.0 - 9-Feburary-2021
 
 -- PR #290 Null-safety pre-release
