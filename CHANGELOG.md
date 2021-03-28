@@ -1,4 +1,4 @@
-3.1.0 - 21-March-2021
+## 3.1.0 - 21-March-2021
 
 -- PR #295 - autoFillHints for TextFieldConfiguration
 -- PR #294 - Check if the overlay is open
@@ -8,20 +8,20 @@
 -- PR #285 - Fix possible race condition by doing an await
 
 
-3.0.0-nullsafety.0 - 9-Feburary-2021
+## 3.0.0-nullsafety.0 - 9-Feburary-2021
 
 -- PR #290 Null-safety pre-release
 
-2.0.0 - 11-January-2021
+## 2.0.0 - 11-January-2021
 
 -- NOTE!! BREAKING CHANGE! Not major but changed Types for some calls
 -- RE-APPLY : 1.9.2 will become 2.0.0
 
-1.9.3 - 10-January-2021
+## 1.9.3 - 10-January-2021
 
 -- REVERT : Reverting back to 1.9.1 as 1.9.3. 1.9.2 will become 2.0.0
 
-1.9.2 - 06-January-2021
+## 1.9.2 - 06-January-2021
 
 -- #267 : Remove undeeded typecasts and add String types
 
