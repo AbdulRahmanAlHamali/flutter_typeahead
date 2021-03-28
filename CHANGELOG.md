@@ -1,5 +1,7 @@
-## 3.1.0 - 21-March-2021
+## 3.1.1 - 28-March-2021
+-- PR #297 - Fix styling of CHANGELOG.md
 
+## 3.1.0 - 21-March-2021
 -- PR #295 - autoFillHints for TextFieldConfiguration
 -- PR #294 - Check if the overlay is open
 -- PR #292 - Various bug fixes, including null safety
