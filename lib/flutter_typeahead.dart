@@ -1670,7 +1670,11 @@ class _SuggestionsBox {
   void _adjustMaxHeightAndOrientation() {
     TypeAheadField widget = context.widget as TypeAheadField;
 
-    RenderBox box = context.findRenderObject() as RenderBox;
+    RenderBox? box = context.findRenderObject() as RenderBox?;
+    if (box == null || box.hasSize == false) {
+      return;
+    }
+
     textBoxWidth = box.size.width;
     textBoxHeight = box.size.height;
 
@@ -1789,7 +1793,7 @@ class SuggestionsBoxController {
   void open() {
     _effectiveFocusNode!.requestFocus();
   }
-    
+
   bool isOpened() {
     return _suggestionsBox!.isOpened;
   }
