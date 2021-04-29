@@ -1093,9 +1093,10 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
   @override
   Widget build(BuildContext context) {
-    bool noSuggestions =
-        this._suggestions == null || this._suggestions?.length == 0;
-    if (noSuggestions && this._isLoading == false) return Container();
+    bool isEmpty =
+        this._suggestions?.length == 0 && widget.controller!.text == "";
+    if ((this._suggestions == null || isEmpty) && this._isLoading == false)
+      return Container();
 
     Widget child;
     if (this._isLoading) {
