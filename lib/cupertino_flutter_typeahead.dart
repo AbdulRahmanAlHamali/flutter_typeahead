@@ -887,7 +887,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         this._error = null;
       });
 
-      Iterable<T> suggestions = [];
+      Iterable<T>? suggestions;
       Object? error;
 
       try {
@@ -901,7 +901,8 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         // if it wasn't removed in the meantime
         setState(() {
           double? animationStart = widget.animationStart;
-          if (error != null || suggestions.isEmpty) {
+          // allow suggestionsCallback to return null and not throw error here
+          if (error != null || suggestions?.isEmpty == true) {
             animationStart = 1.0;
           }
           this._animationController!.forward(from: animationStart);
