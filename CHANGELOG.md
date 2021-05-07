@@ -1,3 +1,7 @@
+## 3.1.3 - 7-May-2021
+
+-- PR #308 - Allow suggestionsCallback to return null
+
 ## 3.1.2 - 1-May-2021
 
 -- PR #303 - Guard against missing size in \_adjustMaxHeightAndOrientation
