@@ -1,3 +1,7 @@
+## 3.2.0 - 9-Jul-2021
+
+-- file structure reorganisation
+
 ## 3.1.3 - 7-May-2021
 
 -- PR #308 - Allow suggestionsCallback to return null

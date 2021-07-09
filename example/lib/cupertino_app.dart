@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:example/data.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_typeahead/cupertino_flutter_typeahead.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class MyCupertinoApp extends StatelessWidget {
   @override

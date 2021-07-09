@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import '../lib/cupertino_flutter_typeahead.dart';
-
 class TestPage extends StatefulWidget {
   TestPage({Key? key}) : super(key: key);
 
