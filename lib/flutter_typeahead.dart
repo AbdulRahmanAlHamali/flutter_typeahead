@@ -998,6 +998,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   Object? _error;
   AnimationController? _animationController;
   String? _lastTextValue;
+  late final _scrollController = ScrollController();
 
   _SuggestionsListState() {
     this._controllerListener = () {
@@ -1235,6 +1236,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
+      controller: _scrollController,
       reverse: widget.suggestionsBox!.direction == AxisDirection.down
           ? false
           : true, // reverses the list to start at the bottom
@@ -1249,7 +1251,10 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     );
 
     if (widget.decoration!.hasScrollbar) {
-      child = Scrollbar(child: child);
+      child = Scrollbar(
+        controller: _scrollController,
+        child: child,
+      );
     }
 
     return child;
