@@ -13,8 +13,6 @@
 /// version that accepts validation, submitting, etc.
 /// * Provides high customizability; you can customize the suggestion box decoration,
 /// the loading bar, the animation, the debounce duration, etc.
-library cupertino_flutter_typeahead;
-
 import 'dart:async';
 import 'dart:core';
 import 'dart:math';
@@ -23,13 +21,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-typedef FutureOr<Iterable<T>> SuggestionsCallback<T>(String pattern);
-typedef Widget ItemBuilder<T>(BuildContext context, T itemData);
-typedef void SuggestionSelectionCallback<T>(T suggestion);
-typedef Widget ErrorBuilder(BuildContext context, Object? error);
-
-typedef AnimationTransitionBuilder(
-    BuildContext context, Widget child, AnimationController? controller);
+import 'typedef.dart';
 
 // Cupertino BoxDecoration taken from flutter/lib/src/cupertino/text_field.dart
 const BorderSide _kDefaultRoundedBorderSide = BorderSide(
