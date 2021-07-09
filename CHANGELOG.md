@@ -1,6 +1,7 @@
 ## 3.2.0 - 9-Jul-2021
 
--- file structure reorganisation
+-- PR #326 - file structure reorganisation
+-- PR #325 - Fix Scrollbar ScrollController
 
 ## 3.1.3 - 7-May-2021
 
