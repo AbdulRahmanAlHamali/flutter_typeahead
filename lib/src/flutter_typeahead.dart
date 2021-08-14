@@ -226,6 +226,8 @@
 /// ```
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart' as Foundation;
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -717,10 +719,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   // Will have a value if the typeahead is inside a scrollable widget
   ScrollPosition? _scrollPosition;
 
-  // Keyboard detection
-  final Stream<bool> _keyboardVisibility =
-      KeyboardVisibilityController().onChange;
   late StreamSubscription<bool> _keyboardVisibilitySubscription;
+
+  /// Returns if keyboard listener is supported on this platform
+  final bool supportKeyboadChange =
+      Foundation.kIsWeb && (Platform.isAndroid || Platform.isIOS);
 
   @override
   void didChangeMetrics() {
@@ -772,12 +775,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._effectiveFocusNode!.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    this._keyboardVisibilitySubscription =
-        _keyboardVisibility.listen((bool isVisible) {
-      if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
-        _effectiveFocusNode!.unfocus();
-      }
-    });
+    if (supportKeyboadChange) {
+      this._keyboardVisibilitySubscription =
+          KeyboardVisibilityController().onChange.listen((bool isVisible) {
+        if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
+          _effectiveFocusNode!.unfocus();
+        }
+      });
+    }
 
     WidgetsBinding.instance!.addPostFrameCallback((duration) {
       if (mounted) {
