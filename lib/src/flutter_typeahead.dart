@@ -736,7 +736,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBox!.close();
     this._suggestionsBox!.widgetMounted = false;
     WidgetsBinding.instance!.removeObserver(this);
-    _keyboardVisibilitySubscription.cancel();
+    if (supportKeyboadChange) {
+      _keyboardVisibilitySubscription.cancel();
+    }
     _effectiveFocusNode!.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
