@@ -723,7 +723,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   /// Returns if keyboard listener is supported on this platform
   final bool supportKeyboadChange =
-      Foundation.kIsWeb && (Platform.isAndroid || Platform.isIOS);
+      Foundation.kIsWeb || Platform.isAndroid || Platform.isIOS;
 
   @override
   void didChangeMetrics() {
