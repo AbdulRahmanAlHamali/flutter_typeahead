@@ -232,6 +232,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import 'typedef.dart';
+import 'utils.dart';
 
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 /// implementation of [TypeAheadField], that allows the value to be saved,
@@ -718,9 +719,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   ScrollPosition? _scrollPosition;
 
   // Keyboard detection
-  final Stream<bool> _keyboardVisibility =
-      KeyboardVisibilityController().onChange;
-  late StreamSubscription<bool> _keyboardVisibilitySubscription;
+  final Stream<bool>? _keyboardVisibility =
+      (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
+  late StreamSubscription<bool>? _keyboardVisibilitySubscription;
 
   @override
   void didChangeMetrics() {
@@ -733,7 +734,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBox!.close();
     this._suggestionsBox!.widgetMounted = false;
     WidgetsBinding.instance!.removeObserver(this);
-    _keyboardVisibilitySubscription.cancel();
+    _keyboardVisibilitySubscription?.cancel();
     _effectiveFocusNode!.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
@@ -773,7 +774,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
     // hide suggestions box on keyboard closed
     this._keyboardVisibilitySubscription =
-        _keyboardVisibility.listen((bool isVisible) {
+        _keyboardVisibility?.listen((bool isVisible) {
       if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
         _effectiveFocusNode!.unfocus();
       }

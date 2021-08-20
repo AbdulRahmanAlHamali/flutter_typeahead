@@ -1,3 +1,6 @@
+## 3.2.1 - 20-Aug-2021
+-- PR support Windows and MacOS by making keyboard_visibility optional
+
 ## 3.2.0 - 9-Jul-2021
 
 -- PR #326 - file structure reorganisation
