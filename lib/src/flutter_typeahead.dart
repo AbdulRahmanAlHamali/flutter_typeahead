@@ -1133,7 +1133,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       child = createSuggestionsWidget();
     }
 
-    var animationChild = widget.transitionBuilder != null
+    final animationChild = widget.transitionBuilder != null
         ? widget.transitionBuilder!(context, child, this._animationController)
         : SizeTransition(
             axisAlignment: -1.0,
@@ -1510,7 +1510,7 @@ class TextFieldConfiguration {
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties
-  copyWith(
+  TextFieldConfiguration copyWith(
       {InputDecoration? decoration,
       TextStyle? style,
       TextEditingController? controller,
@@ -1642,7 +1642,7 @@ class _SuggestionsBox {
       // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
       while (widgetMounted && timer < waitMetricsTimeoutMillis) {
         // TODO: reduce delay if showDialog ever exposes detection of animation end
-        await Future.delayed(const Duration(milliseconds: 170));
+        await Future<void>.delayed(const Duration(milliseconds: 170));
         timer += 170;
 
         if (widgetMounted &&

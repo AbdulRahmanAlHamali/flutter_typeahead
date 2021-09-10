@@ -66,7 +66,7 @@ class NavigationExample extends StatelessWidget {
               );
             },
             onSuggestionSelected: (Map<String, String> suggestion) {
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push<void>(MaterialPageRoute(
                   builder: (context) => ProductPage(product: suggestion)));
             },
           ),

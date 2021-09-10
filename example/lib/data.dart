@@ -3,7 +3,7 @@ import 'dart:math';
 
 class BackendService {
   static Future<List<Map<String, String>>> getSuggestions(String query) async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future<void>.delayed(Duration(seconds: 1));
 
     return List.generate(3, (index) {
       return {
