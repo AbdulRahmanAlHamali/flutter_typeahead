@@ -1107,8 +1107,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   Widget build(BuildContext context) {
     bool isEmpty =
         this._suggestions?.length == 0 && widget.controller!.text == "";
-    if ((this._suggestions == null || isEmpty) && this._isLoading == false)
-      return Container();
+    if ((this._suggestions == null || isEmpty) &&
+        this._isLoading == false &&
+        this._error == null) return Container();
 
     Widget child;
     if (this._isLoading!) {
