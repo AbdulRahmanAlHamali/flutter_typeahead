@@ -479,10 +479,11 @@ class TypeAheadField<T> extends StatefulWidget {
 
   /// used to control the scroll behavior of item-builder list
   final ScrollController? scrollController;
+
   /// The decoration of the material sheet that contains the suggestions.
   ///
   /// If null, default decoration with an elevation of 4.0 is used
-  /// 
+  ///
 
   final SuggestionsBoxDecoration suggestionsBoxDecoration;
 
@@ -998,7 +999,8 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   Object? _error;
   AnimationController? _animationController;
   String? _lastTextValue;
-  late final _scrollController = widget.scrollController ?? ScrollController();
+  late final ScrollController _scrollController =
+      widget.scrollController ?? ScrollController();
 
   _SuggestionsListState() {
     this._controllerListener = () {
