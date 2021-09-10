@@ -477,9 +477,13 @@ class TypeAheadField<T> extends StatefulWidget {
   /// ```
   final ItemBuilder<T> itemBuilder;
 
+  /// used to control the scroll behavior of item-builder list
+  final ScrollController? scrollController;
   /// The decoration of the material sheet that contains the suggestions.
   ///
   /// If null, default decoration with an elevation of 4.0 is used
+  /// 
+
   final SuggestionsBoxDecoration suggestionsBoxDecoration;
 
   /// Used to control the `_SuggestionsBox`. Allows manual control to
@@ -670,6 +674,7 @@ class TypeAheadField<T> extends StatefulWidget {
       this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
       this.debounceDuration: const Duration(milliseconds: 300),
       this.suggestionsBoxController,
+      this.scrollController,
       this.loadingBuilder,
       this.noItemsFoundBuilder,
       this.errorBuilder,
@@ -829,6 +834,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         debounceDuration: widget.debounceDuration,
         controller: this._effectiveController,
         loadingBuilder: widget.loadingBuilder,
+        scrollController: widget.scrollController,
         noItemsFoundBuilder: widget.noItemsFoundBuilder,
         errorBuilder: widget.errorBuilder,
         transitionBuilder: widget.transitionBuilder,
@@ -940,6 +946,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
   final ItemBuilder<T>? itemBuilder;
+  final ScrollController? scrollController;
   final SuggestionsBoxDecoration? decoration;
   final Duration? debounceDuration;
   final WidgetBuilder? loadingBuilder;
@@ -961,6 +968,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.onSuggestionSelected,
     this.suggestionsCallback,
     this.itemBuilder,
+    this.scrollController,
     this.decoration,
     this.debounceDuration,
     this.loadingBuilder,
@@ -990,7 +998,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   Object? _error;
   AnimationController? _animationController;
   String? _lastTextValue;
-  late final _scrollController = ScrollController();
+  late final _scrollController = widget.scrollController ?? ScrollController();
 
   _SuggestionsListState() {
     this._controllerListener = () {
