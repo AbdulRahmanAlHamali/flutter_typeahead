@@ -1,13 +1,91 @@
+## 3.2.1 - 10-Sept-2021
+
+-- PR #327 - Added Scrollcontroler as optional parameter
+-- PR #335 - Fix ErrorBuilder Widget display
+-- PR #339 - Strong mode and type fixes
+
+## 3.2.0 - 9-Jul-2021
+
+-- PR #326 - file structure reorganisation
+-- PR #325 - Fix Scrollbar ScrollController
+
+## 3.1.3 - 7-May-2021
+
+-- PR #308 - Allow suggestionsCallback to return null
+
+## 3.1.2 - 1-May-2021
+
+-- PR #303 - Guard against missing size in \_adjustMaxHeightAndOrientation
+-- PR #306 - Fixed Issue #286 - Suggestions callback called immediately
+
+## 3.1.1 - 28-March-2021
+
+-- PR #297 - Fix styling of CHANGELOG.md
+
+## 3.1.0 - 21-March-2021
+
+-- PR #295 - autoFillHints for TextFieldConfiguration
+-- PR #294 - Check if the overlay is open
+-- PR #292 - Various bug fixes, including null safety
+-- PR #291 - Check for platform and run the correct example demo
+-- PR #287 - Cancel the debounce timer when widget is destroyed
+-- PR #285 - Fix possible race condition by doing an await
+
+## 3.0.0-nullsafety.0 - 9-Feburary-2021
+
+-- PR #290 Null-safety pre-release
+
+## 2.0.0 - 11-January-2021
+
+-- NOTE!! BREAKING CHANGE! Not major but changed Types for some calls
+-- RE-APPLY : 1.9.2 will become 2.0.0
+
+## 1.9.3 - 10-January-2021
+
+-- REVERT : Reverting back to 1.9.1 as 1.9.3. 1.9.2 will become 2.0.0
+
+## 1.9.2 - 06-January-2021
+
+-- #267 : Remove undeeded typecasts and add String types
+
+## 1.9.1 - 03-December-2020
+
+-- #256 : Change default to disabled for autovalidateMode and fix typo
+
+## 1.9.0 - 01-December-2020
+
+- Merged 4 PRs:
+  -- #238 : Added hideKeyboard even if textfield has focus (edge case)
+  -- #248 : Added enabled and autovalidateMode properties. Resolves Issue #247
+  -- #249 : Added enableSuggestions to Textfield Configuration. Resolves Issue #210
+  -- #255 : Update to use flutter_keyboard_visibility 4.X from 3.X
+
+## 1.8.8 - 12-August-2020
+
+- Merged PR to fix typo and validator tests and examples using deprecated consts.
+
+## 1.8.7 - 30-July-2020
+
+- Merged PR to fix dispose() error in tests.
+
+## 1.8.6 - 05/07/2020
+
+- Merged PR to fix "flashing" bug.
+
 ## 1.8.5 - 01/07/2020
+
 - Dependency Update : Updated flutter_Keyboard_visibility to ^3.0.0 from ^2.0.0
 
 ## 1.8.4 - 30/06/2020
+
 - Bug Fix : Merged 3 PRs for various bug fixes.
 
 ## 1.8.3 - 11/06/2020
+
 - Bug Fix : PR to address keyboard visibility issues from @alphamikle
 
 ## 1.8.1 - 08/04/2020
+
 - Bug fixes
 
 ## 1.8.0 - 23/01/2020
@@ -25,7 +103,7 @@
 - Added new property `enableInteractiveSelection`
 - Fix disposing overlay
 
-Thanks to MisterJimson, davidmartos96, pparadox11, diegoveloper 
+Thanks to MisterJimson, davidmartos96, pparadox11, diegoveloper
 
 ## 1.6.1 - 05/06/2019
 
@@ -49,8 +127,8 @@ Thanks to MisterJimson, davidmartos96, pparadox11, diegoveloper
 
 ## 1.4.0 - 26/03/2019
 
-- Added property `autoFlipDirection` to allow automatic direction flipping if 
-there is not enough space for the suggestions list
+- Added property `autoFlipDirection` to allow automatic direction flipping if
+  there is not enough space for the suggestions list
 
 ## 1.3.0 - 19/03/2019
 
@@ -64,7 +142,7 @@ there is not enough space for the suggestions list
 
 - Added property `keepSuggestionsOnLoading`
 - Changed default behavior: suggestions box will no longer
-show circular progress indicator when loading; it will maintain previous results if available
+  show circular progress indicator when loading; it will maintain previous results if available
 
 ## 1.1.0 - 01/03/2019
 

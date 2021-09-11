@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_typeahead/cupertino_flutter_typeahead.dart';
+import 'dart:async';
 
 import 'package:example/data.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class MyCupertinoApp extends StatelessWidget {
   @override
@@ -51,7 +52,7 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                   () => CitiesService.getSuggestions(pattern),
                 );
               },
-              itemBuilder: (context, suggestion) {
+              itemBuilder: (context, String suggestion) {
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
@@ -59,14 +60,11 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                   ),
                 );
               },
-              onSuggestionSelected: (suggestion) {
+              onSuggestionSelected: (String suggestion) {
                 _typeAheadController.text = suggestion;
               },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please select a city';
-                }
-              },
+              validator: (value) =>
+                  value!.isEmpty ? 'Please select a city' : null,
             ),
             SizedBox(
               height: 10.0,
@@ -74,8 +72,8 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
             CupertinoButton(
               child: Text('Submit'),
               onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  _formKey.currentState.save();
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
                   setState(() {
                     favoriteCity = _typeAheadController.text;
                   });
