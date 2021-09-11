@@ -2,4 +2,4 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-final supportedPlatform = (Platform.isAndroid || Platform.isIOS || kIsWeb);
+final supportedPlatform = (kIsWeb || Platform.isAndroid || Platform.isIOS);
