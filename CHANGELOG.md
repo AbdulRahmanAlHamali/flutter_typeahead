@@ -1,5 +1,11 @@
-## 3.2.1 - 20-Aug-2021
+## 3.2.2 - 20-Aug-2021
 -- PR support Windows and MacOS by making keyboard_visibility optional
+
+## 3.2.1 - 10-Sept-2021
+
+-- PR #327 - Added Scrollcontroler as optional parameter
+-- PR #335 - Fix ErrorBuilder Widget display
+-- PR #339 - Strong mode and type fixes
 
 ## 3.2.0 - 9-Jul-2021
 
