@@ -916,6 +916,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         inputFormatters: widget.textFieldConfiguration.inputFormatters,
         autocorrect: widget.textFieldConfiguration.autocorrect,
         maxLines: widget.textFieldConfiguration.maxLines,
+        textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
         minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
@@ -1368,6 +1369,9 @@ class TextFieldConfiguration {
   ///
   /// Defaults to null
   final TextDirection? textDirection;
+
+  /// Same as [TextField.textAlignVertical](https://api.flutter.dev/flutter/material/TextField/textAlignVertical.html)
+  final TextAlignVertical? textAlignVertical;
 
   /// If false the textfield is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
