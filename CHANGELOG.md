@@ -1,5 +1,14 @@
+## 3.2.3 - 21-Nov-2021
+
+-- PR #354 - Make maxLines nullable
+-- PR #349 - Add option for min number of chars before suggestionsCallback is called
+-- PR #347 - Un private some variables
+-- PR #347 - Fix deprecated info's in example
+-- PR #344 - Add textAlignVertical support, fixes #231
+
 ## 3.2.2 - 20-Aug-2021
--- PR support Windows and MacOS by making keyboard_visibility optional
+
+-- PR #333 - support Windows and MacOS by making keyboard_visibility optional
 
 ## 3.2.1 - 10-Sept-2021
 
