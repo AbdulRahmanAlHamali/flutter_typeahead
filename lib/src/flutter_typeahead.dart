@@ -283,9 +283,11 @@ class TypeAheadFormField<T> extends FormField<String> {
       bool keepSuggestionsOnLoading: true,
       bool keepSuggestionsOnSuggestionSelected: false,
       bool autoFlipDirection: false,
-      bool hideKeyboard: false})
+      bool hideKeyboard: false,
+      int minCharsForSuggestions: 0})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
+        assert(minCharsForSuggestions >= 0),
         super(
             key: key,
             onSaved: onSaved,
@@ -300,39 +302,41 @@ class TypeAheadFormField<T> extends FormField<String> {
                   field as _TypeAheadFormFieldState<dynamic>;
 
               return TypeAheadField(
-                  getImmediateSuggestions: getImmediateSuggestions,
-                  transitionBuilder: transitionBuilder,
-                  errorBuilder: errorBuilder,
-                  noItemsFoundBuilder: noItemsFoundBuilder,
-                  loadingBuilder: loadingBuilder,
-                  debounceDuration: debounceDuration,
-                  suggestionsBoxDecoration: suggestionsBoxDecoration,
-                  suggestionsBoxController: suggestionsBoxController,
-                  textFieldConfiguration: textFieldConfiguration.copyWith(
-                    decoration: textFieldConfiguration.decoration
-                        .copyWith(errorText: state.errorText),
-                    onChanged: (text) {
-                      state.didChange(text);
-                      textFieldConfiguration.onChanged?.call(text);
-                    },
-                    controller: state._effectiveController,
-                  ),
-                  suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
-                  onSuggestionSelected: onSuggestionSelected,
-                  itemBuilder: itemBuilder,
-                  suggestionsCallback: suggestionsCallback,
-                  animationStart: animationStart,
-                  animationDuration: animationDuration,
-                  direction: direction,
-                  hideOnLoading: hideOnLoading,
-                  hideOnEmpty: hideOnEmpty,
-                  hideOnError: hideOnError,
-                  hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
-                  keepSuggestionsOnLoading: keepSuggestionsOnLoading,
-                  keepSuggestionsOnSuggestionSelected:
-                      keepSuggestionsOnSuggestionSelected,
-                  autoFlipDirection: autoFlipDirection,
-                  hideKeyboard: hideKeyboard);
+                getImmediateSuggestions: getImmediateSuggestions,
+                transitionBuilder: transitionBuilder,
+                errorBuilder: errorBuilder,
+                noItemsFoundBuilder: noItemsFoundBuilder,
+                loadingBuilder: loadingBuilder,
+                debounceDuration: debounceDuration,
+                suggestionsBoxDecoration: suggestionsBoxDecoration,
+                suggestionsBoxController: suggestionsBoxController,
+                textFieldConfiguration: textFieldConfiguration.copyWith(
+                  decoration: textFieldConfiguration.decoration
+                      .copyWith(errorText: state.errorText),
+                  onChanged: (text) {
+                    state.didChange(text);
+                    textFieldConfiguration.onChanged?.call(text);
+                  },
+                  controller: state._effectiveController,
+                ),
+                suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
+                onSuggestionSelected: onSuggestionSelected,
+                itemBuilder: itemBuilder,
+                suggestionsCallback: suggestionsCallback,
+                animationStart: animationStart,
+                animationDuration: animationDuration,
+                direction: direction,
+                hideOnLoading: hideOnLoading,
+                hideOnEmpty: hideOnEmpty,
+                hideOnError: hideOnError,
+                hideSuggestionsOnKeyboardHide: hideSuggestionsOnKeyboardHide,
+                keepSuggestionsOnLoading: keepSuggestionsOnLoading,
+                keepSuggestionsOnSuggestionSelected:
+                    keepSuggestionsOnSuggestionSelected,
+                autoFlipDirection: autoFlipDirection,
+                hideKeyboard: hideKeyboard,
+                minCharsForSuggestions: minCharsForSuggestions,
+              );
             });
 
   @override
@@ -666,6 +670,12 @@ class TypeAheadField<T> extends StatefulWidget {
   final bool autoFlipDirection;
   final bool hideKeyboard;
 
+  /// The minimum number of characters which must be entered before
+  /// [suggestionsCallback] is triggered.
+  ///
+  /// Defaults to 0.
+  final int minCharsForSuggestions;
+
   /// Creates a [TypeAheadField]
   TypeAheadField(
       {Key? key,
@@ -693,10 +703,12 @@ class TypeAheadField<T> extends StatefulWidget {
       this.keepSuggestionsOnLoading: true,
       this.keepSuggestionsOnSuggestionSelected: false,
       this.autoFlipDirection: false,
-      this.hideKeyboard: false})
+      this.hideKeyboard: false,
+      this.minCharsForSuggestions: 0})
       : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
+        assert(minCharsForSuggestions >= 0),
         super(key: key);
 
   @override
@@ -857,6 +869,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         hideOnEmpty: widget.hideOnEmpty,
         hideOnError: widget.hideOnError,
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
+        minCharsForSuggestions: widget.minCharsForSuggestions,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
@@ -963,6 +976,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool? hideOnEmpty;
   final bool? hideOnError;
   final bool? keepSuggestionsOnLoading;
+  final int? minCharsForSuggestions;
 
   _SuggestionsList({
     required this.suggestionsBox,
@@ -985,6 +999,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.hideOnEmpty,
     this.hideOnError,
     this.keepSuggestionsOnLoading,
+    this.minCharsForSuggestions,
   });
 
   @override
@@ -1013,19 +1028,30 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       this._lastTextValue = widget.controller!.text;
 
       this._debounceTimer?.cancel();
-      this._debounceTimer = Timer(widget.debounceDuration!, () async {
-        if (this._debounceTimer!.isActive) return;
-        if (_isLoading!) {
-          _isQueued = true;
-          return;
+      if (widget.controller!.text.length < widget.minCharsForSuggestions!) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _suggestions = null;
+            _suggestionsValid = true;
+          });
         }
+        return;
+      } else {
+        this._debounceTimer = Timer(widget.debounceDuration!, () async {
+          if (this._debounceTimer!.isActive) return;
+          if (_isLoading!) {
+            _isQueued = true;
+            return;
+          }
 
-        await this.invalidateSuggestions();
-        while (_isQueued!) {
-          _isQueued = false;
           await this.invalidateSuggestions();
-        }
-      });
+          while (_isQueued!) {
+            _isQueued = false;
+            await this.invalidateSuggestions();
+          }
+        });
+      }
     };
   }
 
@@ -1051,7 +1077,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       duration: widget.animationDuration,
     );
 
-    this._suggestionsValid = false;
+    this._suggestionsValid = widget.minCharsForSuggestions! > 0 ? true : false;
     this._isLoading = false;
     this._isQueued = false;
     this._lastTextValue = widget.controller!.text;

@@ -97,9 +97,11 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
       bool hideSuggestionsOnKeyboardHide: true,
       bool keepSuggestionsOnLoading: true,
       bool keepSuggestionsOnSuggestionSelected: false,
-      bool autoFlipDirection: false})
+      bool autoFlipDirection: false,
+      int minCharsForSuggestions: 0})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
+        assert(minCharsForSuggestions >= 0),
         super(
             key: key,
             onSaved: onSaved,
@@ -144,6 +146,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                 keepSuggestionsOnSuggestionSelected:
                     keepSuggestionsOnSuggestionSelected,
                 autoFlipDirection: autoFlipDirection,
+                minCharsForSuggestions: minCharsForSuggestions,
               );
             });
 
@@ -472,6 +475,12 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool autoFlipDirection;
 
+  /// The minimum number of characters which must be entered before
+  /// [suggestionsCallback] is triggered.
+  ///
+  /// Defaults to 0.
+  final int minCharsForSuggestions;
+
   /// Creates a [CupertinoTypeAheadField]
   CupertinoTypeAheadField(
       {Key? key,
@@ -497,10 +506,12 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
       this.hideSuggestionsOnKeyboardHide: true,
       this.keepSuggestionsOnLoading: true,
       this.keepSuggestionsOnSuggestionSelected: false,
-      this.autoFlipDirection: false})
+      this.autoFlipDirection: false,
+      this.minCharsForSuggestions: 0})
       : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
+        assert(minCharsForSuggestions >= 0),
         super(key: key);
 
   @override
@@ -661,6 +672,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         hideOnEmpty: widget.hideOnEmpty,
         hideOnError: widget.hideOnError,
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
+        minCharsForSuggestions: widget.minCharsForSuggestions,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
@@ -770,6 +782,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool? hideOnEmpty;
   final bool? hideOnError;
   final bool? keepSuggestionsOnLoading;
+  final int? minCharsForSuggestions;
 
   _SuggestionsList({
     required this.suggestionsBox,
@@ -791,6 +804,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.hideOnEmpty,
     this.hideOnError,
     this.keepSuggestionsOnLoading,
+    this.minCharsForSuggestions,
   });
 
   @override
@@ -829,7 +843,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       duration: widget.animationDuration,
     );
 
-    this._suggestionsValid = false;
+    this._suggestionsValid = widget.minCharsForSuggestions! > 0 ? true : false;
     this._isLoading = false;
     this._isQueued = false;
     this._lastTextValue = widget.controller!.text;
@@ -846,19 +860,30 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       this._lastTextValue = widget.controller!.text;
 
       this._debounceTimer?.cancel();
-      this._debounceTimer = Timer(widget.debounceDuration!, () async {
-        if (this._debounceTimer!.isActive) return;
-        if (_isLoading!) {
-          _isQueued = true;
-          return;
+      if (widget.controller!.text.length < widget.minCharsForSuggestions!) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _suggestions = null;
+            _suggestionsValid = true;
+          });
         }
+        return;
+      } else {
+        this._debounceTimer = Timer(widget.debounceDuration!, () async {
+          if (this._debounceTimer!.isActive) return;
+          if (_isLoading!) {
+            _isQueued = true;
+            return;
+          }
 
-        await this.invalidateSuggestions();
-        while (_isQueued!) {
-          _isQueued = false;
           await this.invalidateSuggestions();
-        }
-      });
+          while (_isQueued!) {
+            _isQueued = false;
+            await this.invalidateSuggestions();
+          }
+        });
+      }
     };
 
     widget.controller!.addListener(this._controllerListener);
