@@ -1435,7 +1435,7 @@ class TextFieldConfiguration {
   /// The maximum number of lines for the text to span, wrapping if necessary.
   ///
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
-  final int maxLines;
+  final int? maxLines;
 
   /// The minimum number of lines to occupy when the content spans fewer lines.
   ///
