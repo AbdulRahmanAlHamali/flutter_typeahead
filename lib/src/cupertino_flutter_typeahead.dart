@@ -110,8 +110,8 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
             enabled: enabled,
             autovalidateMode: autovalidateMode,
             builder: (FormFieldState<String> field) {
-              final _CupertinoTypeAheadFormFieldState state =
-                  field as _CupertinoTypeAheadFormFieldState<dynamic>;
+              final CupertinoTypeAheadFormFieldState state =
+                  field as CupertinoTypeAheadFormFieldState<dynamic>;
 
               return CupertinoTypeAheadField(
                 getImmediateSuggestions: getImmediateSuggestions,
@@ -148,11 +148,11 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
             });
 
   @override
-  _CupertinoTypeAheadFormFieldState<T> createState() =>
-      _CupertinoTypeAheadFormFieldState<T>();
+  CupertinoTypeAheadFormFieldState<T> createState() =>
+      CupertinoTypeAheadFormFieldState<T>();
 }
 
-class _CupertinoTypeAheadFormFieldState<T> extends FormFieldState<String> {
+class CupertinoTypeAheadFormFieldState<T> extends FormFieldState<String> {
   TextEditingController? _controller;
 
   TextEditingController? get _effectiveController =>
