@@ -1,3 +1,6 @@
+## 3.2.2 - 20-Aug-2021
+-- PR support Windows and MacOS by making keyboard_visibility optional
+
 ## 3.2.1 - 10-Sept-2021
 
 -- PR #327 - Added Scrollcontroler as optional parameter
