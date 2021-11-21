@@ -917,6 +917,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         inputFormatters: widget.textFieldConfiguration.inputFormatters,
         autocorrect: widget.textFieldConfiguration.autocorrect,
         maxLines: widget.textFieldConfiguration.maxLines,
+        textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
         minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
@@ -1370,6 +1371,9 @@ class TextFieldConfiguration {
   /// Defaults to null
   final TextDirection? textDirection;
 
+  /// Same as [TextField.textAlignVertical](https://api.flutter.dev/flutter/material/TextField/textAlignVertical.html)
+  final TextAlignVertical? textAlignVertical;
+
   /// If false the textfield is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
   ///
@@ -1499,6 +1503,7 @@ class TextFieldConfiguration {
     this.maxLength,
     this.maxLines: 1,
     this.minLines,
+    this.textAlignVertical,
     this.autocorrect: true,
     this.inputFormatters,
     this.autofocus: false,
@@ -1542,6 +1547,7 @@ class TextFieldConfiguration {
       TextAlign? textAlign,
       FocusNode? focusNode,
       Color? cursorColor,
+      TextAlignVertical? textAlignVertical,
       Radius? cursorRadius,
       double? cursorWidth,
       Brightness? keyboardAppearance,
@@ -1570,6 +1576,7 @@ class TextFieldConfiguration {
       enabled: enabled ?? this.enabled,
       enableSuggestions: enableSuggestions ?? this.enableSuggestions,
       textAlign: textAlign ?? this.textAlign,
+      textAlignVertical: textAlignVertical ?? this.textAlignVertical,
       focusNode: focusNode ?? this.focusNode,
       cursorColor: cursorColor ?? this.cursorColor,
       cursorRadius: cursorRadius ?? this.cursorRadius,
