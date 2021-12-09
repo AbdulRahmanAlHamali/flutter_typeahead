@@ -1,3 +1,7 @@
+## 3.2.4 - 9-Dec-2021
+
+-- PR #360 - Resize before opening box (fixes issue 220)
+
 ## 3.2.3 - 21-Nov-2021
 
 -- PR #354 - Make maxLines nullable
