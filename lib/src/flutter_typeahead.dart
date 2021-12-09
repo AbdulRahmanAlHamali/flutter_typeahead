@@ -1644,6 +1644,7 @@ class _SuggestionsBox {
   void open() {
     if (this.isOpened) return;
     assert(this._overlayEntry != null);
+    resize();
     Overlay.of(context)!.insert(this._overlayEntry!);
     this.isOpened = true;
   }
