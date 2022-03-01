@@ -2,21 +2,18 @@
 
 # Flutter TypeAhead
 A TypeAhead (autocomplete) widget for Flutter, where you can show suggestions to
-users as they type
+users as they type.
 
 <img src="https://raw.githubusercontent.com/AbdulRahmanAlHamali/flutter_typeahead/master/flutter_typeahead.gif">
 
 ## Features
-* Shows suggestions in an overlay that floats on top of other widgets
-* Allows you to specify what the suggestions will look like through a
-builder function
-* Allows you to specify what happens when the user taps a suggestion
-* Accepts all the parameters that traditional TextFields accept, like
-decoration, custom TextEditingController, text styling, etc.
+* Shows suggestions in an overlay that floats on top of other widgets.
+* Allows you to specify what the suggestions will look like through a builder function.
+* Allows you to specify what happens when the user taps a suggestion.
+* Accepts all the parameters that traditional TextFields accept, like decoration, custom TextEditingController, text styling, etc.
 * Provides two versions, a normal version and a [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 version that accepts validation, submitting, etc.
-* Provides high customizability; you can customize the suggestion box decoration,
-the loading bar, the animation, the debounce duration, etc.
+* Provides high customizability; you can customize the suggestion box decoration, the loading bar, the animation, the debounce duration, etc.
 
 ## Installation
 See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead#-installing-tab-).
@@ -201,7 +198,7 @@ The Cupertino classes in TypeAhead are still new. There are also differences in 
 
 ## Customizations
 TypeAhead widgets consist of a TextField and a suggestion box that shows
-as the user types. Both are highly customizable
+as the user types. Both are highly customizable.
 
 ### Customizing the TextField
 You can customize the text field using the `textFieldConfiguration` property.
