@@ -8,15 +8,12 @@ users as they type.
 
 ## Features
 * Shows suggestions in an overlay that floats on top of other widgets.
-* Allows you to specify what the suggestions will look like through a
-builder function.
+* Allows you to specify what the suggestions will look like through a builder function.
 * Allows you to specify what happens when the user taps a suggestion.
-* Accepts all the parameters that traditional TextFields accept, like
-decoration, custom TextEditingController, text styling, etc.
+* Accepts all the parameters that traditional TextFields accept, like decoration, custom TextEditingController, text styling, etc.
 * Provides two versions, a normal version and a [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 version that accepts validation, submitting, etc.
-* Provides high customizability; you can customize the suggestion box decoration,
-the loading bar, the animation, the debounce duration, etc.
+* Provides high customizability; you can customize the suggestion box decoration, the loading bar, the animation, the debounce duration, etc.
 
 ## Installation
 See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead#-installing-tab-).
