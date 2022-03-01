@@ -18,7 +18,7 @@ If you plan to submit a PR please do the following:
 
 If you'd like to add a feature or fix a bug, we're more than happy to accept pull requests! We only ask a few things:
 
-- Ensure your code contains no analyzer errors, e.g.
+- Ensure your code contains no analyzer errors, e.g:
   - Code is strong-mode compliant.
   - Code is free of lint errors.
 - Format your code with `dartfmt`.
