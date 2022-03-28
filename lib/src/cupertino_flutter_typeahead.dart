@@ -743,7 +743,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         maxLines: widget.textFieldConfiguration.maxLines,
         minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
-        maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
+        maxLengthEnforcement: widget.textFieldConfiguration.maxLengthEnforcement,
         onChanged: widget.textFieldConfiguration.onChanged,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
         onTap: widget.textFieldConfiguration.onTap,
@@ -1176,7 +1176,7 @@ class CupertinoTextFieldConfiguration {
   final int maxLines;
   final int? minLines;
   final int? maxLength;
-  final bool maxLengthEnforced;
+  final MaxLengthEnforcement? maxLengthEnforcement;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onEditingComplete;
   final GestureTapCallback? onTap;
@@ -1214,7 +1214,7 @@ class CupertinoTextFieldConfiguration {
     this.maxLines = 1,
     this.minLines,
     this.maxLength,
-    this.maxLengthEnforced = true,
+    this.maxLengthEnforcement,
     this.onChanged,
     this.onEditingComplete,
     this.onTap,
@@ -1253,7 +1253,7 @@ class CupertinoTextFieldConfiguration {
     int? maxLines,
     int? minLines,
     int? maxLength,
-    bool? maxLengthEnforced,
+    MaxLengthEnforcement? maxLengthEnforcement,
     ValueChanged<String>? onChanged,
     VoidCallback? onEditingComplete,
     GestureTapCallback? onTap,
@@ -1290,7 +1290,7 @@ class CupertinoTextFieldConfiguration {
       maxLines: maxLines ?? this.maxLines,
       minLines: minLines ?? this.minLines,
       maxLength: maxLength ?? this.maxLength,
-      maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
+      maxLengthEnforcement: maxLengthEnforcement ?? this.maxLengthEnforcement,
       onChanged: onChanged ?? this.onChanged,
       onEditingComplete: onEditingComplete ?? this.onEditingComplete,
       onTap: onTap ?? this.onTap,
