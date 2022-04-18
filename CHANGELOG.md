@@ -1,6 +1,6 @@
 ## 3.2.5 - 18-Apr-2022
 
--- PR #361 - Fix deprecation error
+-- PR #383 - Fix maxLengthEnforced deprecation
 
 ## 3.2.4 - 9-Dec-2021
 
