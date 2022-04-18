@@ -3,6 +3,8 @@
 
 .packages
 .pub/
+.flutter-plugins
+.flutter-plugins-dependencies
 
 build/
 example/.flutter-plugins*
