@@ -1,3 +1,7 @@
+## 3.2.5 - 18-Apr-2022
+
+-- PR #361 - Fix deprecation error
+
 ## 3.2.4 - 9-Dec-2021
 
 -- PR #360 - Resize before opening box (fixes issue 220)
