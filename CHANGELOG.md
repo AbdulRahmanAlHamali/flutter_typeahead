@@ -1,3 +1,7 @@
+## 4.0.0 - 15-May-2022
+
+-- PR #395 - Fix Flutter 3.0 warnings
+
 ## 3.2.7 - 15-May-2022
 
 -- REVERT PR #395 - Fix Flutter 3.0 warnings
