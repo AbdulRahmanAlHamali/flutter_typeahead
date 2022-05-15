@@ -1,3 +1,8 @@
+## 3.2.6 - 15-May-2022
+
+-- PR #393 - Hide suggestion on close issue fix
+-- PR #395 - Fix Flutter 3.0 warnings
+
 ## 3.2.5 - 18-Apr-2022
 
 -- PR #383 - Fix maxLengthEnforced deprecation
