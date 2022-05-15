@@ -1,3 +1,7 @@
+## 3.2.7 - 15-May-2022
+
+-- REVERT PR #395 - Fix Flutter 3.0 warnings
+
 ## 3.2.6 - 15-May-2022
 
 -- PR #393 - Hide suggestion on close issue fix
