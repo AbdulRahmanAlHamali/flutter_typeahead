@@ -968,6 +968,7 @@ class _TypeAheadFieldQuickSearchState<T, R> extends State<TypeAheadFieldQuickSea
     return CompositedTransformTarget(
       link: this._layerLink,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (widget.textFieldConfiguration.leftButton != null)
             widget.textFieldConfiguration.leftButton!,
@@ -1006,6 +1007,9 @@ class _TypeAheadFieldQuickSearchState<T, R> extends State<TypeAheadFieldQuickSea
               readOnly: widget.hideKeyboard,
             ),
           ),
+          if (widget.textFieldConfiguration.clearTextButton != null
+              && this._effectiveController?.text.isNotEmpty == true)
+            widget.textFieldConfiguration.clearTextButton!,
           if (widget.textFieldConfiguration.rightButton != null)
             widget.textFieldConfiguration.rightButton!,
         ],
@@ -1085,7 +1089,6 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
   late VoidCallback _controllerListener;
   Timer? _debounceTimer;
   bool? _isLoading, _isQueued;
-  Object? _error;
   AnimationController? _animationController;
   String? _lastTextValue;
   late final ScrollController _scrollController =
@@ -1183,7 +1186,6 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
         this._animationController!.forward(from: 1.0);
 
         this._isLoading = true;
-        this._error = null;
       });
 
       Iterable<T>? suggestions;
@@ -1209,7 +1211,6 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
           }
           this._animationController!.forward(from: animationStart);
 
-          this._error = error;
           this._isLoading = false;
           this._suggestions = suggestions;
           this._recentItems = recentItems;
@@ -1602,6 +1603,7 @@ class QuickSearchTextFieldConfiguration {
   final bool enableInteractiveSelection;
 
   final Widget? leftButton, rightButton;
+  final Widget? clearTextButton;
 
   /// Creates a QuickSearchTextFieldConfiguration
   const QuickSearchTextFieldConfiguration({
@@ -1637,6 +1639,7 @@ class QuickSearchTextFieldConfiguration {
     this.enableInteractiveSelection: true,
     this.leftButton,
     this.rightButton,
+    this.clearTextButton,
   });
 
   /// Copies the [QuickSearchTextFieldConfiguration] and only changes the specified
@@ -1673,7 +1676,8 @@ class QuickSearchTextFieldConfiguration {
       TextInputAction? textInputAction,
       bool? enableInteractiveSelection,
       Widget? leftButton,
-      Widget? rightButton}) {
+      Widget? rightButton,
+      Widget? clearTextButton}) {
     return QuickSearchTextFieldConfiguration(
       decoration: decoration ?? this.decoration,
       style: style ?? this.style,
@@ -1708,6 +1712,7 @@ class QuickSearchTextFieldConfiguration {
           enableInteractiveSelection ?? this.enableInteractiveSelection,
       leftButton: leftButton ?? this.leftButton,
       rightButton: rightButton ?? this.rightButton,
+      clearTextButton: clearTextButton ?? this.clearTextButton,
     );
   }
 }
