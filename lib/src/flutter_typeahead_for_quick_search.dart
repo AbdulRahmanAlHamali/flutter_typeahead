@@ -285,12 +285,15 @@ class TypeAheadFormFieldQuickSearch<T, R> extends FormField<String> {
       bool autoFlipDirection: false,
       bool hideKeyboard: false,
       int minCharsForSuggestions: 0,
-      Widget? actionButton,
-      Widget? showAllResultActionButton,
+      List<dynamic>? listActionButton,
+      ButtonActionBuilder? actionButtonBuilder,
+      ButtonActionCallback? buttonActionCallback,
+      ButtonActionBuilder? buttonShowAllResult,
       Widget? titleHeaderRecent,
       ItemBuilder<R>? itemRecentBuilder,
-      GetRecentCallback<R>? getRecentCallback,
+      FetchRecentActionCallback<R>? fetchRecentActionCallback,
       RecentSelectionCallback<R>? onRecentSelected,
+      EdgeInsets? listActionPadding,
   }) : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
@@ -342,12 +345,15 @@ class TypeAheadFormFieldQuickSearch<T, R> extends FormField<String> {
                 autoFlipDirection: autoFlipDirection,
                 hideKeyboard: hideKeyboard,
                 minCharsForSuggestions: minCharsForSuggestions,
-                actionButton: actionButton,
-                showAllResultActionButton: showAllResultActionButton,
+                listActionButton: listActionButton,
+                actionButtonBuilder: actionButtonBuilder,
+                buttonActionCallback: buttonActionCallback,
+                buttonShowAllResult: buttonShowAllResult,
                 titleHeaderRecent: titleHeaderRecent,
                 itemRecentBuilder: itemRecentBuilder,
-                getRecentCallback: getRecentCallback,
+                fetchRecentActionCallback: fetchRecentActionCallback,
                 onRecentSelected: onRecentSelected,
+                listActionPadding: listActionPadding,
               );
             });
 
@@ -689,19 +695,23 @@ class TypeAheadFieldQuickSearch<T, R> extends StatefulWidget {
   final int minCharsForSuggestions;
 
   /// List button action for suggestion box
-  final Widget? actionButton;
+  final List<dynamic>? listActionButton;
+  final ButtonActionBuilder? actionButtonBuilder;
+  final ButtonActionCallback? buttonActionCallback;
 
   /// Button show all result
-  final Widget? showAllResultActionButton;
+  final ButtonActionBuilder? buttonShowAllResult;
 
   /// Title header recent suggestion box
   final Widget? titleHeaderRecent;
   ///  Widget item recent
   final ItemBuilder<R>? itemRecentBuilder;
   ///  Get all recent callback
-  final GetRecentCallback<R>? getRecentCallback;
+  final FetchRecentActionCallback<R>? fetchRecentActionCallback;
   ///  On listen select recent
   final RecentSelectionCallback<R>? onRecentSelected;
+  /// Padding button action
+  final EdgeInsets? listActionPadding;
 
   /// Creates a [TypeAheadFieldQuickSearch]
   TypeAheadFieldQuickSearch(
@@ -732,12 +742,15 @@ class TypeAheadFieldQuickSearch<T, R> extends StatefulWidget {
       this.autoFlipDirection: false,
       this.hideKeyboard: false,
       this.minCharsForSuggestions: 0,
-      this.actionButton,
-      this.showAllResultActionButton,
+      this.listActionButton,
+      this.actionButtonBuilder,
+      this.buttonActionCallback,
+      this.buttonShowAllResult,
       this.titleHeaderRecent,
       this.itemRecentBuilder,
-      this.getRecentCallback,
+      this.fetchRecentActionCallback,
       this.onRecentSelected,
+      this.listActionPadding,
       }) : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
@@ -905,11 +918,13 @@ class _TypeAheadFieldQuickSearchState<T, R> extends State<TypeAheadFieldQuickSea
         hideOnError: widget.hideOnError,
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
         minCharsForSuggestions: widget.minCharsForSuggestions,
-        actionButton: widget.actionButton,
-        showAllResultActionButton: widget.showAllResultActionButton,
+        listActionButton: widget.listActionButton,
+        actionButtonBuilder: widget.actionButtonBuilder,
+        buttonActionCallback: widget.buttonActionCallback,
+        buttonShowAllResult: widget.buttonShowAllResult,
         titleHeaderRecent: widget.titleHeaderRecent,
         itemRecentBuilder: widget.itemRecentBuilder,
-        getRecentCallback: widget.getRecentCallback,
+        fetchRecentActionCallback: widget.fetchRecentActionCallback,
         onRecentSelected: (R selection) {
           if (!widget.keepSuggestionsOnSuggestionSelected) {
             this._effectiveFocusNode!.unfocus();
@@ -919,6 +934,7 @@ class _TypeAheadFieldQuickSearchState<T, R> extends State<TypeAheadFieldQuickSea
             widget.onRecentSelected!(selection);
           }
         },
+        listActionPadding: widget.listActionPadding,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
@@ -1040,12 +1056,15 @@ class _SuggestionsList<T, R> extends StatefulWidget {
   final bool? hideOnError;
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
-  final Widget? actionButton;
-  final Widget? showAllResultActionButton;
+  final List<dynamic>? listActionButton;
+  final ButtonActionBuilder? actionButtonBuilder;
+  final ButtonActionCallback? buttonActionCallback;
+  final ButtonActionBuilder? buttonShowAllResult;
   final Widget? titleHeaderRecent;
   final ItemBuilder<R>? itemRecentBuilder;
-  final GetRecentCallback<R>? getRecentCallback;
+  final FetchRecentActionCallback<R>? fetchRecentActionCallback;
   final RecentSelectionCallback<R>? onRecentSelected;
+  final EdgeInsets? listActionPadding;
 
   _SuggestionsList({
     required this.suggestionsBox,
@@ -1069,12 +1088,15 @@ class _SuggestionsList<T, R> extends StatefulWidget {
     this.hideOnError,
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
-    this.actionButton,
-    this.showAllResultActionButton,
+    this.listActionButton,
+    this.actionButtonBuilder,
+    this.buttonActionCallback,
+    this.buttonShowAllResult,
     this.titleHeaderRecent,
     this.itemRecentBuilder,
-    this.getRecentCallback,
+    this.fetchRecentActionCallback,
     this.onRecentSelected,
+    this.listActionPadding,
   });
 
   @override
@@ -1107,8 +1129,8 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
         if (mounted) {
           Iterable<R>? recentItems;
           try {
-            if (widget.getRecentCallback != null) {
-              recentItems = await widget.getRecentCallback!(widget.controller!.text);
+            if (widget.fetchRecentActionCallback != null) {
+              recentItems = await widget.fetchRecentActionCallback!(widget.controller!.text);
             }
           } catch (e) {}
 
@@ -1194,8 +1216,8 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
 
       try {
         suggestions = await widget.suggestionsCallback!(widget.controller!.text);
-        if (widget.getRecentCallback != null) {
-          recentItems = await widget.getRecentCallback!(widget.controller!.text);
+        if (widget.fetchRecentActionCallback != null) {
+          recentItems = await widget.fetchRecentActionCallback!(widget.controller!.text);
         }
       } catch (e) {
         error = e;
@@ -1277,40 +1299,72 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
   }
 
   Widget createSuggestionsWidget() {
-    final listItemSuggestionWidget = this._suggestions!.map((T suggestion) {
-      return InkWell(
-        child: widget.itemBuilder!(context, suggestion),
-        onTap: () {
-          widget.onSuggestionSelected!(suggestion);
-        },
-      );
-    }).toList();
+    final listItemSuggestionWidget = this._suggestions?.map((T suggestion) {
+      if ( widget.itemBuilder != null) {
+        return InkWell(
+          child: widget.itemBuilder!(context, suggestion),
+          onTap: () {
+            widget.onSuggestionSelected!(suggestion);
+          },
+        );
+      } else {
+        return SizedBox.shrink();
+      }
+    }).toList() ?? [];
+
+    final loadingWidget = widget.loadingBuilder != null
+        ? widget.loadingBuilder!(context)
+        : Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+
+    final listAction = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: widget.listActionButton!.map((dynamic action) {
+          if (widget.actionButtonBuilder != null) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: InkWell(
+                child: widget.actionButtonBuilder!(context, action),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                onTap: () {
+                  if (widget.buttonActionCallback != null) {
+                    widget.buttonActionCallback!(action);
+                    this.invalidateSuggestions();
+                  }
+                },
+              ),
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+        }).toList());
 
     Widget child = ListView(
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
       controller: _scrollController,
-      reverse: widget.suggestionsBox!.direction == AxisDirection.down
-          ? false
-          : true, // reverses the list to start at the bottom
+      reverse: widget.suggestionsBox!.direction == AxisDirection.down ? false : true, // reverses the list to start at the bottom
       children: [
-        if (widget.actionButton != null)
-          widget.actionButton!,
-        if (this._isLoading == true && widget.hideOnLoading == false
-            && widget.keepSuggestionsOnLoading == false)
-          widget.loadingBuilder != null
-              ? widget.loadingBuilder!(context)
-              : Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-        if (widget.showAllResultActionButton != null)
-          widget.showAllResultActionButton!,
-        ... listItemSuggestionWidget
+        if (widget.listActionButton != null && widget.listActionButton?.isNotEmpty == true)
+          Padding(
+            padding: widget.listActionPadding ?? EdgeInsets.zero,
+            child: listAction,
+          ),
+        if (this._isLoading == true && widget.hideOnLoading == false && widget.keepSuggestionsOnLoading == false)
+          loadingWidget,
+        if (widget.buttonShowAllResult != null && widget.controller?.text.isNotEmpty == true)
+          widget.buttonShowAllResult!(context, widget.controller?.text),
+        if (listItemSuggestionWidget.isNotEmpty)
+          ... [
+            ... listItemSuggestionWidget,
+            SizedBox(height: 16)
+          ],
       ],
     );
 
@@ -1325,44 +1379,76 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
   }
 
   Widget createRecentWidget() {
+    final listItemRecent = this._recentItems?.map((R recent) {
+      if (widget.itemRecentBuilder != null) {
+        return InkWell(
+          child: widget.itemRecentBuilder!(context, recent),
+          onTap: () {
+            if (widget.onRecentSelected != null) {
+              widget.onRecentSelected!(recent);
+            }
+          },
+        );
+      } else {
+        return SizedBox.shrink();
+      }
+    }).toList() ?? [];
+
+    final loadingWidget = widget.loadingBuilder != null
+        ? widget.loadingBuilder!(context)
+        : Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    final listAction = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: widget.listActionButton!.map((dynamic action) {
+          if (widget.actionButtonBuilder != null) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: InkWell(
+                child: widget.actionButtonBuilder!(context, action),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                onTap: () {
+                  if (widget.buttonActionCallback != null) {
+                    widget.buttonActionCallback!(action);
+                    this.invalidateSuggestions();
+                  }
+                },
+              ),
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+        }).toList());
+
     Widget child = ListView(
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
       controller: _scrollController,
-      reverse: widget.suggestionsBox!.direction == AxisDirection.down
-          ? false
-          : true, // reverses the list to start at the bottom
+      reverse: widget.suggestionsBox!.direction == AxisDirection.down ? false : true, // reverses the list to start at the bottom
       children: [
-        if (widget.actionButton != null)
-          widget.actionButton!,
-        if (this._isLoading == true && widget.hideOnLoading == false)
-          widget.loadingBuilder != null
-              ? widget.loadingBuilder!(context)
-              : Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-        if (widget.showAllResultActionButton != null)
-          widget.showAllResultActionButton!,
-        if (_recentItems?.isNotEmpty == true
-            && widget.itemRecentBuilder != null
-            && widget.titleHeaderRecent != null)
+        if (widget.listActionButton != null && widget.listActionButton?.isNotEmpty == true)
+          Padding(
+            padding: widget.listActionPadding ?? EdgeInsets.zero,
+            child: listAction,
+          ),
+        if (this._isLoading == true && widget.hideOnLoading == false && widget.keepSuggestionsOnLoading == false)
+          loadingWidget,
+        if (widget.buttonShowAllResult != null && widget.controller?.text.isNotEmpty == true)
+          widget.buttonShowAllResult!(context, widget.controller?.text),
+        if (_recentItems?.isNotEmpty == true && widget.itemRecentBuilder != null && widget.titleHeaderRecent != null)
           widget.titleHeaderRecent!,
-        if (_recentItems?.isNotEmpty == true && widget.itemRecentBuilder != null)
-          ... this._recentItems!.map((R recent) {
-            return InkWell(
-              child: widget.itemRecentBuilder!(context, recent),
-              onTap: () {
-                if (widget.onRecentSelected != null) {
-                  widget.onRecentSelected!(recent);
-                }
-              },
-            );
-          }).toList()
+        if (listItemRecent.isNotEmpty)
+          ... [
+            ... listItemRecent,
+            SizedBox(height: 16)
+          ],
       ],
     );
 
