@@ -294,6 +294,7 @@ class TypeAheadFormFieldQuickSearch<T, R> extends FormField<String> {
       FetchRecentActionCallback<R>? fetchRecentActionCallback,
       RecentSelectionCallback<R>? onRecentSelected,
       EdgeInsets? listActionPadding,
+      bool hideSuggestionsBox: false,
   }) : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
@@ -354,6 +355,7 @@ class TypeAheadFormFieldQuickSearch<T, R> extends FormField<String> {
                 fetchRecentActionCallback: fetchRecentActionCallback,
                 onRecentSelected: onRecentSelected,
                 listActionPadding: listActionPadding,
+                hideSuggestionsBox: hideSuggestionsBox,
               );
             });
 
@@ -712,6 +714,7 @@ class TypeAheadFieldQuickSearch<T, R> extends StatefulWidget {
   final RecentSelectionCallback<R>? onRecentSelected;
   /// Padding button action
   final EdgeInsets? listActionPadding;
+  final bool hideSuggestionsBox;
 
   /// Creates a [TypeAheadFieldQuickSearch]
   TypeAheadFieldQuickSearch(
@@ -751,6 +754,7 @@ class TypeAheadFieldQuickSearch<T, R> extends StatefulWidget {
       this.fetchRecentActionCallback,
       this.onRecentSelected,
       this.listActionPadding,
+      this.hideSuggestionsBox = false,
       }) : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
@@ -820,8 +824,11 @@ class _TypeAheadFieldQuickSearchState<T, R> extends State<TypeAheadFieldQuickSea
       this._focusNode = FocusNode();
     }
 
-    this._suggestionsBox =
-        _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox = _SuggestionsBox(
+        context,
+        widget.direction,
+        widget.autoFlipDirection,
+        widget.hideSuggestionsBox);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
     widget.suggestionsBoxController?._effectiveFocusNode =
         this._effectiveFocusNode;
@@ -935,6 +942,7 @@ class _TypeAheadFieldQuickSearchState<T, R> extends State<TypeAheadFieldQuickSea
           }
         },
         listActionPadding: widget.listActionPadding,
+        hideSuggestionsBox: widget.hideSuggestionsBox,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
@@ -1065,6 +1073,7 @@ class _SuggestionsList<T, R> extends StatefulWidget {
   final FetchRecentActionCallback<R>? fetchRecentActionCallback;
   final RecentSelectionCallback<R>? onRecentSelected;
   final EdgeInsets? listActionPadding;
+  final bool hideSuggestionsBox;
 
   _SuggestionsList({
     required this.suggestionsBox,
@@ -1097,6 +1106,7 @@ class _SuggestionsList<T, R> extends StatefulWidget {
     this.fetchRecentActionCallback,
     this.onRecentSelected,
     this.listActionPadding,
+    this.hideSuggestionsBox: false,
   });
 
   @override
@@ -1195,12 +1205,13 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
   }
 
   Future<void> invalidateSuggestions() async {
+    if (widget.hideSuggestionsBox) return;
     _suggestionsValid = false;
     await _getSuggestions();
   }
 
   Future<void> _getSuggestions() async {
-    if (_suggestionsValid) return;
+    if (_suggestionsValid || widget.hideSuggestionsBox) return;
     _suggestionsValid = true;
 
     if (mounted) {
@@ -1250,6 +1261,10 @@ class _SuggestionsListState<T, R> extends State<_SuggestionsList<T, R>>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.hideSuggestionsBox) {
+      return SizedBox.shrink();
+    }
+
     Widget child;
 
     if (this._suggestions?.isNotEmpty == true && widget.controller?.text.isNotEmpty == true) {
@@ -1810,6 +1825,7 @@ class _SuggestionsBox {
   final BuildContext context;
   final AxisDirection desiredDirection;
   final bool autoFlipDirection;
+  final bool hideSuggestionBox;
 
   OverlayEntry? _overlayEntry;
   AxisDirection direction;
@@ -1821,10 +1837,15 @@ class _SuggestionsBox {
   double textBoxHeight = 100.0;
   late double directionUpOffset;
 
-  _SuggestionsBox(this.context, this.direction, this.autoFlipDirection)
-      : desiredDirection = direction;
+  _SuggestionsBox(
+      this.context,
+      this.direction,
+      this.autoFlipDirection,
+      this.hideSuggestionBox
+  ) : desiredDirection = direction;
 
   void open() {
+    if (this.hideSuggestionBox) return;
     if (this.isOpened) return;
     assert(this._overlayEntry != null);
     resize();
