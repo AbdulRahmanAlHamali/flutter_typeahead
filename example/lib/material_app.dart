@@ -48,6 +48,12 @@ class NavigationExample extends StatelessWidget {
           ),
           TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
+              focusNode: FocusNode(
+                onKey: (node, event) {
+                  print(event);
+                  return KeyEventResult.ignored;
+                },
+              ),
               autofocus: true,
               style: DefaultTextStyle.of(context)
                   .style
