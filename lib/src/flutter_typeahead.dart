@@ -1839,21 +1839,21 @@ class SuggestionsBoxController {
 
   /// Opens the suggestions box
   void open() {
-    _effectiveFocusNode!.requestFocus();
+    _effectiveFocusNode?.requestFocus();
   }
 
   bool isOpened() {
-    return _suggestionsBox!.isOpened;
+    return _suggestionsBox?.isOpened??false;
   }
 
   /// Closes the suggestions box
   void close() {
-    _effectiveFocusNode!.unfocus();
+    _effectiveFocusNode?.unfocus();
   }
 
   /// Opens the suggestions box if closed and vice-versa
   void toggle() {
-    if (_suggestionsBox!.isOpened) {
+    if (_suggestionsBox?.isOpened??false) {
       close();
     } else {
       open();
