@@ -98,7 +98,8 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
       bool keepSuggestionsOnLoading: true,
       bool keepSuggestionsOnSuggestionSelected: false,
       bool autoFlipDirection: false,
-      int minCharsForSuggestions: 0})
+      int minCharsForSuggestions: 0,
+      bool hideKeyboardOnDrag: false})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
@@ -147,6 +148,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                     keepSuggestionsOnSuggestionSelected,
                 autoFlipDirection: autoFlipDirection,
                 minCharsForSuggestions: minCharsForSuggestions,
+                hideKeyboardOnDrag: hideKeyboardOnDrag,
               );
             });
 
@@ -481,37 +483,48 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Defaults to 0.
   final int minCharsForSuggestions;
 
+  /// If set to true and if the user scrolls through the suggestion list, hide the keyboard automatically.
+  /// If set to false, the keyboard remains visible.
+  /// Throws an exception, if hideKeyboardOnDrag and hideSuggestionsOnKeyboardHide are both set to true as
+  /// they are mutual exclusive.
+  ///
+  /// Defaults to false
+  final bool hideKeyboardOnDrag;
+
   /// Creates a [CupertinoTypeAheadField]
-  CupertinoTypeAheadField(
-      {Key? key,
-      required this.suggestionsCallback,
-      required this.itemBuilder,
-      required this.onSuggestionSelected,
-      this.textFieldConfiguration: const CupertinoTextFieldConfiguration(),
-      this.suggestionsBoxDecoration: const CupertinoSuggestionsBoxDecoration(),
-      this.debounceDuration: const Duration(milliseconds: 300),
-      this.suggestionsBoxController,
-      this.loadingBuilder,
-      this.noItemsFoundBuilder,
-      this.errorBuilder,
-      this.transitionBuilder,
-      this.animationStart: 0.25,
-      this.animationDuration: const Duration(milliseconds: 500),
-      this.getImmediateSuggestions: false,
-      this.suggestionsBoxVerticalOffset: 5.0,
-      this.direction: AxisDirection.down,
-      this.hideOnLoading: false,
-      this.hideOnEmpty: false,
-      this.hideOnError: false,
-      this.hideSuggestionsOnKeyboardHide: true,
-      this.keepSuggestionsOnLoading: true,
-      this.keepSuggestionsOnSuggestionSelected: false,
-      this.autoFlipDirection: false,
-      this.minCharsForSuggestions: 0})
-      : assert(animationStart >= 0.0 && animationStart <= 1.0),
+  CupertinoTypeAheadField({
+    Key? key,
+    required this.suggestionsCallback,
+    required this.itemBuilder,
+    required this.onSuggestionSelected,
+    this.textFieldConfiguration: const CupertinoTextFieldConfiguration(),
+    this.suggestionsBoxDecoration: const CupertinoSuggestionsBoxDecoration(),
+    this.debounceDuration: const Duration(milliseconds: 300),
+    this.suggestionsBoxController,
+    this.loadingBuilder,
+    this.noItemsFoundBuilder,
+    this.errorBuilder,
+    this.transitionBuilder,
+    this.animationStart: 0.25,
+    this.animationDuration: const Duration(milliseconds: 500),
+    this.getImmediateSuggestions: false,
+    this.suggestionsBoxVerticalOffset: 5.0,
+    this.direction: AxisDirection.down,
+    this.hideOnLoading: false,
+    this.hideOnEmpty: false,
+    this.hideOnError: false,
+    this.hideSuggestionsOnKeyboardHide: true,
+    this.keepSuggestionsOnLoading: true,
+    this.keepSuggestionsOnSuggestionSelected: false,
+    this.autoFlipDirection: false,
+    this.minCharsForSuggestions: 0,
+    this.hideKeyboardOnDrag: true,
+  })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
         assert(minCharsForSuggestions >= 0),
+        assert(!hideKeyboardOnDrag ||
+            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
         super(key: key);
 
   @override
@@ -673,6 +686,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         hideOnError: widget.hideOnError,
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
         minCharsForSuggestions: widget.minCharsForSuggestions,
+        hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
@@ -743,7 +757,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         maxLines: widget.textFieldConfiguration.maxLines,
         minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
-        maxLengthEnforcement: widget.textFieldConfiguration.maxLengthEnforcement,
+        maxLengthEnforcement:
+            widget.textFieldConfiguration.maxLengthEnforcement,
         onChanged: widget.textFieldConfiguration.onChanged,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
         onTap: widget.textFieldConfiguration.onTap,
@@ -783,6 +798,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool? hideOnError;
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
+  final bool hideKeyboardOnDrag;
 
   _SuggestionsList({
     required this.suggestionsBox,
@@ -805,6 +821,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.hideOnError,
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
+    this.hideKeyboardOnDrag: false,
   });
 
   @override
@@ -1103,6 +1120,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         padding: EdgeInsets.zero,
         primary: false,
         shrinkWrap: true,
+        keyboardDismissBehavior: widget.hideKeyboardOnDrag
+            ? ScrollViewKeyboardDismissBehavior.onDrag
+            : ScrollViewKeyboardDismissBehavior.manual,
         reverse: widget.suggestionsBox!.direction == AxisDirection.down
             ? false
             : true, // reverses the list to start at the bottom
