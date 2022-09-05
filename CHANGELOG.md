@@ -1,3 +1,11 @@
+## 4.1.0 - 5-September-2022
+
+-- PR #409 - Add null safety to suggestions box controller
+-- PR #417 - Improved support for VoiceOver/TalkBack
+-- PR #418 - Feat/key up down
+-- PR #422 - Adding hideKeyboardOnDrag option
+-- PR #424 - Updated README: added pub.dev shield
+
 ## 4.0.0 - 15-May-2022
 
 -- PR #395 - Fix Flutter 3.0 warnings
