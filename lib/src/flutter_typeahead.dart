@@ -231,6 +231,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
+import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 
 import 'typedef.dart';
 import 'utils.dart';
@@ -763,7 +764,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   final Stream<bool>? _keyboardVisibility =
       (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
   late StreamSubscription<bool>? _keyboardVisibilitySubscription;
+
   bool _areSuggestionsFocused = false;
+  late final _shouldRefreshSuggestionsFocusIndex =
+      ShouldRefreshSuggestionFocusIndexNotifier(
+          textFieldFocusNode: _effectiveFocusNode);
 
   @override
   void didChangeMetrics() {
@@ -931,6 +936,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           minCharsForSuggestions: widget.minCharsForSuggestions,
           keyboardSuggestionSelectionNotifier:
               _keyboardSuggestionSelectionNotifier,
+          shouldRefreshSuggestionFocusIndexNotifier:
+              _shouldRefreshSuggestionsFocusIndex,
           giveTextFieldFocus: giveTextFieldFocus,
           onSuggestionFocus: onSuggestionFocus,
           onKeyEvent: _onKeyEvent,
@@ -1063,6 +1070,8 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
   final KeyboardSuggestionSelectionNotifier keyboardSuggestionSelectionNotifier;
+  final ShouldRefreshSuggestionFocusIndexNotifier
+      shouldRefreshSuggestionFocusIndexNotifier;
   final VoidCallback giveTextFieldFocus;
   final VoidCallback onSuggestionFocus;
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
@@ -1091,6 +1100,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
     required this.keyboardSuggestionSelectionNotifier,
+    required this.shouldRefreshSuggestionFocusIndexNotifier,
     required this.giveTextFieldFocus,
     required this.onSuggestionFocus,
     required this.onKeyEvent,
@@ -1203,6 +1213,12 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         widget.onSuggestionFocus();
       } else {
         widget.giveTextFieldFocus();
+      }
+    });
+
+    widget.shouldRefreshSuggestionFocusIndexNotifier.addListener(() {
+      if (_suggestionIndex != -1) {
+        _suggestionIndex = -1;
       }
     });
   }
