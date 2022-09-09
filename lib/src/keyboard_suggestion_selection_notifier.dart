@@ -7,11 +7,10 @@ class KeyboardSuggestionSelectionNotifier
 
   void onKeyboardEvent(RawKeyEvent event) {
     // * we only handle key down event
-    if (event.runtimeType.toString() == 'RawKeyUpEvent') return;
+    if (event.runtimeType == RawKeyUpEvent) return;
 
     if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
         event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      print(event.logicalKey.debugName);
       if (value == event.logicalKey) {
         notifyListeners();
       } else {
