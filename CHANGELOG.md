@@ -1,3 +1,7 @@
+## 4.1.1 - 17-September-2022
+
+-- PR #428 - Fix some issues with web / arrows etc.
+
 ## 4.1.0 - 5-September-2022
 
 -- PR #409 - Add null safety to suggestions box controller
