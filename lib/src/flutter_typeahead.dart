@@ -286,6 +286,7 @@ class TypeAheadFormField<T> extends FormField<String> {
       bool keepSuggestionsOnLoading: true,
       bool keepSuggestionsOnSuggestionSelected: false,
       bool autoFlipDirection: false,
+      bool autoFlipListDirection: true,
       bool hideKeyboard: false,
       int minCharsForSuggestions: 0,
       bool hideKeyboardOnDrag: false})
@@ -339,6 +340,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 keepSuggestionsOnSuggestionSelected:
                     keepSuggestionsOnSuggestionSelected,
                 autoFlipDirection: autoFlipDirection,
+                autoFlipListDirection: autoFlipListDirection,
                 hideKeyboard: hideKeyboard,
                 minCharsForSuggestions: minCharsForSuggestions,
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
@@ -674,6 +676,13 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// Defaults to false
   final bool autoFlipDirection;
+
+  /// If set to false, suggestion list will not be reversed according to the
+  /// [autoFlipDirection] property.
+  ///
+  /// Defaults to true.
+  final bool autoFlipListDirection;
+
   final bool hideKeyboard;
 
   /// The minimum number of characters which must be entered before
@@ -720,6 +729,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.keepSuggestionsOnLoading: true,
     this.keepSuggestionsOnSuggestionSelected: false,
     this.autoFlipDirection: false,
+    this.autoFlipListDirection: true,
     this.hideKeyboard: false,
     this.minCharsForSuggestions: 0,
     this.onSuggestionsBoxToggle,
@@ -823,8 +833,13 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       });
     }
 
-    this._suggestionsBox =
-        _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
+    this._suggestionsBox = _SuggestionsBox(
+      context,
+      widget.direction,
+      widget.autoFlipDirection,
+      widget.autoFlipListDirection,
+    );
+
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
     widget.suggestionsBoxController?._effectiveFocusNode =
         this._effectiveFocusNode;
@@ -1416,7 +1431,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       controller: _scrollController,
       reverse: widget.suggestionsBox!.direction == AxisDirection.down
           ? false
-          : true, // reverses the list to start at the bottom
+          : widget.suggestionsBox!.autoFlipListDirection,
       children: List.generate(this._suggestions!.length, (index) {
         final suggestion = _suggestions!.elementAt(index);
         final focusNode = _focusNodes[index];
@@ -1782,6 +1797,7 @@ class _SuggestionsBox {
   final BuildContext context;
   final AxisDirection desiredDirection;
   final bool autoFlipDirection;
+  final bool autoFlipListDirection;
 
   OverlayEntry? _overlayEntry;
   AxisDirection direction;
@@ -1793,8 +1809,12 @@ class _SuggestionsBox {
   double textBoxHeight = 100.0;
   late double directionUpOffset;
 
-  _SuggestionsBox(this.context, this.direction, this.autoFlipDirection)
-      : desiredDirection = direction;
+  _SuggestionsBox(
+    this.context,
+    this.direction,
+    this.autoFlipDirection,
+    this.autoFlipListDirection,
+  ) : desiredDirection = direction;
 
   void open() {
     if (this.isOpened) return;
