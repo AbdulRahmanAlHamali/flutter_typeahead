@@ -1031,6 +1031,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
         onTap: widget.textFieldConfiguration.onTap,
+        onTapOutside: (_){},
         scrollPadding: widget.textFieldConfiguration.scrollPadding,
         textInputAction: widget.textFieldConfiguration.textInputAction,
         textCapitalization: widget.textFieldConfiguration.textCapitalization,
@@ -1895,7 +1896,6 @@ class _SuggestionsBox {
 
     double maxHDesired = _calculateMaxHeight(desiredDirection, box, widget,
         windowHeight, rootMediaQuery, keyboardHeight, textBoxAbsY);
-
     // if there's enough room in the desired direction, update the direction and the max height
     if (maxHDesired >= minOverlaySpace || !autoFlipDirection) {
       direction = desiredDirection;
@@ -1942,7 +1942,6 @@ class _SuggestionsBox {
     // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
     double unsafeAreaHeight =
         keyboardHeight == 0 ? rootMediaQuery.data.padding.bottom : 0;
-
     return windowHeight -
         keyboardHeight -
         unsafeAreaHeight -

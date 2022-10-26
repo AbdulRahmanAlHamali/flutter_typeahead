@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ScrollExample extends StatelessWidget {
-  final List<String> items = List.generate(5, (index) => "Item $index");
+  final List<String> items = List.generate(50, (index) => "Item $index");
 
   @override
   Widget build(BuildContext context) {

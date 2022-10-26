@@ -1,7 +1,7 @@
+import 'dart:ui';
 import 'package:example/scroll_example.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-
 import 'package:example/data.dart';
 
 class MyMaterialApp extends StatelessWidget {
@@ -9,6 +9,9 @@ class MyMaterialApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'flutter_typeahead demo',
+      scrollBehavior: MaterialScrollBehavior().copyWith(
+        dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}
+      ),
       home: MyHomePage(),
     );
   }
@@ -27,11 +30,14 @@ class MyHomePage extends StatelessWidget {
               Tab(text: 'Example 3: Scroll')
             ]),
           ),
-          body: TabBarView(children: [
-            NavigationExample(),
-            FormExample(),
-            ScrollExample(),
-          ])),
+          body: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: TabBarView(children: [
+              NavigationExample(),
+              FormExample(),
+              ScrollExample(),
+            ]),
+          )),
     );
   }
 }
