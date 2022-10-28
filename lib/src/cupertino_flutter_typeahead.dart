@@ -98,6 +98,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
       bool keepSuggestionsOnLoading: true,
       bool keepSuggestionsOnSuggestionSelected: false,
       bool autoFlipDirection: false,
+      bool autoFlipListDirection: true,
       int minCharsForSuggestions: 0,
       bool hideKeyboardOnDrag: false})
       : assert(
@@ -147,6 +148,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                 keepSuggestionsOnSuggestionSelected:
                     keepSuggestionsOnSuggestionSelected,
                 autoFlipDirection: autoFlipDirection,
+                autoFlipListDirection: autoFlipListDirection,
                 minCharsForSuggestions: minCharsForSuggestions,
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
               );
@@ -477,6 +479,12 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool autoFlipDirection;
 
+  /// If set to false, suggestion list will not be reversed according to the
+  /// [autoFlipDirection] property.
+  ///
+  /// Defaults to true.
+  final bool autoFlipListDirection;
+
   /// The minimum number of characters which must be entered before
   /// [suggestionsCallback] is triggered.
   ///
@@ -517,6 +525,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.keepSuggestionsOnLoading: true,
     this.keepSuggestionsOnSuggestionSelected: false,
     this.autoFlipDirection: false,
+    this.autoFlipListDirection: true,
     this.minCharsForSuggestions: 0,
     this.hideKeyboardOnDrag: true,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
@@ -592,7 +601,12 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
     }
 
     this._suggestionsBox = _CupertinoSuggestionsBox(
-        context, widget.direction, widget.autoFlipDirection);
+      context,
+      widget.direction,
+      widget.autoFlipDirection,
+      widget.autoFlipListDirection,
+    );
+
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
     widget.suggestionsBoxController?._effectiveFocusNode =
         this._effectiveFocusNode;
@@ -1125,7 +1139,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
             : ScrollViewKeyboardDismissBehavior.manual,
         reverse: widget.suggestionsBox!.direction == AxisDirection.down
             ? false
-            : true, // reverses the list to start at the bottom
+            : widget.suggestionsBox!.autoFlipListDirection,
         children: this._suggestions!.map((T suggestion) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
@@ -1336,6 +1350,7 @@ class _CupertinoSuggestionsBox {
   final BuildContext context;
   final AxisDirection desiredDirection;
   final bool autoFlipDirection;
+  final bool autoFlipListDirection;
 
   OverlayEntry? _overlayEntry;
   AxisDirection direction;
@@ -1347,8 +1362,12 @@ class _CupertinoSuggestionsBox {
   double textBoxHeight = 100.0;
   late double directionUpOffset;
 
-  _CupertinoSuggestionsBox(this.context, this.direction, this.autoFlipDirection)
-      : desiredDirection = direction;
+  _CupertinoSuggestionsBox(
+    this.context,
+    this.direction,
+    this.autoFlipDirection,
+    this.autoFlipListDirection,
+  ) : desiredDirection = direction;
 
   void open() {
     if (this.isOpened) return;
