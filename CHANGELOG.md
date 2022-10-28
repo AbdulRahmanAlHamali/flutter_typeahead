@@ -1,3 +1,8 @@
+## 4.2.0 - 27-October-2022
+
+-- PR #432 - Fix suggestions box behavior on web
+-- PR #431 - Add autoFlipListDirection option
+
 ## 4.1.1 - 17-September-2022
 
 -- PR #428 - Fix some issues with web / arrows etc.
