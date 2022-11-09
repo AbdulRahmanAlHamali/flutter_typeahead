@@ -249,6 +249,9 @@ class TypeAheadFormField<T> extends FormField<String> {
   /// that the TypeAhead widget displays
   final TextFieldConfiguration textFieldConfiguration;
 
+  // Adds a callback for resetting the form field
+  void Function()? onReset;
+
   /// Creates a [TypeAheadFormField]
   TypeAheadFormField(
       {Key? key,
@@ -261,6 +264,7 @@ class TypeAheadFormField<T> extends FormField<String> {
       bool enabled: true,
       AutovalidateMode autovalidateMode: AutovalidateMode.disabled,
       FormFieldSetter<String>? onSaved,
+      this.onReset,
       FormFieldValidator<String>? validator,
       ErrorBuilder? errorBuilder,
       WidgetBuilder? noItemsFoundBuilder,
@@ -405,6 +409,9 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
     super.reset();
     setState(() {
       _effectiveController!.text = widget.initialValue!;
+      if (widget.onReset != null) {
+        widget.onReset!();
+      }
     });
   }
 
