@@ -802,7 +802,12 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   }
 
   KeyEventResult _onKeyEvent(FocusNode _, RawKeyEvent event) {
-    _keyboardSuggestionSelectionNotifier.onKeyboardEvent(event);
+    if (event.isKeyPressed(LogicalKeyboardKey.arrowUp) ||
+        event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+      // do nothing to avoid puzzling users until keyboard arrow nav is implemented
+    } else {
+      _keyboardSuggestionSelectionNotifier.onKeyboardEvent(event);
+    }
     return KeyEventResult.ignored;
   }
 
@@ -1046,7 +1051,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
         onTap: widget.textFieldConfiguration.onTap,
-        onTapOutside: (_){},
+        onTapOutside: (_) {},
         scrollPadding: widget.textFieldConfiguration.scrollPadding,
         textInputAction: widget.textFieldConfiguration.textInputAction,
         textCapitalization: widget.textFieldConfiguration.textCapitalization,
