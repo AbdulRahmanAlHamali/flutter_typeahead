@@ -1,3 +1,8 @@
+## 4.3.0 - 15-November-2022
+
+-- PR #436 - Added onReset callback to TypeAheadFormField
+-- PR #435 - Block up and down keys
+
 ## 4.2.0 - 27-October-2022
 
 -- PR #432 - Fix suggestions box behavior on web
