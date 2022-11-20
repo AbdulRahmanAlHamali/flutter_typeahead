@@ -497,6 +497,10 @@ class TypeAheadField<T> extends StatefulWidget {
   /// ```
   final ItemBuilder<T> itemBuilder;
 
+  /// Item separator builder
+  /// same as ListView.separated.separatorBuilder
+  final IndexedWidgetBuilder? itemSeparatorBuilder;
+
   /// used to control the scroll behavior of item-builder list
   final ScrollController? scrollController;
 
@@ -714,6 +718,7 @@ class TypeAheadField<T> extends StatefulWidget {
     Key? key,
     required this.suggestionsCallback,
     required this.itemBuilder,
+    this.itemSeparatorBuilder,
     required this.onSuggestionSelected,
     this.textFieldConfiguration: const TextFieldConfiguration(),
     this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
@@ -955,6 +960,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             widget.onSuggestionSelected(selection);
           },
           itemBuilder: widget.itemBuilder,
+          itemSeparatorBuilder: widget.itemSeparatorBuilder,
           direction: _suggestionsBox!.direction,
           hideOnLoading: widget.hideOnLoading,
           hideOnEmpty: widget.hideOnEmpty,
@@ -1082,6 +1088,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
   final ItemBuilder<T>? itemBuilder;
+  final IndexedWidgetBuilder? itemSeparatorBuilder;
   final ScrollController? scrollController;
   final SuggestionsBoxDecoration? decoration;
   final Duration? debounceDuration;
@@ -1112,6 +1119,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.onSuggestionSelected,
     this.suggestionsCallback,
     this.itemBuilder,
+    this.itemSeparatorBuilder,
     this.scrollController,
     this.decoration,
     this.debounceDuration,
@@ -1434,7 +1442,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   }
 
   Widget createSuggestionsWidget() {
-    Widget child = ListView(
+    Widget child = ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
@@ -1445,7 +1453,8 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       reverse: widget.suggestionsBox!.direction == AxisDirection.down
           ? false
           : widget.suggestionsBox!.autoFlipListDirection,
-      children: List.generate(this._suggestions!.length, (index) {
+      itemCount: this._suggestions!.length,
+      itemBuilder: (BuildContext context, int index) {
         final suggestion = _suggestions!.elementAt(index);
         final focusNode = _focusNodes[index];
 
@@ -1461,7 +1470,10 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
             widget.onSuggestionSelected!(suggestion);
           },
         );
-      }),
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          widget.itemSeparatorBuilder?.call(context, index) ??
+          const SizedBox.shrink(),
     );
 
     if (widget.decoration!.hasScrollbar) {
