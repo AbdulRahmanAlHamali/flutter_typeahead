@@ -2028,6 +2028,11 @@ class SuggestionsBoxController {
     _effectiveFocusNode?.requestFocus();
   }
 
+  /// Opens the suggestions box without focusing the text field
+  void openUnfocused() {
+    _suggestionsBox?.open();
+  }
+
   bool isOpened() {
     return _suggestionsBox?.isOpened ?? false;
   }
@@ -2037,12 +2042,26 @@ class SuggestionsBoxController {
     _effectiveFocusNode?.unfocus();
   }
 
+  /// Closes the suggestions box without un-focusing the text field
+  void closeUnfocused() {
+    _suggestionsBox?.close();
+  }
+
   /// Opens the suggestions box if closed and vice-versa
   void toggle() {
     if (_suggestionsBox?.isOpened ?? false) {
       close();
     } else {
       open();
+    }
+  }
+
+  /// Opens the suggestions box if closed and vice-versa without focusing/un-focusing the text field
+  void toggleUnfocused() {
+    if (_suggestionsBox?.isOpened ?? false) {
+      closeUnfocused();
+    } else {
+      openUnfocused();
     }
   }
 
