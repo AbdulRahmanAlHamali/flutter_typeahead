@@ -312,6 +312,16 @@ Manual control of the suggestions box can be achieved by creating an instance of
 passing it to the `suggestionsBoxController` property. This will allow you to manually open, close, toggle, or 
 resize the suggestions box.
 
+`SuggestionsBoxController` also has the methods `openUnfocused`, `closeUnfocused`, and `toggleUnfocused`, which allow you to open/close the suggestions box without needing to focus/unfocus the text field. This makes it possible to use the `TypeAheadField` as a drop-down list by disabling the text field and toggling the suggestion box manually via a gesture detector. For example: 
+```dart
+GestureDetector(
+        onTap: _suggestionsBoxController.toggleUnfocused,
+        child: TypeAheadFormField(
+                suggestionsBoxController: _suggestionsBoxController,
+                textFieldConfiguration: TextFieldConfiguration(
+                        enabled: false)))
+```
+
 ## For more information
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
 
