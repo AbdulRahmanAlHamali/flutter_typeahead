@@ -1,3 +1,7 @@
+## 4.3.1 - 28-January-2023
+
+-- PR #447 - fix: Use maybeOf for scrollable to not throw an exception in flutter …
+
 ## 4.3.0 - 15-November-2022
 
 -- PR #436 - Added onReset callback to TypeAheadFormField
