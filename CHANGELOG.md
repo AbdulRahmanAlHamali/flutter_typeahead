@@ -1,3 +1,7 @@
+## 4.3.2 - 28-January-2023
+
+-- Update sdk level to 2.19.0 for Flutter 3.7.0
+
 ## 4.3.1 - 28-January-2023
 
 -- PR #447 - fix: Use maybeOf for scrollable to not throw an exception in flutter …
