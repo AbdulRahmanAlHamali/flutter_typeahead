@@ -646,7 +646,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ScrollableState? scrollableState = Scrollable.of(context);
+    final scrollableState = Scrollable.maybeOf(context);
     if (scrollableState != null) {
       // The TypeAheadField is inside a scrollable widget
       _scrollPosition = scrollableState.position;
