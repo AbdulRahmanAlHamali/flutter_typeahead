@@ -9,9 +9,9 @@ The easiest way to get involved is to create a [new issue](https://github.com/Ab
 If you plan to submit a PR please do the following:
 
 - Fork the repository
-- Create a feature branch from the **develop** branch!
+- Create a feature branch from the **master** branch!
 - Following the coding guidlines below
-- Submit the PR against the **develop** branch.
+- Submit the PR against the **master** branch.
 - Update both Material and Cupertino code if applicable
 
 ## General coding guidlines
@@ -23,6 +23,8 @@ If you'd like to add a feature or fix a bug, we're more than happy to accept pul
   - Code is free of lint errors
 - Format your code with `dartfmt`
 - Write helpful documentation
+- Write new tests that cover your code base changes
+- Make sure all current tests pass
 - If you would like to make a bigger / fundamental change to the codebase, please file a lightweight example PR / issue.
 
 ## Before Uploading
