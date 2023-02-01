@@ -1449,17 +1449,19 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         final suggestion = _suggestions!.elementAt(index);
         final focusNode = _focusNodes[index];
 
-        return InkWell(
-          key: TestKeys.getSuggestionKey(index),
-          focusColor: Theme.of(context).hoverColor,
-          focusNode: focusNode,
-          child: widget.itemBuilder!(context, suggestion),
-          onTap: () {
-            // * we give the focus back to the text field
-            widget.giveTextFieldFocus();
+        return TextFieldTapRegion(
+          child: InkWell(
+            key: TestKeys.getSuggestionKey(index),
+            focusColor: Theme.of(context).hoverColor,
+            focusNode: focusNode,
+            child: widget.itemBuilder!(context, suggestion),
+            onTap: () {
+              // * we give the focus back to the text field
+              widget.giveTextFieldFocus();
 
-            widget.onSuggestionSelected!(suggestion);
-          },
+              widget.onSuggestionSelected!(suggestion);
+            },
+          ),
         );
       }),
     );
