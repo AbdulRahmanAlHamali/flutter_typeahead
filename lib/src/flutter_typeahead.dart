@@ -1467,9 +1467,13 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     );
 
     if (widget.decoration!.hasScrollbar) {
-      child = Scrollbar(
-        controller: _scrollController,
-        child: child,
+      child = MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: Scrollbar(
+          controller: _scrollController,
+          child: child,
+        ),
       );
     }
 
