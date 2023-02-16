@@ -1,0 +1,2 @@
+cd ..
+dart pub publish
