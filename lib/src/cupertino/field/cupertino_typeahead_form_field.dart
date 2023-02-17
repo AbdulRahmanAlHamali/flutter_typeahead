@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/src/material/field/text_field_configuration.dart';
-import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
-import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_controller.dart';
-import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
+import 'dart:core';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_typeahead/src/cupertino/field/cupertino_text_field_configuration.dart';
+import 'package:flutter_typeahead/src/cupertino/field/cupertino_typeahead_field.dart';
+import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_box_controller.dart';
+import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
 
@@ -12,43 +14,38 @@ import 'package:flutter_typeahead/src/typedef.dart';
 ///
 /// See also:
 ///
-/// * [TypeAheadField], A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
+/// * [TypeAheadField], A [CupertinoTextField](https://docs.flutter.io/flutter/cupertino/CupertinoTextField-class.html)
 /// that displays a list of suggestions as the user types
-class TypeAheadFormField<T> extends FormField<String> {
-  /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
+class CupertinoTypeAheadFormField<T> extends FormField<String> {
+  /// The configuration of the [CupertinoTextField](https://docs.flutter.io/flutter/cupertino/CupertinoTextField-class.html)
   /// that the TypeAhead widget displays
-  final TextFieldConfiguration textFieldConfiguration;
+  final CupertinoTextFieldConfiguration textFieldConfiguration;
 
-  // Adds a callback for resetting the form field
-  void Function()? onReset;
-
-  /// Creates a [TypeAheadFormField]
-  TypeAheadFormField(
+  /// Creates a [CupertinoTypeAheadFormField]
+  CupertinoTypeAheadFormField(
       {Key? key,
         String? initialValue,
         bool getImmediateSuggestions = false,
-        @Deprecated('Use autovalidateMode parameter which provides more specific '
+        @Deprecated('Use autoValidateMode parameter which provides more specific '
             'behavior related to auto validation. '
             'This feature was deprecated after Flutter v1.19.0.')
         bool autovalidate = false,
         bool enabled = true,
-        AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
+        AutovalidateMode? autovalidateMode,
         FormFieldSetter<String>? onSaved,
-        this.onReset,
         FormFieldValidator<String>? validator,
         ErrorBuilder? errorBuilder,
         WidgetBuilder? noItemsFoundBuilder,
         WidgetBuilder? loadingBuilder,
-        void Function(bool)? onSuggestionsBoxToggle,
         Duration debounceDuration = const Duration(milliseconds: 300),
-        SuggestionsBoxDecoration suggestionsBoxDecoration =
-        const SuggestionsBoxDecoration(),
-        SuggestionsBoxController? suggestionsBoxController,
+        CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration =
+        const CupertinoSuggestionsBoxDecoration(),
+        CupertinoSuggestionsBoxController? suggestionsBoxController,
         required SuggestionSelectionCallback<T> onSuggestionSelected,
         required ItemBuilder<T> itemBuilder,
         required SuggestionsCallback<T> suggestionsCallback,
         double suggestionsBoxVerticalOffset = 5.0,
-        this.textFieldConfiguration = const TextFieldConfiguration(),
+        this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
         AnimationTransitionBuilder? transitionBuilder,
         Duration animationDuration = const Duration(milliseconds: 500),
         double animationStart = 0.25,
@@ -61,7 +58,6 @@ class TypeAheadFormField<T> extends FormField<String> {
         bool keepSuggestionsOnSuggestionSelected = false,
         bool autoFlipDirection = false,
         bool autoFlipListDirection = true,
-        bool hideKeyboard = false,
         int minCharsForSuggestions = 0,
         bool hideKeyboardOnDrag = false})
       : assert(
@@ -77,10 +73,10 @@ class TypeAheadFormField<T> extends FormField<String> {
           enabled: enabled,
           autovalidateMode: autovalidateMode,
           builder: (FormFieldState<String> field) {
-            final _TypeAheadFormFieldState state =
-            field as _TypeAheadFormFieldState<dynamic>;
+            final CupertinoTypeAheadFormFieldState state =
+            field as CupertinoTypeAheadFormFieldState<dynamic>;
 
-            return TypeAheadField(
+            return CupertinoTypeAheadField(
               getImmediateSuggestions: getImmediateSuggestions,
               transitionBuilder: transitionBuilder,
               errorBuilder: errorBuilder,
@@ -90,8 +86,6 @@ class TypeAheadFormField<T> extends FormField<String> {
               suggestionsBoxDecoration: suggestionsBoxDecoration,
               suggestionsBoxController: suggestionsBoxController,
               textFieldConfiguration: textFieldConfiguration.copyWith(
-                decoration: textFieldConfiguration.decoration
-                    .copyWith(errorText: state.errorText),
                 onChanged: (text) {
                   state.didChange(text);
                   textFieldConfiguration.onChanged?.call(text);
@@ -100,7 +94,6 @@ class TypeAheadFormField<T> extends FormField<String> {
               ),
               suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
               onSuggestionSelected: onSuggestionSelected,
-              onSuggestionsBoxToggle: onSuggestionsBoxToggle,
               itemBuilder: itemBuilder,
               suggestionsCallback: suggestionsCallback,
               animationStart: animationStart,
@@ -115,24 +108,25 @@ class TypeAheadFormField<T> extends FormField<String> {
               keepSuggestionsOnSuggestionSelected,
               autoFlipDirection: autoFlipDirection,
               autoFlipListDirection: autoFlipListDirection,
-              hideKeyboard: hideKeyboard,
               minCharsForSuggestions: minCharsForSuggestions,
               hideKeyboardOnDrag: hideKeyboardOnDrag,
             );
           });
 
   @override
-  _TypeAheadFormFieldState<T> createState() => _TypeAheadFormFieldState<T>();
+  CupertinoTypeAheadFormFieldState<T> createState() =>
+      CupertinoTypeAheadFormFieldState<T>();
 }
 
-class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
+class CupertinoTypeAheadFormFieldState<T> extends FormFieldState<String> {
   TextEditingController? _controller;
 
   TextEditingController? get _effectiveController =>
       widget.textFieldConfiguration.controller ?? _controller;
 
   @override
-  TypeAheadFormField get widget => super.widget as TypeAheadFormField<dynamic>;
+  CupertinoTypeAheadFormField get widget =>
+      super.widget as CupertinoTypeAheadFormField<dynamic>;
 
   @override
   void initState() {
@@ -146,7 +140,7 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
   }
 
   @override
-  void didUpdateWidget(TypeAheadFormField oldWidget) {
+  void didUpdateWidget(CupertinoTypeAheadFormField oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.textFieldConfiguration.controller !=
         oldWidget.textFieldConfiguration.controller) {
@@ -179,9 +173,6 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
     super.reset();
     setState(() {
       _effectiveController!.text = widget.initialValue!;
-      if (widget.onReset != null) {
-        widget.onReset!();
-      }
     });
   }
 

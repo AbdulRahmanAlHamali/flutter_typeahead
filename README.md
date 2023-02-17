@@ -17,7 +17,7 @@ builder function
 decoration, custom TextEditingController, text styling, etc.
 * Provides two versions, a normal version and a [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 version that accepts validation, submitting, etc.
-* Provides high customizability; you can customize the suggestion box decoration,
+* Provides high customizable; you can customize the suggestion box decoration,
 the loading bar, the animation, the debounce duration, etc.
 
 ## Installation

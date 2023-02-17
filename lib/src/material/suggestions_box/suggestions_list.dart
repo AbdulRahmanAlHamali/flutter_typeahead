@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/src/material/field/test_keys.dart';
 import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
-import 'package:flutter_typeahead/src/material/suggestion_box/suggestions_box.dart';
-import 'package:flutter_typeahead/src/material/suggestion_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.dart';
+import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
 class SuggestionsList<T> extends StatefulWidget {

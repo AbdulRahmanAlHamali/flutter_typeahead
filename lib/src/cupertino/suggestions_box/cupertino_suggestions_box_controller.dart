@@ -1,31 +1,25 @@
-
-
-import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/src/material/suggestion_box/suggestions_box.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_box.dart';
 
 /// Supply an instance of this class to the [TypeAhead.suggestionsBoxController]
 /// property to manually control the suggestions box
-class SuggestionsBoxController {
-  SuggestionsBox? suggestionsBox;
+class CupertinoSuggestionsBoxController {
+  CupertinoSuggestionsBox? suggestionsBox;
   FocusNode? effectiveFocusNode;
 
   /// Opens the suggestions box
   void open() {
-    effectiveFocusNode?.requestFocus();
-  }
-
-  bool isOpened() {
-    return suggestionsBox?.isOpened ?? false;
+    effectiveFocusNode!.requestFocus();
   }
 
   /// Closes the suggestions box
   void close() {
-    effectiveFocusNode?.unfocus();
+    effectiveFocusNode!.unfocus();
   }
 
   /// Opens the suggestions box if closed and vice-versa
   void toggle() {
-    if (suggestionsBox?.isOpened ?? false) {
+    if (suggestionsBox!.isOpened) {
       close();
     } else {
       open();
