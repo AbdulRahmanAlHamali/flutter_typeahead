@@ -17,3 +17,10 @@ pubspec.lock
 flutter_typeahead
 
 doc
+
+example/android/gradle/wrapper/gradle-wrapper.jar
+example/android/gradlew
+example/android/gradlew.bat
+example/example.iml
+example/ios/Flutter/flutter_export_environment.sh
+example/pubspec.lock`
