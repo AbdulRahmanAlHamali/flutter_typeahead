@@ -5,7 +5,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class TestPage extends StatefulWidget {
   final int minCharsForSuggestions;
-  TestPage({Key? key, this.minCharsForSuggestions: 0}) : super(key: key);
+  TestPage({Key? key, this.minCharsForSuggestions = 0}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => TestPageState();
@@ -69,7 +69,7 @@ class TestPageState extends State<TestPage> {
 
 class CupertinoTestPage extends StatefulWidget {
   final int minCharsForSuggestions;
-  CupertinoTestPage({Key? key, this.minCharsForSuggestions: 0})
+  CupertinoTestPage({Key? key, this.minCharsForSuggestions = 0})
       : super(key: key);
 
   @override
