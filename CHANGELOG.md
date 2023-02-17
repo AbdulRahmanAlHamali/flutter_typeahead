@@ -1,3 +1,6 @@
+## 4.3.5
+Fix in visibility of suggestions box classes
+
 ## 4.3.4
 Improved the main example to be able to read it in pub dev,
 

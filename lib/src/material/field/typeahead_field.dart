@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_typeahead/src/material/field/test_keys.dart';
 import 'package:flutter_typeahead/src/material/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
@@ -848,7 +847,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     return CompositedTransformTarget(
       link: this._layerLink,
       child: TextField(
-        key: TestKeys.textFieldKey,
         focusNode: this._effectiveFocusNode,
         controller: this._effectiveController,
         decoration: widget.textFieldConfiguration.decoration,

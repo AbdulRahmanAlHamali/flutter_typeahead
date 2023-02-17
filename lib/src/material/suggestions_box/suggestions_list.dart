@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/src/material/field/test_keys.dart';
 import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.dart';
@@ -386,7 +385,6 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
         return TextFieldTapRegion(
           child: InkWell(
-            key: TestKeys.getSuggestionKey(index),
             focusColor: Theme.of(context).hoverColor,
             focusNode: focusNode,
             child: widget.itemBuilder!(context, suggestion),
