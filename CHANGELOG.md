@@ -1,3 +1,6 @@
+# 4.3.6
+Fixed visibility of cupertino decoration and formated code
+
 ## 4.3.5
 Fix in visibility of suggestions box classes
 
