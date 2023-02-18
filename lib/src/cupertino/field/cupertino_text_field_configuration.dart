@@ -10,6 +10,7 @@ const BorderSide _kDefaultRoundedBorderSide = BorderSide(
   style: BorderStyle.solid,
   width: 0.0,
 );
+
 const Border _kDefaultRoundedBorder = Border(
   top: _kDefaultRoundedBorderSide,
   bottom: _kDefaultRoundedBorderSide,
@@ -178,8 +179,7 @@ class CupertinoTextFieldConfiguration {
       cursorColor: cursorColor ?? this.cursorColor,
       keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
       scrollPadding: scrollPadding ?? this.scrollPadding,
-      enableInteractiveSelection:
-      enableInteractiveSelection ?? this.enableInteractiveSelection,
+      enableInteractiveSelection: enableInteractiveSelection ?? this.enableInteractiveSelection,
     );
   }
 }
