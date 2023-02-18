@@ -20,7 +20,7 @@ class TypeAheadFormField<T> extends FormField<String> {
   final TextFieldConfiguration textFieldConfiguration;
 
   // Adds a callback for resetting the form field
-  void Function()? onReset;
+  final void Function()? onReset;
 
   /// Creates a [TypeAheadFormField]
   TypeAheadFormField(

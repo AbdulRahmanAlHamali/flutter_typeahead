@@ -11,36 +11,71 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 
 void main() =>
-    runApp(!kIsWeb && Platform.isIOS ? MyCupertinoApp() : MyMaterialApp());
+    runApp(MyApp());
 
-class MyMaterialApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  bool isCupertino = !kIsWeb && Platform.isIOS;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'flutter_typeahead demo',
-      scrollBehavior: MaterialScrollBehavior().copyWith(
-          dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}
-      ),
-      home: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-            appBar: AppBar(
-              title: TabBar(tabs: [
-                Tab(text: 'Example 1: Navigation'),
-                Tab(text: 'Example 2: Form'),
-                Tab(text: 'Example 3: Scroll')
-              ]),
+
+    if(!isCupertino) {
+      return MaterialApp(
+        title: 'flutter_typeahead demo',
+        scrollBehavior: MaterialScrollBehavior().copyWith(
+            dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}
+        ),
+        home: DefaultTabController(
+          length: 3,
+          child: Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  icon: Icon(Icons.phone_iphone),
+                  onPressed: () => setState(() {
+                    isCupertino = true;
+                  }),
+                ),
+                title: TabBar(tabs: [
+                  Tab(text: 'Example 1: Navigation'),
+                  Tab(text: 'Example 2: Form'),
+                  Tab(text: 'Example 3: Scroll')
+                ]),
+              ),
+              body: GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: TabBarView(children: [
+                  NavigationExample(),
+                  FormExample(),
+                  ScrollExample(),
+                ]),
+              )),
+        ),
+      );
+    } else {
+      return CupertinoApp(
+        title: 'Cupertino demo',
+        home: Scaffold(
+          appBar: CupertinoNavigationBar(
+            leading: IconButton(
+              icon: Icon(Icons.android),
+              onPressed: () => setState(() {
+                isCupertino = false;
+              }),
             ),
-            body: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: TabBarView(children: [
-                NavigationExample(),
-                FormExample(),
-                ScrollExample(),
-              ]),
-            )),
-      ),
-    );
+            middle: Text('Cupertino demo'),
+          ),
+          body: CupertinoPageScaffold(
+            child: FavoriteCitiesPage(),
+          ),
+        ), //MyHomePage(),
+      );
+    }
   }
 }
 
@@ -78,6 +113,11 @@ class NavigationExample extends StatelessWidget {
               Navigator.of(context).push<void>(MaterialPageRoute(
                   builder: (context) => ProductPage(product: suggestion)));
             },
+            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              elevation: 8.0,
+              color: Theme.of(context).cardColor,
+            ),
           ),
         ],
       ),
@@ -96,56 +136,68 @@ class _FormExampleState extends State<FormExample> {
 
   String? _selectedCity;
 
+  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: this._formKey,
-      child: Padding(
-        padding: EdgeInsets.all(32.0),
-        child: Column(
-          children: <Widget>[
-            Text('What is your favorite city?'),
-            TypeAheadFormField(
-              textFieldConfiguration: TextFieldConfiguration(
-                decoration: InputDecoration(labelText: 'City'),
-                controller: this._typeAheadController,
-              ),
-              suggestionsCallback: (pattern) {
-                return CitiesService.getSuggestions(pattern);
-              },
-              itemBuilder: (context, String suggestion) {
-                return ListTile(
-                  title: Text(suggestion),
-                );
-              },
-              transitionBuilder: (context, suggestionsBox, controller) {
-                return suggestionsBox;
-              },
-              onSuggestionSelected: (String suggestion) {
-                this._typeAheadController.text = suggestion;
-              },
-              validator: (value) =>
-              value!.isEmpty ? 'Please select a city' : null,
-              onSaved: (value) => this._selectedCity = value,
+    return GestureDetector(
+      // close the suggestions box when the user taps outside of it
+      onTap: () {
+        suggestionBoxController.close();
+      },
+      child: Container(
+        // Add zero opacity to make the gesture detector work
+        color: Colors.amber.withOpacity(0),
+        // Create the form for the user to enter their favorite city
+        child: Form(
+          key: this._formKey,
+          child: Padding(
+            padding: EdgeInsets.all(32.0),
+            child: Column(
+              children: <Widget>[
+                Text('What is your favorite city?'),
+                TypeAheadFormField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                    decoration: InputDecoration(labelText: 'City'),
+                    controller: this._typeAheadController,
+                  ),
+                  suggestionsCallback: (pattern) {
+                    return CitiesService.getSuggestions(pattern);
+                  },
+                  itemBuilder: (context, String suggestion) {
+                    return ListTile(
+                      title: Text(suggestion),
+                    );
+                  },
+                  transitionBuilder: (context, suggestionsBox, controller) {
+                    return suggestionsBox;
+                  },
+                  onSuggestionSelected: (String suggestion) {
+                    this._typeAheadController.text = suggestion;
+                  },
+                  suggestionsBoxController: suggestionBoxController,
+                  validator: (value) =>
+                  value!.isEmpty ? 'Please select a city' : null,
+                  onSaved: (value) => this._selectedCity = value,
+                ),
+                Spacer(),
+                ElevatedButton(
+                  child: Text('Submit'),
+                  onPressed: () {
+                    if (this._formKey.currentState!.validate()) {
+                      this._formKey.currentState!.save();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                          Text('Your Favorite City is ${this._selectedCity}'),
+                        ),
+                      );
+                    }
+                  },
+                )
+              ],
             ),
-            SizedBox(
-              height: 10.0,
-            ),
-            ElevatedButton(
-              child: Text('Submit'),
-              onPressed: () {
-                if (this._formKey.currentState!.validate()) {
-                  this._formKey.currentState!.save();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content:
-                      Text('Your Favorite City is ${this._selectedCity}'),
-                    ),
-                  );
-                }
-              },
-            )
-          ],
+          ),
         ),
       ),
     );
@@ -262,20 +314,6 @@ class CitiesService {
 
     matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
     return matches;
-  }
-}
-
-
-/// Cupertino example
-class MyCupertinoApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoApp(
-      title: 'flutter_typeahead demo',
-      home: CupertinoPageScaffold(
-        child: FavoriteCitiesPage(),
-      ), //MyHomePage(),
-    );
   }
 }
 

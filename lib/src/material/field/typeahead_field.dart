@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_typeahead/src/material/field/test_keys.dart';
 import 'package:flutter_typeahead/src/material/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
@@ -523,7 +522,6 @@ class TypeAheadField<T> extends StatefulWidget {
 
   /// Creates a [TypeAheadField]
   TypeAheadField({
-    Key? key,
     required this.suggestionsCallback,
     required this.itemBuilder,
     required this.onSuggestionSelected,
@@ -553,13 +551,13 @@ class TypeAheadField<T> extends StatefulWidget {
     this.minCharsForSuggestions = 0,
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
+    super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
         direction == AxisDirection.down || direction == AxisDirection.up),
         assert(minCharsForSuggestions >= 0),
         assert(!hideKeyboardOnDrag ||
-            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
-        super(key: key);
+            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide);
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
@@ -848,7 +846,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     return CompositedTransformTarget(
       link: this._layerLink,
       child: TextField(
-        key: TestKeys.textFieldKey,
         focusNode: this._effectiveFocusNode,
         controller: this._effectiveController,
         decoration: widget.textFieldConfiguration.decoration,
