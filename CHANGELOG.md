@@ -1,10 +1,14 @@
-# 4.3.6
+## 4.3.7 - 26-February-2023
+
+Update Changelog file
+
+## 4.3.6 - 18-February-2023
 Fixed visibility of cupertino decoration and formated code
 
-## 4.3.5
+## 4.3.5 - 17-February-2023
 Fix in visibility of suggestions box classes
 
-## 4.3.4
+## 4.3.4 - 16-February-2023
 Improved the main example to be able to read it in pub dev,
 
 ## 4.3.3 - 1-Feburary-2023
