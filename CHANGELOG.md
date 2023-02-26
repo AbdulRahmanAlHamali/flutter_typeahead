@@ -1,3 +1,7 @@
+## 4.3.7 - 26-February-2023
+
+Update Changelog file
+
 ## 4.3.6 - 18-February-2023
 Fixed visibility of cupertino decoration and formated code
 
