@@ -501,6 +501,11 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to true.
   final bool autoFlipListDirection;
 
+  /// Minimum height below [autoFlipDirection] is triggered
+  ///
+  /// Defaults to 64.0.
+  final double autoFlipMinHeight;
+
   final bool hideKeyboard;
 
   /// The minimum number of characters which must be entered before
@@ -547,6 +552,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.keepSuggestionsOnSuggestionSelected = false,
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
+    this.autoFlipMinHeight = 64.0,
     this.hideKeyboard = false,
     this.minCharsForSuggestions = 0,
     this.onSuggestionsBoxToggle,
@@ -660,6 +666,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       widget.direction,
       widget.autoFlipDirection,
       widget.autoFlipListDirection,
+      widget.autoFlipMinHeight,
     );
 
     widget.suggestionsBoxController?.suggestionsBox = this._suggestionsBox;

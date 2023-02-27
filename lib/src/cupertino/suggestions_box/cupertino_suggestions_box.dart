@@ -3,12 +3,12 @@ import 'package:flutter_typeahead/src/cupertino/field/cupertino_typeahead_field.
 
 class CupertinoSuggestionsBox {
   static const int waitMetricsTimeoutMillis = 1000;
-  static const double minOverlaySpace = 64.0;
 
   final BuildContext context;
   final AxisDirection desiredDirection;
   final bool autoFlipDirection;
   final bool autoFlipListDirection;
+  final double autoFlipMinHeight;
 
   OverlayEntry? overlayEntry;
   AxisDirection direction;
@@ -25,6 +25,7 @@ class CupertinoSuggestionsBox {
       this.direction,
       this.autoFlipDirection,
       this.autoFlipListDirection,
+      this.autoFlipMinHeight,
       ) : desiredDirection = direction;
 
   void open() {
@@ -124,7 +125,7 @@ class CupertinoSuggestionsBox {
         windowHeight, rootMediaQuery, keyboardHeight, textBoxAbsY);
 
     // if there's enough room in the desired direction, update the direction and the max height
-    if (maxHDesired >= minOverlaySpace || !autoFlipDirection) {
+    if (maxHDesired >= autoFlipMinHeight || !autoFlipDirection) {
       direction = desiredDirection;
       maxHeight = maxHDesired;
     } else {

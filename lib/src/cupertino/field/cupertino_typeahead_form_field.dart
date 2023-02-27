@@ -58,6 +58,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
         bool keepSuggestionsOnSuggestionSelected = false,
         bool autoFlipDirection = false,
         bool autoFlipListDirection = true,
+        double autoFlipMinHeight = 64.0,
         int minCharsForSuggestions = 0,
         bool hideKeyboardOnDrag = false})
       : assert(
@@ -108,6 +109,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
               keepSuggestionsOnSuggestionSelected,
               autoFlipDirection: autoFlipDirection,
               autoFlipListDirection: autoFlipListDirection,
+              autoFlipMinHeight: autoFlipMinHeight,
               minCharsForSuggestions: minCharsForSuggestions,
               hideKeyboardOnDrag: hideKeyboardOnDrag,
             );

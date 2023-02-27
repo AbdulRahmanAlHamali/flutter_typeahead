@@ -266,6 +266,11 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Defaults to true.
   final bool autoFlipListDirection;
 
+  /// Minimum height below [autoFlipDirection] is triggered
+  ///
+  /// Defaults to 64.0.
+  final double autoFlipMinHeight;
+
   /// The minimum number of characters which must be entered before
   /// [suggestionsCallback] is triggered.
   ///
@@ -307,6 +312,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.keepSuggestionsOnSuggestionSelected = false,
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
+    this.autoFlipMinHeight = 64.0,
     this.minCharsForSuggestions = 0,
     this.hideKeyboardOnDrag = true,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
@@ -382,6 +388,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       widget.direction,
       widget.autoFlipDirection,
       widget.autoFlipListDirection,
+      widget.autoFlipMinHeight,
     );
 
     widget.suggestionsBoxController?.suggestionsBox = this._suggestionsBox;
