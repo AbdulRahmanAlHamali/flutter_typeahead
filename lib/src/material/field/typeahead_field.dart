@@ -553,29 +553,24 @@ class TypeAheadField<T> extends StatefulWidget {
     this.hideKeyboardOnDrag = false,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
-        assert(
-        direction == AxisDirection.down || direction == AxisDirection.up),
+        assert(direction == AxisDirection.down || direction == AxisDirection.up),
         assert(minCharsForSuggestions >= 0),
-        assert(!hideKeyboardOnDrag ||
-            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide);
+        assert(!hideKeyboardOnDrag || hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide);
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
 }
 
-class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
-    with WidgetsBindingObserver {
+class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindingObserver {
   FocusNode? _focusNode;
-  final KeyboardSuggestionSelectionNotifier
-  _keyboardSuggestionSelectionNotifier =
-  KeyboardSuggestionSelectionNotifier();
+  final KeyboardSuggestionSelectionNotifier _keyboardSuggestionSelectionNotifier =
+      KeyboardSuggestionSelectionNotifier();
   TextEditingController? _textEditingController;
   SuggestionsBox? _suggestionsBox;
 
   TextEditingController? get _effectiveController =>
       widget.textFieldConfiguration.controller ?? _textEditingController;
-  FocusNode? get _effectiveFocusNode =>
-      widget.textFieldConfiguration.focusNode ?? _focusNode;
+  FocusNode? get _effectiveFocusNode => widget.textFieldConfiguration.focusNode ?? _focusNode;
   late VoidCallback _focusNodeListener;
 
   final LayerLink _layerLink = LayerLink();
@@ -589,13 +584,12 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   // Keyboard detection
   final Stream<bool>? _keyboardVisibility =
-  (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
+      (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
   late StreamSubscription<bool>? _keyboardVisibilitySubscription;
 
   bool _areSuggestionsFocused = false;
   late final _shouldRefreshSuggestionsFocusIndex =
-  ShouldRefreshSuggestionFocusIndexNotifier(
-      textFieldFocusNode: _effectiveFocusNode);
+      ShouldRefreshSuggestionFocusIndexNotifier(textFieldFocusNode: _effectiveFocusNode);
 
   @override
   void didChangeMetrics() {
@@ -637,8 +631,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       this._textEditingController = TextEditingController();
     }
 
-    final textFieldConfigurationFocusNode =
-        widget.textFieldConfiguration.focusNode;
+    final textFieldConfigurationFocusNode = widget.textFieldConfiguration.focusNode;
     if (textFieldConfigurationFocusNode == null) {
       this._focusNode = FocusNode(onKey: _onKeyEvent);
     } else if (textFieldConfigurationFocusNode.onKey == null) {
@@ -663,8 +656,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     );
 
     widget.suggestionsBoxController?.suggestionsBox = this._suggestionsBox;
-    widget.suggestionsBoxController?.effectiveFocusNode =
-        this._effectiveFocusNode;
+    widget.suggestionsBoxController?.effectiveFocusNode = this._effectiveFocusNode;
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode!.hasFocus) {
@@ -681,12 +673,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._effectiveFocusNode!.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    this._keyboardVisibilitySubscription =
-        _keyboardVisibility?.listen((bool isVisible) {
-          if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
-            _effectiveFocusNode!.unfocus();
-          }
-        });
+    this._keyboardVisibilitySubscription = _keyboardVisibility?.listen((bool isVisible) {
+      if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
+        _effectiveFocusNode!.unfocus();
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       if (mounted) {
@@ -720,10 +711,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     _resizeOnScrollTimer?.cancel();
     if (isScrolling) {
       // Scroll started
-      _resizeOnScrollTimer =
-          Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
-            _suggestionsBox!.resize();
-          });
+      _resizeOnScrollTimer = Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+        _suggestionsBox!.resize();
+      });
     } else {
       // Scroll finished
       _suggestionsBox!.resize();
@@ -771,10 +761,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           hideOnError: widget.hideOnError,
           keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
           minCharsForSuggestions: widget.minCharsForSuggestions,
-          keyboardSuggestionSelectionNotifier:
-          _keyboardSuggestionSelectionNotifier,
-          shouldRefreshSuggestionFocusIndexNotifier:
-          _shouldRefreshSuggestionsFocusIndex,
+          keyboardSuggestionSelectionNotifier: _keyboardSuggestionSelectionNotifier,
+          shouldRefreshSuggestionFocusIndexNotifier: _shouldRefreshSuggestionsFocusIndex,
           giveTextFieldFocus: giveTextFieldFocus,
           onSuggestionFocus: onSuggestionFocus,
           onKeyEvent: _onKeyEvent,
@@ -783,17 +771,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       double w = _suggestionsBox!.textBoxWidth;
       if (widget.suggestionsBoxDecoration.constraints != null) {
         if (widget.suggestionsBoxDecoration.constraints!.minWidth != 0.0 &&
-            widget.suggestionsBoxDecoration.constraints!.maxWidth !=
-                double.infinity) {
+            widget.suggestionsBoxDecoration.constraints!.maxWidth != double.infinity) {
           w = (widget.suggestionsBoxDecoration.constraints!.minWidth +
-              widget.suggestionsBoxDecoration.constraints!.maxWidth) /
+                  widget.suggestionsBoxDecoration.constraints!.maxWidth) /
               2;
-        } else if (widget.suggestionsBoxDecoration.constraints!.minWidth !=
-            0.0 &&
+        } else if (widget.suggestionsBoxDecoration.constraints!.minWidth != 0.0 &&
             widget.suggestionsBoxDecoration.constraints!.minWidth > w) {
           w = widget.suggestionsBoxDecoration.constraints!.minWidth;
-        } else if (widget.suggestionsBoxDecoration.constraints!.maxWidth !=
-            double.infinity &&
+        } else if (widget.suggestionsBoxDecoration.constraints!.maxWidth != double.infinity &&
             widget.suggestionsBoxDecoration.constraints!.maxWidth < w) {
           w = widget.suggestionsBoxDecoration.constraints!.maxWidth;
         }
@@ -805,15 +790,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         offset: Offset(
             widget.suggestionsBoxDecoration.offsetX,
             _suggestionsBox!.direction == AxisDirection.down
-                ? _suggestionsBox!.textBoxHeight +
-                widget.suggestionsBoxVerticalOffset
+                ? _suggestionsBox!.textBoxHeight + widget.suggestionsBoxVerticalOffset
                 : _suggestionsBox!.directionUpOffset),
         child: _suggestionsBox!.direction == AxisDirection.down
             ? suggestionsList
             : FractionalTranslation(
-          translation: Offset(0.0, -1.0), // visually flips list to go up
-          child: suggestionsList,
-        ),
+                translation: const Offset(0.0, -1.0), // visually flips list to go up
+                child: suggestionsList,
+              ),
       );
 
       // When wrapped in the Positioned widget, the suggestions box widget
@@ -825,19 +809,19 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       // properly tappable.
       return MediaQuery.of(context).accessibleNavigation
           ? Semantics(
-        container: true,
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: w),
-            child: compositedFollower,
-          ),
-        ),
-      )
+              container: true,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: w),
+                  child: compositedFollower,
+                ),
+              ),
+            )
           : Positioned(
-        width: w,
-        child: compositedFollower,
-      );
+              width: w,
+              child: compositedFollower,
+            );
     });
   }
 
@@ -860,8 +844,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
         minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
-        maxLengthEnforcement:
-        widget.textFieldConfiguration.maxLengthEnforcement,
+        maxLengthEnforcement: widget.textFieldConfiguration.maxLengthEnforcement,
         obscureText: widget.textFieldConfiguration.obscureText,
         onChanged: widget.textFieldConfiguration.onChanged,
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
@@ -876,8 +859,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         cursorRadius: widget.textFieldConfiguration.cursorRadius,
         cursorColor: widget.textFieldConfiguration.cursorColor,
         textDirection: widget.textFieldConfiguration.textDirection,
-        enableInteractiveSelection:
-        widget.textFieldConfiguration.enableInteractiveSelection,
+        enableInteractiveSelection: widget.textFieldConfiguration.enableInteractiveSelection,
         readOnly: widget.hideKeyboard,
       ),
     );

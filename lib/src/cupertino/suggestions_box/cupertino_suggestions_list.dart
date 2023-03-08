@@ -156,8 +156,7 @@ class _CupertinoSuggestionsListState<T> extends State<CupertinoSuggestionsList<T
       Object? error;
 
       try {
-        suggestions =
-        await widget.suggestionsCallback!(widget.controller!.text);
+        suggestions = await widget.suggestionsCallback!(widget.controller!.text);
       } catch (e) {
         error = e;
       }
@@ -188,10 +187,8 @@ class _CupertinoSuggestionsListState<T> extends State<CupertinoSuggestionsList<T
 
   @override
   Widget build(BuildContext context) {
-    bool isEmpty =
-        this._suggestions?.length == 0 && widget.controller!.text == "";
-    if ((this._suggestions == null || isEmpty) && this._isLoading == false)
-      return Container();
+    bool isEmpty = this._suggestions?.length == 0 && widget.controller!.text == "";
+    if ((this._suggestions == null || isEmpty) && this._isLoading == false) return Container();
 
     Widget child;
     if (this._isLoading!) {
@@ -219,12 +216,11 @@ class _CupertinoSuggestionsListState<T> extends State<CupertinoSuggestionsList<T
     var animationChild = widget.transitionBuilder != null
         ? widget.transitionBuilder!(context, child, this._animationController)
         : SizeTransition(
-      axisAlignment: -1.0,
-      sizeFactor: CurvedAnimation(
-          parent: this._animationController!,
-          curve: Curves.fastOutSlowIn),
-      child: child,
-    );
+            axisAlignment: -1.0,
+            sizeFactor:
+                CurvedAnimation(parent: this._animationController!, curve: Curves.fastOutSlowIn),
+            child: child,
+          );
 
     BoxConstraints constraints;
     if (widget.decoration!.constraints == null) {
@@ -232,8 +228,8 @@ class _CupertinoSuggestionsListState<T> extends State<CupertinoSuggestionsList<T
         maxHeight: widget.suggestionsBox!.maxHeight,
       );
     } else {
-      double maxHeight = min(widget.decoration!.constraints!.maxHeight,
-          widget.suggestionsBox!.maxHeight);
+      double maxHeight =
+          min(widget.decoration!.constraints!.maxHeight, widget.suggestionsBox!.maxHeight);
       constraints = widget.decoration!.constraints!.copyWith(
         minHeight: min(widget.decoration!.constraints!.minHeight, maxHeight),
         maxHeight: maxHeight,
@@ -259,21 +255,21 @@ class _CupertinoSuggestionsListState<T> extends State<CupertinoSuggestionsList<T
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder!(context)
           : Container(
-        decoration: BoxDecoration(
-          color: CupertinoColors.white,
-          border: Border.all(
-            color: CupertinoColors.extraLightBackgroundGray,
-            width: 1.0,
-          ),
-        ),
-        child: Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: CupertinoActivityIndicator(),
-          ),
-        ),
-      );
+              decoration: BoxDecoration(
+                color: CupertinoColors.white,
+                border: Border.all(
+                  color: CupertinoColors.extraLightBackgroundGray,
+                  width: 1.0,
+                ),
+              ),
+              child: const Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: CupertinoActivityIndicator(),
+                ),
+              ),
+            );
     }
 
     return child;
@@ -283,67 +279,64 @@ class _CupertinoSuggestionsListState<T> extends State<CupertinoSuggestionsList<T
     return widget.errorBuilder != null
         ? widget.errorBuilder!(context, this._error)
         : Container(
-      decoration: BoxDecoration(
-        color: CupertinoColors.white,
-        border: Border.all(
-          color: CupertinoColors.extraLightBackgroundGray,
-          width: 1.0,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Text(
-          'Error: ${this._error}',
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            color: CupertinoColors.destructiveRed,
-            fontSize: 18.0,
-          ),
-        ),
-      ),
-    );
+            decoration: BoxDecoration(
+              color: CupertinoColors.white,
+              border: Border.all(
+                color: CupertinoColors.extraLightBackgroundGray,
+                width: 1.0,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                'Error: ${this._error}',
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  color: CupertinoColors.destructiveRed,
+                  fontSize: 18.0,
+                ),
+              ),
+            ),
+          );
   }
 
   Widget createNoItemsFoundWidget() {
     return widget.noItemsFoundBuilder != null
         ? widget.noItemsFoundBuilder!(context)
         : Container(
-      decoration: BoxDecoration(
-        color: CupertinoColors.white,
-        border: Border.all(
-          color: CupertinoColors.extraLightBackgroundGray,
-          width: 1.0,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Text(
-          'No Items Found!',
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            color: CupertinoColors.inactiveGray,
-            fontSize: 18.0,
-          ),
-        ),
-      ),
-    );
+            decoration: BoxDecoration(
+              color: CupertinoColors.white,
+              border: Border.all(
+                color: CupertinoColors.extraLightBackgroundGray,
+                width: 1.0,
+              ),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Text(
+                'No Items Found!',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: CupertinoColors.inactiveGray,
+                  fontSize: 18.0,
+                ),
+              ),
+            ),
+          );
   }
 
   Widget createSuggestionsWidget() {
     Widget child = Container(
       decoration: BoxDecoration(
-        color: widget.decoration!.color != null
-            ? widget.decoration!.color
-            : CupertinoColors.white,
+        color: widget.decoration!.color != null ? widget.decoration!.color : CupertinoColors.white,
         border: widget.decoration!.border != null
             ? widget.decoration!.border
             : Border.all(
-          color: CupertinoColors.extraLightBackgroundGray,
-          width: 1.0,
-        ),
-        borderRadius: widget.decoration!.borderRadius != null
-            ? widget.decoration!.borderRadius
-            : null,
+                color: CupertinoColors.extraLightBackgroundGray,
+                width: 1.0,
+              ),
+        borderRadius:
+            widget.decoration!.borderRadius != null ? widget.decoration!.borderRadius : null,
       ),
       child: ListView(
         padding: EdgeInsets.zero,

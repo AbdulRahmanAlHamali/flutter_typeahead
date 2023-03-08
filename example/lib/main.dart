@@ -23,19 +23,19 @@ class _MyAppState extends State<MyApp> {
     if (!isCupertino) {
       return MaterialApp(
         title: 'flutter_typeahead demo',
-        scrollBehavior:
-            MaterialScrollBehavior().copyWith(dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}),
+        scrollBehavior: const MaterialScrollBehavior()
+            .copyWith(dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}),
         home: DefaultTabController(
           length: 3,
           child: Scaffold(
               appBar: AppBar(
                 leading: IconButton(
-                  icon: Icon(Icons.phone_iphone),
+                  icon: const Icon(Icons.phone_iphone),
                   onPressed: () => setState(() {
                     isCupertino = true;
                   }),
                 ),
-                title: TabBar(tabs: [
+                title: const TabBar(tabs: [
                   Tab(text: 'Example 1: Navigation'),
                   Tab(text: 'Example 2: Form'),
                   Tab(text: 'Example 3: Scroll')
@@ -57,12 +57,12 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           appBar: CupertinoNavigationBar(
             leading: IconButton(
-              icon: Icon(Icons.android),
+              icon: const Icon(Icons.android),
               onPressed: () => setState(() {
                 isCupertino = false;
               }),
             ),
-            middle: Text('Cupertino demo'),
+            middle: const Text('Cupertino demo'),
           ),
           body: CupertinoPageScaffold(
             child: FavoriteCitiesPage(),
@@ -77,31 +77,32 @@ class NavigationExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         children: <Widget>[
-          SizedBox(
+          const SizedBox(
             height: 10.0,
           ),
           TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
               autofocus: true,
               style: DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic),
-              decoration: InputDecoration(border: OutlineInputBorder(), hintText: 'What are you looking for?'),
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), hintText: 'What are you looking for?'),
             ),
             suggestionsCallback: (pattern) async {
               return await BackendService.getSuggestions(pattern);
             },
             itemBuilder: (context, Map<String, String> suggestion) {
               return ListTile(
-                leading: Icon(Icons.shopping_cart),
+                leading: const Icon(Icons.shopping_cart),
                 title: Text(suggestion['name']!),
                 subtitle: Text('\$${suggestion['price']}'),
               );
             },
             onSuggestionSelected: (Map<String, String> suggestion) {
-              Navigator.of(context)
-                  .push<void>(MaterialPageRoute(builder: (context) => ProductPage(product: suggestion)));
+              Navigator.of(context).push<void>(
+                  MaterialPageRoute(builder: (context) => ProductPage(product: suggestion)));
             },
             suggestionsBoxDecoration: SuggestionsBoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
@@ -142,13 +143,13 @@ class _FormExampleState extends State<FormExample> {
         child: Form(
           key: this._formKey,
           child: Padding(
-            padding: EdgeInsets.all(32.0),
+            padding: const EdgeInsets.all(32.0),
             child: Column(
               children: <Widget>[
-                Text('What is your favorite city?'),
+                const Text('What is your favorite city?'),
                 TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
-                    decoration: InputDecoration(labelText: 'City'),
+                    decoration: const InputDecoration(labelText: 'City'),
                     controller: this._typeAheadController,
                   ),
                   suggestionsCallback: (pattern) {
@@ -169,9 +170,9 @@ class _FormExampleState extends State<FormExample> {
                   validator: (value) => value!.isEmpty ? 'Please select a city' : null,
                   onSaved: (value) => this._selectedCity = value,
                 ),
-                Spacer(),
+                const Spacer(),
                 ElevatedButton(
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () {
                     if (this._formKey.currentState!.validate()) {
                       this._formKey.currentState!.save();
@@ -228,20 +229,23 @@ class ScrollExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
-      Center(
+      const Center(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0),
           child: Text("Suggestion box will resize when scrolling"),
         ),
       ),
-      SizedBox(height: 200),
+      const SizedBox(height: 200),
       TypeAheadField<String>(
         getImmediateSuggestions: true,
-        textFieldConfiguration: TextFieldConfiguration(
-          decoration: InputDecoration(border: OutlineInputBorder(), hintText: 'What are you looking for?'),
+        textFieldConfiguration: const TextFieldConfiguration(
+          decoration:
+              InputDecoration(border: OutlineInputBorder(), hintText: 'What are you looking for?'),
         ),
         suggestionsCallback: (String pattern) async {
-          return items.where((item) => item.toLowerCase().startsWith(pattern.toLowerCase())).toList();
+          return items
+              .where((item) => item.toLowerCase().startsWith(pattern.toLowerCase()))
+              .toList();
         },
         itemBuilder: (context, String suggestion) {
           return ListTile(
@@ -252,7 +256,7 @@ class ScrollExample extends StatelessWidget {
           print("Suggestion selected");
         },
       ),
-      SizedBox(height: 500),
+      const SizedBox(height: 500),
     ]);
   }
 }
@@ -262,7 +266,7 @@ class ScrollExample extends StatelessWidget {
 /// In a real app, this would be a service that makes a network request.
 class BackendService {
   static Future<List<Map<String, String>>> getSuggestions(String query) async {
-    await Future<void>.delayed(Duration(seconds: 1));
+    await Future<void>.delayed(const Duration(seconds: 1));
 
     return List.generate(3, (index) {
       return {'name': query + index.toString(), 'price': Random().nextInt(100).toString()};
@@ -317,13 +321,13 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: EdgeInsets.all(32.0),
+            padding: const EdgeInsets.all(32.0),
             child: Column(
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 100.0,
                 ),
-                Text('What is your favorite city?'),
+                const Text('What is your favorite city?'),
                 CupertinoTypeAheadFormField(
                   getImmediateSuggestions: true,
                   suggestionsBoxController: _suggestionsBoxController,
@@ -335,7 +339,7 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                   ),
                   suggestionsCallback: (pattern) {
                     return Future.delayed(
-                      Duration(seconds: 1),
+                      const Duration(seconds: 1),
                       () => CitiesService.getSuggestions(pattern),
                     );
                   },
@@ -352,11 +356,11 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                   },
                   validator: (value) => value!.isEmpty ? 'Please select a city' : null,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10.0,
                 ),
                 CupertinoButton(
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
@@ -366,7 +370,7 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10.0,
                 ),
                 Text(

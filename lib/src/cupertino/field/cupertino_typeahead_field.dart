@@ -319,12 +319,14 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   _CupertinoTypeAheadFieldState<T> createState() => _CupertinoTypeAheadFieldState<T>();
 }
 
-class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>> with WidgetsBindingObserver {
+class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
+    with WidgetsBindingObserver {
   FocusNode? _focusNode;
   TextEditingController? _textEditingController;
   CupertinoSuggestionsBox? _suggestionsBox;
 
-  TextEditingController? get _effectiveController => widget.textFieldConfiguration.controller ?? _textEditingController;
+  TextEditingController? get _effectiveController =>
+      widget.textFieldConfiguration.controller ?? _textEditingController;
 
   FocusNode? get _effectiveFocusNode => widget.textFieldConfiguration.focusNode ?? _focusNode;
   late VoidCallback _focusNodeListener;
@@ -341,7 +343,8 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
   ScrollPosition? _scrollPosition;
 
   // Keyboard detection
-  final Stream<bool>? _keyboardVisibility = (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
+  final Stream<bool>? _keyboardVisibility =
+      (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
   late StreamSubscription<bool>? _keyboardVisibilitySubscription;
 
   @override
@@ -506,7 +509,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
           child: _suggestionsBox!.direction == AxisDirection.down
               ? suggestionsList
               : FractionalTranslation(
-                  translation: Offset(0.0, -1.0), // visually flips list to go up
+                  translation: const Offset(0.0, -1.0), // visually flips list to go up
                   child: suggestionsList,
                 ),
         ),
