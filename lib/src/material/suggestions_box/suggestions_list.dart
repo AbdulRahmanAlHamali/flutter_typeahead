@@ -33,7 +33,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final int? minCharsForSuggestions;
   final KeyboardSuggestionSelectionNotifier keyboardSuggestionSelectionNotifier;
   final ShouldRefreshSuggestionFocusIndexNotifier
-  shouldRefreshSuggestionFocusIndexNotifier;
+      shouldRefreshSuggestionFocusIndexNotifier;
   final VoidCallback giveTextFieldFocus;
   final VoidCallback onSuggestionFocus;
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
@@ -128,7 +128,11 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
   void didUpdateWidget(SuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     widget.controller!.addListener(this._controllerListener);
-    _getSuggestions();
+    if (oldWidget.controller!.text.length == 0 &&
+        widget.controller!.text.length > 1) {
+    } else {
+      _getSuggestions();
+    }
   }
 
   @override
@@ -207,7 +211,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
       try {
         suggestions =
-        await widget.suggestionsCallback!(widget.controller!.text);
+            await widget.suggestionsCallback!(widget.controller!.text);
       } catch (e) {
         error = e;
       }
@@ -227,7 +231,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
           this._suggestions = suggestions;
           _focusNodes = List.generate(
             _suggestions?.length ?? 0,
-                (index) => FocusNode(onKey: (_, event) {
+            (index) => FocusNode(onKey: (_, event) {
               return widget.onKeyEvent(_, event);
             }),
           );
@@ -280,12 +284,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     final animationChild = widget.transitionBuilder != null
         ? widget.transitionBuilder!(context, child, this._animationController)
         : SizeTransition(
-      axisAlignment: -1.0,
-      sizeFactor: CurvedAnimation(
-          parent: this._animationController!,
-          curve: Curves.fastOutSlowIn),
-      child: child,
-    );
+            axisAlignment: -1.0,
+            sizeFactor: CurvedAnimation(
+                parent: this._animationController!,
+                curve: Curves.fastOutSlowIn),
+            child: child,
+          );
 
     BoxConstraints constraints;
     if (widget.decoration!.constraints == null) {
@@ -330,12 +334,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder!(context)
           : Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: CircularProgressIndicator(),
-        ),
-      );
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: CircularProgressIndicator(),
+              ),
+            );
     }
 
     return child;
@@ -345,26 +349,26 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     return widget.errorBuilder != null
         ? widget.errorBuilder!(context, this._error)
         : Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        'Error: ${this._error}',
-        style: TextStyle(color: Theme.of(context).colorScheme.error),
-      ),
-    );
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Error: ${this._error}',
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          );
   }
 
   Widget createNoItemsFoundWidget() {
     return widget.noItemsFoundBuilder != null
         ? widget.noItemsFoundBuilder!(context)
         : Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        'No Items Found!',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Theme.of(context).disabledColor, fontSize: 18.0),
-      ),
-    );
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'No Items Found!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Theme.of(context).disabledColor, fontSize: 18.0),
+            ),
+          );
   }
 
   Widget createSuggestionsWidget() {
