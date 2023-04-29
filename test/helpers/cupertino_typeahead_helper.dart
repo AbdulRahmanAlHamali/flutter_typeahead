@@ -59,8 +59,9 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
   }
 
   /// Widget that returns the CupertineTypeAheadFormField
-  Widget get _getTypeAhead {
-    _controllers.add(TextEditingController());
+  Widget _getTypeAhead() {
+    final controller = TextEditingController();
+    _controllers.add(controller);
 
     return CupertinoTypeAheadFormField<String>(
       textFieldConfiguration: CupertinoTextFieldConfiguration(

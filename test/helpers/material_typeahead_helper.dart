@@ -58,8 +58,9 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
   }
 
   /// Widget that returns the MaterialTypeAheadFormField
-  Widget get _getTypeAhead {
-    _controllers.add(TextEditingController());
+  Widget _getTypeAhead() {
+    final controller = TextEditingController();
+    _controllers.add(controller);
 
     return TypeAheadFormField<String>(
       textFieldConfiguration: TextFieldConfiguration(
