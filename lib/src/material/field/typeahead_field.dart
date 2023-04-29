@@ -807,7 +807,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             _suggestionsBox!.direction == AxisDirection.down
                 ? _suggestionsBox!.textBoxHeight +
                 widget.suggestionsBoxVerticalOffset
-                : -1 * widget.suggestionsBoxVerticalOffset),
+                : -widget.suggestionsBoxVerticalOffset),
         child: _suggestionsBox!.direction == AxisDirection.down
             ? suggestionsList
             : FractionalTranslation(

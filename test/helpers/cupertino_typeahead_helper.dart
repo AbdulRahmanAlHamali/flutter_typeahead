@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
+/// Helper class to get the cupertino typeahead test page
 class CupertinoTypeAheadHelper {
   static Widget getCupertinoTypeAheadPage() {
     return MaterialApp(
@@ -11,6 +12,7 @@ class CupertinoTypeAheadHelper {
   }
 }
 
+/// The widget that will be returned for the cupertino typeahead test page
 class CupertinoTypeAheadPage extends StatefulWidget {
   final String? title;
 
@@ -23,6 +25,7 @@ class CupertinoTypeAheadPage extends StatefulWidget {
 class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
   final List<TextEditingController> _controllers = [];
 
+  /// Items that will be used to search
   final List<String> foodItems = [
     "Bread",
     "Burger",
@@ -32,7 +35,7 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
     "Orange"
   ];
 
-  // This is to trigger a loading effect when searching for items
+  /// This is to trigger a loading builder when searching for items
   Future<List<String>> _getFoodItems(String pattern) async {
     pattern = pattern.trim();
     if (pattern.isNotEmpty) {
@@ -47,6 +50,7 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
     }
   }
 
+  /// Widget that will be displayed when no results were found
   Widget _getNoResultText(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -54,9 +58,9 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
     );
   }
 
-  Widget _getTypeAhead() {
-    final controller = TextEditingController();
-    _controllers.add(controller);
+  /// Widget that returns the CupertineTypeAheadFormField
+  Widget get _getTypeAhead {
+    _controllers.add(TextEditingController());
 
     return CupertinoTypeAheadFormField<String>(
       textFieldConfiguration: CupertinoTextFieldConfiguration(

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'helpers/cupertino_typeahead_helper.dart';
 
+/// Cupertino Typeahead widget tests where there are 6 typeaheads. To test overlays and other widgets.
 void main() {
   group("Cupertino TypeAhead widget tests", () {
     testWidgets("Initial UI Test", (WidgetTester tester) async {
@@ -74,7 +75,7 @@ void main() {
       expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, 34.0));
     });
 
-    testWidgets("Search with last type ahead and check the offset of the first suggestion box", (WidgetTester tester) async {
+    testWidgets("Search with last type ahead and check the offset of the last suggestion box", (WidgetTester tester) async {
       await tester.pumpWidget(CupertinoTypeAheadHelper.getCupertinoTypeAheadPage());
       await tester.pumpAndSettle();
 

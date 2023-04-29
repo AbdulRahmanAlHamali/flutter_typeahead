@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
+/// Helper class to get the material typeahead test page
 class MaterialTypeAheadHelper {
   static Widget getMaterialTypeAheadPage() {
     return MaterialApp(
@@ -10,6 +11,7 @@ class MaterialTypeAheadHelper {
   }
 }
 
+/// The widget that will be returned for the material typeahead test page
 class MaterialTypeAheadPage extends StatefulWidget {
   final String? title;
 
@@ -22,6 +24,7 @@ class MaterialTypeAheadPage extends StatefulWidget {
 class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
   final List<TextEditingController> _controllers = [];
 
+  /// Items that will be used to search
   final List<String> foodItems = [
     "Bread",
     "Burger",
@@ -31,7 +34,7 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
     "Orange"
   ];
 
-  // This is to trigger a loading effect when searching for items
+  /// This is to trigger a loading builder when searching for items
   Future<List<String>> _getFoodItems(String pattern) async {
     pattern = pattern.trim();
     if (pattern.isNotEmpty) {
@@ -46,6 +49,7 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
     }
   }
 
+  /// Widget that will be displayed when no results were found
   Widget _getNoResultText(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -53,9 +57,9 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
     );
   }
 
-  Widget _getTypeAhead() {
-    final controller = TextEditingController();
-    _controllers.add(controller);
+  /// Widget that returns the MaterialTypeAheadFormField
+  Widget get _getTypeAhead {
+    _controllers.add(TextEditingController());
 
     return TypeAheadFormField<String>(
       textFieldConfiguration: TextFieldConfiguration(
