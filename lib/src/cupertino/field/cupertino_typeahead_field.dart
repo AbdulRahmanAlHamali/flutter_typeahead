@@ -502,7 +502,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
               widget.suggestionsBoxDecoration.offsetX,
               _suggestionsBox!.direction == AxisDirection.down
                   ? _suggestionsBox!.textBoxHeight + widget.suggestionsBoxVerticalOffset
-                  : _suggestionsBox!.directionUpOffset),
+                  : -widget.suggestionsBoxVerticalOffset),
           child: _suggestionsBox!.direction == AxisDirection.down
               ? suggestionsList
               : FractionalTranslation(
