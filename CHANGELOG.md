@@ -1,3 +1,7 @@
+## 4.3.8 - 30-April-2023
+
+PR # 484 - Fix for incorrect vertical offset calculation of suggestion box for flutter mobile web
+
 ## 4.3.7 - 26-February-2023
 
 Update Changelog file
