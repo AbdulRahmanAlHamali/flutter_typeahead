@@ -524,6 +524,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         decoration: widget.textFieldConfiguration.decoration,
         padding: widget.textFieldConfiguration.padding,
         placeholder: widget.textFieldConfiguration.placeholder,
+        placeholderStyle: widget.textFieldConfiguration.placeholderStyle,
         prefix: widget.textFieldConfiguration.prefix,
         prefixMode: widget.textFieldConfiguration.prefixMode,
         suffix: widget.textFieldConfiguration.suffix,
