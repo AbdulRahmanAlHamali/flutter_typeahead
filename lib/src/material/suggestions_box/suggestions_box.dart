@@ -3,12 +3,12 @@ import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
 
 class SuggestionsBox {
   static const int waitMetricsTimeoutMillis = 1000;
-  static const double minOverlaySpace = 64.0;
 
   final BuildContext context;
   final AxisDirection desiredDirection;
   final bool autoFlipDirection;
   final bool autoFlipListDirection;
+  final double autoFlipMinHeight;
 
   OverlayEntry? overlayEntry;
   AxisDirection direction;
@@ -25,6 +25,7 @@ class SuggestionsBox {
       this.direction,
       this.autoFlipDirection,
       this.autoFlipListDirection,
+      this.autoFlipMinHeight,
       ) : desiredDirection = direction;
 
   void open() {
@@ -128,7 +129,7 @@ class SuggestionsBox {
         windowHeight, rootMediaQuery, keyboardHeight, textBoxAbsY);
 
     // if there's enough room in the desired direction, update the direction and the max height
-    if (maxHDesired >= minOverlaySpace || !autoFlipDirection) {
+    if (maxHDesired >= autoFlipMinHeight || !autoFlipDirection) {
       direction = desiredDirection;
       // Sometimes textBoxAbsY is NaN, so we need to check for that
       if(!maxHDesired.isNaN) {
