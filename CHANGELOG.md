@@ -1,3 +1,9 @@
+## 4.4.0 - 20-May-2023
+
+PR # 486 - add onTapOutside callback to typeahead
+PR # 485 - support placeholder style customization
+PR # 468 - Add "autoFlipMinHeight"
+
 ## 4.3.8 - 30-April-2023
 
 PR # 484 - Fix for incorrect vertical offset calculation of suggestion box for flutter mobile web
