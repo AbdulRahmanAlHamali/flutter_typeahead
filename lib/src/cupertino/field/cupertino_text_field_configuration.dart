@@ -36,6 +36,7 @@ class CupertinoTextFieldConfiguration {
   final BoxDecoration decoration;
   final EdgeInsetsGeometry padding;
   final String? placeholder;
+  final TextStyle? placeholderStyle;
   final Widget? prefix;
   final OverlayVisibilityMode prefixMode;
   final Widget? suffix;
@@ -74,6 +75,7 @@ class CupertinoTextFieldConfiguration {
     this.decoration = _kDefaultRoundedBorderDecoration,
     this.padding = const EdgeInsets.all(6.0),
     this.placeholder,
+    this.placeholderStyle,
     this.prefix,
     this.prefixMode = OverlayVisibilityMode.always,
     this.suffix,
@@ -113,6 +115,7 @@ class CupertinoTextFieldConfiguration {
     BoxDecoration? decoration,
     EdgeInsetsGeometry? padding,
     String? placeholder,
+    TextStyle? placeholderStyle,
     Widget? prefix,
     OverlayVisibilityMode? prefixMode,
     Widget? suffix,
@@ -150,6 +153,7 @@ class CupertinoTextFieldConfiguration {
       decoration: decoration ?? this.decoration,
       padding: padding ?? this.padding,
       placeholder: placeholder ?? this.placeholder,
+      placeholderStyle: placeholderStyle ?? this.placeholderStyle,
       prefix: prefix ?? this.prefix,
       prefixMode: prefixMode ?? this.prefixMode,
       suffix: suffix ?? this.suffix,
