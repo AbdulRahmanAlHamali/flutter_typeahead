@@ -23,8 +23,8 @@ class _MyAppState extends State<MyApp> {
     if (!isCupertino) {
       return MaterialApp(
         title: 'flutter_typeahead demo',
-        scrollBehavior:
-            MaterialScrollBehavior().copyWith(dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}),
+        scrollBehavior: MaterialScrollBehavior().copyWith(
+            dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}),
         home: DefaultTabController(
           length: 3,
           child: Scaffold(
@@ -85,9 +85,14 @@ class NavigationExample extends StatelessWidget {
           ),
           TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
+              autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
               autofocus: true,
-              style: DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic),
-              decoration: InputDecoration(border: OutlineInputBorder(), hintText: 'What are you looking for?'),
+              style: DefaultTextStyle.of(context)
+                  .style
+                  .copyWith(fontStyle: FontStyle.italic),
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'What are you looking for?'),
             ),
             suggestionsCallback: (pattern) async {
               return await BackendService.getSuggestions(pattern);
@@ -99,9 +104,12 @@ class NavigationExample extends StatelessWidget {
                 subtitle: Text('\$${suggestion['price']}'),
               );
             },
+            itemSeparatorBuilder: (context, index) {
+              return Divider();
+            },
             onSuggestionSelected: (Map<String, String> suggestion) {
-              Navigator.of(context)
-                  .push<void>(MaterialPageRoute(builder: (context) => ProductPage(product: suggestion)));
+              Navigator.of(context).push<void>(MaterialPageRoute(
+                  builder: (context) => ProductPage(product: suggestion)));
             },
             suggestionsBoxDecoration: SuggestionsBoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
@@ -159,6 +167,9 @@ class _FormExampleState extends State<FormExample> {
                       title: Text(suggestion),
                     );
                   },
+                  itemSeparatorBuilder: (context, index) {
+                    return Divider();
+                  },
                   transitionBuilder: (context, suggestionsBox, controller) {
                     return suggestionsBox;
                   },
@@ -166,7 +177,8 @@ class _FormExampleState extends State<FormExample> {
                     this._typeAheadController.text = suggestion;
                   },
                   suggestionsBoxController: suggestionBoxController,
-                  validator: (value) => value!.isEmpty ? 'Please select a city' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please select a city' : null,
                   onSaved: (value) => this._selectedCity = value,
                 ),
                 Spacer(),
@@ -177,7 +189,8 @@ class _FormExampleState extends State<FormExample> {
                       this._formKey.currentState!.save();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Your Favorite City is ${this._selectedCity}'),
+                          content: Text(
+                              'Your Favorite City is ${this._selectedCity}'),
                         ),
                       );
                     }
@@ -238,15 +251,23 @@ class ScrollExample extends StatelessWidget {
       TypeAheadField<String>(
         getImmediateSuggestions: true,
         textFieldConfiguration: TextFieldConfiguration(
-          decoration: InputDecoration(border: OutlineInputBorder(), hintText: 'What are you looking for?'),
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'What are you looking for?'),
         ),
         suggestionsCallback: (String pattern) async {
-          return items.where((item) => item.toLowerCase().startsWith(pattern.toLowerCase())).toList();
+          return items
+              .where((item) =>
+                  item.toLowerCase().startsWith(pattern.toLowerCase()))
+              .toList();
         },
         itemBuilder: (context, String suggestion) {
           return ListTile(
             title: Text(suggestion),
           );
+        },
+        itemSeparatorBuilder: (context, index) {
+          return Divider();
         },
         onSuggestionSelected: (String suggestion) {
           print("Suggestion selected");
@@ -265,7 +286,10 @@ class BackendService {
     await Future<void>.delayed(Duration(seconds: 1));
 
     return List.generate(3, (index) {
-      return {'name': query + index.toString(), 'price': Random().nextInt(100).toString()};
+      return {
+        'name': query + index.toString(),
+        'price': Random().nextInt(100).toString()
+      };
     });
   }
 }
@@ -305,7 +329,8 @@ class FavoriteCitiesPage extends StatefulWidget {
 class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  CupertinoSuggestionsBoxController _suggestionsBoxController = CupertinoSuggestionsBoxController();
+  CupertinoSuggestionsBoxController _suggestionsBoxController =
+      CupertinoSuggestionsBoxController();
   String favoriteCity = 'Unavailable';
 
   @override
@@ -347,10 +372,14 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                       ),
                     );
                   },
+                  itemSeparatorBuilder: (context, index) {
+                    return Divider();
+                  },
                   onSuggestionSelected: (String suggestion) {
                     _typeAheadController.text = suggestion;
                   },
-                  validator: (value) => value!.isEmpty ? 'Please select a city' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please select a city' : null,
                 ),
                 SizedBox(
                   height: 10.0,
