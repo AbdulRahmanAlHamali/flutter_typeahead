@@ -16,6 +16,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
   final ItemBuilder<T>? itemBuilder;
+  final IndexedWidgetBuilder? itemSeparatorBuilder;
   final ScrollController? scrollController;
   final SuggestionsBoxDecoration? decoration;
   final Duration? debounceDuration;
@@ -33,7 +34,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final int? minCharsForSuggestions;
   final KeyboardSuggestionSelectionNotifier keyboardSuggestionSelectionNotifier;
   final ShouldRefreshSuggestionFocusIndexNotifier
-  shouldRefreshSuggestionFocusIndexNotifier;
+      shouldRefreshSuggestionFocusIndexNotifier;
   final VoidCallback giveTextFieldFocus;
   final VoidCallback onSuggestionFocus;
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
@@ -46,6 +47,7 @@ class SuggestionsList<T> extends StatefulWidget {
     this.onSuggestionSelected,
     this.suggestionsCallback,
     this.itemBuilder,
+    this.itemSeparatorBuilder,
     this.scrollController,
     this.decoration,
     this.debounceDuration,
@@ -207,7 +209,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
       try {
         suggestions =
-        await widget.suggestionsCallback!(widget.controller!.text);
+            await widget.suggestionsCallback!(widget.controller!.text);
       } catch (e) {
         error = e;
       }
@@ -227,7 +229,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
           this._suggestions = suggestions;
           _focusNodes = List.generate(
             _suggestions?.length ?? 0,
-                (index) => FocusNode(onKey: (_, event) {
+            (index) => FocusNode(onKey: (_, event) {
               return widget.onKeyEvent(_, event);
             }),
           );
@@ -280,12 +282,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     final animationChild = widget.transitionBuilder != null
         ? widget.transitionBuilder!(context, child, this._animationController)
         : SizeTransition(
-      axisAlignment: -1.0,
-      sizeFactor: CurvedAnimation(
-          parent: this._animationController!,
-          curve: Curves.fastOutSlowIn),
-      child: child,
-    );
+            axisAlignment: -1.0,
+            sizeFactor: CurvedAnimation(
+                parent: this._animationController!,
+                curve: Curves.fastOutSlowIn),
+            child: child,
+          );
 
     BoxConstraints constraints;
     if (widget.decoration!.constraints == null) {
@@ -330,12 +332,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder!(context)
           : Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: CircularProgressIndicator(),
-        ),
-      );
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: CircularProgressIndicator(),
+              ),
+            );
     }
 
     return child;
@@ -345,30 +347,30 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     return widget.errorBuilder != null
         ? widget.errorBuilder!(context, this._error)
         : Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        'Error: ${this._error}',
-        style: TextStyle(color: Theme.of(context).colorScheme.error),
-      ),
-    );
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Error: ${this._error}',
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          );
   }
 
   Widget createNoItemsFoundWidget() {
     return widget.noItemsFoundBuilder != null
         ? widget.noItemsFoundBuilder!(context)
         : Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        'No Items Found!',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Theme.of(context).disabledColor, fontSize: 18.0),
-      ),
-    );
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'No Items Found!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Theme.of(context).disabledColor, fontSize: 18.0),
+            ),
+          );
   }
 
   Widget createSuggestionsWidget() {
-    Widget child = ListView(
+    Widget child = ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
@@ -379,10 +381,10 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       reverse: widget.suggestionsBox!.direction == AxisDirection.down
           ? false
           : widget.suggestionsBox!.autoFlipListDirection,
-      children: List.generate(this._suggestions!.length, (index) {
-        final suggestion = _suggestions!.elementAt(index);
+      itemCount: this._suggestions!.length,
+      itemBuilder: (BuildContext context, int index) {
+        final suggestion = this._suggestions!.elementAt(index);
         final focusNode = _focusNodes[index];
-
         return TextFieldTapRegion(
           child: InkWell(
             focusColor: Theme.of(context).hoverColor,
@@ -396,13 +398,20 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
             },
           ),
         );
-      }),
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          widget.itemSeparatorBuilder?.call(context, index) ??
+          const SizedBox.shrink(),
     );
 
     if (widget.decoration!.hasScrollbar) {
-      child = Scrollbar(
-        controller: _scrollController,
-        child: child,
+      child = MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: Scrollbar(
+          controller: _scrollController,
+          child: child,
+        ),
       );
     }
 

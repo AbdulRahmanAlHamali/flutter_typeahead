@@ -175,40 +175,42 @@ class TextFieldConfiguration {
 
   final bool enableInteractiveSelection;
 
+  final List<String>? autofillHints;
+
   /// Creates a TextFieldConfiguration
-  const TextFieldConfiguration({
-    this.decoration = const InputDecoration(),
-    this.style,
-    this.controller,
-    this.onChanged,
-    this.onSubmitted,
-    this.obscureText = false,
-    this.maxLengthEnforcement,
-    this.maxLength,
-    this.maxLines = 1,
-    this.minLines,
-    this.textAlignVertical,
-    this.autocorrect = true,
-    this.inputFormatters,
-    this.autofocus = false,
-    this.keyboardType = TextInputType.text,
-    this.enabled = true,
-    this.enableSuggestions = true,
-    this.textAlign = TextAlign.start,
-    this.focusNode,
-    this.cursorColor,
-    this.cursorRadius,
-    this.textInputAction,
-    this.textCapitalization = TextCapitalization.none,
-    this.cursorWidth = 2.0,
-    this.keyboardAppearance,
-    this.onEditingComplete,
-    this.onTap,
-    this.onTapOutside,
-    this.textDirection,
-    this.scrollPadding = const EdgeInsets.all(20.0),
-    this.enableInteractiveSelection = true,
-  });
+  const TextFieldConfiguration(
+      {this.decoration = const InputDecoration(),
+      this.style,
+      this.controller,
+      this.onChanged,
+      this.onSubmitted,
+      this.obscureText = false,
+      this.maxLengthEnforcement,
+      this.maxLength,
+      this.maxLines = 1,
+      this.minLines,
+      this.textAlignVertical,
+      this.autocorrect = true,
+      this.inputFormatters,
+      this.autofocus = false,
+      this.keyboardType = TextInputType.text,
+      this.enabled = true,
+      this.enableSuggestions = true,
+      this.textAlign = TextAlign.start,
+      this.focusNode,
+      this.cursorColor,
+      this.cursorRadius,
+      this.textInputAction,
+      this.textCapitalization = TextCapitalization.none,
+      this.cursorWidth = 2.0,
+      this.keyboardAppearance,
+      this.onEditingComplete,
+      this.onTap,
+      this.onTapOutside,
+      this.textDirection,
+      this.scrollPadding = const EdgeInsets.all(20.0),
+      this.enableInteractiveSelection = true,
+      this.autofillHints});
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties
@@ -242,7 +244,8 @@ class TextFieldConfiguration {
       TextCapitalization? textCapitalization,
       TextDirection? textDirection,
       TextInputAction? textInputAction,
-      bool? enableInteractiveSelection}) {
+      bool? enableInteractiveSelection,
+      List<String>? autofillHints}) {
     return TextFieldConfiguration(
       decoration: decoration ?? this.decoration,
       style: style ?? this.style,
@@ -275,6 +278,7 @@ class TextFieldConfiguration {
       textDirection: textDirection ?? this.textDirection,
       enableInteractiveSelection:
           enableInteractiveSelection ?? this.enableInteractiveSelection,
+      autofillHints: autofillHints ?? this.autofillHints,
     );
   }
 }
