@@ -308,6 +308,12 @@ class TypeAheadField<T> extends StatefulWidget {
   /// ```
   final ItemBuilder<T> itemBuilder;
 
+  /// By default, we render the suggestions in a ListView, using
+  /// the `itemBuilder` to construct each element of the list.  Specify
+  /// your own `layoutArchitecture` if you want to be responsible
+  /// for layinng out the widgets using some other system (like a grid).
+  final LayoutArchitecture? layoutArchitecture;
+
   /// used to control the scroll behavior of item-builder list
   final ScrollController? scrollController;
 
@@ -529,6 +535,7 @@ class TypeAheadField<T> extends StatefulWidget {
   TypeAheadField({
     required this.suggestionsCallback,
     required this.itemBuilder,
+    this.layoutArchitecture,
     required this.onSuggestionSelected,
     this.textFieldConfiguration = const TextFieldConfiguration(),
     this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
@@ -772,6 +779,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             widget.onSuggestionSelected(selection);
           },
           itemBuilder: widget.itemBuilder,
+          layoutArchitecture: widget.layoutArchitecture,
           direction: _suggestionsBox!.direction,
           hideOnLoading: widget.hideOnLoading,
           hideOnEmpty: widget.hideOnEmpty,
