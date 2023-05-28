@@ -1,3 +1,7 @@
+## 4.5.0 - 28-May-2023
+
+PR # 489 - Added itemSeparatorBuilder, Removed top padding on scrollbar, Added autofillHints properties
+
 ## 4.4.0 - 20-May-2023
 
 PR # 486 - add onTapOutside callback to typeahead
