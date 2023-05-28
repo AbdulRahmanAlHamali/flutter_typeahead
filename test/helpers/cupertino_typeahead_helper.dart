@@ -16,7 +16,7 @@ class CupertinoTypeAheadHelper {
 class CupertinoTypeAheadPage extends StatefulWidget {
   final String? title;
 
-  const CupertinoTypeAheadPage({Key? super.key, this.title});
+  const CupertinoTypeAheadPage({super.key, this.title});
 
   @override
   State<CupertinoTypeAheadPage> createState() => _CupertinoTypeAheadPageState();

@@ -15,7 +15,7 @@ class MaterialTypeAheadHelper {
 class MaterialTypeAheadPage extends StatefulWidget {
   final String? title;
 
-  const MaterialTypeAheadPage({Key? super.key, this.title});
+  const MaterialTypeAheadPage({super.key, this.title});
 
   @override
   State<MaterialTypeAheadPage> createState() => _MaterialTypeAheadPageState();
