@@ -9,6 +9,9 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.d
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
+/// Renders all the suggestions using a ListView as default.  If
+/// `layoutArchitecture` is specified, uses that instead.
+
 class SuggestionsList<T> extends StatefulWidget {
   final SuggestionsBox? suggestionsBox;
   final TextEditingController? controller;
@@ -17,6 +20,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final SuggestionsCallback<T>? suggestionsCallback;
   final ItemBuilder<T>? itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
+  final LayoutArchitecture? layoutArchitecture;
   final ScrollController? scrollController;
   final SuggestionsBoxDecoration? decoration;
   final Duration? debounceDuration;
@@ -48,6 +52,7 @@ class SuggestionsList<T> extends StatefulWidget {
     this.suggestionsCallback,
     this.itemBuilder,
     this.itemSeparatorBuilder,
+    this.layoutArchitecture,
     this.scrollController,
     this.decoration,
     this.debounceDuration,
@@ -370,6 +375,14 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
   }
 
   Widget createSuggestionsWidget() {
+    if (widget.layoutArchitecture == null) {
+      return defaultSuggestionsWidget();
+    } else {
+      return customSuggestionsWidget();
+    }
+  }
+
+  Widget defaultSuggestionsWidget() {
     Widget child = ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
@@ -402,6 +415,43 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       separatorBuilder: (BuildContext context, int index) =>
           widget.itemSeparatorBuilder?.call(context, index) ??
           const SizedBox.shrink(),
+    );
+
+    if (widget.decoration!.hasScrollbar) {
+      child = MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: Scrollbar(
+          controller: _scrollController,
+          child: child,
+        ),
+      );
+    }
+
+    return child;
+  }
+
+  Widget customSuggestionsWidget() {
+    Widget child = widget.layoutArchitecture!(
+      List.generate(this._suggestions!.length, (index) {
+        final suggestion = _suggestions!.elementAt(index);
+        final focusNode = _focusNodes[index];
+
+        return TextFieldTapRegion(
+          child: InkWell(
+            focusColor: Theme.of(context).hoverColor,
+            focusNode: focusNode,
+            child: widget.itemBuilder!(context, suggestion),
+            onTap: () {
+              // * we give the focus back to the text field
+              widget.giveTextFieldFocus();
+
+              widget.onSuggestionSelected!(suggestion);
+            },
+          ),
+        );
+      }),
+      _scrollController,
     );
 
     if (widget.decoration!.hasScrollbar) {

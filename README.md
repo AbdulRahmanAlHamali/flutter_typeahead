@@ -162,6 +162,36 @@ The `transitionBuilder` allows us to customize the animation of the
 suggestion box. In this example, we are returning the suggestionsBox
 immediately, meaning that we don't want any animation.
 
+### Material with Alternative Layout Architecture:
+
+By default, TypeAhead uses a `ListView` to render the items created by `itemBuilder`. If you specify a `layoutArchitecture` component, it will use this component instead. For example, here's how we render the items in a grid using the standard `GridView`:
+
+```dart
+TypeAheadField(
+    ...,
+  layoutArchitecture: (items, scrollContoller) {
+        return ListView(
+            controller: scrollContoller,
+            shrinkWrap: true,
+            children: [
+              GridView.count(
+                physics: const ScrollPhysics(),
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 5 / 5,
+                shrinkWrap: true,
+                children: items.toList(),
+              ),
+            ]);
+      },
+);
+```
+
+### Cupertino Example:
+
+
+
 ### Cupertino Example:
 Please see the Cupertino code in the example project.
 
