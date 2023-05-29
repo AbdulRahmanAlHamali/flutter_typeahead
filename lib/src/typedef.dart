@@ -9,3 +9,5 @@ typedef Widget ErrorBuilder(BuildContext context, Object? error);
 
 typedef Widget AnimationTransitionBuilder(
     BuildContext context, Widget child, AnimationController? controller);
+typedef LayoutArchitecture = Widget Function(
+    Iterable<Widget> items, ScrollController controller);

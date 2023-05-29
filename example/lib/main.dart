@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
         scrollBehavior: MaterialScrollBehavior().copyWith(
             dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}),
         home: DefaultTabController(
-          length: 3,
+          length: 4,
           child: Scaffold(
               appBar: AppBar(
                 leading: IconButton(
@@ -38,7 +38,8 @@ class _MyAppState extends State<MyApp> {
                 title: TabBar(tabs: [
                   Tab(text: 'Example 1: Navigation'),
                   Tab(text: 'Example 2: Form'),
-                  Tab(text: 'Example 3: Scroll')
+                  Tab(text: 'Example 3: Scroll'),
+                  Tab(text: '4: Alternative Layout')
                 ]),
               ),
               body: GestureDetector(
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
                   NavigationExample(),
                   FormExample(),
                   ScrollExample(),
+                  AlternativeLayoutArchitecture(),
                 ]),
               )),
         ),
@@ -406,6 +408,69 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AlternativeLayoutArchitecture extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(32.0),
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 10.0,
+          ),
+          TypeAheadField(
+            textFieldConfiguration: TextFieldConfiguration(
+              autofocus: true,
+              style: DefaultTextStyle.of(context)
+                  .style
+                  .copyWith(fontStyle: FontStyle.italic),
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'What are you looking for?'),
+            ),
+            suggestionsCallback: (pattern) async {
+              return await BackendService.getSuggestions(pattern);
+            },
+            itemBuilder: (context, Map<String, String> suggestion) {
+              return ListTile(
+                tileColor: Theme.of(context).colorScheme.secondaryContainer,
+                leading: Icon(Icons.shopping_cart),
+                title: Text(suggestion['name']!),
+                subtitle: Text('\$${suggestion['price']}'),
+              );
+            },
+            layoutArchitecture: (items, scrollContoller) {
+              return ListView(
+                  controller: scrollContoller,
+                  shrinkWrap: true,
+                  children: [
+                    GridView.count(
+                      physics: const ScrollPhysics(),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      childAspectRatio: 5 / 5,
+                      shrinkWrap: true,
+                      children: items.toList(),
+                    ),
+                  ]);
+            },
+            onSuggestionSelected: (Map<String, String> suggestion) {
+              Navigator.of(context).push<void>(MaterialPageRoute(
+                  builder: (context) => ProductPage(product: suggestion)));
+            },
+            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              elevation: 8.0,
+              color: Theme.of(context).cardColor,
+            ),
+          ),
+        ],
       ),
     );
   }

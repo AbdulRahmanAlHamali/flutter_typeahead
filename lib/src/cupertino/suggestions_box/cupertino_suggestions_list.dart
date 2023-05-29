@@ -6,6 +6,9 @@ import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_sugges
 import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
+/// Renders all the suggestions using a ListView as default.  If
+/// `layoutArchitecture` is specified, uses that instead.
+
 class CupertinoSuggestionsList<T> extends StatefulWidget {
   final CupertinoSuggestionsBox? suggestionsBox;
   final TextEditingController? controller;
@@ -14,6 +17,8 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
   final SuggestionsCallback<T>? suggestionsCallback;
   final ItemBuilder<T>? itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
+  final LayoutArchitecture? layoutArchitecture;
+  final ScrollController? scrollController;
   final CupertinoSuggestionsBoxDecoration? decoration;
   final Duration? debounceDuration;
   final WidgetBuilder? loadingBuilder;
@@ -38,6 +43,8 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
     this.suggestionsCallback,
     this.itemBuilder,
     this.itemSeparatorBuilder,
+    this.layoutArchitecture,
+    this.scrollController,
     this.decoration,
     this.debounceDuration,
     this.loadingBuilder,
@@ -71,6 +78,8 @@ class _CupertinoSuggestionsListState<T>
   Object? _error;
   AnimationController? _animationController;
   String? _lastTextValue;
+  late final ScrollController _scrollController =
+      widget.scrollController ?? ScrollController();
 
   @override
   void didUpdateWidget(CupertinoSuggestionsList<T> oldWidget) {
@@ -334,6 +343,14 @@ class _CupertinoSuggestionsListState<T>
   }
 
   Widget createSuggestionsWidget() {
+    if (widget.layoutArchitecture == null) {
+      return defaultSuggestionsWidget();
+    } else {
+      return customSuggestionsWidget();
+    }
+  }
+
+  Widget defaultSuggestionsWidget() {
     Widget child = Container(
       decoration: BoxDecoration(
         color: widget.decoration!.color != null
@@ -377,7 +394,52 @@ class _CupertinoSuggestionsListState<T>
     );
 
     if (widget.decoration!.hasScrollbar) {
-      child = CupertinoScrollbar(child: child);
+      child = MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: CupertinoScrollbar(child: child));
+    }
+
+    return child;
+  }
+
+  Widget customSuggestionsWidget() {
+    Widget child = Container(
+      decoration: BoxDecoration(
+        color: widget.decoration!.color != null
+            ? widget.decoration!.color
+            : CupertinoColors.white,
+        border: widget.decoration!.border != null
+            ? widget.decoration!.border
+            : Border.all(
+                color: CupertinoColors.extraLightBackgroundGray,
+                width: 1.0,
+              ),
+        borderRadius: widget.decoration!.borderRadius != null
+            ? widget.decoration!.borderRadius
+            : null,
+      ),
+      child: widget.layoutArchitecture!(
+        List.generate(this._suggestions!.length, (index) {
+          final suggestion = _suggestions!.elementAt(index);
+
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            child: widget.itemBuilder!(context, suggestion),
+            onTap: () {
+              widget.onSuggestionSelected!(suggestion);
+            },
+          );
+        }),
+        _scrollController,
+      ),
+    );
+
+    if (widget.decoration!.hasScrollbar) {
+      child = MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: CupertinoScrollbar(child: child));
     }
 
     return child;

@@ -46,6 +46,7 @@ class TypeAheadFormField<T> extends FormField<String> {
       required SuggestionSelectionCallback<T> onSuggestionSelected,
       required ItemBuilder<T> itemBuilder,
       IndexedWidgetBuilder? itemSeparatorBuilder,
+      LayoutArchitecture? layoutArchitecture,
       required SuggestionsCallback<T> suggestionsCallback,
       double suggestionsBoxVerticalOffset = 5.0,
       this.textFieldConfiguration = const TextFieldConfiguration(),
@@ -103,7 +104,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 onSuggestionSelected: onSuggestionSelected,
                 onSuggestionsBoxToggle: onSuggestionsBoxToggle,
                 itemBuilder: itemBuilder,
-                itemSeparatorBuilder: itemSeparatorBuilder,
+                layoutArchitecture: layoutArchitecture,
                 suggestionsCallback: suggestionsCallback,
                 animationStart: animationStart,
                 animationDuration: animationDuration,
@@ -123,7 +124,6 @@ class TypeAheadFormField<T> extends FormField<String> {
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
               );
             });
-
   @override
   _TypeAheadFormFieldState<T> createState() => _TypeAheadFormFieldState<T>();
 }
