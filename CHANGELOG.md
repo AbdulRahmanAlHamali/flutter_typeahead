@@ -1,3 +1,7 @@
+## 4.6.0 - 29-May-2023
+
+PR # 493 - Support alternative (for example Grid) layouts of results
+
 ## 4.5.0 - 28-May-2023
 
 PR # 489 - Added itemSeparatorBuilder, Removed top padding on scrollbar, Added autofillHints properties
