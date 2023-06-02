@@ -26,6 +26,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final SuggestionsBoxDecoration? decoration;
   final Duration? debounceDuration;
   final WidgetBuilder? loadingBuilder;
+  final bool intercepting;
   final WidgetBuilder? noItemsFoundBuilder;
   final ErrorBuilder? errorBuilder;
   final AnimationTransitionBuilder? transitionBuilder;
@@ -48,6 +49,7 @@ class SuggestionsList<T> extends StatefulWidget {
   SuggestionsList({
     required this.suggestionsBox,
     this.controller,
+    this.intercepting = false,
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
@@ -292,9 +294,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
             sizeFactor: CurvedAnimation(
                 parent: this._animationController!,
                 curve: Curves.fastOutSlowIn),
-            child: PointerInterceptor(
-                child: child,
-            ),
+            child: child,
           );
 
     BoxConstraints constraints;
@@ -311,7 +311,9 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       );
     }
 
-    var container = Material(
+    var container = PointerInterceptor(
+      intercepting: widget.intercepting,
+                child: Material(
       elevation: widget.decoration!.elevation,
       color: widget.decoration!.color,
       shape: widget.decoration!.shape,
@@ -322,7 +324,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         constraints: constraints,
         child: animationChild,
       ),
-    );
+    ));
 
     return container;
   }

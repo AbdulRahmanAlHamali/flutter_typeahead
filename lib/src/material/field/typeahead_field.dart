@@ -12,6 +12,7 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_d
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 import 'package:flutter_typeahead/src/utils.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// # Flutter TypeAhead
 /// A TypeAhead widget for Flutter, where you can show suggestions to
@@ -378,6 +379,10 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// If not specified, the error is shown in [ThemeData.errorColor](https://docs.flutter.io/flutter/material/ThemeData/errorColor.html)
   final ErrorBuilder? errorBuilder;
+  
+  /// Used to overcome [Flutter issue 98507](https://github.com/flutter/flutter/issues/98507)
+  /// Most commonly experienced when placing the [TypeAheadFormField] on a google map in Flutter Web.
+  final bool intercepting;
 
   /// Called to display animations when [suggestionsCallback] returns suggestions
   ///
@@ -538,6 +543,7 @@ class TypeAheadField<T> extends StatefulWidget {
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
+    this.intercepting = false,
     required this.onSuggestionSelected,
     this.textFieldConfiguration = const TextFieldConfiguration(),
     this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
@@ -763,6 +769,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           suggestionsBox: _suggestionsBox,
           decoration: widget.suggestionsBoxDecoration,
           debounceDuration: widget.debounceDuration,
+          intercepting: widget.intercepting,
           controller: this._effectiveController,
           loadingBuilder: widget.loadingBuilder,
           scrollController: widget.scrollController,
@@ -863,7 +870,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: this._layerLink,
-      child: TextField(
+      child: PointerInterceptor(
+        intercepting: widget.intercepting,
+              child: TextField(
           focusNode: this._effectiveFocusNode,
           controller: this._effectiveController,
           decoration: widget.textFieldConfiguration.decoration,
@@ -898,6 +907,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
               widget.textFieldConfiguration.enableInteractiveSelection,
           readOnly: widget.hideKeyboard,
           autofillHints: widget.textFieldConfiguration.autofillHints),
+        ),
     );
   }
 }
