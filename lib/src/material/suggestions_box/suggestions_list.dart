@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_noti
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// Renders all the suggestions using a ListView as default.  If
 /// `layoutArchitecture` is specified, uses that instead.
@@ -291,7 +292,9 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
             sizeFactor: CurvedAnimation(
                 parent: this._animationController!,
                 curve: Curves.fastOutSlowIn),
-            child: child,
+            child: PointerInterceptor(
+                child: child,
+            ),
           );
 
     BoxConstraints constraints;
