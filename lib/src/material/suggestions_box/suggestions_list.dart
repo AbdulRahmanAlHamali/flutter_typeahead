@@ -428,6 +428,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       );
     }
 
+    child = TextFieldTapRegion(child: child);
+    
     return child;
   }
 
@@ -464,6 +466,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         ),
       );
     }
+
+    child = TextFieldTapRegion(child: child);
 
     return child;
   }
