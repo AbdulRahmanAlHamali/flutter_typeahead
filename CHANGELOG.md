@@ -1,3 +1,8 @@
+## 4.6.1 - 04-June-2023
+
+PR # 494 - Fix for scrollbar clickthrough
+PR # 495 - Fix mouse events propagating through the SuggestionBox to the underlying HTMLElementView
+
 ## 4.6.0 - 29-May-2023
 
 PR # 493 - Support alternative (for example Grid) layouts of results
