@@ -58,6 +58,7 @@ class TypeAheadFormField<T> extends FormField<String> {
       bool hideOnEmpty = false,
       bool hideOnError = false,
       bool hideSuggestionsOnKeyboardHide = true,
+      bool intercepting = false,
       bool keepSuggestionsOnLoading = true,
       bool keepSuggestionsOnSuggestionSelected = false,
       bool autoFlipDirection = false,
@@ -116,6 +117,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 keepSuggestionsOnLoading: keepSuggestionsOnLoading,
                 keepSuggestionsOnSuggestionSelected:
                     keepSuggestionsOnSuggestionSelected,
+                intercepting: intercepting,
                 autoFlipDirection: autoFlipDirection,
                 autoFlipListDirection: autoFlipListDirection,
                 autoFlipMinHeight: autoFlipMinHeight,

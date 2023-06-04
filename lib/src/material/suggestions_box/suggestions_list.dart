@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_noti
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// Renders all the suggestions using a ListView as default.  If
 /// `layoutArchitecture` is specified, uses that instead.
@@ -25,6 +26,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final SuggestionsBoxDecoration? decoration;
   final Duration? debounceDuration;
   final WidgetBuilder? loadingBuilder;
+  final bool intercepting;
   final WidgetBuilder? noItemsFoundBuilder;
   final ErrorBuilder? errorBuilder;
   final AnimationTransitionBuilder? transitionBuilder;
@@ -47,6 +49,7 @@ class SuggestionsList<T> extends StatefulWidget {
   SuggestionsList({
     required this.suggestionsBox,
     this.controller,
+    this.intercepting = false,
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
@@ -308,7 +311,9 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       );
     }
 
-    var container = Material(
+    var container = PointerInterceptor(
+      intercepting: widget.intercepting,
+                child: Material(
       elevation: widget.decoration!.elevation,
       color: widget.decoration!.color,
       shape: widget.decoration!.shape,
@@ -319,7 +324,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         constraints: constraints,
         child: animationChild,
       ),
-    );
+    ));
 
     return container;
   }
