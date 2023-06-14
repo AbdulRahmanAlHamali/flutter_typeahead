@@ -105,6 +105,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 onSuggestionSelected: onSuggestionSelected,
                 onSuggestionsBoxToggle: onSuggestionsBoxToggle,
                 itemBuilder: itemBuilder,
+                itemSeparatorBuilder: itemSeparatorBuilder,
                 layoutArchitecture: layoutArchitecture,
                 suggestionsCallback: suggestionsCallback,
                 animationStart: animationStart,
