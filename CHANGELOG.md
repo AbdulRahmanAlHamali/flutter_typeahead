@@ -1,3 +1,7 @@
+## 4.6.2 - 19-June-2023
+
+PR # 500 - itemSeparatorBuilder added to material typeaheadformfield
+
 ## 4.6.1 - 04-June-2023
 
 PR # 494 - Fix for scrollbar clickthrough
