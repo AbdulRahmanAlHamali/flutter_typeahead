@@ -289,6 +289,12 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool hideKeyboardOnDrag;
 
+  /// If set to true, the scrollbar in the suggestion list will always be visible
+  /// evnen when not scrolling.
+  ///
+  /// Defaults to false
+  final bool scrollbarAlwaysVisible;
+
   /// Creates a [CupertinoTypeAheadField]
   CupertinoTypeAheadField({
     Key? key,
@@ -320,6 +326,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.autoFlipMinHeight = 64.0,
     this.minCharsForSuggestions = 0,
     this.hideKeyboardOnDrag = true,
+    this.scrollbarAlwaysVisible = false,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
@@ -498,6 +505,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
         minCharsForSuggestions: widget.minCharsForSuggestions,
         hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
+        scrollbarAlwaysVisible: widget.scrollbarAlwaysVisible,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
