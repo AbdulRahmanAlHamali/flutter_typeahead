@@ -90,6 +90,9 @@ class TextFieldConfiguration {
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
   final int? maxLines;
 
+  /// Whether this widget's height will be sized to fill its parent.
+  final bool expands;
+
   /// The minimum number of lines to occupy when the content spans fewer lines.
   ///
   /// Same as [TextField.minLines](https://docs.flutter.io/flutter/material/TextField/minLines.html)
@@ -188,6 +191,7 @@ class TextFieldConfiguration {
       this.maxLengthEnforcement,
       this.maxLength,
       this.maxLines = 1,
+      this.expands = false,
       this.minLines,
       this.textAlignVertical,
       this.autocorrect = true,

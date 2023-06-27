@@ -884,6 +884,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           inputFormatters: widget.textFieldConfiguration.inputFormatters,
           autocorrect: widget.textFieldConfiguration.autocorrect,
           maxLines: widget.textFieldConfiguration.maxLines,
+          expands: widget.textFieldConfiguration.expands,
           textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
           minLines: widget.textFieldConfiguration.minLines,
           maxLength: widget.textFieldConfiguration.maxLength,
