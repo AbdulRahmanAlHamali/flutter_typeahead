@@ -66,7 +66,8 @@ class TypeAheadFormField<T> extends FormField<String> {
       double autoFlipMinHeight = 64.0,
       bool hideKeyboard = false,
       int minCharsForSuggestions = 0,
-      bool hideKeyboardOnDrag = false})
+      bool hideKeyboardOnDrag = false,
+      bool ignoreAccessibleNavigation = false})
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
@@ -125,6 +126,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 hideKeyboard: hideKeyboard,
                 minCharsForSuggestions: minCharsForSuggestions,
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
+                ignoreAccessibleNavigation: ignoreAccessibleNavigation,
               );
             });
   @override
