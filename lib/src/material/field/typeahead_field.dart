@@ -537,6 +537,10 @@ class TypeAheadField<T> extends StatefulWidget {
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
 
+  //Enable Pull To Load More
+  //Default to false
+  final bool pullToLoadMore;
+
   /// Creates a [TypeAheadField]
   TypeAheadField({
     required this.suggestionsCallback,
@@ -572,6 +576,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.minCharsForSuggestions = 0,
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
+    this.pullToLoadMore = false,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
@@ -803,7 +808,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           giveTextFieldFocus: giveTextFieldFocus,
           onSuggestionFocus: onSuggestionFocus,
           onKeyEvent: _onKeyEvent,
-          hideKeyboardOnDrag: widget.hideKeyboardOnDrag);
+          hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
+          pullToLoadMore: widget.pullToLoadMore,
+      );
 
       double w = _suggestionsBox!.textBoxWidth;
       if (widget.suggestionsBoxDecoration.constraints != null) {

@@ -35,7 +35,7 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
   ];
 
   /// This is to trigger a loading builder when searching for items
-  Future<List<String>> _getFoodItems(String pattern) async {
+  Future<List<String>> _getFoodItems(String pattern, {int? page}) async {
     pattern = pattern.trim();
     if (pattern.isNotEmpty) {
       return Future.delayed(
