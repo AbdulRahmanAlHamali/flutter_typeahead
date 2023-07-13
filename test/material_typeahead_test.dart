@@ -7,7 +7,8 @@ import 'helpers/material_typeahead_helper.dart';
 void main() {
   group("Material TypeAhead widget tests", () {
     testWidgets("Initial UI Test", (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+      await tester
+          .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
       await tester.pumpAndSettle();
 
       expect(find.text("Material TypeAhead test"), findsOneWidget);
@@ -16,7 +17,8 @@ void main() {
     });
 
     testWidgets("No results found test", (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+      await tester
+          .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
       await tester.pumpAndSettle();
 
       final typeAheadField = find.byType(TypeAheadFormField<String>).first;
@@ -31,7 +33,8 @@ void main() {
     });
 
     testWidgets("Search one item", (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+      await tester
+          .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
       await tester.pumpAndSettle();
 
       final typeAheadField = find.byType(TypeAheadFormField<String>).first;
@@ -47,7 +50,8 @@ void main() {
     });
 
     testWidgets("Search two items", (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+      await tester
+          .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
       await tester.pumpAndSettle();
 
       final typeAheadField = find.byType(TypeAheadFormField<String>).first;
@@ -60,8 +64,11 @@ void main() {
       expect(find.text("Burger"), findsOneWidget);
     });
 
-    testWidgets("Search with first type ahead and check the offset of the first suggestion box", (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+    testWidgets(
+        "Search with first type ahead and check the offset of the first suggestion box",
+        (WidgetTester tester) async {
+      await tester
+          .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
       await tester.pumpAndSettle();
 
       final typeAheadField = find.byType(TypeAheadFormField<String>).first;
@@ -70,28 +77,71 @@ void main() {
       await tester.enterText(typeAheadField, "Bread");
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      final typeAheadSuggestionBox = find.byType(CompositedTransformFollower).last;
-      final CompositedTransformFollower typeAheadSuggestionBoxTester = tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
+      final typeAheadSuggestionBox =
+          find.byType(CompositedTransformFollower).last;
+      final CompositedTransformFollower typeAheadSuggestionBoxTester =
+          tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
       expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, 61.0));
     });
 
-    testWidgets("Search with last type ahead and check the offset of the last suggestion box", (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+    testWidgets(
+        "Search with last type ahead and check the offset of the last suggestion box",
+        (WidgetTester tester) async {
+      await tester
+          .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
       await tester.pumpAndSettle();
 
       final typeAheadField = find.byType(TypeAheadFormField<String>).last;
-      final scrollView = find.descendant(of: find.byType(SingleChildScrollView), matching: find.byType(Scrollable));
+      final scrollView = find.descendant(
+          of: find.byType(SingleChildScrollView),
+          matching: find.byType(Scrollable));
 
-      await tester.dragUntilVisible(typeAheadField, scrollView, Offset(0, 1000));
+      await tester.dragUntilVisible(
+          typeAheadField, scrollView, Offset(0, 1000));
       await tester.pumpAndSettle(const Duration(seconds: 2));
       await tester.tap(typeAheadField);
       await tester.pumpAndSettle(const Duration(seconds: 2));
       await tester.enterText(typeAheadField, "Milk");
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      final typeAheadSuggestionBox = find.byType(CompositedTransformFollower).last;
-      final CompositedTransformFollower typeAheadSuggestionBoxTester = tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
+      final typeAheadSuggestionBox =
+          find.byType(CompositedTransformFollower).last;
+      final CompositedTransformFollower typeAheadSuggestionBoxTester =
+          tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
       expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, -5.0));
     });
+
+    testWidgets(
+      "Scrollview scrollbar thumbvisibilty set to (default) false when scrollviewAlwaysVisible is not set",
+      (WidgetTester tester) async {
+        await tester
+            .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+        await tester.pumpAndSettle();
+
+        final typeAheadField = find.byType(TypeAheadFormField<String>).last;
+        final scrollView = find.descendant(
+            of: find.byType(SingleChildScrollView),
+            matching: find.byType(Scrollable));
+
+        await tester.dragUntilVisible(
+            typeAheadField, scrollView, Offset(0, 1000));
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.tap(typeAheadField);
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.enterText(typeAheadField, "Milk");
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+
+        final scrollbar = find.byType(Scrollbar).last;
+
+        expect(
+          tester.widget(scrollbar),
+          isA<Scrollbar>().having(
+            (t) => t.thumbVisibility,
+            'thumbVisibility',
+            false,
+          ),
+        );
+      },
+    );
   });
 }
