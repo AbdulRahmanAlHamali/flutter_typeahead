@@ -10,11 +10,11 @@ If you plan to submit a PR please do the following:
 
 - Fork the repository
 - Create a feature branch from the **master** branch!
-- Following the coding guidlines below
+- Following the coding guidelines below
 - Submit the PR against the **master** branch.
 - Update both Material and Cupertino code if applicable
 
-## General coding guidlines
+## General coding guidelines
 
 If you'd like to add a feature or fix a bug, we're more than happy to accept pull requests! We only ask a few things:
 

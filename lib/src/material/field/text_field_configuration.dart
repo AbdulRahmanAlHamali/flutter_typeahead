@@ -85,6 +85,9 @@ class TextFieldConfiguration {
   /// Same as [TextField.autocorrect](https://docs.flutter.io/flutter/material/TextField/autocorrect.html)
   final bool autocorrect;
 
+  /// Whether this widget's height will be sized to fill its parent.
+  final bool expands;
+
   /// The maximum number of lines for the text to span, wrapping if necessary.
   ///
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
@@ -185,6 +188,7 @@ class TextFieldConfiguration {
       this.onChanged,
       this.onSubmitted,
       this.obscureText = false,
+      this.expands = false,
       this.maxLengthEnforcement,
       this.maxLength,
       this.maxLines = 1,

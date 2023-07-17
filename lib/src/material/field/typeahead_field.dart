@@ -533,6 +533,11 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// Defaults to false
   final bool hideKeyboardOnDrag;
+    /// Allows a bypass of a problem on Flutter 3.7+ with the accessibility through Overlay
+  /// that prevents flutter_typeahead to register a click on the list of suggestions properly.
+  ///
+  /// Defaults to false
+  final bool ignoreAccessibleNavigation;
 
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
@@ -572,6 +577,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.minCharsForSuggestions = 0,
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
+    this.ignoreAccessibleNavigation= false,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
@@ -848,7 +854,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       // the style visually. However, when VO/TB are not enabled it is
       // necessary to use the Positioned widget to allow the elements to be
       // properly tappable.
-      return MediaQuery.of(context).accessibleNavigation
+      return MediaQuery.of(context).accessibleNavigation &&
+              !widget.ignoreAccessibleNavigation
           ? Semantics(
               container: true,
               child: Align(
@@ -883,6 +890,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           autofocus: widget.textFieldConfiguration.autofocus,
           inputFormatters: widget.textFieldConfiguration.inputFormatters,
           autocorrect: widget.textFieldConfiguration.autocorrect,
+          expands: widget.textFieldConfiguration.expands,
           maxLines: widget.textFieldConfiguration.maxLines,
           textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
           minLines: widget.textFieldConfiguration.minLines,
