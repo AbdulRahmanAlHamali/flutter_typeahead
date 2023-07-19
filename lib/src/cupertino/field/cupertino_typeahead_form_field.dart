@@ -61,7 +61,6 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
     double autoFlipMinHeight = 64.0,
     int minCharsForSuggestions = 0,
     bool hideKeyboardOnDrag = false,
-    bool scrollbarAlwaysVisible = false,
   })  : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
@@ -114,7 +113,6 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                 autoFlipMinHeight: autoFlipMinHeight,
                 minCharsForSuggestions: minCharsForSuggestions,
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
-                scrollbarAlwaysVisible: scrollbarAlwaysVisible,
               );
             });
 

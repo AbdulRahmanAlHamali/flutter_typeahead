@@ -45,7 +45,6 @@ class SuggestionsList<T> extends StatefulWidget {
   final VoidCallback onSuggestionFocus;
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
   final bool hideKeyboardOnDrag;
-  final bool scrollbarAlwaysVisible;
 
   SuggestionsList({
     required this.suggestionsBox,
@@ -78,7 +77,6 @@ class SuggestionsList<T> extends StatefulWidget {
     required this.onSuggestionFocus,
     required this.onKeyEvent,
     required this.hideKeyboardOnDrag,
-    this.scrollbarAlwaysVisible = false,
   });
 
   @override
@@ -430,7 +428,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         removeTop: true,
         child: Scrollbar(
           controller: _scrollController,
-          thumbVisibility: widget.scrollbarAlwaysVisible,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
+          trackVisibility: widget.decoration!.scrollbarTrackAlwaysVisible,
           child: child,
         ),
       );
@@ -470,6 +469,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         removeTop: true,
         child: Scrollbar(
           controller: _scrollController,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
+          trackVisibility: widget.decoration!.scrollbarTrackAlwaysVisible,
           child: child,
         ),
       );

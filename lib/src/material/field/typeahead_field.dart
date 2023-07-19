@@ -534,12 +534,6 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool hideKeyboardOnDrag;
 
-  /// If set to true, the scrollbar in the suggestion list will always be visible
-  /// evnen when not scrolling.
-  ///
-  /// Defaults to false
-  final bool scrollbarAlwaysVisible;
-
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
 
@@ -578,7 +572,6 @@ class TypeAheadField<T> extends StatefulWidget {
     this.minCharsForSuggestions = 0,
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
-    this.scrollbarAlwaysVisible = false,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
@@ -811,7 +804,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         onSuggestionFocus: onSuggestionFocus,
         onKeyEvent: _onKeyEvent,
         hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
-        scrollbarAlwaysVisible: widget.scrollbarAlwaysVisible,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
