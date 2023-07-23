@@ -254,6 +254,10 @@ You may also pass BoxConstraints to `constraints` in `SuggestionsBoxDecoration` 
 and height of the suggestions box. Using the two together will allow the suggestions box to be placed 
 almost anywhere.
 
+The suggestions box scrollbar is by default only visible during scrolling. Use the `scrollbarAlwaysVisible` property to override this behaviour if you want to give
+the user a visual clue that there are more suggestions
+available in the list. (The value will be passed to the `thumbVisibility` property of the Scrollbar widget)
+
 #### Customizing the loader, the error and the "no items found" message
 You can use the `loadingBuilder`, `errorBuilder` and `noItemsFoundBuilder` to
 customize their corresponding widgets. For example, to show a custom error
