@@ -111,37 +111,101 @@ void main() {
       expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, -5.0));
     });
 
-    testWidgets(
-      "Scrollview scrollbar thumbvisibilty set to (default) false when scrollviewAlwaysVisible is not set",
-      (WidgetTester tester) async {
-        await tester
-            .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
-        await tester.pumpAndSettle();
+    group('Scrollbar Visibility tests -', () {
+      testWidgets(
+        "Scrollview scrollbar thumbvisibilty and trackVisibility set to (default) false when scrollbarThumbAlwaysVisible is not set",
+        (WidgetTester tester) async {
+          await tester
+              .pumpWidget(MaterialTypeAheadHelper.getMaterialTypeAheadPage());
+          await tester.pumpAndSettle();
 
-        final typeAheadField = find.byType(TypeAheadFormField<String>).last;
-        final scrollView = find.descendant(
-            of: find.byType(SingleChildScrollView),
-            matching: find.byType(Scrollable));
+          final typeAheadField = find.byType(TypeAheadFormField<String>).last;
+          final scrollView = find.descendant(
+              of: find.byType(SingleChildScrollView),
+              matching: find.byType(Scrollable));
 
-        await tester.dragUntilVisible(
-            typeAheadField, scrollView, Offset(0, 1000));
-        await tester.pumpAndSettle(const Duration(seconds: 2));
-        await tester.tap(typeAheadField);
-        await tester.pumpAndSettle(const Duration(seconds: 2));
-        await tester.enterText(typeAheadField, "Milk");
-        await tester.pumpAndSettle(const Duration(seconds: 2));
+          await tester.dragUntilVisible(
+              typeAheadField, scrollView, Offset(0, 1000));
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+          await tester.tap(typeAheadField);
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+          await tester.enterText(typeAheadField, "Milk");
+          await tester.pumpAndSettle(const Duration(seconds: 2));
 
-        final scrollbar = find.byType(Scrollbar).last;
+          final scrollbar = find.byType(Scrollbar).last;
 
-        expect(
-          tester.widget(scrollbar),
-          isA<Scrollbar>().having(
-            (t) => t.thumbVisibility,
-            'thumbVisibility',
-            false,
-          ),
-        );
-      },
-    );
+          expect(
+            tester.widget(scrollbar),
+            isA<Scrollbar>().having(
+              (t) => t.thumbVisibility,
+              'thumbVisibility',
+              false,
+            ),
+          );
+
+          expect(
+            tester.widget(scrollbar),
+            isA<Scrollbar>().having(
+              (t) => t.trackVisibility,
+              'trackVisibility',
+              false,
+            ),
+          );
+        },
+      );
+
+      testWidgets(
+        "Scrollview scrollbar thumbvisibilty and trackVisibility set to true when set in SuggestionboxDecoration",
+        (WidgetTester tester) async {
+          final SuggestionsBoxDecoration testDecoration =
+              SuggestionsBoxDecoration(
+            hasScrollbar: true,
+            elevation: 2,
+            scrollbarThumbAlwaysVisible: true,
+            scrollbarTrackAlwaysVisible: true,
+          );
+
+          await tester.pumpWidget(
+            MaterialTypeAheadHelper.getMaterialTypeAheadPage(
+              suggestionsBoxDecoration: testDecoration,
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          final typeAheadField = find.byType(TypeAheadFormField<String>).last;
+          final scrollView = find.descendant(
+              of: find.byType(SingleChildScrollView),
+              matching: find.byType(Scrollable));
+
+          await tester.dragUntilVisible(
+              typeAheadField, scrollView, Offset(0, 1000));
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+          await tester.tap(typeAheadField);
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+          await tester.enterText(typeAheadField, "Milk");
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
+          final scrollbar = find.byType(Scrollbar).last;
+
+          expect(
+            tester.widget(scrollbar),
+            isA<Scrollbar>().having(
+              (t) => t.thumbVisibility,
+              'thumbVisibility',
+              true,
+            ),
+          );
+
+          expect(
+            tester.widget(scrollbar),
+            isA<Scrollbar>().having(
+              (t) => t.trackVisibility,
+              'trackVisibility',
+              true,
+            ),
+          );
+        },
+      );
+    });
   });
 }
