@@ -5,9 +5,13 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 /// Helper class to get the cupertino typeahead test page
 class CupertinoTypeAheadHelper {
-  static Widget getCupertinoTypeAheadPage() {
+  static Widget getCupertinoTypeAheadPage({
+    CupertinoSuggestionsBoxDecoration? suggestionsBoxDecoration,
+  }) {
     return MaterialApp(
-      home: CupertinoTypeAheadPage(),
+      home: CupertinoTypeAheadPage(
+        suggestionsBoxDecoration: suggestionsBoxDecoration,
+      ),
     );
   }
 }
@@ -15,8 +19,12 @@ class CupertinoTypeAheadHelper {
 /// The widget that will be returned for the cupertino typeahead test page
 class CupertinoTypeAheadPage extends StatefulWidget {
   final String? title;
-
-  const CupertinoTypeAheadPage({super.key, this.title});
+  final CupertinoSuggestionsBoxDecoration? suggestionsBoxDecoration;
+  const CupertinoTypeAheadPage({
+    super.key,
+    this.title,
+    this.suggestionsBoxDecoration,
+  });
 
   @override
   State<CupertinoTypeAheadPage> createState() => _CupertinoTypeAheadPageState();
@@ -41,7 +49,7 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
     if (pattern.isNotEmpty) {
       return Future.delayed(
           const Duration(seconds: 2),
-              () => foodItems
+          () => foodItems
               .where(
                   (item) => item.toLowerCase().contains(pattern.toLowerCase()))
               .toList());
@@ -94,9 +102,11 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
           title: Text(suggestion),
         );
       },
-      suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
-        hasScrollbar: true,
-      ),
+      suggestionsBoxDecoration: (widget.suggestionsBoxDecoration == null)
+          ? CupertinoSuggestionsBoxDecoration(
+              hasScrollbar: true,
+            )
+          : widget.suggestionsBoxDecoration!,
       getImmediateSuggestions: false,
       onSuggestionSelected: (String suggestion) => controller.text = suggestion,
       minCharsForSuggestions: 1,

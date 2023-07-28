@@ -34,7 +34,6 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
   final bool hideKeyboardOnDrag;
-  final bool scrollbarAlwaysVisible;
 
   CupertinoSuggestionsList({
     required this.suggestionsBox,
@@ -61,7 +60,6 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
     this.hideKeyboardOnDrag = false,
-    this.scrollbarAlwaysVisible = false,
   });
 
   @override
@@ -372,6 +370,7 @@ class _CupertinoSuggestionsListState<T>
         padding: EdgeInsets.zero,
         primary: false,
         shrinkWrap: true,
+        controller: _scrollController,
         keyboardDismissBehavior: widget.hideKeyboardOnDrag
             ? ScrollViewKeyboardDismissBehavior.onDrag
             : ScrollViewKeyboardDismissBehavior.manual,
@@ -400,7 +399,8 @@ class _CupertinoSuggestionsListState<T>
         context: context,
         removeTop: true,
         child: CupertinoScrollbar(
-          thumbVisibility: widget.scrollbarAlwaysVisible,
+          controller: _scrollController,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
           child: child,
         ),
       );
@@ -446,7 +446,8 @@ class _CupertinoSuggestionsListState<T>
         context: context,
         removeTop: true,
         child: CupertinoScrollbar(
-          thumbVisibility: widget.scrollbarAlwaysVisible,
+          controller: _scrollController,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
           child: child,
         ),
       );

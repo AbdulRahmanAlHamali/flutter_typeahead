@@ -68,7 +68,6 @@ class TypeAheadFormField<T> extends FormField<String> {
       int minCharsForSuggestions = 0,
       bool hideKeyboardOnDrag = false,
       bool ignoreAccessibleNavigation = false,
-      bool scrollbarAlwaysVisible = false,
       })
       : assert(
             initialValue == null || textFieldConfiguration.controller == null),
@@ -129,8 +128,6 @@ class TypeAheadFormField<T> extends FormField<String> {
                 minCharsForSuggestions: minCharsForSuggestions,
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
                 ignoreAccessibleNavigation: ignoreAccessibleNavigation,
-                scrollbarAlwaysVisible: scrollbarAlwaysVisible,
-
               );
             });
   @override

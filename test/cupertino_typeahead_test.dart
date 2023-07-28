@@ -118,37 +118,80 @@ void main() {
     });
   });
 
-  testWidgets(
-    "Scrollview scrollbar thumbvisibilty set to (default) false when scrollviewAlwaysVisible is not set",
-    (WidgetTester tester) async {
-      await tester
-          .pumpWidget(CupertinoTypeAheadHelper.getCupertinoTypeAheadPage());
-      await tester.pumpAndSettle();
+  group('Scrollbar Visibility tests -', () {
+    testWidgets(
+      "Scrollview scrollbar thumbvisibilty set to (default) false when scrollviewAlwaysVisible is not set",
+      (WidgetTester tester) async {
+        await tester
+            .pumpWidget(CupertinoTypeAheadHelper.getCupertinoTypeAheadPage());
+        await tester.pumpAndSettle();
 
-      final typeAheadField =
-          find.byType(CupertinoTypeAheadFormField<String>).last;
-      final scrollView = find.descendant(
-          of: find.byType(SingleChildScrollView),
-          matching: find.byType(Scrollable));
+        final typeAheadField =
+            find.byType(CupertinoTypeAheadFormField<String>).last;
+        final scrollView = find.descendant(
+            of: find.byType(SingleChildScrollView),
+            matching: find.byType(Scrollable));
 
-      await tester.dragUntilVisible(
-          typeAheadField, scrollView, Offset(0, 1000));
-      await tester.pumpAndSettle(const Duration(seconds: 2));
-      await tester.tap(typeAheadField);
-      await tester.pumpAndSettle(const Duration(seconds: 2));
-      await tester.enterText(typeAheadField, "Milk");
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.dragUntilVisible(
+            typeAheadField, scrollView, Offset(0, 1000));
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.tap(typeAheadField);
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.enterText(typeAheadField, "Milk");
+        await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      final scrollbar = find.byType(CupertinoScrollbar).last;
+        final scrollbar = find.byType(CupertinoScrollbar).last;
 
-      expect(
-        tester.widget(scrollbar),
-        isA<CupertinoScrollbar>().having(
-          (t) => t.thumbVisibility,
-          'thumbVisibility',
-          false,
-        ),
-      );
-    },
-  );
+        expect(
+          tester.widget(scrollbar),
+          isA<CupertinoScrollbar>().having(
+            (t) => t.thumbVisibility,
+            'thumbVisibility',
+            false,
+          ),
+        );
+      },
+    );
+    testWidgets(
+      "Scrollview scrollbar thumbvisibilty set to true when set in custom SuggestionBoxDecoration",
+      (WidgetTester tester) async {
+        final CupertinoSuggestionsBoxDecoration testDecoration =
+            CupertinoSuggestionsBoxDecoration(
+          hasScrollbar: true,
+          scrollbarThumbAlwaysVisible: true,
+        );
+
+        await tester
+            .pumpWidget(CupertinoTypeAheadHelper.getCupertinoTypeAheadPage(
+          suggestionsBoxDecoration: testDecoration,
+        ));
+        await tester.pumpAndSettle();
+
+        final typeAheadField =
+            find.byType(CupertinoTypeAheadFormField<String>).last;
+        final scrollView = find.descendant(
+            of: find.byType(SingleChildScrollView),
+            matching: find.byType(Scrollable));
+
+        await tester.dragUntilVisible(
+            typeAheadField, scrollView, Offset(0, 1000));
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.tap(typeAheadField);
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.enterText(typeAheadField, "Milk");
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+
+        final scrollbar = find.byType(CupertinoScrollbar).last;
+
+        expect(
+          tester.widget(scrollbar),
+          isA<CupertinoScrollbar>().having(
+            (t) => t.thumbVisibility,
+            'thumbVisibility',
+            true,
+          ),
+        );
+      },
+    );
+  });
 }

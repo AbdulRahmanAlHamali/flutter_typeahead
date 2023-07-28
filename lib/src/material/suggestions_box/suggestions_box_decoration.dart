@@ -22,6 +22,18 @@ class SuggestionsBoxDecoration {
   /// Defines if a scrollbar will be displayed or not.
   final bool hasScrollbar;
 
+  /// If set to true, the scrollbar thumb in the suggestion list will always be visible
+  /// evnen when not scrolling.
+  ///
+  /// Defaults to false
+  final bool scrollbarThumbAlwaysVisible;
+
+  /// If set to true, the scrollbar track in the suggestion list will always be visible
+  /// evnen when not scrolling.
+  ///
+  /// Defaults to false
+  final bool scrollbarTrackAlwaysVisible;
+
   /// If non-null, the corners of this box are rounded by this [BorderRadius](https://docs.flutter.io/flutter/painting/BorderRadius-class.html).
   ///
   /// Same as [Material.borderRadius](https://docs.flutter.io/flutter/material/Material/borderRadius.html)
@@ -44,14 +56,17 @@ class SuggestionsBoxDecoration {
   final Clip clipBehavior;
 
   /// Creates a SuggestionsBoxDecoration
-  const SuggestionsBoxDecoration(
-      {this.elevation = 4.0,
-        this.color,
-        this.shape,
-        this.hasScrollbar = true,
-        this.borderRadius,
-        this.shadowColor = const Color(0xFF000000),
-        this.constraints,
-        this.clipBehavior = Clip.none,
-        this.offsetX = 0.0});
+  const SuggestionsBoxDecoration({
+    this.elevation = 4.0,
+    this.color,
+    this.shape,
+    this.hasScrollbar = true,
+    this.borderRadius,
+    this.shadowColor = const Color(0xFF000000),
+    this.constraints,
+    this.clipBehavior = Clip.none,
+    this.offsetX = 0.0,
+    this.scrollbarThumbAlwaysVisible = false,
+    this.scrollbarTrackAlwaysVisible = false,
+  });
 }

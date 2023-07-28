@@ -4,9 +4,13 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 /// Helper class to get the material typeahead test page
 class MaterialTypeAheadHelper {
-  static Widget getMaterialTypeAheadPage() {
+  static Widget getMaterialTypeAheadPage({
+    SuggestionsBoxDecoration? suggestionsBoxDecoration,
+  }) {
     return MaterialApp(
-      home: MaterialTypeAheadPage(),
+      home: MaterialTypeAheadPage(
+        suggestionsBoxDecoration: suggestionsBoxDecoration,
+      ),
     );
   }
 }
@@ -14,8 +18,12 @@ class MaterialTypeAheadHelper {
 /// The widget that will be returned for the material typeahead test page
 class MaterialTypeAheadPage extends StatefulWidget {
   final String? title;
-
-  const MaterialTypeAheadPage({super.key, this.title});
+  final SuggestionsBoxDecoration? suggestionsBoxDecoration;
+  const MaterialTypeAheadPage({
+    super.key,
+    this.title,
+    this.suggestionsBoxDecoration,
+  });
 
   @override
   State<MaterialTypeAheadPage> createState() => _MaterialTypeAheadPageState();
@@ -40,7 +48,7 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
     if (pattern.isNotEmpty) {
       return Future.delayed(
           const Duration(seconds: 2),
-              () => foodItems
+          () => foodItems
               .where(
                   (item) => item.toLowerCase().contains(pattern.toLowerCase()))
               .toList());
@@ -98,10 +106,12 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
           title: Text(suggestion),
         );
       },
-      suggestionsBoxDecoration: SuggestionsBoxDecoration(
-        elevation: 2,
-        hasScrollbar: true,
-      ),
+    suggestionsBoxDecoration: (widget.suggestionsBoxDecoration == null)
+          ? SuggestionsBoxDecoration(
+              elevation: 2,
+              hasScrollbar: true,
+            )
+          : widget.suggestionsBoxDecoration!,
       getImmediateSuggestions: false,
       onSuggestionSelected: (String suggestion) => controller.text = suggestion,
       minCharsForSuggestions: 1,
