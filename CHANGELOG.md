@@ -1,3 +1,7 @@
+## 4.7.0 - 5-Sept-2023
+
+PR # 512 - 3 Major fixes (see PR) 
+
 ## 4.6.2 - 19-June-2023
 
 PR # 500 - itemSeparatorBuilder added to material typeaheadformfield
