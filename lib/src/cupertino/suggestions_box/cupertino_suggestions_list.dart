@@ -370,6 +370,7 @@ class _CupertinoSuggestionsListState<T>
         padding: EdgeInsets.zero,
         primary: false,
         shrinkWrap: true,
+        controller: _scrollController,
         keyboardDismissBehavior: widget.hideKeyboardOnDrag
             ? ScrollViewKeyboardDismissBehavior.onDrag
             : ScrollViewKeyboardDismissBehavior.manual,
@@ -395,9 +396,14 @@ class _CupertinoSuggestionsListState<T>
 
     if (widget.decoration!.hasScrollbar) {
       child = MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: CupertinoScrollbar(child: child));
+        context: context,
+        removeTop: true,
+        child: CupertinoScrollbar(
+          controller: _scrollController,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
+          child: child,
+        ),
+      );
     }
 
     return child;
@@ -437,9 +443,14 @@ class _CupertinoSuggestionsListState<T>
 
     if (widget.decoration!.hasScrollbar) {
       child = MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: CupertinoScrollbar(child: child));
+        context: context,
+        removeTop: true,
+        child: CupertinoScrollbar(
+          controller: _scrollController,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
+          child: child,
+        ),
+      );
     }
 
     return child;

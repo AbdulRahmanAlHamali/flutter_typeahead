@@ -312,19 +312,19 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     }
 
     var container = PointerInterceptor(
-      intercepting: widget.intercepting,
-                child: Material(
-      elevation: widget.decoration!.elevation,
-      color: widget.decoration!.color,
-      shape: widget.decoration!.shape,
-      borderRadius: widget.decoration!.borderRadius,
-      shadowColor: widget.decoration!.shadowColor,
-      clipBehavior: widget.decoration!.clipBehavior,
-      child: ConstrainedBox(
-        constraints: constraints,
-        child: animationChild,
-      ),
-    ));
+        intercepting: widget.intercepting,
+        child: Material(
+          elevation: widget.decoration!.elevation,
+          color: widget.decoration!.color,
+          shape: widget.decoration!.shape,
+          borderRadius: widget.decoration!.borderRadius,
+          shadowColor: widget.decoration!.shadowColor,
+          clipBehavior: widget.decoration!.clipBehavior,
+          child: ConstrainedBox(
+            constraints: constraints,
+            child: animationChild,
+          ),
+        ));
 
     return container;
   }
@@ -428,13 +428,15 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         removeTop: true,
         child: Scrollbar(
           controller: _scrollController,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
+          trackVisibility: widget.decoration!.scrollbarTrackAlwaysVisible,
           child: child,
         ),
       );
     }
 
     child = TextFieldTapRegion(child: child);
-    
+
     return child;
   }
 
@@ -467,6 +469,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         removeTop: true,
         child: Scrollbar(
           controller: _scrollController,
+          thumbVisibility: widget.decoration!.scrollbarThumbAlwaysVisible,
+          trackVisibility: widget.decoration!.scrollbarTrackAlwaysVisible,
           child: child,
         ),
       );

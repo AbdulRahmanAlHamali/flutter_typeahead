@@ -21,47 +21,47 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
   final CupertinoTextFieldConfiguration textFieldConfiguration;
 
   /// Creates a [CupertinoTypeAheadFormField]
-  CupertinoTypeAheadFormField(
-      {Key? key,
-      String? initialValue,
-      bool getImmediateSuggestions = false,
-      @Deprecated('Use autoValidateMode parameter which provides more specific '
-          'behavior related to auto validation. '
-          'This feature was deprecated after Flutter v1.19.0.')
-      bool autovalidate = false,
-      bool enabled = true,
-      AutovalidateMode? autovalidateMode,
-      FormFieldSetter<String>? onSaved,
-      FormFieldValidator<String>? validator,
-      ErrorBuilder? errorBuilder,
-      WidgetBuilder? noItemsFoundBuilder,
-      WidgetBuilder? loadingBuilder,
-      Duration debounceDuration = const Duration(milliseconds: 300),
-      CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration =
-          const CupertinoSuggestionsBoxDecoration(),
-      CupertinoSuggestionsBoxController? suggestionsBoxController,
-      required SuggestionSelectionCallback<T> onSuggestionSelected,
-      required ItemBuilder<T> itemBuilder,
-      IndexedWidgetBuilder? itemSeparatorBuilder,
-      required SuggestionsCallback<T> suggestionsCallback,
-      double suggestionsBoxVerticalOffset = 5.0,
-      this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
-      AnimationTransitionBuilder? transitionBuilder,
-      Duration animationDuration = const Duration(milliseconds: 500),
-      double animationStart = 0.25,
-      AxisDirection direction = AxisDirection.down,
-      bool hideOnLoading = false,
-      bool hideOnEmpty = false,
-      bool hideOnError = false,
-      bool hideSuggestionsOnKeyboardHide = true,
-      bool keepSuggestionsOnLoading = true,
-      bool keepSuggestionsOnSuggestionSelected = false,
-      bool autoFlipDirection = false,
-      bool autoFlipListDirection = true,
-      double autoFlipMinHeight = 64.0,
-      int minCharsForSuggestions = 0,
-      bool hideKeyboardOnDrag = false})
-      : assert(
+  CupertinoTypeAheadFormField({
+    Key? key,
+    String? initialValue,
+    bool getImmediateSuggestions = false,
+    @Deprecated('Use autoValidateMode parameter which provides more specific '
+        'behavior related to auto validation. '
+        'This feature was deprecated after Flutter v1.19.0.')
+    bool autovalidate = false,
+    bool enabled = true,
+    AutovalidateMode? autovalidateMode,
+    FormFieldSetter<String>? onSaved,
+    FormFieldValidator<String>? validator,
+    ErrorBuilder? errorBuilder,
+    WidgetBuilder? noItemsFoundBuilder,
+    WidgetBuilder? loadingBuilder,
+    Duration debounceDuration = const Duration(milliseconds: 300),
+    CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration =
+        const CupertinoSuggestionsBoxDecoration(),
+    CupertinoSuggestionsBoxController? suggestionsBoxController,
+    required SuggestionSelectionCallback<T> onSuggestionSelected,
+    required ItemBuilder<T> itemBuilder,
+    IndexedWidgetBuilder? itemSeparatorBuilder,
+    required SuggestionsCallback<T> suggestionsCallback,
+    double suggestionsBoxVerticalOffset = 5.0,
+    this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
+    AnimationTransitionBuilder? transitionBuilder,
+    Duration animationDuration = const Duration(milliseconds: 500),
+    double animationStart = 0.25,
+    AxisDirection direction = AxisDirection.down,
+    bool hideOnLoading = false,
+    bool hideOnEmpty = false,
+    bool hideOnError = false,
+    bool hideSuggestionsOnKeyboardHide = true,
+    bool keepSuggestionsOnLoading = true,
+    bool keepSuggestionsOnSuggestionSelected = false,
+    bool autoFlipDirection = false,
+    bool autoFlipListDirection = true,
+    double autoFlipMinHeight = 64.0,
+    int minCharsForSuggestions = 0,
+    bool hideKeyboardOnDrag = false,
+  })  : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
         super(

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +106,7 @@ class NavigationExample extends StatelessWidget {
               );
             },
             itemSeparatorBuilder: (context, index) {
-              return Divider();
+              return Divider(height:1);
             },
             onSuggestionSelected: (Map<String, String> suggestion) {
               Navigator.of(context).push<void>(MaterialPageRoute(
