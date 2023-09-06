@@ -45,7 +45,7 @@ class TestPageState extends State<TestPage> {
                     inputFormatters: [LengthLimitingTextInputFormatter(50)],
                     controller: _controller,
                     decoration: InputDecoration(labelText: 'Type Ahead')),
-                suggestionsCallback: (pattern) {
+                suggestionsCallback: (pattern, {page}) {
                   if (pattern.length > 0)
                     return [pattern + 'aaa', pattern + 'bbb'];
                   else
@@ -110,7 +110,7 @@ class CupertinoTestPageState extends State<CupertinoTestPage> {
                     inputFormatters: [LengthLimitingTextInputFormatter(50)],
                     controller: _controller,
                   ),
-                  suggestionsCallback: (pattern) {
+                  suggestionsCallback: (pattern, {page}) {
                     if (pattern.length > 0)
                       return [pattern + 'aaa', pattern + 'bbb'];
                     else

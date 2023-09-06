@@ -288,6 +288,18 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   ///
   /// Defaults to false
   final bool hideKeyboardOnDrag;
+  /// Allows a bypass of a problem on Flutter 3.7+ with the accessibility through Overlay
+  /// that prevents flutter_typeahead to register a click on the list of suggestions properly.
+  ///
+  /// Defaults to false
+  final bool ignoreAccessibleNavigation;
+
+  // Adds a callback for the suggestion box opening or closing
+  final void Function(bool)? onSuggestionsBoxToggle;
+
+  //Enable Pull To Load More
+  //Default to false
+  final bool pullToLoadMore;
 
   /// Creates a [CupertinoTypeAheadField]
   CupertinoTypeAheadField({
@@ -320,6 +332,9 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.autoFlipMinHeight = 64.0,
     this.minCharsForSuggestions = 0,
     this.hideKeyboardOnDrag = true,
+    this.onSuggestionsBoxToggle,
+    this.ignoreAccessibleNavigation= false,
+    this.pullToLoadMore = false,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
@@ -413,6 +428,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       } else {
         this._suggestionsBox!.close();
       }
+       widget.onSuggestionsBoxToggle?.call(this._suggestionsBox!.isOpened);
     };
 
     this._effectiveFocusNode!.addListener(_focusNodeListener);
@@ -498,6 +514,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
         minCharsForSuggestions: widget.minCharsForSuggestions,
         hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
+        pullToLoadMore: widget.pullToLoadMore,
       );
 
       double w = _suggestionsBox!.textBoxWidth;

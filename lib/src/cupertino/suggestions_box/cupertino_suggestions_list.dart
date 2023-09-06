@@ -34,6 +34,7 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
   final bool hideKeyboardOnDrag;
+  final bool pullToLoadMore;
 
   CupertinoSuggestionsList({
     required this.suggestionsBox,
@@ -60,6 +61,7 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
     this.hideKeyboardOnDrag = false,
+    this.pullToLoadMore = false,
   });
 
   @override
@@ -80,16 +82,22 @@ class _CupertinoSuggestionsListState<T>
   String? _lastTextValue;
   late final ScrollController _scrollController =
       widget.scrollController ?? ScrollController();
+  int _page = 1;
+  bool _isLoadMoreRunning = false;
+  bool _hasMoreData = true;
 
   @override
   void didUpdateWidget(CupertinoSuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    widget.controller!.addListener(this._controllerListener);
+    _page = 1;
     _getSuggestions();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _page = 1;
     _getSuggestions();
   }
 
@@ -146,14 +154,31 @@ class _CupertinoSuggestionsListState<T>
     };
 
     widget.controller!.addListener(this._controllerListener);
+
+    if (widget.pullToLoadMore) {
+      _scrollController.addListener(_scrollListener);
+    }
+  }
+
+  _scrollListener() {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      if (_hasMoreData) {
+        _suggestionsValid = false;
+        _isLoadMoreRunning = true;
+        this._getSuggestions(loadType: 'append');
+      }
+    }
   }
 
   Future<void> invalidateSuggestions() async {
     _suggestionsValid = false;
+    _page = 1;
     _getSuggestions();
   }
 
-  Future<void> _getSuggestions() async {
+  Future<void> _getSuggestions({String? loadType}) async {
     if (_suggestionsValid) return;
     _suggestionsValid = true;
 
@@ -169,8 +194,8 @@ class _CupertinoSuggestionsListState<T>
       Object? error;
 
       try {
-        suggestions =
-            await widget.suggestionsCallback!(widget.controller!.text);
+        suggestions = await widget.suggestionsCallback!(widget.controller!.text,
+            page: this._page);
       } catch (e) {
         error = e;
       }
@@ -187,7 +212,17 @@ class _CupertinoSuggestionsListState<T>
 
           this._error = error;
           this._isLoading = false;
-          this._suggestions = suggestions;
+          this._isLoadMoreRunning = false;
+          this._page += 1;
+          if (loadType == 'append') {
+            //List suggestionList = List.from(this._suggestions);
+            this._suggestions = [...this._suggestions!, ...suggestions!];
+            if (suggestions.isEmpty) {
+              _hasMoreData = false;
+            }
+          } else {
+            this._suggestions = suggestions;
+          }
         });
       }
     }
@@ -344,7 +379,17 @@ class _CupertinoSuggestionsListState<T>
 
   Widget createSuggestionsWidget() {
     if (widget.layoutArchitecture == null) {
-      return defaultSuggestionsWidget();
+      // return defaultSuggestionsWidget();
+      return Column(mainAxisSize: MainAxisSize.min, children: [
+        Flexible(child: defaultSuggestionsWidget()),
+        // defaultSuggestionsWidget(),
+        if (this._isLoadMoreRunning)
+          const Center(
+              child: Padding(
+            padding: EdgeInsets.all(8),
+            child: CupertinoActivityIndicator(),
+          )),
+      ]);
     } else {
       return customSuggestionsWidget();
     }
@@ -378,6 +423,8 @@ class _CupertinoSuggestionsListState<T>
             ? false
             : widget.suggestionsBox!.autoFlipListDirection,
         itemCount: this._suggestions!.length,
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
