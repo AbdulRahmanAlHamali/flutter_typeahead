@@ -261,8 +261,8 @@ class TypeAheadField<T> extends StatefulWidget {
   ///
   /// Example:
   /// ```dart
-  /// suggestionsCallback: (pattern) async {
-  ///   return await _getSuggestions(pattern);
+  /// suggestionsCallback: (pattern, {int? page}) async {
+  ///   return await _getSuggestions(pattern, {int? page});
   /// }
   /// ```
   final SuggestionsCallback<T>? suggestionsCallback;
