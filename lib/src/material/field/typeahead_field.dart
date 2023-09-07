@@ -610,6 +610,10 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
 
   final LayerLink _layerLink = LayerLink();
 
+  // this variable keep track tap on textfield taping
+  // only work when showKeyboadOnSecondTap = true
+  int tapCounter = 0;
+
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
   Timer? _resizeOnScrollTimer;
   // The rate at which the suggestion box will resize when the user is scrolling
@@ -890,7 +894,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
             onChanged: widget.textFieldConfiguration.onChanged,
             onSubmitted: widget.textFieldConfiguration.onSubmitted,
             onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
-            onTap: widget.textFieldConfiguration.onTap,
+            onTap: () {
+              widget.textFieldConfiguration.onTap();
+              if (widget.textFieldConfiguration & tapCounter == 2) {
+                _effectiveFocusNode?.requestFocus();
+              } else {
+                tapCounter++;
+              }
+            },
             onTapOutside: widget.textFieldConfiguration.onTapOutside,
             scrollPadding: widget.textFieldConfiguration.scrollPadding,
             textInputAction: widget.textFieldConfiguration.textInputAction,
