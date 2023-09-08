@@ -251,7 +251,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 class TypeAheadField<T> extends StatefulWidget {
   /// Called with the search pattern to get the search suggestions.
   ///
-  /// This callback must not be null. It is be called by the TypeAhead widget
+  /// You must have to specify either [suggestionsCallback] or [suggestionsLoadMoreCallback], but not both. It is be called by the TypeAhead widget
   /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
   /// of suggestions either synchronously, or asynchronously (as the result of a
   /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
@@ -265,7 +265,25 @@ class TypeAheadField<T> extends StatefulWidget {
   ///   return await _getSuggestions(pattern);
   /// }
   /// ```
-  final SuggestionsCallback<T> suggestionsCallback;
+  final SuggestionsCallback<T>? suggestionsCallback;
+
+  /// Called with the search pattern with page support to get the search suggestions.
+  ///
+  /// You must have to specify either [suggestionsCallback] or [suggestionsLoadMoreCallback], but not both. It is be called by the TypeAhead widget
+  /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
+  /// of suggestions either synchronously, or asynchronously (as the result of a
+  /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
+  /// Typically, the list of suggestions should not contain more than 4 or 5
+  /// entries. These entries will then be provided to [itemBuilder] to display
+  /// the suggestions.
+  ///
+  /// Example:
+  /// ```dart
+  /// suggestionsLoadMoreCallback: (String pattern, int? page) async {
+  ///   return await _getSuggestions(pattern, page);
+  /// }
+  /// ```
+  final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;
 
   /// Called when a suggestion is tapped.
   ///
@@ -543,13 +561,10 @@ class TypeAheadField<T> extends StatefulWidget {
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
 
-  //Enable Pull To Load More
-  //Default to false
-  final bool pullToLoadMore;
-
   /// Creates a [TypeAheadField]
   TypeAheadField({
-    required this.suggestionsCallback,
+    this.suggestionsCallback,
+    this.suggestionsLoadMoreCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -583,9 +598,12 @@ class TypeAheadField<T> extends StatefulWidget {
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
     this.ignoreAccessibleNavigation = false,
-    this.pullToLoadMore = false,
     super.key,
-  })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
+  })  : assert((suggestionsCallback != null &&
+                suggestionsLoadMoreCallback == null) ||
+            (suggestionsLoadMoreCallback != null &&
+                suggestionsCallback == null)),
+        assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
         assert(minCharsForSuggestions >= 0),
@@ -816,7 +834,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         onSuggestionFocus: onSuggestionFocus,
         onKeyEvent: _onKeyEvent,
         hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
-        pullToLoadMore: widget.pullToLoadMore,
       );
 
       double w = _suggestionsBox!.textBoxWidth;

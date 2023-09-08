@@ -47,7 +47,8 @@ class TypeAheadFormField<T> extends FormField<String> {
     required ItemBuilder<T> itemBuilder,
     IndexedWidgetBuilder? itemSeparatorBuilder,
     LayoutArchitecture? layoutArchitecture,
-    required SuggestionsCallback<T> suggestionsCallback,
+    SuggestionsCallback<T>? suggestionsCallback,
+    SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback,
     double suggestionsBoxVerticalOffset = 5.0,
     this.textFieldConfiguration = const TextFieldConfiguration(),
     AnimationTransitionBuilder? transitionBuilder,
@@ -68,8 +69,11 @@ class TypeAheadFormField<T> extends FormField<String> {
     int minCharsForSuggestions = 0,
     bool hideKeyboardOnDrag = false,
     bool ignoreAccessibleNavigation = false,
-    bool pullToLoadMore = false,
-  })  : assert(
+  })  : assert((suggestionsCallback != null &&
+                suggestionsLoadMoreCallback == null) ||
+            (suggestionsLoadMoreCallback != null &&
+                suggestionsCallback == null)),
+        assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
         super(
@@ -110,6 +114,7 @@ class TypeAheadFormField<T> extends FormField<String> {
                 itemSeparatorBuilder: itemSeparatorBuilder,
                 layoutArchitecture: layoutArchitecture,
                 suggestionsCallback: suggestionsCallback,
+                suggestionsLoadMoreCallback: suggestionsLoadMoreCallback,
                 animationStart: animationStart,
                 animationDuration: animationDuration,
                 direction: direction,
@@ -128,7 +133,6 @@ class TypeAheadFormField<T> extends FormField<String> {
                 minCharsForSuggestions: minCharsForSuggestions,
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
                 ignoreAccessibleNavigation: ignoreAccessibleNavigation,
-                pullToLoadMore: pullToLoadMore,
               );
             });
   @override

@@ -19,6 +19,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
+  final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;
   final ItemBuilder<T>? itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
   final LayoutArchitecture? layoutArchitecture;
@@ -45,41 +46,43 @@ class SuggestionsList<T> extends StatefulWidget {
   final VoidCallback onSuggestionFocus;
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
   final bool hideKeyboardOnDrag;
-  final bool pullToLoadMore;
 
-  SuggestionsList(
-      {required this.suggestionsBox,
-      this.controller,
-      this.intercepting = false,
-      this.getImmediateSuggestions = false,
-      this.onSuggestionSelected,
-      this.suggestionsCallback,
-      this.itemBuilder,
-      this.itemSeparatorBuilder,
-      this.layoutArchitecture,
-      this.scrollController,
-      this.decoration,
-      this.debounceDuration,
-      this.loadingBuilder,
-      this.noItemsFoundBuilder,
-      this.errorBuilder,
-      this.transitionBuilder,
-      this.animationDuration,
-      this.animationStart,
-      this.direction,
-      this.hideOnLoading,
-      this.hideOnEmpty,
-      this.hideOnError,
-      this.keepSuggestionsOnLoading,
-      this.minCharsForSuggestions,
-      required this.keyboardSuggestionSelectionNotifier,
-      required this.shouldRefreshSuggestionFocusIndexNotifier,
-      required this.giveTextFieldFocus,
-      required this.onSuggestionFocus,
-      required this.onKeyEvent,
-      required this.hideKeyboardOnDrag,
-      this.pullToLoadMore = false,
-      });
+  SuggestionsList({
+    required this.suggestionsBox,
+    this.controller,
+    this.intercepting = false,
+    this.getImmediateSuggestions = false,
+    this.onSuggestionSelected,
+    this.suggestionsCallback,
+    this.suggestionsLoadMoreCallback,
+    this.itemBuilder,
+    this.itemSeparatorBuilder,
+    this.layoutArchitecture,
+    this.scrollController,
+    this.decoration,
+    this.debounceDuration,
+    this.loadingBuilder,
+    this.noItemsFoundBuilder,
+    this.errorBuilder,
+    this.transitionBuilder,
+    this.animationDuration,
+    this.animationStart,
+    this.direction,
+    this.hideOnLoading,
+    this.hideOnEmpty,
+    this.hideOnError,
+    this.keepSuggestionsOnLoading,
+    this.minCharsForSuggestions,
+    required this.keyboardSuggestionSelectionNotifier,
+    required this.shouldRefreshSuggestionFocusIndexNotifier,
+    required this.giveTextFieldFocus,
+    required this.onSuggestionFocus,
+    required this.onKeyEvent,
+    required this.hideKeyboardOnDrag,
+  }) : assert((suggestionsCallback != null &&
+                suggestionsLoadMoreCallback == null) ||
+            (suggestionsLoadMoreCallback != null &&
+                suggestionsCallback == null));
 
   @override
   _SuggestionsListState<T> createState() => _SuggestionsListState<T>();
@@ -201,7 +204,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       }
     });
 
-    if (widget.pullToLoadMore) {
+    if (widget.suggestionsLoadMoreCallback != null) {
       _scrollController.addListener(_scrollListener);
     }
   }
@@ -240,8 +243,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       Object? error;
 
       try {
-        suggestions = await widget.suggestionsCallback!(widget.controller!.text,
-            page: this._page);
+        if (widget.suggestionsCallback != null)
+          suggestions =
+              await widget.suggestionsCallback!(widget.controller!.text);
+        else
+          suggestions = await widget.suggestionsLoadMoreCallback!(
+              widget.controller!.text, this._page);
       } catch (e) {
         error = e;
       }
@@ -297,24 +304,24 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         this._suggestions?.length == 0 && widget.controller!.text == "";
     if ((this._suggestions == null || isEmpty) &&
         this._isLoading == false &&
-        this._error == null) return Container();
+        this._error == null) return SizedBox();
 
     Widget child;
     if (this._isLoading!) {
       if (widget.hideOnLoading!) {
-        child = Container(height: 0);
+        child = SizedBox(height: 0);
       } else {
         child = createLoadingWidget();
       }
     } else if (this._error != null) {
       if (widget.hideOnError!) {
-        child = Container(height: 0);
+        child = SizedBox();
       } else {
         child = createErrorWidget();
       }
     } else if (this._suggestions!.isEmpty) {
       if (widget.hideOnEmpty!) {
-        child = Container(height: 0);
+        child = SizedBox();
       } else {
         child = createNoItemsFoundWidget();
       }

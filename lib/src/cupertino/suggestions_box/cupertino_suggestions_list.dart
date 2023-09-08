@@ -15,6 +15,7 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
+  final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;
   final ItemBuilder<T>? itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
   final LayoutArchitecture? layoutArchitecture;
@@ -34,7 +35,6 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
   final bool hideKeyboardOnDrag;
-  final bool pullToLoadMore;
 
   CupertinoSuggestionsList({
     required this.suggestionsBox,
@@ -42,6 +42,7 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
+    this.suggestionsLoadMoreCallback,
     this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -61,7 +62,6 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
     this.hideKeyboardOnDrag = false,
-    this.pullToLoadMore = false,
   });
 
   @override
@@ -155,7 +155,7 @@ class _CupertinoSuggestionsListState<T>
 
     widget.controller!.addListener(this._controllerListener);
 
-    if (widget.pullToLoadMore) {
+    if (widget.suggestionsLoadMoreCallback != null) {
       _scrollController.addListener(_scrollListener);
     }
   }
@@ -194,8 +194,12 @@ class _CupertinoSuggestionsListState<T>
       Object? error;
 
       try {
-        suggestions = await widget.suggestionsCallback!(widget.controller!.text,
-            page: this._page);
+        if (widget.suggestionsCallback != null)
+          suggestions =
+              await widget.suggestionsCallback!(widget.controller!.text);
+        else
+          suggestions = await widget.suggestionsLoadMoreCallback!(
+              widget.controller!.text, this._page);
       } catch (e) {
         error = e;
       }
@@ -215,7 +219,6 @@ class _CupertinoSuggestionsListState<T>
           this._isLoadMoreRunning = false;
           this._page += 1;
           if (loadType == 'append') {
-            //List suggestionList = List.from(this._suggestions);
             this._suggestions = [...this._suggestions!, ...suggestions!];
             if (suggestions.isEmpty) {
               _hasMoreData = false;
@@ -239,24 +242,24 @@ class _CupertinoSuggestionsListState<T>
     bool isEmpty =
         this._suggestions?.length == 0 && widget.controller!.text == "";
     if ((this._suggestions == null || isEmpty) && this._isLoading == false)
-      return Container();
+      return SizedBox();
 
     Widget child;
     if (this._isLoading!) {
       if (widget.hideOnLoading!) {
-        child = Container(height: 0);
+        child = SizedBox();
       } else {
         child = createLoadingWidget();
       }
     } else if (this._error != null) {
       if (widget.hideOnError!) {
-        child = Container(height: 0);
+        child = SizedBox();
       } else {
         child = createErrorWidget();
       }
     } else if (this._suggestions!.isEmpty) {
       if (widget.hideOnEmpty!) {
-        child = Container(height: 0);
+        child = SizedBox();
       } else {
         child = createNoItemsFoundWidget();
       }
@@ -379,10 +382,8 @@ class _CupertinoSuggestionsListState<T>
 
   Widget createSuggestionsWidget() {
     if (widget.layoutArchitecture == null) {
-      // return defaultSuggestionsWidget();
       return Column(mainAxisSize: MainAxisSize.min, children: [
         Flexible(child: defaultSuggestionsWidget()),
-        // defaultSuggestionsWidget(),
         if (this._isLoadMoreRunning)
           const Center(
               child: Padding(

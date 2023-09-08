@@ -437,7 +437,7 @@ class AlternativeLayoutArchitecture extends StatelessWidget {
                   border: OutlineInputBorder(),
                   hintText: 'What are you looking for?'),
             ),
-            suggestionsCallback: (pattern, {int? page}) async {
+            suggestionsCallback: (pattern) async {
               return await BackendService.getSuggestions(pattern);
             },
             itemBuilder: (context, Map<String, String> suggestion) {
@@ -506,8 +506,7 @@ class _PullToLoadMorePage extends State<PullToLoadMorePage> {
                   border: OutlineInputBorder(),
                   hintText: 'What are you looking for?'),
             ),
-            pullToLoadMore: true,
-            suggestionsCallback: (pattern, {int? page}) async {
+            suggestionsLoadMoreCallback: (pattern,int? page) async {
               return await BackendService.getSuggestions("page${page}_$pattern", page);
             },
             //minCharsForSuggestions: 2,

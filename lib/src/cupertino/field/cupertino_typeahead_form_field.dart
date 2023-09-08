@@ -43,7 +43,8 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
     required SuggestionSelectionCallback<T> onSuggestionSelected,
     required ItemBuilder<T> itemBuilder,
     IndexedWidgetBuilder? itemSeparatorBuilder,
-    required SuggestionsCallback<T> suggestionsCallback,
+    SuggestionsCallback<T>? suggestionsCallback,
+    SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback,
     double suggestionsBoxVerticalOffset = 5.0,
     this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
     AnimationTransitionBuilder? transitionBuilder,
@@ -61,8 +62,11 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
     double autoFlipMinHeight = 64.0,
     int minCharsForSuggestions = 0,
     bool hideKeyboardOnDrag = false,
-    bool pullToLoadMore = false,
-  })  : assert(
+  })  : assert((suggestionsCallback != null &&
+                suggestionsLoadMoreCallback == null) ||
+            (suggestionsLoadMoreCallback != null &&
+                suggestionsCallback == null)),
+        assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
         super(
@@ -99,6 +103,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                 itemBuilder: itemBuilder,
                 itemSeparatorBuilder: itemSeparatorBuilder,
                 suggestionsCallback: suggestionsCallback,
+                suggestionsLoadMoreCallback: suggestionsLoadMoreCallback,
                 animationStart: animationStart,
                 animationDuration: animationDuration,
                 direction: direction,
@@ -114,7 +119,6 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
                 autoFlipMinHeight: autoFlipMinHeight,
                 minCharsForSuggestions: minCharsForSuggestions,
                 hideKeyboardOnDrag: hideKeyboardOnDrag,
-                pullToLoadMore: pullToLoadMore,
               );
             });
 

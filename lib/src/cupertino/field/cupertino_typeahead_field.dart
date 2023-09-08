@@ -22,7 +22,7 @@ import 'package:flutter_typeahead/src/utils.dart';
 class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Called with the search pattern to get the search suggestions.
   ///
-  /// This callback must not be null. It is be called by the TypeAhead widget
+  /// You must have to specify either [suggestionsCallback] or [suggestionsLoadMoreCallback], but not both. It is be called by the TypeAhead widget
   /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
   /// of suggestions either synchronously, or asynchronously (as the result of a
   /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
@@ -36,7 +36,25 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   ///   return await _getSuggestions(pattern);
   /// }
   /// ```
-  final SuggestionsCallback<T> suggestionsCallback;
+  final SuggestionsCallback<T>? suggestionsCallback;
+
+  /// Called with the search pattern to get the search suggestions.
+  ///
+  /// This callback must not be null. It is be called by the TypeAhead widget
+  /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
+  /// of suggestions either synchronously, or asynchronously (as the result of a
+  /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
+  /// Typically, the list of suggestions should not contain more than 4 or 5
+  /// entries. These entries will then be provided to [itemBuilder] to display
+  /// the suggestions.
+  ///
+  /// Example:
+  /// ```dart
+  /// suggestionsLoadMoreCallback: (String pattern, int? page) async {
+  ///   return await _getSuggestions(pattern, int? page);
+  /// }
+  /// ```
+  final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;
 
   /// Called when a suggestion is tapped.
   ///
@@ -288,6 +306,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   ///
   /// Defaults to false
   final bool hideKeyboardOnDrag;
+
   /// Allows a bypass of a problem on Flutter 3.7+ with the accessibility through Overlay
   /// that prevents flutter_typeahead to register a click on the list of suggestions properly.
   ///
@@ -297,14 +316,11 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
 
-  //Enable Pull To Load More
-  //Default to false
-  final bool pullToLoadMore;
-
   /// Creates a [CupertinoTypeAheadField]
   CupertinoTypeAheadField({
     Key? key,
-    required this.suggestionsCallback,
+    this.suggestionsCallback,
+    this.suggestionsLoadMoreCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     required this.onSuggestionSelected,
@@ -333,9 +349,12 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.minCharsForSuggestions = 0,
     this.hideKeyboardOnDrag = true,
     this.onSuggestionsBoxToggle,
-    this.ignoreAccessibleNavigation= false,
-    this.pullToLoadMore = false,
-  })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
+    this.ignoreAccessibleNavigation = false,
+  })  : assert((suggestionsCallback != null &&
+                suggestionsLoadMoreCallback == null) ||
+            (suggestionsLoadMoreCallback != null &&
+                suggestionsCallback == null)),
+        assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
         assert(minCharsForSuggestions >= 0),
@@ -428,7 +447,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       } else {
         this._suggestionsBox!.close();
       }
-       widget.onSuggestionsBoxToggle?.call(this._suggestionsBox!.isOpened);
+      widget.onSuggestionsBoxToggle?.call(this._suggestionsBox!.isOpened);
     };
 
     this._effectiveFocusNode!.addListener(_focusNodeListener);
@@ -495,6 +514,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         errorBuilder: widget.errorBuilder,
         transitionBuilder: widget.transitionBuilder,
         suggestionsCallback: widget.suggestionsCallback,
+        suggestionsLoadMoreCallback: widget.suggestionsLoadMoreCallback,
         animationDuration: widget.animationDuration,
         animationStart: widget.animationStart,
         getImmediateSuggestions: widget.getImmediateSuggestions,
@@ -514,7 +534,6 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
         minCharsForSuggestions: widget.minCharsForSuggestions,
         hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
-        pullToLoadMore: widget.pullToLoadMore,
       );
 
       double w = _suggestionsBox!.textBoxWidth;
@@ -591,7 +610,6 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         onChanged: widget.textFieldConfiguration.onChanged,
         onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
         onTap: widget.textFieldConfiguration.onTap,
-//         onTapOutside: (_){},
         onSubmitted: widget.textFieldConfiguration.onSubmitted,
         inputFormatters: widget.textFieldConfiguration.inputFormatters,
         enabled: widget.textFieldConfiguration.enabled,
