@@ -910,7 +910,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     });
   }
 
-  //this function use to implement 'Show the keyboard after pressing again' 
+  //this function  use to implement 'Show the keyboard after pressing again' 
   //functionality . by adding some checks after onTap function excuted
   void _onTap() {
     try {
