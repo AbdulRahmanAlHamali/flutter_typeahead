@@ -933,8 +933,13 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
             onTap: () {
               //amine
-              widget.textFieldConfiguration.onTap!.call();
-              if (_effectiveFocusNode!.hasFocus && keyboardTap) {
+              try {
+                widget.textFieldConfiguration.onTap!.call();
+              } catch (e) {}
+
+              if (widget.showKeyboadOnSecondTap &&
+                  _effectiveFocusNode!.hasFocus &&
+                  keyboardTap) {
                 setState(() {
                   showkeyboard = false;
                 });
