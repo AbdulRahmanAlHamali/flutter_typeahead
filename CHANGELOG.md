@@ -1,6 +1,17 @@
+## 4.8.0 - 9-Sept-2023
+
+- add 'Show the keyboard after pressing again' functionality
+  this functionality allow to show keyboard on the second tap (pressing again) on textfield to make easy to select item especially when the number of items is small
+
+- example of using:
+  TypeAheadField(
+  showKeyboadAfterPressAgain: true,
+  ...
+  )
+
 ## 4.7.0 - 5-Sept-2023
 
-PR # 512 - 3 Major fixes (see PR) 
+PR # 512 - 3 Major fixes (see PR)
 
 ## 4.6.2 - 19-June-2023
 
@@ -34,12 +45,15 @@ PR # 484 - Fix for incorrect vertical offset calculation of suggestion box for f
 Update Changelog file
 
 ## 4.3.6 - 18-February-2023
+
 Fixed visibility of cupertino decoration and formated code
 
 ## 4.3.5 - 17-February-2023
+
 Fix in visibility of suggestions box classes
 
 ## 4.3.4 - 16-February-2023
+
 Improved the main example to be able to read it in pub dev,
 
 ## 4.3.3 - 1-Feburary-2023
