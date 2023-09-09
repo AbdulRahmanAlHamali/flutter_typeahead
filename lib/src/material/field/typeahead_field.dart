@@ -596,7 +596,7 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(!(showKeyboadOnSecondTap &&
             (hideKeyboardOnDrag ||
                 hideSuggestionsOnKeyboardHide ||
-                hideKeyboardOnDrag)));
+                hideKeyboardOnDrag)),"make sure ...");
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
