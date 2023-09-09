@@ -568,7 +568,7 @@ class TypeAheadField<T> extends StatefulWidget {
 
   /// Creates a [TypeAheadField] with page support
   TypeAheadField.paged({
-    required this.suggestionsLoadMoreCallback,
+    required SuggestionsLoadMoreCallback<T> suggestionsLoadMoreCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -604,7 +604,8 @@ class TypeAheadField<T> extends StatefulWidget {
     this.ignoreAccessibleNavigation = false,
     this.showKeyboadAfterPressAgain = false,
     super.key,
-  })  : this.suggestionsCallback = null,
+  })  : this.suggestionsLoadMoreCallback = suggestionsLoadMoreCallback,
+        this.suggestionsCallback = null,
         assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
@@ -628,8 +629,7 @@ class TypeAheadField<T> extends StatefulWidget {
 
   /// Creates a [TypeAheadField]
   TypeAheadField({
-    this.suggestionsCallback,
-    // this.suggestionsLoadMoreCallback,
+    required SuggestionsCallback<T> suggestionsCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -665,7 +665,8 @@ class TypeAheadField<T> extends StatefulWidget {
     this.ignoreAccessibleNavigation = false,
     this.showKeyboadAfterPressAgain = false,
     super.key,
-  })  : this.suggestionsLoadMoreCallback = null,
+  })  : this.suggestionsCallback = suggestionsCallback,
+        this.suggestionsLoadMoreCallback = null,
         assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
