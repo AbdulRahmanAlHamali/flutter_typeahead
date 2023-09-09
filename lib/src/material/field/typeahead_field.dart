@@ -540,10 +540,10 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool ignoreAccessibleNavigation;
 
-  //amine allow keyboard to show only in second tap in textfield to make easy choosing for item that no need to tap
-  // any think to find it or when the item is small
+  //allow keyboard to show only after pressing again on textfield
+  //To make it easier to select items
 
-  final bool showKeyboadOnSecondTap;
+  final bool showKeyboadAfterPressAgain;
 
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
@@ -584,7 +584,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
     this.ignoreAccessibleNavigation = false,
-    this.showKeyboadOnSecondTap = false,
+    this.showKeyboadAfterPressAgain = false,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
@@ -592,13 +592,20 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(minCharsForSuggestions >= 0),
         assert(!hideKeyboardOnDrag ||
             hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
-        //amine
+        //when using showKeyboadAfterPressAgain = true
+        //this variable should  use the default values
+        // hideKeyboardOnDrag= false
+        // hideSuggestionsOnKeyboardHide== true
+        // keepSuggestionsOnSuggestionSelected = false
         assert(
-            !(showKeyboadOnSecondTap &&
+            !(showKeyboadAfterPressAgain &&
                 (hideKeyboardOnDrag ||
                     !hideSuggestionsOnKeyboardHide ||
                     keepSuggestionsOnSuggestionSelected)),
-            "make sure ...");
+            "Please use these options with the default value like this:\n"
+            "hideKeyboardOnDrag= false\n"
+            "hideSuggestionsOnKeyboardHide== true\n"
+            "keepSuggestionsOnSuggestionSelected = false \n");
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
@@ -621,10 +628,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   final LayerLink _layerLink = LayerLink();
 
-  //amine this variable keep track tap on textfield taping
-  // only work when showKeyboadOnSecondTap = true
-  bool keyboardTap = false;
-  bool showkeyboard = true;
+  // This two variables is heard by monitoring the clicks textfield
+  // only works when showKeyboadAfterPressAgain = true
+
+  bool textFieldTap = false;
+  bool showKeyboard = true;
 
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
   Timer? _resizeOnScrollTimer;
@@ -722,13 +730,12 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         }
       }
 
-      //amine
       if (_effectiveFocusNode!.hasFocus) {
-        keyboardTap = true;
+        textFieldTap = true;
       } else {
         setState(() {
-          showkeyboard = true;
-          keyboardTap = false;
+          showKeyboard = true;
+          textFieldTap = false;
         });
       }
 
@@ -903,6 +910,21 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     });
   }
 
+  //this function use to implement 'Show the keyboard after pressing again' 
+  //functionality . by adding some checks after onTap function excuted
+  void _onTap() {
+    try {
+      widget.textFieldConfiguration.onTap!.call();
+    } catch (e) {}
+    if (widget.showKeyboadAfterPressAgain) 
+    if (_effectiveFocusNode!.hasFocus &&
+        textFieldTap) {
+      setState(() {
+        showKeyboard = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
@@ -931,20 +953,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             onChanged: widget.textFieldConfiguration.onChanged,
             onSubmitted: widget.textFieldConfiguration.onSubmitted,
             onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
-            onTap: () {
-              //amine
-              try {
-                widget.textFieldConfiguration.onTap!.call();
-              } catch (e) {}
-
-              if (widget.showKeyboadOnSecondTap &&
-                  _effectiveFocusNode!.hasFocus &&
-                  keyboardTap) {
-                setState(() {
-                  showkeyboard = false;
-                });
-              }
-            },
+            onTap: this._onTap,
             onTapOutside: widget.textFieldConfiguration.onTapOutside,
             scrollPadding: widget.textFieldConfiguration.scrollPadding,
             textInputAction: widget.textFieldConfiguration.textInputAction,
@@ -958,8 +967,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             textDirection: widget.textFieldConfiguration.textDirection,
             enableInteractiveSelection:
                 widget.textFieldConfiguration.enableInteractiveSelection,
-            readOnly: widget.showKeyboadOnSecondTap
-                ? showkeyboard
+            readOnly: widget.showKeyboadAfterPressAgain
+                ? showKeyboard
                 : widget.hideKeyboard,
             autofillHints: widget.textFieldConfiguration.autofillHints),
       ),
