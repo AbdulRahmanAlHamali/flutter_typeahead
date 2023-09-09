@@ -596,7 +596,7 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(
             !(showKeyboadOnSecondTap &&
                 (hideKeyboardOnDrag ||
-                    hideSuggestionsOnKeyboardHide ||
+                    !hideSuggestionsOnKeyboardHide ||
                     keepSuggestionsOnSuggestionSelected)),
             "make sure ...");
 
