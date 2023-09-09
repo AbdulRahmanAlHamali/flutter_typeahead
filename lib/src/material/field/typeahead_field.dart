@@ -540,7 +540,7 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool ignoreAccessibleNavigation;
 
-  // allow keyboard to show only in second tap in textfield to make easy choosing for item that no need to tap
+  //amine allow keyboard to show only in second tap in textfield to make easy choosing for item that no need to tap
   // any think to find it or when the item is small
 
   final bool showKeyboadOnSecondTap;
@@ -587,32 +587,42 @@ class TypeAheadField<T> extends StatefulWidget {
     this.showKeyboadOnSecondTap = false,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
-        assert(direction == AxisDirection.down || direction == AxisDirection.up),
-        assert(minCharsForSuggestions >= 0),
-        assert(!hideKeyboardOnDrag || hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
         assert(
-            !(showKeyboadOnSecondTap && (hideKeyboardOnDrag || hideSuggestionsOnKeyboardHide || hideKeyboardOnDrag)));
+            direction == AxisDirection.down || direction == AxisDirection.up),
+        assert(minCharsForSuggestions >= 0),
+        assert(!hideKeyboardOnDrag ||
+            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
+        //amine
+        assert(!(showKeyboadOnSecondTap &&
+            (hideKeyboardOnDrag ||
+                hideSuggestionsOnKeyboardHide ||
+                hideKeyboardOnDrag)));
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
 }
 
-class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindingObserver {
+class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
+    with WidgetsBindingObserver {
   FocusNode? _focusNode;
-  final KeyboardSuggestionSelectionNotifier _keyboardSuggestionSelectionNotifier =
+  final KeyboardSuggestionSelectionNotifier
+      _keyboardSuggestionSelectionNotifier =
       KeyboardSuggestionSelectionNotifier();
   TextEditingController? _textEditingController;
   SuggestionsBox? _suggestionsBox;
 
-  TextEditingController? get _effectiveController => widget.textFieldConfiguration.controller ?? _textEditingController;
-  FocusNode? get _effectiveFocusNode => widget.textFieldConfiguration.focusNode ?? _focusNode;
+  TextEditingController? get _effectiveController =>
+      widget.textFieldConfiguration.controller ?? _textEditingController;
+  FocusNode? get _effectiveFocusNode =>
+      widget.textFieldConfiguration.focusNode ?? _focusNode;
   late VoidCallback _focusNodeListener;
 
   final LayerLink _layerLink = LayerLink();
 
-  // this variable keep track tap on textfield taping
+  //amine this variable keep track tap on textfield taping
   // only work when showKeyboadOnSecondTap = true
-  int tapCounter = 0;
+  bool keyboardTap = false;
+  bool showkeyboard = true;
 
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
   Timer? _resizeOnScrollTimer;
@@ -622,12 +632,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
   ScrollPosition? _scrollPosition;
 
   // Keyboard detection
-  final Stream<bool>? _keyboardVisibility = (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
+  final Stream<bool>? _keyboardVisibility =
+      (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
   late StreamSubscription<bool>? _keyboardVisibilitySubscription;
 
   bool _areSuggestionsFocused = false;
   late final _shouldRefreshSuggestionsFocusIndex =
-      ShouldRefreshSuggestionFocusIndexNotifier(textFieldFocusNode: _effectiveFocusNode);
+      ShouldRefreshSuggestionFocusIndexNotifier(
+          textFieldFocusNode: _effectiveFocusNode);
 
   @override
   void didChangeMetrics() {
@@ -651,7 +663,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
   }
 
   KeyEventResult _onKeyEvent(FocusNode _, RawKeyEvent event) {
-    if (event.isKeyPressed(LogicalKeyboardKey.arrowUp) || event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+    if (event.isKeyPressed(LogicalKeyboardKey.arrowUp) ||
+        event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
       // do nothing to avoid puzzling users until keyboard arrow nav is implemented
     } else {
       _keyboardSuggestionSelectionNotifier.onKeyboardEvent(event);
@@ -668,7 +681,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
       this._textEditingController = TextEditingController();
     }
 
-    final textFieldConfigurationFocusNode = widget.textFieldConfiguration.focusNode;
+    final textFieldConfigurationFocusNode =
+        widget.textFieldConfiguration.focusNode;
     if (textFieldConfigurationFocusNode == null) {
       this._focusNode = FocusNode(onKey: _onKeyEvent);
     } else if (textFieldConfigurationFocusNode.onKey == null) {
@@ -694,7 +708,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
     );
 
     widget.suggestionsBoxController?.suggestionsBox = this._suggestionsBox;
-    widget.suggestionsBoxController?.effectiveFocusNode = this._effectiveFocusNode;
+    widget.suggestionsBoxController?.effectiveFocusNode =
+        this._effectiveFocusNode;
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode!.hasFocus) {
@@ -705,13 +720,24 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
         }
       }
 
+      //amine
+      if (_effectiveFocusNode!.hasFocus) {
+        keyboardTap = true;
+      } else {
+        setState(() {
+          showkeyboard = true;
+          keyboardTap = false;
+        });
+      }
+
       widget.onSuggestionsBoxToggle?.call(this._suggestionsBox!.isOpened);
     };
 
     this._effectiveFocusNode!.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    this._keyboardVisibilitySubscription = _keyboardVisibility?.listen((bool isVisible) {
+    this._keyboardVisibilitySubscription =
+        _keyboardVisibility?.listen((bool isVisible) {
       if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
         _effectiveFocusNode!.unfocus();
       }
@@ -749,7 +775,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
     _resizeOnScrollTimer?.cancel();
     if (isScrolling) {
       // Scroll started
-      _resizeOnScrollTimer = Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
+      _resizeOnScrollTimer =
+          Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
         _suggestionsBox!.resize();
       });
     } else {
@@ -802,8 +829,10 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
         hideOnError: widget.hideOnError,
         keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
         minCharsForSuggestions: widget.minCharsForSuggestions,
-        keyboardSuggestionSelectionNotifier: _keyboardSuggestionSelectionNotifier,
-        shouldRefreshSuggestionFocusIndexNotifier: _shouldRefreshSuggestionsFocusIndex,
+        keyboardSuggestionSelectionNotifier:
+            _keyboardSuggestionSelectionNotifier,
+        shouldRefreshSuggestionFocusIndexNotifier:
+            _shouldRefreshSuggestionsFocusIndex,
         giveTextFieldFocus: giveTextFieldFocus,
         onSuggestionFocus: onSuggestionFocus,
         onKeyEvent: _onKeyEvent,
@@ -813,14 +842,17 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
       double w = _suggestionsBox!.textBoxWidth;
       if (widget.suggestionsBoxDecoration.constraints != null) {
         if (widget.suggestionsBoxDecoration.constraints!.minWidth != 0.0 &&
-            widget.suggestionsBoxDecoration.constraints!.maxWidth != double.infinity) {
+            widget.suggestionsBoxDecoration.constraints!.maxWidth !=
+                double.infinity) {
           w = (widget.suggestionsBoxDecoration.constraints!.minWidth +
                   widget.suggestionsBoxDecoration.constraints!.maxWidth) /
               2;
-        } else if (widget.suggestionsBoxDecoration.constraints!.minWidth != 0.0 &&
+        } else if (widget.suggestionsBoxDecoration.constraints!.minWidth !=
+                0.0 &&
             widget.suggestionsBoxDecoration.constraints!.minWidth > w) {
           w = widget.suggestionsBoxDecoration.constraints!.minWidth;
-        } else if (widget.suggestionsBoxDecoration.constraints!.maxWidth != double.infinity &&
+        } else if (widget.suggestionsBoxDecoration.constraints!.maxWidth !=
+                double.infinity &&
             widget.suggestionsBoxDecoration.constraints!.maxWidth < w) {
           w = widget.suggestionsBoxDecoration.constraints!.maxWidth;
         }
@@ -832,7 +864,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
         offset: Offset(
             widget.suggestionsBoxDecoration.offsetX,
             _suggestionsBox!.direction == AxisDirection.down
-                ? _suggestionsBox!.textBoxHeight + widget.suggestionsBoxVerticalOffset
+                ? _suggestionsBox!.textBoxHeight +
+                    widget.suggestionsBoxVerticalOffset
                 : -widget.suggestionsBoxVerticalOffset),
         child: _suggestionsBox!.direction == AxisDirection.down
             ? suggestionsList
@@ -849,7 +882,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
       // the style visually. However, when VO/TB are not enabled it is
       // necessary to use the Positioned widget to allow the elements to be
       // properly tappable.
-      return MediaQuery.of(context).accessibleNavigation && !widget.ignoreAccessibleNavigation
+      return MediaQuery.of(context).accessibleNavigation &&
+              !widget.ignoreAccessibleNavigation
           ? Semantics(
               container: true,
               child: Align(
@@ -889,30 +923,37 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>> with WidgetsBindi
             textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
             minLines: widget.textFieldConfiguration.minLines,
             maxLength: widget.textFieldConfiguration.maxLength,
-            maxLengthEnforcement: widget.textFieldConfiguration.maxLengthEnforcement,
+            maxLengthEnforcement:
+                widget.textFieldConfiguration.maxLengthEnforcement,
             obscureText: widget.textFieldConfiguration.obscureText,
             onChanged: widget.textFieldConfiguration.onChanged,
             onSubmitted: widget.textFieldConfiguration.onSubmitted,
             onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
             onTap: () {
-              widget.textFieldConfiguration.onTap();
-              if (widget.textFieldConfiguration & tapCounter == 2) {
-                _effectiveFocusNode?.requestFocus();
-              } else {
-                tapCounter++;
+              //amine
+              widget.textFieldConfiguration.onTap!.call();
+              if (_effectiveFocusNode!.hasFocus && keyboardTap) {
+                setState(() {
+                  showkeyboard = false;
+                });
               }
             },
             onTapOutside: widget.textFieldConfiguration.onTapOutside,
             scrollPadding: widget.textFieldConfiguration.scrollPadding,
             textInputAction: widget.textFieldConfiguration.textInputAction,
-            textCapitalization: widget.textFieldConfiguration.textCapitalization,
-            keyboardAppearance: widget.textFieldConfiguration.keyboardAppearance,
+            textCapitalization:
+                widget.textFieldConfiguration.textCapitalization,
+            keyboardAppearance:
+                widget.textFieldConfiguration.keyboardAppearance,
             cursorWidth: widget.textFieldConfiguration.cursorWidth,
             cursorRadius: widget.textFieldConfiguration.cursorRadius,
             cursorColor: widget.textFieldConfiguration.cursorColor,
             textDirection: widget.textFieldConfiguration.textDirection,
-            enableInteractiveSelection: widget.textFieldConfiguration.enableInteractiveSelection,
-            readOnly: widget.hideKeyboard,
+            enableInteractiveSelection:
+                widget.textFieldConfiguration.enableInteractiveSelection,
+            readOnly: widget.showKeyboadOnSecondTap
+                ? showkeyboard
+                : widget.hideKeyboard,
             autofillHints: widget.textFieldConfiguration.autofillHints),
       ),
     );
