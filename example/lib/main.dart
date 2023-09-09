@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
           body: CupertinoPageScaffold(
             child: FavoriteCitiesPage(),
           ),
-        ), //MyHomePage(),
+        ),
       );
     }
   }
@@ -100,9 +100,10 @@ class NavigationExample extends StatelessWidget {
                   border: OutlineInputBorder(),
                   hintText: 'What are you looking for?'),
             ),
-            suggestionsCallback: (String pattern, {int? page}) async {
+            suggestionsCallback: (String pattern) async {
               return await BackendService.getSuggestions(pattern);
             },
+            showKeyboadAfterPressAgain: true,
             itemBuilder: (context, Map<String, String> suggestion) {
               return ListTile(
                 leading: Icon(Icons.shopping_cart),
@@ -111,7 +112,7 @@ class NavigationExample extends StatelessWidget {
               );
             },
             itemSeparatorBuilder: (context, index) {
-              return Divider(height:1);
+              return Divider(height: 1);
             },
             onSuggestionSelected: (Map<String, String> suggestion) {
               Navigator.of(context).push<void>(MaterialPageRoute(
@@ -261,7 +262,7 @@ class ScrollExample extends StatelessWidget {
               border: OutlineInputBorder(),
               hintText: 'What are you looking for?'),
         ),
-        suggestionsCallback: (String pattern, {int? page}) async {
+        suggestionsCallback: (String pattern) async {
           return items
               .where((item) =>
                   item.toLowerCase().startsWith(pattern.toLowerCase()))
@@ -495,7 +496,7 @@ class _PullToLoadMorePage extends State<PullToLoadMorePage> {
           SizedBox(
             height: 10.0,
           ),
-          TypeAheadField(
+          TypeAheadField.paged(
             textFieldConfiguration: TextFieldConfiguration(
               autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
               autofocus: true,
@@ -506,8 +507,9 @@ class _PullToLoadMorePage extends State<PullToLoadMorePage> {
                   border: OutlineInputBorder(),
                   hintText: 'What are you looking for?'),
             ),
-            suggestionsLoadMoreCallback: (pattern,int? page) async {
-              return await BackendService.getSuggestions("page${page}_$pattern", page);
+            suggestionsLoadMoreCallback: (pattern, int? page) async {
+              return await BackendService.getSuggestions(
+                  "page${page}_$pattern", page);
             },
             //minCharsForSuggestions: 2,
             itemBuilder: (context, Map<String, String> suggestion) {
@@ -531,8 +533,8 @@ class _PullToLoadMorePage extends State<PullToLoadMorePage> {
                 borderRadius: BorderRadius.circular(10.0),
                 elevation: 8.0,
                 color: Theme.of(context).cardColor
-              //constraints: BoxConstraints(maxHeight: 200)
-            ),
+                //constraints: BoxConstraints(maxHeight: 200)
+                ),
           ),
         ],
       ),

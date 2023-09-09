@@ -317,9 +317,8 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   final void Function(bool)? onSuggestionsBoxToggle;
 
   /// Creates a [CupertinoTypeAheadField]
-  CupertinoTypeAheadField({
+  CupertinoTypeAheadField.paged({
     Key? key,
-    this.suggestionsCallback,
     this.suggestionsLoadMoreCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
@@ -350,10 +349,49 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.hideKeyboardOnDrag = true,
     this.onSuggestionsBoxToggle,
     this.ignoreAccessibleNavigation = false,
-  })  : assert((suggestionsCallback != null &&
-                suggestionsLoadMoreCallback == null) ||
-            (suggestionsLoadMoreCallback != null &&
-                suggestionsCallback == null)),
+  })  : this.suggestionsCallback = null,
+        assert(animationStart >= 0.0 && animationStart <= 1.0),
+        assert(
+            direction == AxisDirection.down || direction == AxisDirection.up),
+        assert(minCharsForSuggestions >= 0),
+        assert(!hideKeyboardOnDrag ||
+            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
+        super(key: key);
+
+  /// Creates a [CupertinoTypeAheadField]
+  CupertinoTypeAheadField({
+    Key? key,
+    this.suggestionsCallback,
+    required this.itemBuilder,
+    this.itemSeparatorBuilder,
+    required this.onSuggestionSelected,
+    this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
+    this.suggestionsBoxDecoration = const CupertinoSuggestionsBoxDecoration(),
+    this.debounceDuration = const Duration(milliseconds: 300),
+    this.suggestionsBoxController,
+    this.loadingBuilder,
+    this.noItemsFoundBuilder,
+    this.errorBuilder,
+    this.transitionBuilder,
+    this.animationStart = 0.25,
+    this.animationDuration = const Duration(milliseconds: 500),
+    this.getImmediateSuggestions = false,
+    this.suggestionsBoxVerticalOffset = 5.0,
+    this.direction = AxisDirection.down,
+    this.hideOnLoading = false,
+    this.hideOnEmpty = false,
+    this.hideOnError = false,
+    this.hideSuggestionsOnKeyboardHide = true,
+    this.keepSuggestionsOnLoading = true,
+    this.keepSuggestionsOnSuggestionSelected = false,
+    this.autoFlipDirection = false,
+    this.autoFlipListDirection = true,
+    this.autoFlipMinHeight = 64.0,
+    this.minCharsForSuggestions = 0,
+    this.hideKeyboardOnDrag = true,
+    this.onSuggestionsBoxToggle,
+    this.ignoreAccessibleNavigation = false,
+  })  : this.suggestionsLoadMoreCallback = null,
         assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
