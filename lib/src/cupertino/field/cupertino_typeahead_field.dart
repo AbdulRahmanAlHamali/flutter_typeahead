@@ -22,7 +22,7 @@ import 'package:flutter_typeahead/src/utils.dart';
 class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Called with the search pattern to get the search suggestions.
   ///
-  /// You must have to specify either [suggestionsCallback] or [suggestionsLoadMoreCallback], but not both. It is be called by the TypeAhead widget
+  /// /// This callback must not be null. It is be called by the TypeAhead widget
   /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
   /// of suggestions either synchronously, or asynchronously (as the result of a
   /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
@@ -32,8 +32,8 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   ///
   /// Example:
   /// ```dart
-  /// suggestionsCallback: (pattern, {int? page}) async {
-  ///   return await _getSuggestions(pattern, {int? page});
+  /// suggestionsCallback: (pattern) async {
+  ///   return await _getSuggestions(pattern);
   /// }
   /// ```
   final SuggestionsCallback<T>? suggestionsCallback;
@@ -41,7 +41,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Called with the search pattern to get the search suggestions.
   ///
   /// This callback must not be null. It is be called by the TypeAhead widget
-  /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
+  /// and provided with the search pattern and page index. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
   /// of suggestions either synchronously, or asynchronously (as the result of a
   /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
   /// Typically, the list of suggestions should not contain more than 4 or 5
@@ -50,8 +50,8 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   ///
   /// Example:
   /// ```dart
-  /// suggestionsLoadMoreCallback: (String pattern, int? page) async {
-  ///   return await _getSuggestions(pattern, int? page);
+  /// suggestionsLoadMoreCallback: (pattern, page) async {
+  ///   return await _getSuggestions(pattern, page);
   /// }
   /// ```
   final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;

@@ -507,7 +507,7 @@ class _PullToLoadMorePage extends State<PullToLoadMorePage> {
                   border: OutlineInputBorder(),
                   hintText: 'What are you looking for?'),
             ),
-            suggestionsLoadMoreCallback: (pattern, int? page) async {
+            suggestionsLoadMoreCallback: (pattern, page) async {
               return await BackendService.getSuggestions(
                   "page${page}_$pattern", page);
             },
