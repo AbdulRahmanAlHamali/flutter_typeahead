@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
-import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
@@ -350,7 +350,11 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
             );
     }
 
-    return child;
+    var newChild = Column(
+      children: [child, Text('PLEASE')],
+    );
+
+    return newChild;
   }
 
   Widget createErrorWidget() {
@@ -381,8 +385,10 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
   Widget createSuggestionsWidget() {
     if (widget.layoutArchitecture == null) {
+      print('LAYOUT ARCHITECTURE NOT SPECIFIED ${widget.layoutArchitecture}');
       return defaultSuggestionsWidget();
     } else {
+      print('LAYOUT ARCHITECTURE SPECIFIED ${widget.layoutArchitecture}');
       return customSuggestionsWidget();
     }
   }
@@ -435,7 +441,15 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       );
     }
 
-    child = TextFieldTapRegion(child: child);
+    if (widget.decoration?.icon != null) {
+      child = Stack(children: [
+        TextFieldTapRegion(child: child),
+        Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+                padding: EdgeInsets.all(8), child: widget.decoration?.icon)),
+      ]);
+    }
 
     return child;
   }
