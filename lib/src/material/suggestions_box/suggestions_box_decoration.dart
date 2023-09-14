@@ -55,6 +55,11 @@ class SuggestionsBoxDecoration {
   /// Same as [Material.clipBehavior](https://api.flutter.dev/flutter/material/Material/clipBehavior.html)
   final Clip clipBehavior;
 
+  ///If user needs to add an icon on the suggestions box
+  ///
+  /// e.g Google Maps AutoComplete
+  final Widget? icon;
+
   /// Creates a SuggestionsBoxDecoration
   const SuggestionsBoxDecoration({
     this.elevation = 4.0,
@@ -68,5 +73,6 @@ class SuggestionsBoxDecoration {
     this.offsetX = 0.0,
     this.scrollbarThumbAlwaysVisible = false,
     this.scrollbarTrackAlwaysVisible = false,
+    this.icon,
   });
 }
