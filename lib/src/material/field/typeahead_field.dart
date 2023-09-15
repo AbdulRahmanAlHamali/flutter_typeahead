@@ -605,7 +605,7 @@ class TypeAheadField<T> extends StatefulWidget {
                     keepSuggestionsOnSuggestionSelected)),
             "Please use these options with the default value like this:\n"
             "hideKeyboardOnDrag= false\n"
-            "hideSuggestionsOnKeyboardHide== true\n"
+            "hideSuggestionsOnKeyboardHide== true\n") ,
         assert(showKeyboadAfterPressAgain || hideKeyboardOnDrag,
             "Cannot enable 'showKeyboadAfterPressAgain' and 'hideKeyboardOnDrag' simultaneously."),
         assert(showKeyboadAfterPressAgain || !hideSuggestionsOnKeyboardHide,
@@ -638,8 +638,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   // This two variables is heard by monitoring the clicks textfield
   // only works when showKeyboadAfterPressAgain = true
 
-  bool textFieldTap = false;
-  bool showKeyboard = true;
+  bool _textFieldTap = false;
+  bool _showKeyboard = true;
 
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
   Timer? _resizeOnScrollTimer;
@@ -738,11 +738,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       }
 
       if (_effectiveFocusNode!.hasFocus) {
-        textFieldTap = true;
+        _textFieldTap = true;
       } else {
         setState(() {
-          showKeyboard = true;
-          textFieldTap = false;
+          _showKeyboard = true;
+          _textFieldTap = false;
         });
       }
 
@@ -920,16 +920,15 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   //this function  use to implement 'Show the keyboard after pressing again' 
   // This function is responsible for showing the keyboard when the textfield is pressed.
   void _onTap() {
-    try {
+ 
       widget.textFieldConfiguration.onTap?.call();
-    } catch (e) {}
+   
     if (widget.showKeyboadAfterPressAgain) 
     if (widget.showKeyboadAfterPressAgain &&
         _effectiveFocusNode!.hasFocus &&
-        textFieldTap) {
-        textFieldTap) {
+        _textFieldTap) {
       setState(() {
-        showKeyboard = false;
+        _showKeyboard = false;
       });
     }
   }
@@ -977,7 +976,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             enableInteractiveSelection:
                 widget.textFieldConfiguration.enableInteractiveSelection,
             readOnly: widget.showKeyboadAfterPressAgain
-                ? showKeyboard
+                ? _showKeyboard
                 : widget.hideKeyboard,
             autofillHints: widget.textFieldConfiguration.autofillHints,
           ),
