@@ -59,8 +59,8 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
 
   /// Widget that will be displayed when no results were found
   Widget _getNoResultText(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
+    return const Padding(
+      padding: EdgeInsets.all(10),
       child: Text("No results found!"),
     );
   }
@@ -89,11 +89,11 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
             ),
             borderRadius: BorderRadius.circular(5),
           ),
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             minHeight: 50,
             maxHeight: 150,
           ),
-          child: Center(
+          child: const Center(
             child: CircularProgressIndicator(),
           ),
         );
@@ -107,7 +107,7 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
         );
       },
       suggestionsBoxDecoration: (widget.suggestionsBoxDecoration == null)
-          ? SuggestionsBoxDecoration(
+          ? const SuggestionsBoxDecoration(
               elevation: 2,
               hasScrollbar: true,
             )
@@ -120,7 +120,9 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
 
   @override
   void dispose() {
-    for (TextEditingController controller in _controllers) controller.dispose();
+    for (TextEditingController controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -129,14 +131,14 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Material TypeAhead test'),
+        title: const Text('Material TypeAhead test'),
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           child: ListView.separated(
             shrinkWrap: true,
-            separatorBuilder: (context, index) => SizedBox(height: 100),
+            separatorBuilder: (context, index) => const SizedBox(height: 100),
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) => _getTypeAhead(),
             itemCount: 6,

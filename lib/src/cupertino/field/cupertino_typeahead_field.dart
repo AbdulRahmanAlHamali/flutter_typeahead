@@ -290,7 +290,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   final bool hideKeyboardOnDrag;
 
   /// Creates a [CupertinoTypeAheadField]
-  CupertinoTypeAheadField({
+  const CupertinoTypeAheadField({
     Key? key,
     required this.suggestionsCallback,
     required this.itemBuilder,
@@ -329,7 +329,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _CupertinoTypeAheadFieldState<T> createState() =>
+  State<CupertinoTypeAheadField<T>> createState() =>
       _CupertinoTypeAheadFieldState<T>();
 }
 
@@ -534,7 +534,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
               ? suggestionsList
               : FractionalTranslation(
                   translation:
-                      Offset(0.0, -1.0), // visually flips list to go up
+                      const Offset(0.0, -1.0), // visually flips list to go up
                   child: suggestionsList,
                 ),
         ),

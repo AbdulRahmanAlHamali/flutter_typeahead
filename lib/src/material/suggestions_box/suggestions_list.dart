@@ -46,7 +46,8 @@ class SuggestionsList<T> extends StatefulWidget {
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
   final bool hideKeyboardOnDrag;
 
-  SuggestionsList({
+  const SuggestionsList({
+    super.key,
     required this.suggestionsBox,
     this.controller,
     this.intercepting = false,
@@ -80,7 +81,7 @@ class SuggestionsList<T> extends StatefulWidget {
   });
 
   @override
-  _SuggestionsListState<T> createState() => _SuggestionsListState<T>();
+  State<SuggestionsList<T>> createState() => _SuggestionsListState<T>();
 }
 
 class _SuggestionsListState<T> extends State<SuggestionsList<T>>
@@ -222,7 +223,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         error = e;
       }
 
-      if (this.mounted) {
+      if (mounted) {
         // if it wasn't removed in the meantime
         setState(() {
           double? animationStart = widget.animationStart;
@@ -259,10 +260,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
   @override
   Widget build(BuildContext context) {
     bool isEmpty =
-        this._suggestions?.length == 0 && widget.controller!.text == "";
+        (this._suggestions?.isEmpty ?? false) && widget.controller!.text == "";
     if ((this._suggestions == null || isEmpty) &&
         this._isLoading == false &&
-        this._error == null) return Container();
+        this._error == null) {
+      return Container();
+    }
 
     Widget child;
     if (this._isLoading!) {
@@ -341,10 +344,10 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     } else {
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder!(context)
-          : Align(
+          : const Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: CircularProgressIndicator(),
               ),
             );
