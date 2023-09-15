@@ -544,7 +544,7 @@ class TypeAheadField<T> extends StatefulWidget {
   //To make it easier to select items
   // If set to true, will only show the keyboard if the user taps the textfield while focused.
   // This allows easier selection of suggestion items.
-  final bool showKeyboadAfterPressAgain;
+  final bool automaticallyShowKeyboard;
 
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
@@ -585,7 +585,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
     this.ignoreAccessibleNavigation = false,
-    this.showKeyboadAfterPressAgain = false,
+    this.automaticallyShowKeyboard = true,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
@@ -594,13 +594,15 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(!hideKeyboardOnDrag ||
             hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
 
-        assert(!showKeyboadAfterPressAgain || !hideKeyboardOnDrag,
-            "Cannot enable 'showKeyboadAfterPressAgain' and 'hideKeyboardOnDrag' simultaneously."),
-        assert(!showKeyboadAfterPressAgain || hideSuggestionsOnKeyboardHide,
-            "When 'showKeyboadAfterPressAgain' is true, 'hideSuggestionsOnKeyboardHide' must also be true."),
+        assert(automaticallyShowKeyboard || !hideKeyboardOnDrag,
+            "When 'automaticallyShowKeyboard' is true, 'hideKeyboardOnDrag' must also be false."),
+        assert(automaticallyShowKeyboard || hideSuggestionsOnKeyboardHide,
+            "Cannot enable both 'automaticallyShowKeyboard' and 'hideSuggestionsOnKeyboardHide'."
+            ),
         assert(
-            !showKeyboadAfterPressAgain || !keepSuggestionsOnSuggestionSelected,
-            "Cannot enable both 'showKeyboadAfterPressAgain' and 'keepSuggestionsOnSuggestionSelected'.");
+            automaticallyShowKeyboard || !keepSuggestionsOnSuggestionSelected,
+            "When 'automaticallyShowKeyboard' is true, 'keepSuggestionsOnSuggestionSelected' must also be false."
+            );
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
@@ -624,7 +626,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   final LayerLink _layerLink = LayerLink();
 
   // This two variables is heard by monitoring the clicks textfield
-  // only works when showKeyboadAfterPressAgain = true
+  // only works when automaticallyShowKeyboard = true
 
   bool _showKeyboard = true;
 
@@ -909,8 +911,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
  
       widget.textFieldConfiguration.onTap?.call();
    
-    if (widget.showKeyboadAfterPressAgain) 
-    if (widget.showKeyboadAfterPressAgain &&
+    if (!widget.automaticallyShowKeyboard) 
+    if (!widget.automaticallyShowKeyboard &&
         _effectiveFocusNode!.hasFocus ) {
       setState(() {
         _showKeyboard = false;
@@ -960,7 +962,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             textDirection: widget.textFieldConfiguration.textDirection,
             enableInteractiveSelection:
                 widget.textFieldConfiguration.enableInteractiveSelection,
-            readOnly: widget.showKeyboadAfterPressAgain
+            readOnly: !widget.automaticallyShowKeyboard
                 ? _showKeyboard
                 : widget.hideKeyboard,
             autofillHints: widget.textFieldConfiguration.autofillHints,
