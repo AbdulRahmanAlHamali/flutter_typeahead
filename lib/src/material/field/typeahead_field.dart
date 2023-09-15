@@ -542,7 +542,8 @@ class TypeAheadField<T> extends StatefulWidget {
 
   //allow keyboard to show only after pressing again on textfield
   //To make it easier to select items
-
+  // If set to true, will only show the keyboard if the user taps the textfield while focused.
+  // This allows easier selection of suggestion items.
   final bool showKeyboadAfterPressAgain;
 
   // Adds a callback for the suggestion box opening or closing
