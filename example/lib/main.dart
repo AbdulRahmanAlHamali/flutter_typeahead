@@ -446,6 +446,7 @@ class AlternativeLayoutArchitecture extends StatelessWidget {
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
               childAspectRatio: 5 / 5,
+              primary: false,
               shrinkWrap: true,
               children: items.toList(),
             ),

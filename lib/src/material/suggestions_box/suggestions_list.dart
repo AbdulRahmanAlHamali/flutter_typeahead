@@ -263,25 +263,25 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     if ((this._suggestions == null || isEmpty) &&
         this._isLoading == false &&
         this._error == null) {
-      return Container();
+      return const SizedBox();
     }
 
     Widget child;
     if (this._isLoading!) {
       if (widget.hideOnLoading!) {
-        child = Container(height: 0);
+        child = const SizedBox(height: 0);
       } else {
         child = createLoadingWidget();
       }
     } else if (this._error != null) {
       if (widget.hideOnError!) {
-        child = Container(height: 0);
+        child = const SizedBox(height: 0);
       } else {
         child = createErrorWidget();
       }
     } else if (this._suggestions!.isEmpty) {
       if (widget.hideOnEmpty!) {
-        child = Container(height: 0);
+        child = const SizedBox(height: 0);
       } else {
         child = createNoItemsFoundWidget();
       }
@@ -294,8 +294,9 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         : SizeTransition(
             axisAlignment: -1.0,
             sizeFactor: CurvedAnimation(
-                parent: this._animationController!,
-                curve: Curves.fastOutSlowIn),
+              parent: this._animationController!,
+              curve: Curves.fastOutSlowIn,
+            ),
             child: child,
           );
 

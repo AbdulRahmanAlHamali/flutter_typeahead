@@ -128,17 +128,11 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
       appBar: AppBar(
         title: const Text('Cupertino TypeAhead test'),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          child: ListView.separated(
-            shrinkWrap: true,
-            separatorBuilder: (context, index) => const SizedBox(height: 100),
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => _getTypeAhead(),
-            itemCount: 6,
-          ),
-        ),
+      body: ListView.separated(
+        padding: const EdgeInsets.all(10),
+        separatorBuilder: (context, index) => const SizedBox(height: 100),
+        itemBuilder: (context, index) => _getTypeAhead(),
+        itemCount: 6,
       ),
     );
   }

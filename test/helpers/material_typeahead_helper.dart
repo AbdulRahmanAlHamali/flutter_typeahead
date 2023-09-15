@@ -133,17 +133,11 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
       appBar: AppBar(
         title: const Text('Material TypeAhead test'),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          child: ListView.separated(
-            shrinkWrap: true,
-            separatorBuilder: (context, index) => const SizedBox(height: 100),
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => _getTypeAhead(),
-            itemCount: 6,
-          ),
-        ),
+      body: ListView.separated(
+        padding: const EdgeInsets.all(10),
+        separatorBuilder: (context, index) => const SizedBox(height: 100),
+        itemBuilder: (context, index) => _getTypeAhead(),
+        itemCount: 6,
       ),
     );
   }

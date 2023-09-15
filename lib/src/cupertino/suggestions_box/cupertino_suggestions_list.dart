@@ -211,19 +211,19 @@ class _CupertinoSuggestionsListState<T>
     Widget child;
     if (this._isLoading!) {
       if (widget.hideOnLoading!) {
-        child = Container(height: 0);
+        child = const SizedBox(height: 0);
       } else {
         child = createLoadingWidget();
       }
     } else if (this._error != null) {
       if (widget.hideOnError!) {
-        child = Container(height: 0);
+        child = const SizedBox(height: 0);
       } else {
         child = createErrorWidget();
       }
     } else if (this._suggestions!.isEmpty) {
       if (widget.hideOnEmpty!) {
-        child = Container(height: 0);
+        child = const SizedBox(height: 0);
       } else {
         child = createNoItemsFoundWidget();
       }
@@ -408,7 +408,7 @@ class _CupertinoSuggestionsListState<T>
   }
 
   Widget customSuggestionsWidget() {
-    Widget child = Container(
+    Widget child = DecoratedBox(
       decoration: BoxDecoration(
         color: widget.decoration!.color ?? CupertinoColors.white,
         border: widget.decoration!.border ??
