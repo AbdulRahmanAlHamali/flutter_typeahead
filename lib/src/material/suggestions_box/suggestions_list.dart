@@ -12,7 +12,6 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// Renders all the suggestions using a ListView as default.  If
 /// `layoutArchitecture` is specified, uses that instead.
-
 class SuggestionsList<T> extends StatefulWidget {
   final SuggestionsBox? suggestionsBox;
   final TextEditingController? controller;
@@ -314,22 +313,21 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       );
     }
 
-    var container = PointerInterceptor(
-        intercepting: widget.intercepting,
-        child: Material(
-          elevation: widget.decoration!.elevation,
-          color: widget.decoration!.color,
-          shape: widget.decoration!.shape,
-          borderRadius: widget.decoration!.borderRadius,
-          shadowColor: widget.decoration!.shadowColor,
-          clipBehavior: widget.decoration!.clipBehavior,
-          child: ConstrainedBox(
-            constraints: constraints,
-            child: animationChild,
-          ),
-        ));
-
-    return container;
+    return PointerInterceptor(
+      intercepting: widget.intercepting,
+      child: Material(
+        elevation: widget.decoration!.elevation,
+        color: widget.decoration!.color,
+        shape: widget.decoration!.shape,
+        borderRadius: widget.decoration!.borderRadius,
+        shadowColor: widget.decoration!.shadowColor,
+        clipBehavior: widget.decoration!.clipBehavior,
+        child: ConstrainedBox(
+          constraints: constraints,
+          child: animationChild,
+        ),
+      ),
+    );
   }
 
   Widget createLoadingWidget() {
