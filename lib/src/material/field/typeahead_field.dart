@@ -971,7 +971,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
             readOnly: widget.showKeyboadAfterPressAgain
                 ? showKeyboard
                 : widget.hideKeyboard,
-            autofillHints: widget.textFieldConfiguration.autofillHints),
+            autofillHints: widget.textFieldConfiguration.autofillHints,
+          ),
       ),
     );
   }
