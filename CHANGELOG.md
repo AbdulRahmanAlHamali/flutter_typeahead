@@ -1,11 +1,11 @@
-## 4.8.0 - 9-Sept-2023
+## 4.8.0 - 15-Sept-2023
 
-- add 'Show the keyboard after pressing again' functionality
+- add 'Automatically Show Keyboard' functionality
   this functionality allow to show keyboard on the second tap (pressing again) on textfield to make easy to select item especially when the number of items is small
 
 - example of using:
   TypeAheadField(
-  showKeyboadAfterPressAgain: true,
+  automaticallyShowKeyboard: false,
   ...
   )
 
