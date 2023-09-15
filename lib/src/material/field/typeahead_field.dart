@@ -598,14 +598,14 @@ class TypeAheadField<T> extends StatefulWidget {
         // hideKeyboardOnDrag= false
         // hideSuggestionsOnKeyboardHide== true
         // keepSuggestionsOnSuggestionSelected = false
-        assert(
-            !(showKeyboadAfterPressAgain &&
-                (hideKeyboardOnDrag ||
-                    !hideSuggestionsOnKeyboardHide ||
-                    keepSuggestionsOnSuggestionSelected)),
-            "Please use these options with the default value like this:\n"
-            "hideKeyboardOnDrag= false\n"
-            "hideSuggestionsOnKeyboardHide== true\n") ,
+        // assert(
+        //     !(showKeyboadAfterPressAgain &&
+        //         (hideKeyboardOnDrag ||
+        //             !hideSuggestionsOnKeyboardHide ||
+        //             keepSuggestionsOnSuggestionSelected)),
+        //     "Please use these options with the default value like this:\n"
+        //     "hideKeyboardOnDrag= false\n"
+        //     "hideSuggestionsOnKeyboardHide== true\n") ,
         assert(showKeyboadAfterPressAgain || hideKeyboardOnDrag,
             "Cannot enable 'showKeyboadAfterPressAgain' and 'hideKeyboardOnDrag' simultaneously."),
         assert(showKeyboadAfterPressAgain || !hideSuggestionsOnKeyboardHide,
