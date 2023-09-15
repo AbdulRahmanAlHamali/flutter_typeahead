@@ -111,7 +111,7 @@ void main() {
       expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, -5.0));
     });
 
-     group('Scrollbar Visibility tests -', () {
+    group('Scrollbar Visibility tests -', () {
       testWidgets(
         "Scrollview scrollbar thumbvisibilty and trackVisibility set to (default) false when scrollbarThumbAlwaysVisible is not set",
         (WidgetTester tester) async {

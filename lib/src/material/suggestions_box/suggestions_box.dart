@@ -21,12 +21,12 @@ class SuggestionsBox {
   late double directionUpOffset;
 
   SuggestionsBox(
-      this.context,
-      this.direction,
-      this.autoFlipDirection,
-      this.autoFlipListDirection,
-      this.autoFlipMinHeight,
-      ) : desiredDirection = direction;
+    this.context,
+    this.direction,
+    this.autoFlipDirection,
+    this.autoFlipListDirection,
+    this.autoFlipMinHeight,
+  ) : desiredDirection = direction;
 
   void open() {
     if (this.isOpened) return;
@@ -132,7 +132,7 @@ class SuggestionsBox {
     if (maxHDesired >= autoFlipMinHeight || !autoFlipDirection) {
       direction = desiredDirection;
       // Sometimes textBoxAbsY is NaN, so we need to check for that
-      if(!maxHDesired.isNaN) {
+      if (!maxHDesired.isNaN) {
         maxHeight = maxHDesired;
       }
     } else {
@@ -146,7 +146,7 @@ class SuggestionsBox {
         direction = flipped;
 
         // Not sure if this is needed, but it's here just in case
-        if(!maxHFlipped.isNaN) {
+        if (!maxHFlipped.isNaN) {
           maxHeight = maxHFlipped;
         }
       }
@@ -165,9 +165,9 @@ class SuggestionsBox {
       double textBoxAbsY) {
     return direction == AxisDirection.down
         ? _calculateMaxHeightDown(box, widget, windowHeight, rootMediaQuery,
-        keyboardHeight, textBoxAbsY)
+            keyboardHeight, textBoxAbsY)
         : _calculateMaxHeightUp(box, widget, windowHeight, rootMediaQuery,
-        keyboardHeight, textBoxAbsY);
+            keyboardHeight, textBoxAbsY);
   }
 
   double _calculateMaxHeightDown(
@@ -180,7 +180,7 @@ class SuggestionsBox {
     // unsafe area, ie: iPhone X 'home button'
     // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
     double unsafeAreaHeight =
-    keyboardHeight == 0 ? rootMediaQuery.data.padding.bottom : 0;
+        keyboardHeight == 0 ? rootMediaQuery.data.padding.bottom : 0;
 
     return windowHeight -
         keyboardHeight -
@@ -209,11 +209,11 @@ class SuggestionsBox {
 
     return textBoxAbsY > keyboardAbsY
         ? keyboardAbsY -
-        unsafeAreaHeight -
-        2 * widget.suggestionsBoxVerticalOffset
+            unsafeAreaHeight -
+            2 * widget.suggestionsBoxVerticalOffset
         : textBoxAbsY -
-        unsafeAreaHeight -
-        2 * widget.suggestionsBoxVerticalOffset;
+            unsafeAreaHeight -
+            2 * widget.suggestionsBoxVerticalOffset;
   }
 
   Future<void> onChangeMetrics() async {
