@@ -912,7 +912,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   }
 
   //this function  use to implement 'Show the keyboard after pressing again' 
-  //functionality . by adding some checks after onTap function excuted
+  // This function is responsible for showing the keyboard when the textfield is pressed.
   void _onTap() {
     try {
       widget.textFieldConfiguration.onTap!.call();
