@@ -593,25 +593,13 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(minCharsForSuggestions >= 0),
         assert(!hideKeyboardOnDrag ||
             hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
-        //when using showKeyboadAfterPressAgain = true
-        //this variable should  use the default values
-        // hideKeyboardOnDrag= false
-        // hideSuggestionsOnKeyboardHide== true
-        // keepSuggestionsOnSuggestionSelected = false
-        // assert(
-        //     !(showKeyboadAfterPressAgain &&
-        //         (hideKeyboardOnDrag ||
-        //             !hideSuggestionsOnKeyboardHide ||
-        //             keepSuggestionsOnSuggestionSelected)),
-        //     "Please use these options with the default value like this:\n"
-        //     "hideKeyboardOnDrag= false\n"
-        //     "hideSuggestionsOnKeyboardHide== true\n") ,
-        assert(showKeyboadAfterPressAgain || hideKeyboardOnDrag,
+
+        assert(!showKeyboadAfterPressAgain || !hideKeyboardOnDrag,
             "Cannot enable 'showKeyboadAfterPressAgain' and 'hideKeyboardOnDrag' simultaneously."),
-        assert(showKeyboadAfterPressAgain || !hideSuggestionsOnKeyboardHide,
+        assert(!showKeyboadAfterPressAgain || hideSuggestionsOnKeyboardHide,
             "When 'showKeyboadAfterPressAgain' is true, 'hideSuggestionsOnKeyboardHide' must also be true."),
         assert(
-            showKeyboadAfterPressAgain || keepSuggestionsOnSuggestionSelected,
+            !showKeyboadAfterPressAgain || !keepSuggestionsOnSuggestionSelected,
             "Cannot enable both 'showKeyboadAfterPressAgain' and 'keepSuggestionsOnSuggestionSelected'.");
 
   @override
