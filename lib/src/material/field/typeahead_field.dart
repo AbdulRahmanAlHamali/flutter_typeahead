@@ -626,7 +626,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   // This two variables is heard by monitoring the clicks textfield
   // only works when showKeyboadAfterPressAgain = true
 
-  bool _textFieldTap = false;
   bool _showKeyboard = true;
 
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
@@ -725,12 +724,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         }
       }
 
-      if (_effectiveFocusNode!.hasFocus) {
-        _textFieldTap = true;
-      } else {
+      if (!_effectiveFocusNode!.hasFocus) {
+        
         setState(() {
           _showKeyboard = true;
-          _textFieldTap = false;
+        
         });
       }
 
@@ -913,8 +911,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
    
     if (widget.showKeyboadAfterPressAgain) 
     if (widget.showKeyboadAfterPressAgain &&
-        _effectiveFocusNode!.hasFocus &&
-        _textFieldTap) {
+        _effectiveFocusNode!.hasFocus ) {
       setState(() {
         _showKeyboard = false;
       });
