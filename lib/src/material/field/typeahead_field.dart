@@ -606,7 +606,13 @@ class TypeAheadField<T> extends StatefulWidget {
             "Please use these options with the default value like this:\n"
             "hideKeyboardOnDrag= false\n"
             "hideSuggestionsOnKeyboardHide== true\n"
-            "keepSuggestionsOnSuggestionSelected = false \n");
+        assert(showKeyboadAfterPressAgain || hideKeyboardOnDrag,
+            "Cannot enable 'showKeyboadAfterPressAgain' and 'hideKeyboardOnDrag' simultaneously."),
+        assert(showKeyboadAfterPressAgain || !hideSuggestionsOnKeyboardHide,
+            "When 'showKeyboadAfterPressAgain' is true, 'hideSuggestionsOnKeyboardHide' must also be true."),
+        assert(
+            showKeyboadAfterPressAgain || keepSuggestionsOnSuggestionSelected,
+            "Cannot enable both 'showKeyboadAfterPressAgain' and 'keepSuggestionsOnSuggestionSelected'.");
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
