@@ -84,10 +84,8 @@ class NavigationExample extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
-        children: <Widget>[
-          const SizedBox(
-            height: 10.0,
-          ),
+        children: [
+          const SizedBox(height: 10.0),
           TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
               autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
@@ -165,9 +163,8 @@ class _FormExampleState extends State<FormExample> {
                     decoration: const InputDecoration(labelText: 'City'),
                     controller: _typeAheadController,
                   ),
-                  suggestionsCallback: (pattern) {
-                    return CitiesService.getSuggestions(pattern);
-                  },
+                  suggestionsCallback: (pattern) =>
+                      CitiesService.getSuggestions(pattern),
                   itemBuilder: (context, suggestion) => ListTile(
                     title: Text(suggestion),
                   ),
@@ -345,7 +342,7 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
           child: Padding(
             padding: const EdgeInsets.all(32.0),
             child: Column(
-              children: <Widget>[
+              children: [
                 const SizedBox(
                   height: 100.0,
                 ),

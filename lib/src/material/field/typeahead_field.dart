@@ -102,7 +102,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 ///   child: Padding(
 ///     padding: EdgeInsets.all(32.0),
 ///     child: Column(
-///       children: <Widget>[
+///       children: [
 ///         Text(
 ///           'What is your favorite city?'
 ///         ),
