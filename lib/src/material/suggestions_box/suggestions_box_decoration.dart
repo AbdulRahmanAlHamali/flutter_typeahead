@@ -62,7 +62,7 @@ class SuggestionsBoxDecoration {
     this.shape,
     this.hasScrollbar = true,
     this.borderRadius,
-    this.shadowColor = const Color(0xFF000000),
+    this.shadowColor = Colors.black,
     this.constraints,
     this.clipBehavior = Clip.none,
     this.offsetX = 0.0,

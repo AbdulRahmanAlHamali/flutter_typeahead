@@ -12,7 +12,6 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// Renders all the suggestions using a ListView as default.  If
 /// `layoutArchitecture` is specified, uses that instead.
-
 class SuggestionsList<T> extends StatefulWidget {
   final SuggestionsBox? suggestionsBox;
   final TextEditingController? controller;
@@ -47,7 +46,8 @@ class SuggestionsList<T> extends StatefulWidget {
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
   final bool hideKeyboardOnDrag;
 
-  SuggestionsList({
+  const SuggestionsList({
+    super.key,
     required this.suggestionsBox,
     this.controller,
     this.intercepting = false,
@@ -85,7 +85,7 @@ class SuggestionsList<T> extends StatefulWidget {
                 suggestionsCallback == null));
 
   @override
-  _SuggestionsListState<T> createState() => _SuggestionsListState<T>();
+  State<SuggestionsList<T>> createState() => _SuggestionsListState<T>();
 }
 
 class _SuggestionsListState<T> extends State<SuggestionsList<T>>
@@ -253,7 +253,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         error = e;
       }
 
-      if (this.mounted) {
+      if (mounted) {
         // if it wasn't removed in the meantime
         setState(() {
           double? animationStart = widget.animationStart;
@@ -301,27 +301,29 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
   @override
   Widget build(BuildContext context) {
     bool isEmpty =
-        this._suggestions?.length == 0 && widget.controller!.text == "";
+        (this._suggestions?.isEmpty ?? false) && widget.controller!.text == "";
     if ((this._suggestions == null || isEmpty) &&
         this._isLoading == false &&
-        this._error == null) return SizedBox();
+        this._error == null) {
+      return const SizedBox();
+    }
 
     Widget child;
     if (this._isLoading!) {
       if (widget.hideOnLoading!) {
-        child = SizedBox(height: 0);
+        child = const SizedBox(height: 0);
       } else {
         child = createLoadingWidget();
       }
     } else if (this._error != null) {
       if (widget.hideOnError!) {
-        child = SizedBox();
+        child = const SizedBox(height: 0);
       } else {
         child = createErrorWidget();
       }
     } else if (this._suggestions!.isEmpty) {
       if (widget.hideOnEmpty!) {
-        child = SizedBox();
+        child = const SizedBox(height: 0);
       } else {
         child = createNoItemsFoundWidget();
       }
@@ -334,8 +336,9 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         : SizeTransition(
             axisAlignment: -1.0,
             sizeFactor: CurvedAnimation(
-                parent: this._animationController!,
-                curve: Curves.fastOutSlowIn),
+              parent: this._animationController!,
+              curve: Curves.fastOutSlowIn,
+            ),
             child: child,
           );
 
@@ -353,22 +356,21 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       );
     }
 
-    var container = PointerInterceptor(
-        intercepting: widget.intercepting,
-        child: Material(
-          elevation: widget.decoration!.elevation,
-          color: widget.decoration!.color,
-          shape: widget.decoration!.shape,
-          borderRadius: widget.decoration!.borderRadius,
-          shadowColor: widget.decoration!.shadowColor,
-          clipBehavior: widget.decoration!.clipBehavior,
-          child: ConstrainedBox(
-            constraints: constraints,
-            child: animationChild,
-          ),
-        ));
-
-    return container;
+    return PointerInterceptor(
+      intercepting: widget.intercepting,
+      child: Material(
+        elevation: widget.decoration!.elevation,
+        color: widget.decoration!.color,
+        shape: widget.decoration!.shape,
+        borderRadius: widget.decoration!.borderRadius,
+        shadowColor: widget.decoration!.shadowColor,
+        clipBehavior: widget.decoration!.clipBehavior,
+        child: ConstrainedBox(
+          constraints: constraints,
+          child: animationChild,
+        ),
+      ),
+    );
   }
 
   Widget createLoadingWidget() {
@@ -383,10 +385,10 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     } else {
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder!(context)
-          : Align(
+          : const Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: CircularProgressIndicator(),
               ),
             );
@@ -452,9 +454,10 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
           ? false
           : widget.suggestionsBox!.autoFlipListDirection,
       itemCount: this._suggestions!.length,
-      physics:
-          const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      itemBuilder: (BuildContext context, int index) {
+      physics: widget.suggestionsLoadMoreCallback != null
+          ? const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics())
+          : null,
+      itemBuilder: (context, index) {
         final suggestion = this._suggestions!.elementAt(index);
         final focusNode = _focusNodes[index];
         return TextFieldTapRegion(

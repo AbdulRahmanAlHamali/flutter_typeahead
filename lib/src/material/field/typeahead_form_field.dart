@@ -243,7 +243,7 @@ class TypeAheadFormField<T> extends FormField<String> {
             });
 
   @override
-  _TypeAheadFormFieldState<T> createState() => _TypeAheadFormFieldState<T>();
+  FormFieldState<String> createState() => _TypeAheadFormFieldState<T>();
 }
 
 class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
@@ -277,13 +277,15 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
           ?.addListener(_handleControllerChanged);
 
       if (oldWidget.textFieldConfiguration.controller != null &&
-          widget.textFieldConfiguration.controller == null)
+          widget.textFieldConfiguration.controller == null) {
         _controller = TextEditingController.fromValue(
             oldWidget.textFieldConfiguration.controller!.value);
+      }
       if (widget.textFieldConfiguration.controller != null) {
         setValue(widget.textFieldConfiguration.controller!.text);
-        if (oldWidget.textFieldConfiguration.controller == null)
+        if (oldWidget.textFieldConfiguration.controller == null) {
           _controller = null;
+        }
       }
     }
   }
@@ -314,7 +316,8 @@ class _TypeAheadFormFieldState<T> extends FormFieldState<String> {
     // notifications for changes originating from within this class -- for
     // example, the reset() method. In such cases, the FormField value will
     // already have been set.
-    if (_effectiveController!.text != value)
+    if (_effectiveController!.text != value) {
       didChange(_effectiveController!.text);
+    }
   }
 }

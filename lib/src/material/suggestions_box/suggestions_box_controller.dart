@@ -8,18 +8,12 @@ class SuggestionsBoxController {
   FocusNode? effectiveFocusNode;
 
   /// Opens the suggestions box
-  void open() {
-    effectiveFocusNode?.requestFocus();
-  }
+  void open() => effectiveFocusNode?.requestFocus();
 
-  bool isOpened() {
-    return suggestionsBox?.isOpened ?? false;
-  }
+  bool isOpened() => suggestionsBox?.isOpened ?? false;
 
   /// Closes the suggestions box
-  void close() {
-    effectiveFocusNode?.unfocus();
-  }
+  void close() => effectiveFocusNode?.unfocus();
 
   /// Opens the suggestions box if closed and vice-versa
   void toggle() {
@@ -31,7 +25,5 @@ class SuggestionsBoxController {
   }
 
   /// Recalculates the height of the suggestions box
-  void resize() {
-    suggestionsBox!.resize();
-  }
+  void resize() => suggestionsBox!.resize();
 }
