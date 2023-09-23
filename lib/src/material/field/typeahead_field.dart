@@ -899,6 +899,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         errorBuilder: widget.errorBuilder,
         transitionBuilder: widget.transitionBuilder,
         suggestionsCallback: widget.suggestionsCallback,
+        suggestionsLoadMoreCallback: widget.suggestionsLoadMoreCallback,
         animationDuration: widget.animationDuration,
         animationStart: widget.animationStart,
         getImmediateSuggestions: widget.getImmediateSuggestions,
