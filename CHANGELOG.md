@@ -1,3 +1,7 @@
+## 4.8.0 - 24-Sept-2023
+
+PR # 523 - Cleanup
+
 ## 4.7.0 - 5-Sept-2023
 
 PR # 512 - 3 Major fixes (see PR) 
