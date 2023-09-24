@@ -86,7 +86,7 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, 34.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, 34.0));
     });
 
     testWidgets(
@@ -103,7 +103,7 @@ void main() {
           matching: find.byType(Scrollable));
 
       await tester.dragUntilVisible(
-          typeAheadField, scrollView, Offset(0, 1000));
+          typeAheadField, scrollView, const Offset(0, 1000));
       await tester.pumpAndSettle(const Duration(seconds: 2));
       await tester.tap(typeAheadField);
       await tester.pumpAndSettle(const Duration(seconds: 2));
@@ -114,7 +114,7 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, -5.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, -5.0));
     });
   });
 
@@ -133,7 +133,7 @@ void main() {
             matching: find.byType(Scrollable));
 
         await tester.dragUntilVisible(
-            typeAheadField, scrollView, Offset(0, 1000));
+            typeAheadField, scrollView, const Offset(0, 1000));
         await tester.pumpAndSettle(const Duration(seconds: 2));
         await tester.tap(typeAheadField);
         await tester.pumpAndSettle(const Duration(seconds: 2));
@@ -155,7 +155,7 @@ void main() {
     testWidgets(
       "Scrollview scrollbar thumbvisibilty set to true when set in custom SuggestionBoxDecoration",
       (WidgetTester tester) async {
-        final CupertinoSuggestionsBoxDecoration testDecoration =
+        const CupertinoSuggestionsBoxDecoration testDecoration =
             CupertinoSuggestionsBoxDecoration(
           hasScrollbar: true,
           scrollbarThumbAlwaysVisible: true,
@@ -174,7 +174,7 @@ void main() {
             matching: find.byType(Scrollable));
 
         await tester.dragUntilVisible(
-            typeAheadField, scrollView, Offset(0, 1000));
+            typeAheadField, scrollView, const Offset(0, 1000));
         await tester.pumpAndSettle(const Duration(seconds: 2));
         await tester.tap(typeAheadField);
         await tester.pumpAndSettle(const Duration(seconds: 2));

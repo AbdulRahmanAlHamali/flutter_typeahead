@@ -21,33 +21,33 @@ class CupertinoSuggestionsBox {
   late double directionUpOffset;
 
   CupertinoSuggestionsBox(
-      this.context,
-      this.direction,
-      this.autoFlipDirection,
-      this.autoFlipListDirection,
-      this.autoFlipMinHeight,
-      ) : desiredDirection = direction;
+    this.context,
+    this.direction,
+    this.autoFlipDirection,
+    this.autoFlipListDirection,
+    this.autoFlipMinHeight,
+  ) : desiredDirection = direction;
 
   void open() {
-    if (this.isOpened) return;
-    assert(this.overlayEntry != null);
+    if (isOpened) return;
+    assert(overlayEntry != null);
     resize();
-    Overlay.of(context).insert(this.overlayEntry!);
-    this.isOpened = true;
+    Overlay.of(context).insert(overlayEntry!);
+    isOpened = true;
   }
 
   void close() {
-    if (!this.isOpened) return;
-    assert(this.overlayEntry != null);
-    this.overlayEntry!.remove();
-    this.isOpened = false;
+    if (!isOpened) return;
+    assert(overlayEntry != null);
+    overlayEntry!.remove();
+    isOpened = false;
   }
 
   void toggle() {
-    if (this.isOpened) {
-      this.close();
+    if (isOpened) {
+      close();
     } else {
-      this.open();
+      open();
     }
   }
 
@@ -154,9 +154,9 @@ class CupertinoSuggestionsBox {
       double textBoxAbsY) {
     return direction == AxisDirection.down
         ? _calculateMaxHeightDown(box, widget, windowHeight, rootMediaQuery,
-        keyboardHeight, textBoxAbsY)
+            keyboardHeight, textBoxAbsY)
         : _calculateMaxHeightUp(box, widget, windowHeight, rootMediaQuery,
-        keyboardHeight, textBoxAbsY);
+            keyboardHeight, textBoxAbsY);
   }
 
   double _calculateMaxHeightDown(
@@ -169,7 +169,7 @@ class CupertinoSuggestionsBox {
     // unsafe area, ie: iPhone X 'home button'
     // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
     double unsafeAreaHeight =
-    keyboardHeight == 0 ? rootMediaQuery.data.padding.bottom : 0;
+        keyboardHeight == 0 ? rootMediaQuery.data.padding.bottom : 0;
 
     return windowHeight -
         keyboardHeight -
@@ -198,11 +198,11 @@ class CupertinoSuggestionsBox {
 
     return textBoxAbsY > keyboardAbsY
         ? keyboardAbsY -
-        unsafeAreaHeight -
-        2 * widget.suggestionsBoxVerticalOffset
+            unsafeAreaHeight -
+            2 * widget.suggestionsBoxVerticalOffset
         : textBoxAbsY -
-        unsafeAreaHeight -
-        2 * widget.suggestionsBoxVerticalOffset;
+            unsafeAreaHeight -
+            2 * widget.suggestionsBoxVerticalOffset;
   }
 
   Future<void> onChangeMetrics() async {

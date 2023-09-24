@@ -81,7 +81,7 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, 61.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, 61.0));
     });
 
     testWidgets(
@@ -97,7 +97,7 @@ void main() {
           matching: find.byType(Scrollable));
 
       await tester.dragUntilVisible(
-          typeAheadField, scrollView, Offset(0, 1000));
+          typeAheadField, scrollView, const Offset(0, 1000));
       await tester.pumpAndSettle(const Duration(seconds: 2));
       await tester.tap(typeAheadField);
       await tester.pumpAndSettle(const Duration(seconds: 2));
@@ -108,10 +108,10 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, Offset(0.0, -5.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, -5.0));
     });
 
-     group('Scrollbar Visibility tests -', () {
+    group('Scrollbar Visibility tests -', () {
       testWidgets(
         "Scrollview scrollbar thumbvisibilty and trackVisibility set to (default) false when scrollbarThumbAlwaysVisible is not set",
         (WidgetTester tester) async {
@@ -125,7 +125,7 @@ void main() {
               matching: find.byType(Scrollable));
 
           await tester.dragUntilVisible(
-              typeAheadField, scrollView, Offset(0, 1000));
+              typeAheadField, scrollView, const Offset(0, 1000));
           await tester.pumpAndSettle(const Duration(seconds: 2));
           await tester.tap(typeAheadField);
           await tester.pumpAndSettle(const Duration(seconds: 2));
@@ -157,7 +157,7 @@ void main() {
       testWidgets(
         "Scrollview scrollbar thumbvisibilty and trackVisibility set to true when set in SuggestionboxDecoration",
         (WidgetTester tester) async {
-          final SuggestionsBoxDecoration testDecoration =
+          const SuggestionsBoxDecoration testDecoration =
               SuggestionsBoxDecoration(
             hasScrollbar: true,
             elevation: 2,
@@ -178,7 +178,7 @@ void main() {
               matching: find.byType(Scrollable));
 
           await tester.dragUntilVisible(
-              typeAheadField, scrollView, Offset(0, 1000));
+              typeAheadField, scrollView, const Offset(0, 1000));
           await tester.pumpAndSettle(const Duration(seconds: 2));
           await tester.tap(typeAheadField);
           await tester.pumpAndSettle(const Duration(seconds: 2));
