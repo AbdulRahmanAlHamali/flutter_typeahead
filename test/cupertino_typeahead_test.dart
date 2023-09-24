@@ -13,7 +13,9 @@ void main() {
 
       expect(find.text("Cupertino TypeAhead test"), findsOneWidget);
       expect(
-          find.byType(CupertinoTypeAheadFormField<String>), findsNWidgets(6));
+        find.byType(CupertinoTypeAheadFormField<String>, skipOffstage: false),
+        findsNWidgets(6),
+      );
       expect(find.byType(CompositedTransformFollower), findsNothing);
     });
 

@@ -12,7 +12,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text("Material TypeAhead test"), findsOneWidget);
-      expect(find.byType(TypeAheadFormField<String>), findsNWidgets(6));
+      expect(
+        find.byType(TypeAheadFormField<String>, skipOffstage: false),
+        findsNWidgets(6),
+      );
       expect(find.byType(CompositedTransformFollower), findsNothing);
     });
 
