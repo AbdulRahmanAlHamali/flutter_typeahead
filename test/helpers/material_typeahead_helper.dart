@@ -106,7 +106,7 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
           title: Text(suggestion),
         );
       },
-    suggestionsBoxDecoration: (widget.suggestionsBoxDecoration == null)
+      suggestionsBoxDecoration: (widget.suggestionsBoxDecoration == null)
           ? SuggestionsBoxDecoration(
               elevation: 2,
               hasScrollbar: true,

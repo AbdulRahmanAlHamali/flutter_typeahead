@@ -106,7 +106,7 @@ class NavigationExample extends StatelessWidget {
               );
             },
             itemSeparatorBuilder: (context, index) {
-              return Divider(height:1);
+              return Divider(height: 1);
             },
             onSuggestionSelected: (Map<String, String> suggestion) {
               Navigator.of(context).push<void>(MaterialPageRoute(
