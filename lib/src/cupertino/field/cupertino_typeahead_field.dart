@@ -566,6 +566,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
         autofocus: widget.textFieldConfiguration.autofocus,
         obscureText: widget.textFieldConfiguration.obscureText,
         autocorrect: widget.textFieldConfiguration.autocorrect,
+        enableSuggestions: widget.textFieldConfiguration.enableSuggestions,
         maxLines: widget.textFieldConfiguration.maxLines,
         minLines: widget.textFieldConfiguration.minLines,
         maxLength: widget.textFieldConfiguration.maxLength,
