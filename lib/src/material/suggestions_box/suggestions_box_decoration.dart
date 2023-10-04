@@ -1,32 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
 
-/// Supply an instance of this class to the [TypeAhead.suggestionsBoxDecoration]
+/// Supply an instance of this class to the [TypeAheadField.suggestionsBoxDecoration]
 /// property to configure the suggestions box decoration
-class SuggestionsBoxDecoration {
+class SuggestionsBoxDecoration extends BaseSuggestionsBoxDecoration {
+  /// Creates a SuggestionsBoxDecoration
+  const SuggestionsBoxDecoration({
+    this.elevation = 4.0,
+    super.color,
+    this.shape,
+    super.hasScrollbar,
+    this.borderRadius,
+    this.shadowColor = Colors.black,
+    super.constraints,
+    this.clipBehavior = Clip.none,
+    super.offsetX,
+    super.scrollbarThumbAlwaysVisible,
+    this.scrollbarTrackAlwaysVisible = false,
+  });
+
   /// The z-coordinate at which to place the suggestions box. This controls the size
   /// of the shadow below the box.
   ///
   /// Same as [Material.elevation](https://docs.flutter.io/flutter/material/Material/elevation.html)
   final double elevation;
 
-  /// The color to paint the suggestions box.
-  ///
-  /// Same as [Material.color](https://docs.flutter.io/flutter/material/Material/color.html)
-  final Color? color;
-
   /// Defines the material's shape as well its shadow.
   ///
   /// Same as [Material.shape](https://docs.flutter.io/flutter/material/Material/shape.html)
   final ShapeBorder? shape;
-
-  /// Defines if a scrollbar will be displayed or not.
-  final bool hasScrollbar;
-
-  /// If set to true, the scrollbar thumb in the suggestion list will always be visible
-  /// evnen when not scrolling.
-  ///
-  /// Defaults to false
-  final bool scrollbarThumbAlwaysVisible;
 
   /// If set to true, the scrollbar track in the suggestion list will always be visible
   /// evnen when not scrolling.
@@ -44,29 +46,8 @@ class SuggestionsBoxDecoration {
   /// Same as [Material.shadowColor](https://docs.flutter.io/flutter/material/Material/shadowColor.html)
   final Color shadowColor;
 
-  /// The constraints to be applied to the suggestions box
-  final BoxConstraints? constraints;
-
-  /// Adds an offset to the suggestions box
-  final double offsetX;
-
   /// The content will be clipped (or not) according to this option.
   ///
   /// Same as [Material.clipBehavior](https://api.flutter.dev/flutter/material/Material/clipBehavior.html)
   final Clip clipBehavior;
-
-  /// Creates a SuggestionsBoxDecoration
-  const SuggestionsBoxDecoration({
-    this.elevation = 4.0,
-    this.color,
-    this.shape,
-    this.hasScrollbar = true,
-    this.borderRadius,
-    this.shadowColor = Colors.black,
-    this.constraints,
-    this.clipBehavior = Clip.none,
-    this.offsetX = 0.0,
-    this.scrollbarThumbAlwaysVisible = false,
-    this.scrollbarTrackAlwaysVisible = false,
-  });
 }

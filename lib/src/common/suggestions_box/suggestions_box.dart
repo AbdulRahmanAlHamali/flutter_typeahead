@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
 
 class SuggestionsBox {
   static const int waitMetricsTimeoutMillis = 1000;
@@ -101,7 +101,7 @@ class SuggestionsBox {
   // See if there's enough room in the desired direction for the overlay to display
   // correctly. If not, try the opposite direction if things look more roomy there
   void _adjustMaxHeightAndOrientation() {
-    TypeAheadField widget = context.widget as TypeAheadField;
+    BaseTypeAheadField widget = context.widget as BaseTypeAheadField;
 
     RenderBox? box = context.findRenderObject() as RenderBox?;
     if (box == null || box.hasSize == false) {
@@ -156,13 +156,14 @@ class SuggestionsBox {
   }
 
   double _calculateMaxHeight(
-      AxisDirection direction,
-      RenderBox box,
-      TypeAheadField widget,
-      double windowHeight,
-      MediaQuery rootMediaQuery,
-      double keyboardHeight,
-      double textBoxAbsY) {
+    AxisDirection direction,
+    RenderBox box,
+    BaseTypeAheadField widget,
+    double windowHeight,
+    MediaQuery rootMediaQuery,
+    double keyboardHeight,
+    double textBoxAbsY,
+  ) {
     return direction == AxisDirection.down
         ? _calculateMaxHeightDown(box, widget, windowHeight, rootMediaQuery,
             keyboardHeight, textBoxAbsY)
@@ -171,12 +172,13 @@ class SuggestionsBox {
   }
 
   double _calculateMaxHeightDown(
-      RenderBox box,
-      TypeAheadField widget,
-      double windowHeight,
-      MediaQuery rootMediaQuery,
-      double keyboardHeight,
-      double textBoxAbsY) {
+    RenderBox box,
+    BaseTypeAheadField widget,
+    double windowHeight,
+    MediaQuery rootMediaQuery,
+    double keyboardHeight,
+    double textBoxAbsY,
+  ) {
     // unsafe area, ie: iPhone X 'home button'
     // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
     double unsafeAreaHeight =
@@ -191,12 +193,13 @@ class SuggestionsBox {
   }
 
   double _calculateMaxHeightUp(
-      RenderBox box,
-      TypeAheadField widget,
-      double windowHeight,
-      MediaQuery rootMediaQuery,
-      double keyboardHeight,
-      double textBoxAbsY) {
+    RenderBox box,
+    BaseTypeAheadField widget,
+    double windowHeight,
+    MediaQuery rootMediaQuery,
+    double keyboardHeight,
+    double textBoxAbsY,
+  ) {
     // recalculate keyboard absolute y value
     double keyboardAbsY = windowHeight - keyboardHeight;
 
