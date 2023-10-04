@@ -1,5 +1,186 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
+
+/// Supply an instance of this class to the [TypeAheadField.textFieldConfiguration]
+/// property to configure the displayed text field
+class CupertinoTextFieldConfiguration extends BaseTextFieldConfiguration {
+  const CupertinoTextFieldConfiguration({
+    super.autocorrect,
+    super.autofillHints,
+    super.autofocus,
+    super.controller,
+    super.cursorColor,
+    super.cursorRadius,
+    super.cursorWidth,
+    super.enabled,
+    super.readOnly,
+    super.enableInteractiveSelection,
+    super.enableSuggestions,
+    super.expands,
+    super.focusNode,
+    super.inputFormatters,
+    super.keyboardAppearance,
+    super.keyboardType,
+    super.maxLength,
+    super.maxLengthEnforcement,
+    super.maxLines,
+    super.minLines,
+    super.obscureText,
+    super.onChanged,
+    super.onEditingComplete,
+    super.onSubmitted,
+    super.onTap,
+    super.scrollPadding,
+    super.style,
+    super.textAlign,
+    super.textCapitalization,
+    super.textDirection,
+    super.textInputAction,
+    this.decoration = _kDefaultRoundedBorderDecoration,
+    this.padding = const EdgeInsets.all(6.0),
+    this.placeholder,
+    this.placeholderStyle,
+    this.prefix,
+    this.prefixMode = OverlayVisibilityMode.always,
+    this.suffix,
+    this.suffixMode = OverlayVisibilityMode.always,
+    this.clearButtonMode = OverlayVisibilityMode.never,
+  });
+
+  /// The decoration to show around the text field.
+  ///
+  /// Same as [CupertinoTextField.decoration](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/decoration.html)
+  final BoxDecoration decoration;
+
+  /// The padding for the text field decoration.
+  ///
+  /// Same as [CupertinoTextField.padding](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/padding.html)
+  final EdgeInsetsGeometry padding;
+
+  /// Show an iOS-style clear button to clear the current text entry.
+  ///
+  /// Same as [CupertinoTextField.clearButtonMode](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/clearButtonMode.html)
+  final OverlayVisibilityMode clearButtonMode;
+
+  /// Controls the visibility of the prefix widget based on the state of text entry when the prefix argument is not null.
+  ///
+  /// Same as [CupertinoTextField.prefixMode](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/prefixMode.html)
+  final OverlayVisibilityMode prefixMode;
+
+  /// Controls the visibility of the suffix widget based on the state of text entry when the suffix argument is not null.
+  ///
+  /// Same as [CupertinoTextField.suffixMode](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/suffixMode.html)
+  final OverlayVisibilityMode suffixMode;
+
+  /// A lighter colored placeholder hint that appears on the first line of the text field when the text entry is empty.
+  ///
+  /// Same as [CupertinoTextField.cursorRadius](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/placeholder.html)
+  final String? placeholder;
+
+  /// The style to use for the text being edited.
+  ///
+  /// Same as [CupertinoTextField.style](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/style.html)
+  final TextStyle? placeholderStyle;
+
+  /// A widget to display before the text.
+  ///
+  /// Same as [CupertinoTextField.prefix](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/prefix.html)
+  final Widget? prefix;
+
+  /// A widget to display after the text.
+  ///
+  /// Same as [CupertinoTextField.suffix](https://api.flutter.dev/flutter/cupertino/CupertinoTextField/suffix.html)
+  final Widget? suffix;
+
+  /// Copies the [CupertinoTextFieldConfiguration] and only changes the specified properties
+  @override
+  CupertinoTextFieldConfiguration copyWith({
+    bool? autocorrect,
+    bool? autofocus,
+    bool? enabled,
+    bool? enableInteractiveSelection,
+    bool? enableSuggestions,
+    bool? expands,
+    bool? obscureText,
+    bool? readOnly,
+    Brightness? keyboardAppearance,
+    Color? cursorColor,
+    double? cursorWidth,
+    EdgeInsets? scrollPadding,
+    FocusNode? focusNode,
+    GestureTapCallback? onTap,
+    int? maxLength,
+    int? maxLines,
+    int? minLines,
+    List<String>? autofillHints,
+    List<TextInputFormatter>? inputFormatters,
+    MaxLengthEnforcement? maxLengthEnforcement,
+    Radius? cursorRadius,
+    TextAlign? textAlign,
+    TextCapitalization? textCapitalization,
+    TextDirection? textDirection,
+    TextEditingController? controller,
+    TextInputAction? textInputAction,
+    TextInputType? keyboardType,
+    TextStyle? style,
+    ValueChanged<String>? onChanged,
+    ValueChanged<String>? onSubmitted,
+    VoidCallback? onEditingComplete,
+    BoxDecoration? decoration,
+    EdgeInsetsGeometry? padding,
+    OverlayVisibilityMode? clearButtonMode,
+    OverlayVisibilityMode? prefixMode,
+    OverlayVisibilityMode? suffixMode,
+    String? placeholder,
+    TextStyle? placeholderStyle,
+    Widget? prefix,
+    Widget? suffix,
+  }) =>
+      CupertinoTextFieldConfiguration(
+        autocorrect: autocorrect ?? this.autocorrect,
+        autofocus: autofocus ?? this.autofocus,
+        enabled: enabled ?? this.enabled,
+        enableInteractiveSelection:
+            enableInteractiveSelection ?? this.enableInteractiveSelection,
+        enableSuggestions: enableSuggestions ?? this.enableSuggestions,
+        expands: expands ?? this.expands,
+        obscureText: obscureText ?? this.obscureText,
+        readOnly: readOnly ?? this.readOnly,
+        keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
+        cursorColor: cursorColor ?? this.cursorColor,
+        cursorWidth: cursorWidth ?? this.cursorWidth,
+        scrollPadding: scrollPadding ?? this.scrollPadding,
+        focusNode: focusNode ?? this.focusNode,
+        onTap: onTap ?? this.onTap,
+        maxLength: maxLength ?? this.maxLength,
+        maxLines: maxLines ?? this.maxLines,
+        minLines: minLines ?? this.minLines,
+        autofillHints: autofillHints ?? this.autofillHints,
+        inputFormatters: inputFormatters ?? this.inputFormatters,
+        maxLengthEnforcement: maxLengthEnforcement ?? this.maxLengthEnforcement,
+        cursorRadius: cursorRadius ?? this.cursorRadius,
+        textAlign: textAlign ?? this.textAlign,
+        textCapitalization: textCapitalization ?? this.textCapitalization,
+        textDirection: textDirection ?? this.textDirection,
+        controller: controller ?? this.controller,
+        textInputAction: textInputAction ?? this.textInputAction,
+        keyboardType: keyboardType ?? this.keyboardType,
+        style: style ?? this.style,
+        onChanged: onChanged ?? this.onChanged,
+        onSubmitted: onSubmitted ?? this.onSubmitted,
+        onEditingComplete: onEditingComplete ?? this.onEditingComplete,
+        decoration: decoration ?? this.decoration,
+        padding: padding ?? this.padding,
+        clearButtonMode: clearButtonMode ?? this.clearButtonMode,
+        prefixMode: prefixMode ?? this.prefixMode,
+        suffixMode: suffixMode ?? this.suffixMode,
+        placeholder: placeholder ?? this.placeholder,
+        placeholderStyle: placeholderStyle ?? this.placeholderStyle,
+        prefix: prefix ?? this.prefix,
+        suffix: suffix ?? this.suffix,
+      );
+}
 
 // Cupertino BoxDecoration taken from flutter/lib/src/cupertino/text_field.dart
 const BorderSide _kDefaultRoundedBorderSide = BorderSide(
@@ -26,168 +207,3 @@ const BoxDecoration _kDefaultRoundedBorderDecoration = BoxDecoration(
   border: _kDefaultRoundedBorder,
   borderRadius: BorderRadius.all(Radius.circular(5.0)),
 );
-
-/// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
-/// property to configure the displayed text field. See [documentation](https://docs.flutter.io/flutter/cupertino/CupertinoTextField-class.html)
-/// for more information on properties.
-class CupertinoTextFieldConfiguration {
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
-  final BoxDecoration decoration;
-  final EdgeInsetsGeometry padding;
-  final String? placeholder;
-  final TextStyle? placeholderStyle;
-  final Widget? prefix;
-  final OverlayVisibilityMode prefixMode;
-  final Widget? suffix;
-  final OverlayVisibilityMode suffixMode;
-  final OverlayVisibilityMode clearButtonMode;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final TextCapitalization textCapitalization;
-  final TextStyle? style;
-  final TextAlign textAlign;
-  final bool autofocus;
-  final bool obscureText;
-  final bool autocorrect;
-  final int maxLines;
-  final int? minLines;
-  final int? maxLength;
-  final MaxLengthEnforcement? maxLengthEnforcement;
-  final ValueChanged<String>? onChanged;
-  final VoidCallback? onEditingComplete;
-  final GestureTapCallback? onTap;
-  final ValueChanged<String>? onSubmitted;
-  final List<TextInputFormatter>? inputFormatters;
-  final bool enabled;
-  final bool enableSuggestions;
-  final double cursorWidth;
-  final Radius cursorRadius;
-  final Color? cursorColor;
-  final Brightness? keyboardAppearance;
-  final EdgeInsets scrollPadding;
-  final bool enableInteractiveSelection;
-  final List<String>? autofillHints;
-
-  /// Creates a CupertinoTextFieldConfiguration
-  const CupertinoTextFieldConfiguration({
-    this.controller,
-    this.focusNode,
-    this.decoration = _kDefaultRoundedBorderDecoration,
-    this.padding = const EdgeInsets.all(6.0),
-    this.placeholder,
-    this.placeholderStyle,
-    this.prefix,
-    this.prefixMode = OverlayVisibilityMode.always,
-    this.suffix,
-    this.suffixMode = OverlayVisibilityMode.always,
-    this.clearButtonMode = OverlayVisibilityMode.never,
-    this.keyboardType,
-    this.textInputAction,
-    this.textCapitalization = TextCapitalization.none,
-    this.style,
-    this.textAlign = TextAlign.start,
-    this.autofocus = false,
-    this.obscureText = false,
-    this.autocorrect = true,
-    this.maxLines = 1,
-    this.minLines,
-    this.maxLength,
-    this.maxLengthEnforcement,
-    this.onChanged,
-    this.onEditingComplete,
-    this.onTap,
-    this.onSubmitted,
-    this.inputFormatters,
-    this.enabled = true,
-    this.enableSuggestions = true,
-    this.cursorWidth = 2.0,
-    this.cursorRadius = const Radius.circular(2.0),
-    this.cursorColor,
-    this.keyboardAppearance,
-    this.scrollPadding = const EdgeInsets.all(20.0),
-    this.enableInteractiveSelection = true,
-    this.autofillHints,
-  });
-
-  /// Copies the [CupertinoTextFieldConfiguration] and only changes the specified properties
-  CupertinoTextFieldConfiguration copyWith({
-    TextEditingController? controller,
-    FocusNode? focusNode,
-    BoxDecoration? decoration,
-    EdgeInsetsGeometry? padding,
-    String? placeholder,
-    TextStyle? placeholderStyle,
-    Widget? prefix,
-    OverlayVisibilityMode? prefixMode,
-    Widget? suffix,
-    OverlayVisibilityMode? suffixMode,
-    OverlayVisibilityMode? clearButtonMode,
-    TextInputType? keyboardType,
-    TextInputAction? textInputAction,
-    TextCapitalization? textCapitalization,
-    TextStyle? style,
-    TextAlign? textAlign,
-    bool? autofocus,
-    bool? obscureText,
-    bool? autocorrect,
-    int? maxLines,
-    int? minLines,
-    int? maxLength,
-    MaxLengthEnforcement? maxLengthEnforcement,
-    ValueChanged<String>? onChanged,
-    VoidCallback? onEditingComplete,
-    GestureTapCallback? onTap,
-    ValueChanged<String>? onSubmitted,
-    List<TextInputFormatter>? inputFormatters,
-    bool? enabled,
-    bool? enableSuggestions,
-    double? cursorWidth,
-    Radius? cursorRadius,
-    Color? cursorColor,
-    Brightness? keyboardAppearance,
-    EdgeInsets? scrollPadding,
-    bool? enableInteractiveSelection,
-    List<String>? autofillHints,
-  }) =>
-      CupertinoTextFieldConfiguration(
-        controller: controller ?? this.controller,
-        focusNode: focusNode ?? this.focusNode,
-        decoration: decoration ?? this.decoration,
-        padding: padding ?? this.padding,
-        placeholder: placeholder ?? this.placeholder,
-        placeholderStyle: placeholderStyle ?? this.placeholderStyle,
-        prefix: prefix ?? this.prefix,
-        prefixMode: prefixMode ?? this.prefixMode,
-        suffix: suffix ?? this.suffix,
-        suffixMode: suffixMode ?? this.suffixMode,
-        clearButtonMode: clearButtonMode ?? this.clearButtonMode,
-        keyboardType: keyboardType ?? this.keyboardType,
-        textInputAction: textInputAction ?? this.textInputAction,
-        textCapitalization: textCapitalization ?? this.textCapitalization,
-        style: style ?? this.style,
-        textAlign: textAlign ?? this.textAlign,
-        autofocus: autofocus ?? this.autofocus,
-        obscureText: obscureText ?? this.obscureText,
-        autocorrect: autocorrect ?? this.autocorrect,
-        maxLines: maxLines ?? this.maxLines,
-        minLines: minLines ?? this.minLines,
-        maxLength: maxLength ?? this.maxLength,
-        maxLengthEnforcement: maxLengthEnforcement ?? this.maxLengthEnforcement,
-        onChanged: onChanged ?? this.onChanged,
-        onEditingComplete: onEditingComplete ?? this.onEditingComplete,
-        onTap: onTap ?? this.onTap,
-        onSubmitted: onSubmitted ?? this.onSubmitted,
-        inputFormatters: inputFormatters ?? this.inputFormatters,
-        enabled: enabled ?? this.enabled,
-        enableSuggestions: enableSuggestions ?? this.enableSuggestions,
-        cursorWidth: cursorWidth ?? this.cursorWidth,
-        cursorRadius: cursorRadius ?? this.cursorRadius,
-        cursorColor: cursorColor ?? this.cursorColor,
-        keyboardAppearance: keyboardAppearance ?? this.keyboardAppearance,
-        scrollPadding: scrollPadding ?? this.scrollPadding,
-        enableInteractiveSelection:
-            enableInteractiveSelection ?? this.enableInteractiveSelection,
-        autofillHints: autofillHints ?? this.autofillHints,
-      );
-}

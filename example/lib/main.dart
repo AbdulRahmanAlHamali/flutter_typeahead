@@ -327,8 +327,8 @@ class FavoriteCitiesPage extends StatefulWidget {
 class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  final CupertinoSuggestionsBoxController _suggestionsBoxController =
-      CupertinoSuggestionsBoxController();
+  final SuggestionsBoxController _suggestionsBoxController =
+      SuggestionsBoxController();
   String favoriteCity = 'Unavailable';
 
   @override

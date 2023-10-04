@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
 
 /// Supply an instance of this class to the [TypeAhead.suggestionsBoxController]
 /// property to manually control the suggestions box
