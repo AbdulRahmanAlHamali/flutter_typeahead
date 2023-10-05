@@ -180,6 +180,16 @@ class TextFieldConfiguration {
 
   final List<String>? autofillHints;
 
+  /// Creates a content insertion configuration with the specified options.
+  /// 
+  /// Same as [TextField.contentInsertionConfiguration](https://api.flutter.dev/flutter/material/TextField/contentInsertionConfiguration.html)
+  final ContentInsertionConfiguration? contentInsertionConfiguration;
+
+  /// Signature for a widget builder that builds a context menu for the given
+  /// 
+  /// Same as [TextField.contextMenuBuilder](https://api.flutter.dev/flutter/material/TextField/contextMenuBuilder.html)
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
+
   /// Creates a TextFieldConfiguration
   const TextFieldConfiguration({
     this.decoration = const InputDecoration(),
@@ -215,6 +225,8 @@ class TextFieldConfiguration {
     this.scrollPadding = const EdgeInsets.all(20.0),
     this.enableInteractiveSelection = true,
     this.autofillHints,
+    this.contentInsertionConfiguration,
+    this.contextMenuBuilder,
   });
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
@@ -251,6 +263,8 @@ class TextFieldConfiguration {
     TextInputAction? textInputAction,
     bool? enableInteractiveSelection,
     List<String>? autofillHints,
+    ContentInsertionConfiguration? contentInsertionConfiguration,
+    EditableTextContextMenuBuilder? contextMenuBuilder,
   }) =>
       TextFieldConfiguration(
         decoration: decoration ?? this.decoration,
@@ -285,5 +299,7 @@ class TextFieldConfiguration {
         enableInteractiveSelection:
             enableInteractiveSelection ?? this.enableInteractiveSelection,
         autofillHints: autofillHints ?? this.autofillHints,
+        contentInsertionConfiguration: contentInsertionConfiguration,
+        contextMenuBuilder: contextMenuBuilder,
       );
 }

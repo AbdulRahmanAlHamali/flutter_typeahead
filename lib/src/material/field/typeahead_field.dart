@@ -920,6 +920,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
               widget.textFieldConfiguration.enableInteractiveSelection,
           readOnly: widget.hideKeyboard,
           autofillHints: widget.textFieldConfiguration.autofillHints,
+          contextMenuBuilder: widget.textFieldConfiguration.contextMenuBuilder,
+          contentInsertionConfiguration: widget.textFieldConfiguration.contentInsertionConfiguration,
         ),
       ),
     );
