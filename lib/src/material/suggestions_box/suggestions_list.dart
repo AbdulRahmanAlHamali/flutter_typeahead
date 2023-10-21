@@ -46,7 +46,6 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     SuggestionsListConfigState state,
   ) {
     Widget child;
-
     if (keepSuggestionsOnLoading! && state.suggestions != null) {
       if (state.suggestions!.isEmpty) {
         child = createNoItemsFoundWidget(context, state);
@@ -54,18 +53,19 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
         child = createSuggestionsWidget(context, state);
       }
     } else {
-      child = loadingBuilder != null
-          ? loadingBuilder!(context)
-          : const Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: CircularProgressIndicator(),
-              ),
-            );
+      if (loadingBuilder != null) {
+        child = loadingBuilder!(context);
+      } else {
+        child = const Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
     }
-
-    return child;
+    return Material(child: child);
   }
 
   @override
@@ -73,15 +73,21 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    return errorBuilder != null
-        ? errorBuilder!(context, state.error)
-        : Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Error: ${state.error}',
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          );
+    Widget child;
+
+    if (errorBuilder != null) {
+      child = errorBuilder!(context, state.error);
+    } else {
+      child = Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'Error: ${state.error}',
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
+        ),
+      );
+    }
+
+    return Material(child: child);
   }
 
   @override
@@ -89,17 +95,23 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    return noItemsFoundBuilder != null
-        ? noItemsFoundBuilder!(context)
-        : Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              'No Items Found!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Theme.of(context).disabledColor, fontSize: 18.0),
-            ),
-          );
+    Widget child;
+
+    if (noItemsFoundBuilder != null) {
+      child = noItemsFoundBuilder!(context);
+    } else {
+      child = Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Text(
+          'No Items Found!',
+          textAlign: TextAlign.center,
+          style:
+              TextStyle(color: Theme.of(context).disabledColor, fontSize: 18.0),
+        ),
+      );
+    }
+
+    return Material(child: child);
   }
 
   @override
@@ -107,19 +119,37 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
+    Widget child;
+
     if (layoutArchitecture == null) {
-      return defaultSuggestionsWidget(context, state);
+      child = defaultSuggestionsWidget(context, state);
     } else {
-      return customSuggestionsWidget(context, state);
+      child = customSuggestionsWidget(context, state);
     }
+
+    if (decoration!.hasScrollbar) {
+      child = MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: Scrollbar(
+          controller: state.scrollController,
+          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
+          trackVisibility: decoration!.scrollbarTrackAlwaysVisible,
+          child: child,
+        ),
+      );
+    }
+
+    return Material(
+      child: TextFieldTapRegion(child: child),
+    );
   }
 
-  @override
   Widget defaultSuggestionsWidget(
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    Widget child = ListView.separated(
+    return ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
@@ -150,31 +180,13 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       separatorBuilder: (context, index) =>
           itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
     );
-
-    if (decoration!.hasScrollbar) {
-      child = MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: Scrollbar(
-          controller: state.scrollController,
-          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
-          trackVisibility: decoration!.scrollbarTrackAlwaysVisible,
-          child: child,
-        ),
-      );
-    }
-
-    child = TextFieldTapRegion(child: child);
-
-    return child;
   }
 
-  @override
   Widget customSuggestionsWidget(
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    Widget child = layoutArchitecture!(
+    return layoutArchitecture!(
       List.generate(state.suggestions!.length, (index) {
         final suggestion = state.suggestions!.elementAt(index);
         final focusNode = state.focusNodes[index];
@@ -194,22 +206,5 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       }),
       state.scrollController,
     );
-
-    if (decoration!.hasScrollbar) {
-      child = MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: Scrollbar(
-          controller: state.scrollController,
-          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
-          trackVisibility: decoration!.scrollbarTrackAlwaysVisible,
-          child: child,
-        ),
-      );
-    }
-
-    child = TextFieldTapRegion(child: child);
-
-    return child;
   }
 }

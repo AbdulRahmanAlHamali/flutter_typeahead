@@ -98,16 +98,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     SuggestionsListConfigState state,
   );
 
-  Widget defaultSuggestionsWidget(
-    BuildContext context,
-    SuggestionsListConfigState state,
-  );
-
-  Widget customSuggestionsWidget(
-    BuildContext context,
-    SuggestionsListConfigState state,
-  );
-
   @override
   State<RenderSuggestionsList<T>> createState() =>
       _RenderSuggestionsListState<T>();
