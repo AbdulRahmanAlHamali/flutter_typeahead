@@ -98,6 +98,13 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     SuggestionsListConfigState state,
   );
 
+  Widget createWidgetWrapper(
+    BuildContext context,
+    SuggestionsListConfigState state,
+    Widget child,
+  ) =>
+      child;
+
   @override
   State<RenderSuggestionsList<T>> createState() =>
       _RenderSuggestionsListState<T>();
@@ -341,9 +348,13 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
 
     return PointerInterceptor(
       intercepting: widget.intercepting,
-      child: ConstrainedBox(
-        constraints: constraints,
-        child: animationChild,
+      child: widget.createWidgetWrapper(
+        context,
+        state,
+        ConstrainedBox(
+          constraints: constraints,
+          child: animationChild,
+        ),
       ),
     );
   }

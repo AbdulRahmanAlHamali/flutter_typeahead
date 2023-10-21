@@ -85,6 +85,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     SuggestionsListConfigState state,
   ) {
     Widget child;
+
     if (errorBuilder != null) {
       child = errorBuilder!(context, state.error);
     } else {
@@ -109,6 +110,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
         ),
       );
     }
+
     return child;
   }
 
@@ -118,6 +120,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     SuggestionsListConfigState state,
   ) {
     Widget child;
+
     if (noItemsFoundBuilder != null) {
       child = noItemsFoundBuilder!(context);
     } else {
@@ -142,6 +145,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
         ),
       );
     }
+
     return child;
   }
 

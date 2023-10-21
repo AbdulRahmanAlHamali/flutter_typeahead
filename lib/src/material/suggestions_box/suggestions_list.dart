@@ -46,6 +46,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     SuggestionsListConfigState state,
   ) {
     Widget child;
+
     if (keepSuggestionsOnLoading! && state.suggestions != null) {
       if (state.suggestions!.isEmpty) {
         child = createNoItemsFoundWidget(context, state);
@@ -65,7 +66,8 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
         );
       }
     }
-    return Material(child: child);
+
+    return child;
   }
 
   @override
@@ -87,7 +89,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       );
     }
 
-    return Material(child: child);
+    return child;
   }
 
   @override
@@ -111,7 +113,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       );
     }
 
-    return Material(child: child);
+    return child;
   }
 
   @override
@@ -140,9 +142,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       );
     }
 
-    return Material(
-      child: TextFieldTapRegion(child: child),
-    );
+    return TextFieldTapRegion(child: child);
   }
 
   Widget defaultSuggestionsWidget(
@@ -205,6 +205,23 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
         );
       }),
       state.scrollController,
+    );
+  }
+
+  @override
+  Widget createWidgetWrapper(
+    BuildContext context,
+    SuggestionsListConfigState state,
+    Widget child,
+  ) {
+    return Material(
+      elevation: decoration!.elevation,
+      color: decoration!.color,
+      shape: decoration!.shape,
+      borderRadius: decoration!.borderRadius,
+      shadowColor: decoration!.shadowColor,
+      clipBehavior: decoration!.clipBehavior,
+      child: child,
     );
   }
 }
