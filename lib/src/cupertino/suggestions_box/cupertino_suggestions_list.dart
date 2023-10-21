@@ -54,24 +54,26 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
         child = createSuggestionsWidget(context, state);
       }
     } else {
-      child = loadingBuilder != null
-          ? loadingBuilder!(context)
-          : Container(
-              decoration: BoxDecoration(
-                color: CupertinoColors.white,
-                border: Border.all(
-                  color: CupertinoColors.extraLightBackgroundGray,
-                  width: 1.0,
-                ),
-              ),
-              child: const Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: CupertinoActivityIndicator(),
-                ),
-              ),
-            );
+      if (loadingBuilder != null) {
+        child = loadingBuilder!(context);
+      } else {
+        child = Container(
+          decoration: BoxDecoration(
+            color: CupertinoColors.white,
+            border: Border.all(
+              color: CupertinoColors.extraLightBackgroundGray,
+              width: 1.0,
+            ),
+          ),
+          child: const Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: CupertinoActivityIndicator(),
+            ),
+          ),
+        );
+      }
     }
 
     return child;
@@ -82,28 +84,32 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    return errorBuilder != null
-        ? errorBuilder!(context, state.error)
-        : Container(
-            decoration: BoxDecoration(
-              color: CupertinoColors.white,
-              border: Border.all(
-                color: CupertinoColors.extraLightBackgroundGray,
-                width: 1.0,
-              ),
+    Widget child;
+    if (errorBuilder != null) {
+      child = errorBuilder!(context, state.error);
+    } else {
+      child = Container(
+        decoration: BoxDecoration(
+          color: CupertinoColors.white,
+          border: Border.all(
+            color: CupertinoColors.extraLightBackgroundGray,
+            width: 1.0,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Text(
+            'Error: ${state.error}',
+            textAlign: TextAlign.start,
+            style: const TextStyle(
+              color: CupertinoColors.destructiveRed,
+              fontSize: 18.0,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(
-                'Error: ${state.error}',
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                  color: CupertinoColors.destructiveRed,
-                  fontSize: 18.0,
-                ),
-              ),
-            ),
-          );
+          ),
+        ),
+      );
+    }
+    return child;
   }
 
   @override
@@ -111,28 +117,32 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    return noItemsFoundBuilder != null
-        ? noItemsFoundBuilder!(context)
-        : Container(
-            decoration: BoxDecoration(
-              color: CupertinoColors.white,
-              border: Border.all(
-                color: CupertinoColors.extraLightBackgroundGray,
-                width: 1.0,
-              ),
+    Widget child;
+    if (noItemsFoundBuilder != null) {
+      child = noItemsFoundBuilder!(context);
+    } else {
+      child = Container(
+        decoration: BoxDecoration(
+          color: CupertinoColors.white,
+          border: Border.all(
+            color: CupertinoColors.extraLightBackgroundGray,
+            width: 1.0,
+          ),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(
+            'No Items Found!',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: CupertinoColors.inactiveGray,
+              fontSize: 18.0,
             ),
-            child: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Text(
-                'No Items Found!',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: CupertinoColors.inactiveGray,
-                  fontSize: 18.0,
-                ),
-              ),
-            ),
-          );
+          ),
+        ),
+      );
+    }
+    return child;
   }
 
   @override
@@ -140,19 +150,34 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
+    Widget child;
+
     if (layoutArchitecture == null) {
-      return defaultSuggestionsWidget(context, state);
+      child = defaultSuggestionsWidget(context, state);
     } else {
-      return customSuggestionsWidget(context, state);
+      child = customSuggestionsWidget(context, state);
     }
+
+    if (decoration!.hasScrollbar) {
+      child = MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: CupertinoScrollbar(
+          controller: state.scrollController,
+          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
+          child: child,
+        ),
+      );
+    }
+
+    return child;
   }
 
-  @override
   Widget defaultSuggestionsWidget(
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    Widget child = Container(
+    return Container(
       decoration: BoxDecoration(
         color: decoration!.color ?? CupertinoColors.white,
         border: decoration!.border ??
@@ -189,28 +214,13 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
             const SizedBox.shrink(),
       ),
     );
-
-    if (decoration!.hasScrollbar) {
-      child = MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: CupertinoScrollbar(
-          controller: state.scrollController,
-          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
-          child: child,
-        ),
-      );
-    }
-
-    return child;
   }
 
-  @override
   Widget customSuggestionsWidget(
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    Widget child = DecoratedBox(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: decoration!.color ?? CupertinoColors.white,
         border: decoration!.border ??
@@ -233,19 +243,5 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
         state.scrollController,
       ),
     );
-
-    if (decoration!.hasScrollbar) {
-      child = MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: CupertinoScrollbar(
-          controller: state.scrollController,
-          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
-          child: child,
-        ),
-      );
-    }
-
-    return child;
   }
 }
