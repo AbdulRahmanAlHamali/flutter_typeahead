@@ -233,7 +233,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
 
     if (mounted) {
       setState(() {
-        _animationController!.forward(from: 1.0);
+        _animationController!.forward(from: 1);
 
         _isLoading = true;
         _error = null;
@@ -324,7 +324,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     final animationChild = widget.transitionBuilder != null
         ? widget.transitionBuilder!(context, child, _animationController)
         : SizeTransition(
-            axisAlignment: -1.0,
+            axisAlignment: -1,
             sizeFactor: CurvedAnimation(
               parent: _animationController!,
               curve: Curves.fastOutSlowIn,

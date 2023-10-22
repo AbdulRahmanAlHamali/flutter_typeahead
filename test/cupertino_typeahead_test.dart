@@ -88,7 +88,7 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, 34.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0, 34));
     });
 
     testWidgets(
@@ -116,7 +116,7 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, -5.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0, -5));
     });
   });
 

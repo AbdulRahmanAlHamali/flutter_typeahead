@@ -37,7 +37,7 @@ class TestPageState extends State<TestPage> {
         body: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
               TypeAheadFormField<String>(
                 textFieldConfiguration: TextFieldConfiguration(
@@ -103,7 +103,7 @@ class CupertinoTestPageState extends State<CupertinoTestPage> {
         body: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
               CupertinoTypeAheadFormField<String>(
                   textFieldConfiguration: CupertinoTextFieldConfiguration(

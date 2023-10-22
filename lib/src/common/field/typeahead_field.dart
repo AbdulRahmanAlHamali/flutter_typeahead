@@ -611,7 +611,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
               ? suggestionsList
               : FractionalTranslation(
                   translation:
-                      const Offset(0.0, -1.0), // visually flips list to go up
+                      const Offset(0, -1), // visually flips list to go up
                   child: suggestionsList,
                 ),
         );

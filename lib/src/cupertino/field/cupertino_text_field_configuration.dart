@@ -38,7 +38,7 @@ class CupertinoTextFieldConfiguration extends BaseTextFieldConfiguration {
     super.textDirection,
     super.textInputAction,
     this.decoration = _kDefaultRoundedBorderDecoration,
-    this.padding = const EdgeInsets.all(6.0),
+    this.padding = const EdgeInsets.all(6),
     this.placeholder,
     this.placeholderStyle,
     this.prefix,
@@ -188,7 +188,7 @@ const BorderSide _kDefaultRoundedBorderSide = BorderSide(
     color: Color(0x33000000),
     darkColor: Color(0x33FFFFFF),
   ),
-  width: 0.0,
+  width: 0,
 );
 
 const Border _kDefaultRoundedBorder = Border(
@@ -204,5 +204,5 @@ const BoxDecoration _kDefaultRoundedBorderDecoration = BoxDecoration(
     darkColor: CupertinoColors.black,
   ),
   border: _kDefaultRoundedBorder,
-  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+  borderRadius: BorderRadius.all(Radius.circular(5)),
 );

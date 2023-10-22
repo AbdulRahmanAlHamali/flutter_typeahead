@@ -60,7 +60,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
         child = const Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(vertical: 8),
             child: CircularProgressIndicator(),
           ),
         );
@@ -85,7 +85,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
         message = 'Error: ${state.error}';
       }
       child = Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: Text(
           message,
           style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -107,12 +107,12 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       child = noItemsFoundBuilder!(context);
     } else {
       child = Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(
           'No Items Found!',
           textAlign: TextAlign.center,
           style:
-              TextStyle(color: Theme.of(context).disabledColor, fontSize: 18.0),
+              TextStyle(color: Theme.of(context).disabledColor, fontSize: 18),
         ),
       );
     }
