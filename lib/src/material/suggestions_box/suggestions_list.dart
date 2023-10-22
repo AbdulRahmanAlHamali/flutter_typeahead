@@ -170,7 +170,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
             focusNode: focusNode,
             child: itemBuilder!(context, suggestion),
             onTap: () {
-              // * we give the focus back to the text field
+              // we give the focus back to the text field
               giveTextFieldFocus();
               onSuggestionSelected!(suggestion);
             },
