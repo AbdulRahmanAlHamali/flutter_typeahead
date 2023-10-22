@@ -136,11 +136,27 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   ) {
     Widget child;
 
-    if (layoutArchitecture != null) {
-      child = customSuggestionsWidget(context, state);
-    } else {
-      child = defaultSuggestionsWidget(context, state);
+    LayoutArchitecture? layoutArchitecture = this.layoutArchitecture;
+    layoutArchitecture ??= _defaultLayout;
+
+    Iterable<T>? suggestions = state.suggestions;
+    if (suggestions == null) {
+      throw StateError(
+        'suggestions can not be null when building '
+        'suggestions widget',
+      );
     }
+
+    child = layoutArchitecture(
+      List.generate(
+        suggestions.length,
+        (index) => _itemBuilder(
+          context,
+          suggestions.elementAt(index),
+        ),
+      ),
+      state.scrollController,
+    );
 
     CupertinoSuggestionsBoxDecoration? decoration = this.decoration;
     if (decoration != null && decoration.hasScrollbar) {
@@ -158,68 +174,39 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     return child;
   }
 
-  Widget defaultSuggestionsWidget(
-    BuildContext context,
-    SuggestionsListConfigState<T> state,
-  ) {
-    Iterable<T>? suggestions = state.suggestions;
-    if (suggestions == null) {
-      throw StateError(
-        'suggestions can not be null when building '
-        'suggestions widget',
-      );
-    }
-
+  Widget _defaultLayout(Iterable<Widget> items, ScrollController controller) {
     return ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
-      controller: state.scrollController,
       keyboardDismissBehavior: hideKeyboardOnDrag
           ? ScrollViewKeyboardDismissBehavior.onDrag
           : ScrollViewKeyboardDismissBehavior.manual,
+      controller: scrollController,
       reverse: suggestionsBox.direction == AxisDirection.down
           ? false
           : suggestionsBox.autoFlipListDirection,
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        final suggestion = suggestions.elementAt(index);
-        return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: itemBuilder(
-            context,
-            suggestion,
-          ),
-          onTap: () => onSuggestionSelected?.call(suggestion),
-        );
-      },
+      itemCount: items.length,
+      itemBuilder: (context, index) => items.elementAt(index),
       separatorBuilder: (context, index) =>
           itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
     );
   }
 
-  Widget customSuggestionsWidget(
-    BuildContext context,
-    SuggestionsListConfigState<T> state,
-  ) {
-    Iterable<T>? suggestions = state.suggestions;
-    if (suggestions == null) {
-      throw StateError(
-        'suggestions can not be null when building '
-        'suggestions widget',
-      );
-    }
-
-    return layoutArchitecture!(
-      List.generate(suggestions.length, (index) {
-        final suggestion = suggestions.elementAt(index);
-        return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: itemBuilder(context, suggestion),
-          onTap: () => onSuggestionSelected?.call(suggestion),
-        );
-      }),
-      state.scrollController,
+  Widget _itemBuilder(BuildContext context, T suggestion) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: itemBuilder(
+          context,
+          suggestion,
+        ),
+      ),
+      onTap: () {
+        giveTextFieldFocus();
+        onSuggestionSelected?.call(suggestion);
+      },
     );
   }
 

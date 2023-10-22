@@ -359,40 +359,29 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                   textFieldConfiguration: CupertinoTextFieldConfiguration(
                     controller: _typeAheadController,
                   ),
-                  suggestionsCallback: (pattern) {
-                    return Future.delayed(
-                      const Duration(seconds: 1),
-                      () => CitiesService.getSuggestions(pattern),
-                    );
-                  },
-                  itemBuilder: (context, String suggestion) {
-                    return Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        suggestion,
-                      ),
-                    );
-                  },
-                  itemSeparatorBuilder: (context, index) {
-                    return const Divider();
-                  },
-                  onSuggestionSelected: (String suggestion) {
-                    _typeAheadController.text = suggestion;
-                  },
+                  suggestionsCallback: (pattern) => Future.delayed(
+                    const Duration(seconds: 1),
+                    () => CitiesService.getSuggestions(pattern),
+                  ),
+                  itemBuilder: (context, suggestion) => Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      suggestion,
+                    ),
+                  ),
+                  itemSeparatorBuilder: (context, index) => const Divider(),
+                  onSuggestionSelected: (suggestion) =>
+                      _typeAheadController.text = suggestion,
                   validator: (value) =>
                       value!.isEmpty ? 'Please select a city' : null,
                 ),
-                const SizedBox(
-                  height: 10.0,
-                ),
+                const SizedBox(height: 10.0),
                 CupertinoButton(
                   child: const Text('Submit'),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      setState(() {
-                        favoriteCity = _typeAheadController.text;
-                      });
+                      setState(() => favoriteCity = _typeAheadController.text);
                     }
                   },
                 ),
