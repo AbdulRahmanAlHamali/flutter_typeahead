@@ -127,11 +127,28 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   ) {
     Widget child;
 
-    if (layoutArchitecture != null) {
-      child = customSuggestionsWidget(context, state);
-    } else {
-      child = defaultSuggestionsWidget(context, state);
+    LayoutArchitecture? layoutArchitecture = this.layoutArchitecture;
+    layoutArchitecture ??= _defaultLayout;
+
+    Iterable<T>? suggestions = state.suggestions;
+    if (suggestions == null) {
+      throw StateError(
+        'suggestions can not be null when building '
+        'suggestions widget',
+      );
     }
+
+    child = layoutArchitecture(
+      List.generate(
+        suggestions.length,
+        (index) => _itemBuilder(
+          context,
+          suggestions.elementAt(index),
+          state.focusNodes[index],
+        ),
+      ),
+      state.scrollController,
+    );
 
     SuggestionsBoxDecoration? decoration = this.decoration;
     if (decoration != null && decoration.hasScrollbar) {
@@ -150,17 +167,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     return TextFieldTapRegion(child: child);
   }
 
-  Widget defaultSuggestionsWidget(
-    BuildContext context,
-    SuggestionsListConfigState<T> state,
-  ) {
-    Iterable<T>? suggestions = state.suggestions;
-    if (suggestions == null) {
-      throw StateError(
-        'suggestions can not be null when building '
-        'suggestions widget',
-      );
-    }
+  Widget _defaultLayout(Iterable<Widget> items, ScrollController controller) {
     return ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
@@ -168,62 +175,28 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       keyboardDismissBehavior: hideKeyboardOnDrag
           ? ScrollViewKeyboardDismissBehavior.onDrag
           : ScrollViewKeyboardDismissBehavior.manual,
-      controller: state.scrollController,
+      controller: scrollController,
       reverse: suggestionsBox.direction == AxisDirection.down
           ? false
           : suggestionsBox.autoFlipListDirection,
-      itemCount: state.suggestions!.length,
-      itemBuilder: (context, index) {
-        final suggestion = suggestions.elementAt(index);
-        final focusNode = state.focusNodes[index];
-        return TextFieldTapRegion(
-          child: InkWell(
-            focusColor: Theme.of(context).hoverColor,
-            focusNode: focusNode,
-            child: itemBuilder(context, suggestion),
-            onTap: () {
-              // we give the focus back to the text field
-              giveTextFieldFocus();
-              onSuggestionSelected?.call(suggestion);
-            },
-          ),
-        );
-      },
+      itemCount: items.length,
+      itemBuilder: (context, index) => items.elementAt(index),
       separatorBuilder: (context, index) =>
           itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
     );
   }
 
-  Widget customSuggestionsWidget(
-    BuildContext context,
-    SuggestionsListConfigState<T> state,
-  ) {
-    Iterable<T>? suggestions = state.suggestions;
-    if (suggestions == null) {
-      throw StateError(
-        'suggestions can not be null when building '
-        'suggestions widget',
-      );
-    }
-    return layoutArchitecture!(
-      List.generate(suggestions.length, (index) {
-        final suggestion = suggestions.elementAt(index);
-        final focusNode = state.focusNodes[index];
-
-        return TextFieldTapRegion(
-          child: InkWell(
-            focusColor: Theme.of(context).hoverColor,
-            focusNode: focusNode,
-            child: itemBuilder(context, suggestion),
-            onTap: () {
-              // * we give the focus back to the text field
-              giveTextFieldFocus();
-              onSuggestionSelected?.call(suggestion);
-            },
-          ),
-        );
-      }),
-      state.scrollController,
+  Widget _itemBuilder(BuildContext context, T suggestion, FocusNode focusNode) {
+    return TextFieldTapRegion(
+      child: InkWell(
+        focusColor: Theme.of(context).hoverColor,
+        focusNode: focusNode,
+        child: itemBuilder(context, suggestion),
+        onTap: () {
+          giveTextFieldFocus();
+          onSuggestionSelected?.call(suggestion);
+        },
+      ),
     );
   }
 
