@@ -15,9 +15,9 @@ class SuggestionsBox {
 
   bool isOpened = false;
   bool widgetMounted = true;
-  double maxHeight = 200.0;
-  double textBoxWidth = 100.0;
-  double textBoxHeight = 100.0;
+  double maxHeight = 200;
+  double textBoxWidth = 100;
+  double textBoxHeight = 100;
   late double directionUpOffset;
 
   SuggestionsBox(

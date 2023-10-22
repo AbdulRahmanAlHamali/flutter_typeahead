@@ -63,7 +63,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
         child = const Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(vertical: 8),
             child: CupertinoActivityIndicator(),
           ),
         );
@@ -88,13 +88,13 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
         message = 'Error: ${state.error}';
       }
       child = Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(4),
         child: Text(
           message,
           textAlign: TextAlign.start,
           style: const TextStyle(
             color: CupertinoColors.destructiveRed,
-            fontSize: 18.0,
+            fontSize: 18,
           ),
         ),
       );
@@ -114,13 +114,13 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
       child = noItemsFoundBuilder!(context);
     } else {
       child = const Padding(
-        padding: EdgeInsets.all(4.0),
+        padding: EdgeInsets.all(4),
         child: Text(
           'No Items Found!',
           textAlign: TextAlign.start,
           style: TextStyle(
             color: CupertinoColors.inactiveGray,
-            fontSize: 18.0,
+            fontSize: 18,
           ),
         ),
       );
@@ -222,7 +222,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
         color: Color(0x33000000),
         darkColor: Color(0x33FFFFFF),
       ),
-      width: 0.0,
+      width: 0,
     );
 
     return DecoratedBox(

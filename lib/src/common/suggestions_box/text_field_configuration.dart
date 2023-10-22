@@ -29,7 +29,7 @@ abstract class BaseTextFieldConfiguration {
     this.onEditingComplete,
     this.onSubmitted,
     this.onTap,
-    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.scrollPadding = const EdgeInsets.all(20),
     this.style,
     this.textAlign = TextAlign.start,
     this.textCapitalization = TextCapitalization.none,

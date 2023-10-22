@@ -84,7 +84,7 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, 61.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0, 61));
     });
 
     testWidgets(
@@ -111,7 +111,7 @@ void main() {
           find.byType(CompositedTransformFollower).last;
       final CompositedTransformFollower typeAheadSuggestionBoxTester =
           tester.widget<CompositedTransformFollower>(typeAheadSuggestionBox);
-      expect(typeAheadSuggestionBoxTester.offset, const Offset(0.0, -5.0));
+      expect(typeAheadSuggestionBoxTester.offset, const Offset(0, -5));
     });
 
     group('Scrollbar Visibility tests -', () {

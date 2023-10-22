@@ -134,7 +134,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       enabled: config.enabled,
       readOnly: config.readOnly,
       cursorWidth: config.cursorWidth,
-      cursorRadius: config.cursorRadius ?? const Radius.circular(2.0),
+      cursorRadius: config.cursorRadius ?? const Radius.circular(2),
       cursorColor: config.cursorColor,
       keyboardAppearance: config.keyboardAppearance,
       scrollPadding: config.scrollPadding,
