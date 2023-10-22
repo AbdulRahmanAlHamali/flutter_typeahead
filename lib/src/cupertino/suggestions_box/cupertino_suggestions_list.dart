@@ -63,7 +63,14 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
     this.hideKeyboardOnDrag = false,
-  });
+  })  : assert(
+          suggestionsCallback != null || suggestionsLoadMoreCallback != null,
+          'Either suggestionsCallback or suggestionsLoadMoreCallback must be provided.',
+        ),
+        assert(
+          suggestionsCallback == null || suggestionsLoadMoreCallback == null,
+          'Cannot provide both suggestionsCallback and suggestionsLoadMoreCallback.',
+        );
 
   @override
   State<CupertinoSuggestionsList<T>> createState() =>
@@ -161,14 +168,14 @@ class _CupertinoSuggestionsListState<T>
     }
   }
 
-  _scrollListener() {
+  void _scrollListener() {
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       if (_hasMoreData) {
         _suggestionsValid = false;
         _isLoadMoreRunning = true;
-        this._getSuggestions(loadType: 'append');
+        this._getSuggestions(append: true);
       }
     }
   }
@@ -179,7 +186,7 @@ class _CupertinoSuggestionsListState<T>
     _getSuggestions();
   }
 
-  Future<void> _getSuggestions({String? loadType}) async {
+  Future<void> _getSuggestions({bool? append}) async {
     if (_suggestionsValid) return;
     _suggestionsValid = true;
 
@@ -195,12 +202,13 @@ class _CupertinoSuggestionsListState<T>
       Object? error;
 
       try {
-        if (widget.suggestionsCallback != null)
+        if (widget.suggestionsCallback != null) {
           suggestions =
               await widget.suggestionsCallback!(widget.controller!.text);
-        else
+        } else {
           suggestions = await widget.suggestionsLoadMoreCallback!(
               widget.controller!.text, this._page);
+        }
       } catch (e) {
         error = e;
       }
@@ -219,7 +227,7 @@ class _CupertinoSuggestionsListState<T>
           this._isLoading = false;
           this._isLoadMoreRunning = false;
           this._page += 1;
-          if (loadType == 'append') {
+          if (append ?? false) {
             this._suggestions = [...this._suggestions!, ...suggestions!];
             if (suggestions.isEmpty) {
               _hasMoreData = false;

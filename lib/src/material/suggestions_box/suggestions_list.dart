@@ -79,10 +79,14 @@ class SuggestionsList<T> extends StatefulWidget {
     required this.onSuggestionFocus,
     required this.onKeyEvent,
     required this.hideKeyboardOnDrag,
-  }) : assert((suggestionsCallback != null &&
-                suggestionsLoadMoreCallback == null) ||
-            (suggestionsLoadMoreCallback != null &&
-                suggestionsCallback == null));
+  })  : assert(
+          suggestionsCallback != null || suggestionsLoadMoreCallback != null,
+          'Either suggestionsCallback or suggestionsLoadMoreCallback must be provided.',
+        ),
+        assert(
+          suggestionsCallback == null || suggestionsLoadMoreCallback == null,
+          'Cannot provide both suggestionsCallback and suggestionsLoadMoreCallback.',
+        );
 
   @override
   State<SuggestionsList<T>> createState() => _SuggestionsListState<T>();
@@ -209,14 +213,14 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     }
   }
 
-  _scrollListener() {
+  void _scrollListener() {
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       if (_hasMoreData) {
         _suggestionsValid = false;
         _isLoadMoreRunning = true;
-        this._getSuggestions(loadType: 'append');
+        this._getSuggestions(append: true);
       }
     }
   }
@@ -227,7 +231,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
     await _getSuggestions();
   }
 
-  Future<void> _getSuggestions({String? loadType}) async {
+  Future<void> _getSuggestions({bool? append}) async {
     if (_suggestionsValid) return;
     _suggestionsValid = true;
 
@@ -243,12 +247,13 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       Object? error;
 
       try {
-        if (widget.suggestionsCallback != null)
+        if (widget.suggestionsCallback != null) {
           suggestions =
               await widget.suggestionsCallback!(widget.controller!.text);
-        else
+        } else {
           suggestions = await widget.suggestionsLoadMoreCallback!(
               widget.controller!.text, this._page);
+        }
       } catch (e) {
         error = e;
       }
@@ -267,8 +272,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
           this._isLoading = false;
           this._isLoadMoreRunning = false;
           this._page += 1;
-          if (loadType == 'append') {
-            //List suggestionList = List.from(this._suggestions);
+          if (append ?? false) {
             this._suggestions = [...this._suggestions!, ...suggestions!];
             if (suggestions.isEmpty) {
               _hasMoreData = false;
@@ -425,17 +429,19 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
   Widget createSuggestionsWidget() {
     if (widget.layoutArchitecture == null) {
-      // return defaultSuggestionsWidget();
-      return Column(mainAxisSize: MainAxisSize.min, children: [
-        Flexible(child: defaultSuggestionsWidget()),
-        // defaultSuggestionsWidget(),
-        if (this._isLoadMoreRunning)
-          const Center(
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(child: defaultSuggestionsWidget()),
+          if (this._isLoadMoreRunning)
+            const Center(
               child: Padding(
-            padding: EdgeInsets.all(8),
-            child: CircularProgressIndicator(),
-          )),
-      ]);
+                padding: EdgeInsets.all(8),
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      );
     } else {
       return customSuggestionsWidget();
     }

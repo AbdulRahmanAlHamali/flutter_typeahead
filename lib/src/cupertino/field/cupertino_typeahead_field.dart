@@ -22,7 +22,7 @@ import 'package:flutter_typeahead/src/utils.dart';
 class CupertinoTypeAheadField<T> extends StatefulWidget {
   /// Called with the search pattern to get the search suggestions.
   ///
-  /// /// This callback must not be null. It is be called by the TypeAhead widget
+  /// This callback must not be null. It is be called by the TypeAhead widget
   /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
   /// of suggestions either synchronously, or asynchronously (as the result of a
   /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
@@ -317,9 +317,9 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
   final void Function(bool)? onSuggestionsBoxToggle;
 
   /// Creates a [CupertinoTypeAheadField]
-  CupertinoTypeAheadField.paged({
+  const CupertinoTypeAheadField.paged({
     Key? key,
-    required SuggestionsLoadMoreCallback<T> suggestionsLoadMoreCallback,
+    required SuggestionsLoadMoreCallback<T> this.suggestionsLoadMoreCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     required this.onSuggestionSelected,
@@ -349,8 +349,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.hideKeyboardOnDrag = true,
     this.onSuggestionsBoxToggle,
     this.ignoreAccessibleNavigation = false,
-  })  : this.suggestionsLoadMoreCallback = suggestionsLoadMoreCallback,
-        this.suggestionsCallback = null,
+  })  : suggestionsCallback = null,
         assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
@@ -360,9 +359,9 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
         super(key: key);
 
   /// Creates a [CupertinoTypeAheadField]
-  CupertinoTypeAheadField({
+  const CupertinoTypeAheadField({
     Key? key,
-    required SuggestionsCallback<T> suggestionsCallback,
+    required SuggestionsCallback<T> this.suggestionsCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     required this.onSuggestionSelected,
@@ -392,8 +391,7 @@ class CupertinoTypeAheadField<T> extends StatefulWidget {
     this.hideKeyboardOnDrag = true,
     this.onSuggestionsBoxToggle,
     this.ignoreAccessibleNavigation = false,
-  })  : this.suggestionsCallback = suggestionsCallback,
-        this.suggestionsLoadMoreCallback = null,
+  })  : suggestionsLoadMoreCallback = null,
         assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
@@ -487,6 +485,7 @@ class _CupertinoTypeAheadFieldState<T> extends State<CupertinoTypeAheadField<T>>
       } else {
         this._suggestionsBox!.close();
       }
+
       widget.onSuggestionsBoxToggle?.call(this._suggestionsBox!.isOpened);
     };
 

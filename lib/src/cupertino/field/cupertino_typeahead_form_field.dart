@@ -20,7 +20,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
   /// that the TypeAhead widget displays
   final CupertinoTextFieldConfiguration textFieldConfiguration;
 
-    CupertinoTypeAheadFormField.paged({
+  CupertinoTypeAheadFormField.paged({
     Key? key,
     String? initialValue,
     bool getImmediateSuggestions = false,
@@ -60,8 +60,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
     double autoFlipMinHeight = 64.0,
     int minCharsForSuggestions = 0,
     bool hideKeyboardOnDrag = false,
-  })  : 
-        assert(
+  })  : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
         super(
@@ -157,8 +156,7 @@ class CupertinoTypeAheadFormField<T> extends FormField<String> {
     double autoFlipMinHeight = 64.0,
     int minCharsForSuggestions = 0,
     bool hideKeyboardOnDrag = false,
-  })  :
-        assert(
+  })  : assert(
             initialValue == null || textFieldConfiguration.controller == null),
         assert(minCharsForSuggestions >= 0),
         super(
