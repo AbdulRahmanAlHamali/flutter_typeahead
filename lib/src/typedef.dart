@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 typedef SuggestionsCallback<T> = FutureOr<Iterable<T>> Function(String pattern);
+typedef SuggestionsLoadMoreCallback<T> = FutureOr<Iterable<T>> Function(String pattern, int? page);
 typedef ItemBuilder<T> = Widget Function(BuildContext context, T itemData);
 typedef SuggestionSelectionCallback<T> = void Function(T suggestion);
 typedef ErrorBuilder = Widget Function(BuildContext context, Object? error);

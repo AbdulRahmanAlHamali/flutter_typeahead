@@ -265,7 +265,25 @@ class TypeAheadField<T> extends StatefulWidget {
   ///   return await _getSuggestions(pattern);
   /// }
   /// ```
-  final SuggestionsCallback<T> suggestionsCallback;
+  final SuggestionsCallback<T>? suggestionsCallback;
+
+  /// Called with the search pattern with page support to get the search suggestions.
+  ///
+  /// This callback must not be null. It is be called by the TypeAhead widget
+  /// and provided with the search pattern and page index. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
+  /// of suggestions either synchronously, or asynchronously (as the result of a
+  /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
+  /// Typically, the list of suggestions should not contain more than 4 or 5
+  /// entries. These entries will then be provided to [itemBuilder] to display
+  /// the suggestions.
+  ///
+  /// Example:
+  /// ```dart
+  /// suggestionsLoadMoreCallback: (pattern, page) async {
+  ///   return await _getSuggestions(pattern, page);
+  /// }
+  /// ```
+  final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;
 
   /// Called when a suggestion is tapped.
   ///
@@ -540,12 +558,17 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool ignoreAccessibleNavigation;
 
+  //allow keyboard to show only after pressing again on textfield
+  //To make it easier to select items
+
+  final bool showKeyboadAfterPressAgain;
+
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
 
-  /// Creates a [TypeAheadField]
-  const TypeAheadField({
-    required this.suggestionsCallback,
+  /// Creates a [TypeAheadField] with page support
+  TypeAheadField.paged({
+    required SuggestionsLoadMoreCallback<T> suggestionsLoadMoreCallback,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -579,13 +602,91 @@ class TypeAheadField<T> extends StatefulWidget {
     this.onSuggestionsBoxToggle,
     this.hideKeyboardOnDrag = false,
     this.ignoreAccessibleNavigation = false,
+    this.showKeyboadAfterPressAgain = false,
     super.key,
-  })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
+  })  : this.suggestionsLoadMoreCallback = suggestionsLoadMoreCallback,
+        this.suggestionsCallback = null,
+        assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
         assert(minCharsForSuggestions >= 0),
         assert(!hideKeyboardOnDrag ||
-            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide);
+            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
+        //when using showKeyboadAfterPressAgain = true
+        //this variable should  use the default values
+        // hideKeyboardOnDrag= false
+        // hideSuggestionsOnKeyboardHide== true
+        // keepSuggestionsOnSuggestionSelected = false
+        assert(
+            !(showKeyboadAfterPressAgain &&
+                (hideKeyboardOnDrag ||
+                    !hideSuggestionsOnKeyboardHide ||
+                    keepSuggestionsOnSuggestionSelected)),
+            "Please use these options with the default value like this:\n"
+            "hideKeyboardOnDrag= false\n"
+            "hideSuggestionsOnKeyboardHide== true\n"
+            "keepSuggestionsOnSuggestionSelected = false \n");
+
+  /// Creates a [TypeAheadField]
+  TypeAheadField({
+    required SuggestionsCallback<T> suggestionsCallback,
+    required this.itemBuilder,
+    this.itemSeparatorBuilder,
+    this.layoutArchitecture,
+    this.intercepting = false,
+    required this.onSuggestionSelected,
+    this.textFieldConfiguration = const TextFieldConfiguration(),
+    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
+    this.debounceDuration = const Duration(milliseconds: 300),
+    this.suggestionsBoxController,
+    this.scrollController,
+    this.loadingBuilder,
+    this.noItemsFoundBuilder,
+    this.errorBuilder,
+    this.transitionBuilder,
+    this.animationStart = 0.25,
+    this.animationDuration = const Duration(milliseconds: 500),
+    this.getImmediateSuggestions = false,
+    this.suggestionsBoxVerticalOffset = 5.0,
+    this.direction = AxisDirection.down,
+    this.hideOnLoading = false,
+    this.hideOnEmpty = false,
+    this.hideOnError = false,
+    this.hideSuggestionsOnKeyboardHide = true,
+    this.keepSuggestionsOnLoading = true,
+    this.keepSuggestionsOnSuggestionSelected = false,
+    this.autoFlipDirection = false,
+    this.autoFlipListDirection = true,
+    this.autoFlipMinHeight = 64.0,
+    this.hideKeyboard = false,
+    this.minCharsForSuggestions = 0,
+    this.onSuggestionsBoxToggle,
+    this.hideKeyboardOnDrag = false,
+    this.ignoreAccessibleNavigation = false,
+    this.showKeyboadAfterPressAgain = false,
+    super.key,
+  })  : this.suggestionsCallback = suggestionsCallback,
+        this.suggestionsLoadMoreCallback = null,
+        assert(animationStart >= 0.0 && animationStart <= 1.0),
+        assert(
+            direction == AxisDirection.down || direction == AxisDirection.up),
+        assert(minCharsForSuggestions >= 0),
+        assert(!hideKeyboardOnDrag ||
+            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
+        //when using showKeyboadAfterPressAgain = true
+        //this variable should  use the default values
+        // hideKeyboardOnDrag= false
+        // hideSuggestionsOnKeyboardHide== true
+        // keepSuggestionsOnSuggestionSelected = false
+        assert(
+            !(showKeyboadAfterPressAgain &&
+                (hideKeyboardOnDrag ||
+                    !hideSuggestionsOnKeyboardHide ||
+                    keepSuggestionsOnSuggestionSelected)),
+            "Please use these options with the default value like this:\n"
+            "hideKeyboardOnDrag= false\n"
+            "hideSuggestionsOnKeyboardHide== true\n"
+            "keepSuggestionsOnSuggestionSelected = false \n");
 
   @override
   State<TypeAheadField<T>> createState() => _TypeAheadFieldState<T>();
@@ -607,6 +708,11 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   late VoidCallback _focusNodeListener;
 
   final LayerLink _layerLink = LayerLink();
+  // This two variables is heard by monitoring the clicks textfield
+  // only works when showKeyboadAfterPressAgain = true
+
+  bool textFieldTap = false;
+  bool showKeyboard = true;
 
   // Timer that resizes the suggestion box on each tick. Only active when the user is scrolling.
   Timer? _resizeOnScrollTimer;
@@ -702,6 +808,15 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         if (widget.hideSuggestionsOnKeyboardHide) {
           this._suggestionsBox!.close();
         }
+      }
+
+      if (_effectiveFocusNode!.hasFocus) {
+        textFieldTap = true;
+      } else {
+        setState(() {
+          showKeyboard = true;
+          textFieldTap = false;
+        });
       }
 
       widget.onSuggestionsBoxToggle?.call(this._suggestionsBox!.isOpened);
@@ -878,6 +993,20 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     );
   }
 
+  //this function  use to implement 'Show the keyboard after pressing again'
+  //functionality . by adding some checks after onTap function excuted
+  void _onTap() {
+    try {
+      widget.textFieldConfiguration.onTap!.call();
+    } catch (e) {}
+    if (widget.showKeyboadAfterPressAgain) if (_effectiveFocusNode!.hasFocus &&
+        textFieldTap) {
+      setState(() {
+        showKeyboard = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
@@ -885,42 +1014,45 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       child: PointerInterceptor(
         intercepting: widget.intercepting,
         child: TextField(
-          focusNode: this._effectiveFocusNode,
-          controller: this._effectiveController,
-          decoration: widget.textFieldConfiguration.decoration,
-          style: widget.textFieldConfiguration.style,
-          textAlign: widget.textFieldConfiguration.textAlign,
-          enabled: widget.textFieldConfiguration.enabled,
-          keyboardType: widget.textFieldConfiguration.keyboardType,
-          autofocus: widget.textFieldConfiguration.autofocus,
-          inputFormatters: widget.textFieldConfiguration.inputFormatters,
-          autocorrect: widget.textFieldConfiguration.autocorrect,
-          expands: widget.textFieldConfiguration.expands,
-          maxLines: widget.textFieldConfiguration.maxLines,
-          textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
-          minLines: widget.textFieldConfiguration.minLines,
-          maxLength: widget.textFieldConfiguration.maxLength,
-          maxLengthEnforcement:
-              widget.textFieldConfiguration.maxLengthEnforcement,
-          obscureText: widget.textFieldConfiguration.obscureText,
-          onChanged: widget.textFieldConfiguration.onChanged,
-          onSubmitted: widget.textFieldConfiguration.onSubmitted,
-          onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
-          onTap: widget.textFieldConfiguration.onTap,
-          onTapOutside: widget.textFieldConfiguration.onTapOutside,
-          scrollPadding: widget.textFieldConfiguration.scrollPadding,
-          textInputAction: widget.textFieldConfiguration.textInputAction,
-          textCapitalization: widget.textFieldConfiguration.textCapitalization,
-          keyboardAppearance: widget.textFieldConfiguration.keyboardAppearance,
-          cursorWidth: widget.textFieldConfiguration.cursorWidth,
-          cursorRadius: widget.textFieldConfiguration.cursorRadius,
-          cursorColor: widget.textFieldConfiguration.cursorColor,
-          textDirection: widget.textFieldConfiguration.textDirection,
-          enableInteractiveSelection:
-              widget.textFieldConfiguration.enableInteractiveSelection,
-          readOnly: widget.hideKeyboard,
-          autofillHints: widget.textFieldConfiguration.autofillHints,
-        ),
+            focusNode: this._effectiveFocusNode,
+            controller: this._effectiveController,
+            decoration: widget.textFieldConfiguration.decoration,
+            style: widget.textFieldConfiguration.style,
+            textAlign: widget.textFieldConfiguration.textAlign,
+            enabled: widget.textFieldConfiguration.enabled,
+            keyboardType: widget.textFieldConfiguration.keyboardType,
+            autofocus: widget.textFieldConfiguration.autofocus,
+            inputFormatters: widget.textFieldConfiguration.inputFormatters,
+            autocorrect: widget.textFieldConfiguration.autocorrect,
+            expands: widget.textFieldConfiguration.expands,
+            maxLines: widget.textFieldConfiguration.maxLines,
+            textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
+            minLines: widget.textFieldConfiguration.minLines,
+            maxLength: widget.textFieldConfiguration.maxLength,
+            maxLengthEnforcement:
+                widget.textFieldConfiguration.maxLengthEnforcement,
+            obscureText: widget.textFieldConfiguration.obscureText,
+            onChanged: widget.textFieldConfiguration.onChanged,
+            onSubmitted: widget.textFieldConfiguration.onSubmitted,
+            onEditingComplete: widget.textFieldConfiguration.onEditingComplete,
+            onTap: widget.textFieldConfiguration.onTap,
+            onTapOutside: widget.textFieldConfiguration.onTapOutside,
+            scrollPadding: widget.textFieldConfiguration.scrollPadding,
+            textInputAction: widget.textFieldConfiguration.textInputAction,
+            textCapitalization:
+                widget.textFieldConfiguration.textCapitalization,
+            keyboardAppearance:
+                widget.textFieldConfiguration.keyboardAppearance,
+            cursorWidth: widget.textFieldConfiguration.cursorWidth,
+            cursorRadius: widget.textFieldConfiguration.cursorRadius,
+            cursorColor: widget.textFieldConfiguration.cursorColor,
+            textDirection: widget.textFieldConfiguration.textDirection,
+            enableInteractiveSelection:
+                widget.textFieldConfiguration.enableInteractiveSelection,
+            readOnly: widget.showKeyboadAfterPressAgain
+                ? showKeyboard
+                : widget.hideKeyboard,
+            autofillHints: widget.textFieldConfiguration.autofillHints),
       ),
     );
   }

@@ -18,6 +18,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
+  final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;
   final ItemBuilder<T>? itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
   final LayoutArchitecture? layoutArchitecture;
@@ -53,6 +54,7 @@ class SuggestionsList<T> extends StatefulWidget {
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
+    this.suggestionsLoadMoreCallback,
     this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -77,7 +79,10 @@ class SuggestionsList<T> extends StatefulWidget {
     required this.onSuggestionFocus,
     required this.onKeyEvent,
     required this.hideKeyboardOnDrag,
-  });
+  }) : assert((suggestionsCallback != null &&
+                suggestionsLoadMoreCallback == null) ||
+            (suggestionsLoadMoreCallback != null &&
+                suggestionsCallback == null));
 
   @override
   State<SuggestionsList<T>> createState() => _SuggestionsListState<T>();
@@ -97,6 +102,9 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       widget.scrollController ?? ScrollController();
   List<FocusNode> _focusNodes = [];
   int _suggestionIndex = -1;
+  int _page = 1;
+  bool _isLoadMoreRunning = false;
+  bool _hasMoreData = true;
 
   _SuggestionsListState() {
     this._controllerListener = () {
@@ -138,12 +146,14 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
   void didUpdateWidget(SuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     widget.controller!.addListener(this._controllerListener);
+    _page = 1;
     _getSuggestions();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _page = 1;
     _getSuggestions();
   }
 
@@ -193,14 +203,31 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         _suggestionIndex = -1;
       }
     });
+
+    if (widget.suggestionsLoadMoreCallback != null) {
+      _scrollController.addListener(_scrollListener);
+    }
+  }
+
+  _scrollListener() {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      if (_hasMoreData) {
+        _suggestionsValid = false;
+        _isLoadMoreRunning = true;
+        this._getSuggestions(loadType: 'append');
+      }
+    }
   }
 
   Future<void> invalidateSuggestions() async {
     _suggestionsValid = false;
+    _page = 1;
     await _getSuggestions();
   }
 
-  Future<void> _getSuggestions() async {
+  Future<void> _getSuggestions({String? loadType}) async {
     if (_suggestionsValid) return;
     _suggestionsValid = true;
 
@@ -216,8 +243,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       Object? error;
 
       try {
-        suggestions =
-            await widget.suggestionsCallback!(widget.controller!.text);
+        if (widget.suggestionsCallback != null)
+          suggestions =
+              await widget.suggestionsCallback!(widget.controller!.text);
+        else
+          suggestions = await widget.suggestionsLoadMoreCallback!(
+              widget.controller!.text, this._page);
       } catch (e) {
         error = e;
       }
@@ -234,7 +265,18 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
           this._error = error;
           this._isLoading = false;
-          this._suggestions = suggestions;
+          this._isLoadMoreRunning = false;
+          this._page += 1;
+          if (loadType == 'append') {
+            //List suggestionList = List.from(this._suggestions);
+            this._suggestions = [...this._suggestions!, ...suggestions!];
+            if (suggestions.isEmpty) {
+              _hasMoreData = false;
+            }
+          } else {
+            this._suggestions = suggestions;
+          }
+
           _focusNodes = List.generate(
             _suggestions?.length ?? 0,
             (index) => FocusNode(onKey: (_, event) {
@@ -383,7 +425,17 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
 
   Widget createSuggestionsWidget() {
     if (widget.layoutArchitecture == null) {
-      return defaultSuggestionsWidget();
+      // return defaultSuggestionsWidget();
+      return Column(mainAxisSize: MainAxisSize.min, children: [
+        Flexible(child: defaultSuggestionsWidget()),
+        // defaultSuggestionsWidget(),
+        if (this._isLoadMoreRunning)
+          const Center(
+              child: Padding(
+            padding: EdgeInsets.all(8),
+            child: CircularProgressIndicator(),
+          )),
+      ]);
     } else {
       return customSuggestionsWidget();
     }
@@ -402,7 +454,10 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
           ? false
           : widget.suggestionsBox!.autoFlipListDirection,
       itemCount: this._suggestions!.length,
-      itemBuilder: (BuildContext context, int index) {
+      physics: widget.suggestionsLoadMoreCallback != null
+          ? const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics())
+          : null,
+      itemBuilder: (context, index) {
         final suggestion = this._suggestions!.elementAt(index);
         final focusNode = _focusNodes[index];
         return TextFieldTapRegion(

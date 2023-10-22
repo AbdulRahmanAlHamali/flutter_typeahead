@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
         scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}),
         home: DefaultTabController(
-          length: 4,
+          length: 5,
           child: Scaffold(
               appBar: AppBar(
                 leading: IconButton(
@@ -36,12 +36,16 @@ class _MyAppState extends State<MyApp> {
                     isCupertino = true;
                   }),
                 ),
-                title: const TabBar(tabs: [
-                  Tab(text: 'Example 1: Navigation'),
-                  Tab(text: 'Example 2: Form'),
-                  Tab(text: 'Example 3: Scroll'),
-                  Tab(text: 'Example 4: Alternative Layout')
-                ]),
+                title: TabBar(
+                  isScrollable: true,
+                  tabs: [
+                    Tab(text: 'Example 1: Navigation'),
+                    Tab(text: 'Example 2: Form'),
+                    Tab(text: 'Example 3: Scroll'),
+                    Tab(text: 'Example 4: Alternative Layout'),
+                    Tab(text: 'Example 5: Pull to load more')
+                  ],
+                ),
               ),
               body: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
@@ -50,6 +54,7 @@ class _MyAppState extends State<MyApp> {
                   const FormExample(),
                   ScrollExample(),
                   const AlternativeLayoutArchitecture(),
+                  const PullToLoadMorePage(),
                 ]),
               )),
         ),
@@ -70,7 +75,7 @@ class _MyAppState extends State<MyApp> {
           body: const CupertinoPageScaffold(
             child: FavoriteCitiesPage(),
           ),
-        ), //MyHomePage(),
+        ),
       );
     }
   }
@@ -281,7 +286,18 @@ class BackendService {
   static Future<List<Map<String, String>>> getSuggestions(String query) async {
     await Future<void>.delayed(const Duration(seconds: 1));
 
-    return List.generate(3, (index) {
+    return List.generate(20, (index) {
+      return {
+        'name': query + index.toString(),
+        'price': Random().nextInt(100).toString()
+      };
+    });
+  }
+
+  static Future<List<Map<String, String>>> getPagedSuggestions(String query,
+      [int? page]) async {
+    await Future<void>.delayed(Duration(seconds: 1));
+    return List.generate(20, (index) {
       return {
         'name': query + index.toString(),
         'price': Random().nextInt(100).toString()
@@ -356,7 +372,7 @@ class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
                   textFieldConfiguration: CupertinoTextFieldConfiguration(
                     controller: _typeAheadController,
                   ),
-                  suggestionsCallback: (pattern) {
+                  suggestionsCallback: (pattern, {int? page}) {
                     return Future.delayed(
                       const Duration(seconds: 1),
                       () => CitiesService.getSuggestions(pattern),
@@ -462,6 +478,68 @@ class AlternativeLayoutArchitecture extends StatelessWidget {
               elevation: 8.0,
               color: Theme.of(context).cardColor,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PullToLoadMorePage extends StatefulWidget {
+  const PullToLoadMorePage({super.key});
+  @override
+  _PullToLoadMorePage createState() => _PullToLoadMorePage();
+}
+
+class _PullToLoadMorePage extends State<PullToLoadMorePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(32.0),
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 10.0,
+          ),
+          TypeAheadField.paged(
+            textFieldConfiguration: TextFieldConfiguration(
+              autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
+              autofocus: true,
+              style: DefaultTextStyle.of(context)
+                  .style
+                  .copyWith(fontStyle: FontStyle.italic),
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'What are you looking for?'),
+            ),
+            suggestionsLoadMoreCallback: (pattern, page) async {
+              return await BackendService.getPagedSuggestions(
+                  "page${page}_$pattern", page);
+            },
+            //minCharsForSuggestions: 2,
+            itemBuilder: (context, Map<String, String> suggestion) {
+              return ListTile(
+                leading: Icon(Icons.shopping_cart),
+                title: Text(suggestion['name']!),
+                subtitle: Text('\$${suggestion['price']}'),
+              );
+            },
+            itemSeparatorBuilder: (context, index) {
+              return Divider();
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (Map<String, String> suggestion) {
+              Navigator.of(context).push<void>(MaterialPageRoute(
+                  builder: (context) => ProductPage(product: suggestion)));
+            },
+            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                elevation: 8.0,
+                color: Theme.of(context).cardColor
+                //constraints: BoxConstraints(maxHeight: 200)
+                ),
           ),
         ],
       ),
