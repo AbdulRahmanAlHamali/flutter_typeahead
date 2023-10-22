@@ -57,20 +57,11 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
       if (loadingBuilder != null) {
         child = loadingBuilder!(context);
       } else {
-        child = Container(
-          decoration: BoxDecoration(
-            color: CupertinoColors.white,
-            border: Border.all(
-              color: CupertinoColors.extraLightBackgroundGray,
-              width: 1.0,
-            ),
-          ),
-          child: const Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: CupertinoActivityIndicator(),
-            ),
+        child = const Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: CupertinoActivityIndicator(),
           ),
         );
       }
@@ -89,23 +80,14 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     if (errorBuilder != null) {
       child = errorBuilder!(context, state.error);
     } else {
-      child = Container(
-        decoration: BoxDecoration(
-          color: CupertinoColors.white,
-          border: Border.all(
-            color: CupertinoColors.extraLightBackgroundGray,
-            width: 1.0,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Text(
-            'Error: ${state.error}',
-            textAlign: TextAlign.start,
-            style: const TextStyle(
-              color: CupertinoColors.destructiveRed,
-              fontSize: 18.0,
-            ),
+      child = Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Text(
+          'Error: ${state.error}',
+          textAlign: TextAlign.start,
+          style: const TextStyle(
+            color: CupertinoColors.destructiveRed,
+            fontSize: 18.0,
           ),
         ),
       );
@@ -124,23 +106,14 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     if (noItemsFoundBuilder != null) {
       child = noItemsFoundBuilder!(context);
     } else {
-      child = Container(
-        decoration: BoxDecoration(
-          color: CupertinoColors.white,
-          border: Border.all(
-            color: CupertinoColors.extraLightBackgroundGray,
-            width: 1.0,
-          ),
-        ),
-        child: const Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Text(
-            'No Items Found!',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              color: CupertinoColors.inactiveGray,
-              fontSize: 18.0,
-            ),
+      child = const Padding(
+        padding: EdgeInsets.all(4.0),
+        child: Text(
+          'No Items Found!',
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            color: CupertinoColors.inactiveGray,
+            fontSize: 18.0,
           ),
         ),
       );
@@ -181,42 +154,30 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: decoration!.color ?? CupertinoColors.white,
-        border: decoration!.border ??
-            Border.all(
-              color: CupertinoColors.extraLightBackgroundGray,
-              width: 1.0,
-            ),
-        borderRadius: decoration!.borderRadius,
-      ),
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        primary: false,
-        shrinkWrap: true,
-        controller: state.scrollController,
-        keyboardDismissBehavior: hideKeyboardOnDrag
-            ? ScrollViewKeyboardDismissBehavior.onDrag
-            : ScrollViewKeyboardDismissBehavior.manual,
-        reverse: suggestionsBox!.direction == AxisDirection.down
-            ? false
-            : suggestionsBox!.autoFlipListDirection,
-        itemCount: state.suggestions!.length,
-        itemBuilder: (context, index) => GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: itemBuilder!(
-            context,
-            state.suggestions!.elementAt(index),
-          ),
-          onTap: () => onSuggestionSelected!(
-            state.suggestions!.elementAt(index),
-          ),
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      primary: false,
+      shrinkWrap: true,
+      controller: state.scrollController,
+      keyboardDismissBehavior: hideKeyboardOnDrag
+          ? ScrollViewKeyboardDismissBehavior.onDrag
+          : ScrollViewKeyboardDismissBehavior.manual,
+      reverse: suggestionsBox!.direction == AxisDirection.down
+          ? false
+          : suggestionsBox!.autoFlipListDirection,
+      itemCount: state.suggestions!.length,
+      itemBuilder: (context, index) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        child: itemBuilder!(
+          context,
+          state.suggestions!.elementAt(index),
         ),
-        separatorBuilder: (context, index) =>
-            itemSeparatorBuilder?.call(context, index) ??
-            const SizedBox.shrink(),
+        onTap: () => onSuggestionSelected!(
+          state.suggestions!.elementAt(index),
+        ),
       ),
+      separatorBuilder: (context, index) =>
+          itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
     );
   }
 
@@ -224,28 +185,38 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     BuildContext context,
     SuggestionsListConfigState state,
   ) {
+    return layoutArchitecture!(
+      List.generate(state.suggestions!.length, (index) {
+        final suggestion = state.suggestions!.elementAt(index);
+
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: itemBuilder!(context, suggestion),
+          onTap: () => onSuggestionSelected!(suggestion),
+        );
+      }),
+      state.scrollController,
+    );
+  }
+
+  @override
+  Widget createWidgetWrapper(
+      BuildContext context, SuggestionsListConfigState state, Widget child) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: decoration!.color ?? CupertinoColors.white,
-        border: decoration!.border ??
+        color:
+            decoration?.color ?? CupertinoTheme.of(context).barBackgroundColor,
+        border: decoration?.border ??
             Border.all(
-              color: CupertinoColors.extraLightBackgroundGray,
+              color: const CupertinoDynamicColor.withBrightness(
+                color: Color(0x33000000),
+                darkColor: Color(0x33FFFFFF),
+              ),
               width: 1.0,
             ),
-        borderRadius: decoration!.borderRadius,
+        borderRadius: decoration?.borderRadius,
       ),
-      child: layoutArchitecture!(
-        List.generate(state.suggestions!.length, (index) {
-          final suggestion = state.suggestions!.elementAt(index);
-
-          return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: itemBuilder!(context, suggestion),
-            onTap: () => onSuggestionSelected!(suggestion),
-          );
-        }),
-        state.scrollController,
-      ),
+      child: child,
     );
   }
 }
