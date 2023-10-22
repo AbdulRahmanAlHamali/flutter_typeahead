@@ -7,12 +7,12 @@ import 'package:flutter_typeahead/src/typedef.dart';
 class SuggestionsListConfig<T> {
   SuggestionsListConfig({
     required this.suggestionsBox,
+    required this.itemBuilder,
     this.controller,
     this.intercepting = false,
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
-    this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
     this.scrollController,
@@ -37,12 +37,12 @@ class SuggestionsListConfig<T> {
     required this.hideKeyboardOnDrag,
   });
 
-  final SuggestionsBox? suggestionsBox;
+  final SuggestionsBox suggestionsBox;
   final TextEditingController? controller;
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
-  final ItemBuilder<T>? itemBuilder;
+  final ItemBuilder<T> itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
   final LayoutArchitecture? layoutArchitecture;
   final ScrollController? scrollController;

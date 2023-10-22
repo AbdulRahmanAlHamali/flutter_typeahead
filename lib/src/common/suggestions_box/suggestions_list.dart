@@ -16,12 +16,12 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
   const RenderSuggestionsList({
     super.key,
     required this.suggestionsBox,
+    required this.itemBuilder,
     this.controller,
     this.intercepting = false,
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
-    this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
     this.scrollController,
@@ -46,13 +46,13 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     required this.hideKeyboardOnDrag,
   });
 
-  final SuggestionsBox? suggestionsBox;
+  final SuggestionsBox suggestionsBox;
   BaseSuggestionsBoxDecoration? get decoration;
   final TextEditingController? controller;
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
-  final ItemBuilder<T>? itemBuilder;
+  final ItemBuilder<T> itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
   final LayoutArchitecture? layoutArchitecture;
   final ScrollController? scrollController;
@@ -80,27 +80,27 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
 
   Widget createLoadingWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   );
 
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   );
 
   Widget createNoItemsFoundWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   );
 
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   );
 
   Widget createWidgetWrapper(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
     Widget child,
   ) =>
       child;
@@ -335,11 +335,11 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     BoxConstraints constraints;
     if (widget.decoration!.constraints == null) {
       constraints = BoxConstraints(
-        maxHeight: widget.suggestionsBox!.maxHeight,
+        maxHeight: widget.suggestionsBox.maxHeight,
       );
     } else {
       double maxHeight = min(widget.decoration!.constraints!.maxHeight,
-          widget.suggestionsBox!.maxHeight);
+          widget.suggestionsBox.maxHeight);
       constraints = widget.decoration!.constraints!.copyWith(
         minHeight: min(widget.decoration!.constraints!.minHeight, maxHeight),
         maxHeight: maxHeight,
