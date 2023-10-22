@@ -355,7 +355,7 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
       cursorColor: config.cursorColor,
       textDirection: config.textDirection,
       enableInteractiveSelection: config.enableInteractiveSelection,
-      readOnly: config.enabled,
+      readOnly: config.readOnly,
       autofillHints: config.autofillHints,
     );
   }

@@ -132,6 +132,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       onSubmitted: config.onSubmitted,
       inputFormatters: config.inputFormatters,
       enabled: config.enabled,
+      readOnly: config.readOnly,
       cursorWidth: config.cursorWidth,
       cursorRadius: config.cursorRadius ?? const Radius.circular(2.0),
       cursorColor: config.cursorColor,
