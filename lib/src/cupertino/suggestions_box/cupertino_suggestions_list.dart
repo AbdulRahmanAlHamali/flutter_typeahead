@@ -6,13 +6,13 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   const CupertinoSuggestionsList({
     super.key,
     required super.suggestionsBox,
+    required super.itemBuilder,
     this.decoration,
     super.controller,
     super.intercepting = false,
     super.getImmediateSuggestions = false,
     super.onSuggestionSelected,
     super.suggestionsCallback,
-    super.itemBuilder,
     super.itemSeparatorBuilder,
     super.layoutArchitecture,
     super.scrollController,
@@ -43,12 +43,15 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createLoadingWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
-    if (keepSuggestionsOnLoading! && state.suggestions != null) {
-      if (state.suggestions!.isEmpty) {
+    bool keepSuggestionsOnLoading = this.keepSuggestionsOnLoading ?? true;
+    Iterable<T>? suggestions = state.suggestions;
+
+    if (keepSuggestionsOnLoading && suggestions != null) {
+      if (suggestions.isEmpty) {
         child = createNoItemsFoundWidget(context, state);
       } else {
         child = createSuggestionsWidget(context, state);
@@ -73,17 +76,21 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
     if (errorBuilder != null) {
       child = errorBuilder!(context, state.error);
     } else {
+      String message = 'An error has occured';
+      if (state.error != null) {
+        message = 'Error: ${state.error}';
+      }
       child = Padding(
         padding: const EdgeInsets.all(4.0),
         child: Text(
-          'Error: ${state.error}',
+          message,
           textAlign: TextAlign.start,
           style: const TextStyle(
             color: CupertinoColors.destructiveRed,
@@ -99,7 +106,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createNoItemsFoundWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
@@ -125,23 +132,24 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
-    if (layoutArchitecture == null) {
-      child = defaultSuggestionsWidget(context, state);
-    } else {
+    if (layoutArchitecture != null) {
       child = customSuggestionsWidget(context, state);
+    } else {
+      child = defaultSuggestionsWidget(context, state);
     }
 
-    if (decoration!.hasScrollbar) {
+    CupertinoSuggestionsBoxDecoration? decoration = this.decoration;
+    if (decoration != null && decoration.hasScrollbar) {
       child = MediaQuery.removePadding(
         context: context,
         removeTop: true,
         child: CupertinoScrollbar(
           controller: state.scrollController,
-          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
+          thumbVisibility: decoration.scrollbarThumbAlwaysVisible,
           child: child,
         ),
       );
@@ -152,8 +160,16 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
 
   Widget defaultSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
+    Iterable<T>? suggestions = state.suggestions;
+    if (suggestions == null) {
+      throw StateError(
+        'suggestions can not be null when building '
+        'suggestions widget',
+      );
+    }
+
     return ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
@@ -162,20 +178,21 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
       keyboardDismissBehavior: hideKeyboardOnDrag
           ? ScrollViewKeyboardDismissBehavior.onDrag
           : ScrollViewKeyboardDismissBehavior.manual,
-      reverse: suggestionsBox!.direction == AxisDirection.down
+      reverse: suggestionsBox.direction == AxisDirection.down
           ? false
-          : suggestionsBox!.autoFlipListDirection,
-      itemCount: state.suggestions!.length,
-      itemBuilder: (context, index) => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        child: itemBuilder!(
-          context,
-          state.suggestions!.elementAt(index),
-        ),
-        onTap: () => onSuggestionSelected!(
-          state.suggestions!.elementAt(index),
-        ),
-      ),
+          : suggestionsBox.autoFlipListDirection,
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        final suggestion = suggestions.elementAt(index);
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: itemBuilder(
+            context,
+            suggestion,
+          ),
+          onTap: () => onSuggestionSelected?.call(suggestion),
+        );
+      },
       separatorBuilder: (context, index) =>
           itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
     );
@@ -183,16 +200,23 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
 
   Widget customSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
-    return layoutArchitecture!(
-      List.generate(state.suggestions!.length, (index) {
-        final suggestion = state.suggestions!.elementAt(index);
+    Iterable<T>? suggestions = state.suggestions;
+    if (suggestions == null) {
+      throw StateError(
+        'suggestions can not be null when building '
+        'suggestions widget',
+      );
+    }
 
+    return layoutArchitecture!(
+      List.generate(suggestions.length, (index) {
+        final suggestion = suggestions.elementAt(index);
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
-          child: itemBuilder!(context, suggestion),
-          onTap: () => onSuggestionSelected!(suggestion),
+          child: itemBuilder(context, suggestion),
+          onTap: () => onSuggestionSelected?.call(suggestion),
         );
       }),
       state.scrollController,
@@ -201,19 +225,23 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
 
   @override
   Widget createWidgetWrapper(
-      BuildContext context, SuggestionsListConfigState state, Widget child) {
+      BuildContext context, SuggestionsListConfigState<T> state, Widget child) {
+    Color? color = decoration?.color;
+    color ??= CupertinoTheme.of(context).barBackgroundColor;
+
+    BoxBorder? border = decoration?.border;
+    border ??= Border.all(
+      color: const CupertinoDynamicColor.withBrightness(
+        color: Color(0x33000000),
+        darkColor: Color(0x33FFFFFF),
+      ),
+      width: 0.0,
+    );
+
     return DecoratedBox(
       decoration: BoxDecoration(
-        color:
-            decoration?.color ?? CupertinoTheme.of(context).barBackgroundColor,
-        border: decoration?.border ??
-            Border.all(
-              color: const CupertinoDynamicColor.withBrightness(
-                color: Color(0x33000000),
-                darkColor: Color(0x33FFFFFF),
-              ),
-              width: 1.0,
-            ),
+        color: color,
+        border: border,
         borderRadius: decoration?.borderRadius,
       ),
       child: child,

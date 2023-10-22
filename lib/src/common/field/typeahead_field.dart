@@ -365,7 +365,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
       _keyboardSuggestionSelectionNotifier =
       KeyboardSuggestionSelectionNotifier();
   TextEditingController? _textEditingController;
-  SuggestionsBox? _suggestionsBox;
+  late final SuggestionsBox _suggestionsBox;
 
   TextEditingController? get _effectiveController =>
       widget.textFieldConfiguration.controller ?? _textEditingController;
@@ -395,13 +395,13 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
   @override
   void didChangeMetrics() {
     // Catch keyboard event and orientation change; resize suggestions list
-    _suggestionsBox!.onChangeMetrics();
+    _suggestionsBox.onChangeMetrics();
   }
 
   @override
   void dispose() {
-    _suggestionsBox!.close();
-    _suggestionsBox!.widgetMounted = false;
+    _suggestionsBox.close();
+    _suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibilitySubscription?.cancel();
     _effectiveFocusNode!.removeListener(_focusNodeListener);
@@ -426,7 +426,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
   void _onSuggestionSelected(T selection) {
     if (!widget.keepSuggestionsOnSuggestionSelected) {
       _effectiveFocusNode!.unfocus();
-      _suggestionsBox!.close();
+      _suggestionsBox.close();
     }
     widget.onSuggestionSelected(selection);
   }
@@ -471,14 +471,14 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
 
     _focusNodeListener = () {
       if (_effectiveFocusNode!.hasFocus) {
-        _suggestionsBox!.open();
+        _suggestionsBox.open();
       } else if (!_areSuggestionsFocused) {
         if (widget.hideSuggestionsOnKeyboardHide) {
-          _suggestionsBox!.close();
+          _suggestionsBox.close();
         }
       }
 
-      widget.onSuggestionsBoxToggle?.call(_suggestionsBox!.isOpened);
+      widget.onSuggestionsBoxToggle?.call(_suggestionsBox.isOpened);
     };
 
     _effectiveFocusNode!.addListener(_focusNodeListener);
@@ -494,11 +494,11 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
       if (mounted) {
         _initOverlayEntry();
         // calculate initial suggestions list size
-        _suggestionsBox!.resize();
+        _suggestionsBox.resize();
 
         // in case we already missed the focus event
         if (_effectiveFocusNode!.hasFocus) {
-          _suggestionsBox!.open();
+          _suggestionsBox.open();
         }
       }
     });
@@ -524,16 +524,16 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
       // Scroll started
       _resizeOnScrollTimer =
           Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
-        _suggestionsBox!.resize();
+        _suggestionsBox.resize();
       });
     } else {
       // Scroll finished
-      _suggestionsBox!.resize();
+      _suggestionsBox.resize();
     }
   }
 
   void _initOverlayEntry() {
-    _suggestionsBox!.overlayEntry = OverlayEntry(
+    _suggestionsBox.overlayEntry = OverlayEntry(
       builder: (context) {
         void giveTextFieldFocus() {
           _effectiveFocusNode?.requestFocus();
@@ -566,7 +566,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
             itemBuilder: widget.itemBuilder,
             itemSeparatorBuilder: widget.itemSeparatorBuilder,
             layoutArchitecture: widget.layoutArchitecture,
-            direction: _suggestionsBox!.direction,
+            direction: _suggestionsBox.direction,
             hideOnLoading: widget.hideOnLoading,
             hideOnEmpty: widget.hideOnEmpty,
             hideOnError: widget.hideOnError,
@@ -583,7 +583,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
           ),
         );
 
-        double w = _suggestionsBox!.textBoxWidth;
+        double w = _suggestionsBox.textBoxWidth;
         BoxConstraints? constraints =
             widget.suggestionsBoxDecoration?.constraints;
         if (constraints != null) {
@@ -603,11 +603,11 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
           showWhenUnlinked: false,
           offset: Offset(
               widget.suggestionsBoxDecoration?.offsetX ?? 0.0,
-              _suggestionsBox!.direction == AxisDirection.down
-                  ? _suggestionsBox!.textBoxHeight +
+              _suggestionsBox.direction == AxisDirection.down
+                  ? _suggestionsBox.textBoxHeight +
                       widget.suggestionsBoxVerticalOffset
                   : -widget.suggestionsBoxVerticalOffset),
-          child: _suggestionsBox!.direction == AxisDirection.down
+          child: _suggestionsBox.direction == AxisDirection.down
               ? suggestionsList
               : FractionalTranslation(
                   translation:

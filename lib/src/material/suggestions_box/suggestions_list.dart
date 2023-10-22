@@ -6,13 +6,13 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   const SuggestionsList({
     super.key,
     required super.suggestionsBox,
+    required super.itemBuilder,
     this.decoration,
     super.controller,
     super.intercepting = false,
     super.getImmediateSuggestions = false,
     super.onSuggestionSelected,
     super.suggestionsCallback,
-    super.itemBuilder,
     super.itemSeparatorBuilder,
     super.layoutArchitecture,
     super.scrollController,
@@ -43,7 +43,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createLoadingWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
@@ -73,17 +73,21 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
     if (errorBuilder != null) {
       child = errorBuilder!(context, state.error);
     } else {
+      String message = 'An error has occured';
+      if (state.error != null) {
+        message = 'Error: ${state.error}';
+      }
       child = Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          'Error: ${state.error}',
+          message,
           style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       );
@@ -95,7 +99,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createNoItemsFoundWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
@@ -119,24 +123,25 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
     Widget child;
 
-    if (layoutArchitecture == null) {
-      child = defaultSuggestionsWidget(context, state);
-    } else {
+    if (layoutArchitecture != null) {
       child = customSuggestionsWidget(context, state);
+    } else {
+      child = defaultSuggestionsWidget(context, state);
     }
 
-    if (decoration!.hasScrollbar) {
+    SuggestionsBoxDecoration? decoration = this.decoration;
+    if (decoration != null && decoration.hasScrollbar) {
       child = MediaQuery.removePadding(
         context: context,
         removeTop: true,
         child: Scrollbar(
           controller: state.scrollController,
-          thumbVisibility: decoration!.scrollbarThumbAlwaysVisible,
-          trackVisibility: decoration!.scrollbarTrackAlwaysVisible,
+          thumbVisibility: decoration.scrollbarThumbAlwaysVisible,
+          trackVisibility: decoration.scrollbarTrackAlwaysVisible,
           child: child,
         ),
       );
@@ -147,8 +152,15 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
 
   Widget defaultSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
+    Iterable<T>? suggestions = state.suggestions;
+    if (suggestions == null) {
+      throw StateError(
+        'suggestions can not be null when building '
+        'suggestions widget',
+      );
+    }
     return ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
@@ -157,22 +169,22 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
           ? ScrollViewKeyboardDismissBehavior.onDrag
           : ScrollViewKeyboardDismissBehavior.manual,
       controller: state.scrollController,
-      reverse: suggestionsBox!.direction == AxisDirection.down
+      reverse: suggestionsBox.direction == AxisDirection.down
           ? false
-          : suggestionsBox!.autoFlipListDirection,
+          : suggestionsBox.autoFlipListDirection,
       itemCount: state.suggestions!.length,
       itemBuilder: (context, index) {
-        final suggestion = state.suggestions!.elementAt(index);
+        final suggestion = suggestions.elementAt(index);
         final focusNode = state.focusNodes[index];
         return TextFieldTapRegion(
           child: InkWell(
             focusColor: Theme.of(context).hoverColor,
             focusNode: focusNode,
-            child: itemBuilder!(context, suggestion),
+            child: itemBuilder(context, suggestion),
             onTap: () {
               // we give the focus back to the text field
               giveTextFieldFocus();
-              onSuggestionSelected!(suggestion);
+              onSuggestionSelected?.call(suggestion);
             },
           ),
         );
@@ -184,22 +196,29 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
 
   Widget customSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
   ) {
+    Iterable<T>? suggestions = state.suggestions;
+    if (suggestions == null) {
+      throw StateError(
+        'suggestions can not be null when building '
+        'suggestions widget',
+      );
+    }
     return layoutArchitecture!(
-      List.generate(state.suggestions!.length, (index) {
-        final suggestion = state.suggestions!.elementAt(index);
+      List.generate(suggestions.length, (index) {
+        final suggestion = suggestions.elementAt(index);
         final focusNode = state.focusNodes[index];
 
         return TextFieldTapRegion(
           child: InkWell(
             focusColor: Theme.of(context).hoverColor,
             focusNode: focusNode,
-            child: itemBuilder!(context, suggestion),
+            child: itemBuilder(context, suggestion),
             onTap: () {
               // * we give the focus back to the text field
               giveTextFieldFocus();
-              onSuggestionSelected!(suggestion);
+              onSuggestionSelected?.call(suggestion);
             },
           ),
         );
@@ -211,7 +230,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   @override
   Widget createWidgetWrapper(
     BuildContext context,
-    SuggestionsListConfigState state,
+    SuggestionsListConfigState<T> state,
     Widget child,
   ) {
     return Material(
