@@ -215,12 +215,12 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     Widget child,
   ) {
     return Material(
-      elevation: decoration!.elevation,
-      color: decoration!.color,
-      shape: decoration!.shape,
-      borderRadius: decoration!.borderRadius,
-      shadowColor: decoration!.shadowColor,
-      clipBehavior: decoration!.clipBehavior,
+      elevation: decoration?.elevation ?? 0,
+      color: decoration?.color,
+      shape: decoration?.shape,
+      borderRadius: decoration?.borderRadius,
+      shadowColor: decoration?.shadowColor,
+      clipBehavior: decoration?.clipBehavior ?? Clip.none,
       child: child,
     );
   }

@@ -57,6 +57,9 @@ class _MyAppState extends State<MyApp> {
     } else {
       return CupertinoApp(
         title: 'Cupertino demo',
+        theme: const CupertinoThemeData(
+          brightness: Brightness.light,
+        ),
         home: Scaffold(
           appBar: CupertinoNavigationBar(
             leading: IconButton(
