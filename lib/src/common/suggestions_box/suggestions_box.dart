@@ -2,7 +2,19 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
 
 class SuggestionsBox {
-  static const int waitMetricsTimeoutMillis = 1000;
+  SuggestionsBox(
+    this.context,
+    this.direction,
+    this.autoFlipDirection,
+    this.autoFlipListDirection,
+    this.autoFlipMinHeight,
+  )   : desiredDirection = direction,
+        assert(
+          direction == AxisDirection.down || direction == AxisDirection.up,
+          'SuggestionsBox direction must be either AxisDirection.down or AxisDirection.up',
+        );
+
+  static const int _waitMetricsTimeoutMillis = 1000;
 
   final BuildContext context;
   final AxisDirection desiredDirection;
@@ -13,34 +25,36 @@ class SuggestionsBox {
   OverlayEntry? overlayEntry;
   AxisDirection direction;
 
-  bool isOpened = false;
-  bool widgetMounted = true;
+  bool _isOpened = false;
+  bool get isOpened => _isOpened;
+
   double maxHeight = 200;
   double textBoxWidth = 100;
   double textBoxHeight = 100;
   late double directionUpOffset;
 
-  SuggestionsBox(
-    this.context,
-    this.direction,
-    this.autoFlipDirection,
-    this.autoFlipListDirection,
-    this.autoFlipMinHeight,
-  ) : desiredDirection = direction;
+  void _assertInitialized() {
+    if (overlayEntry == null) {
+      throw StateError(
+        'SuggestionsBox must be initialized '
+        'before calling this method',
+      );
+    }
+  }
 
   void open() {
+    _assertInitialized();
     if (isOpened) return;
-    assert(overlayEntry != null);
     resize();
     Overlay.of(context).insert(overlayEntry!);
-    isOpened = true;
+    _isOpened = true;
   }
 
   void close() {
+    _assertInitialized();
     if (!isOpened) return;
-    assert(overlayEntry != null);
     overlayEntry!.remove();
-    isOpened = false;
+    _isOpened = false;
   }
 
   void toggle() {
@@ -51,48 +65,10 @@ class SuggestionsBox {
     }
   }
 
-  MediaQuery? _findRootMediaQuery() {
-    MediaQuery? rootMediaQuery;
-    context.visitAncestorElements((element) {
-      if (element.widget is MediaQuery) {
-        rootMediaQuery = element.widget as MediaQuery;
-      }
-      return true;
-    });
-
-    return rootMediaQuery;
-  }
-
-  /// Delays until the keyboard has toggled or the orientation has fully changed
-  Future<bool> _waitChangeMetrics() async {
-    if (widgetMounted) {
-      // initial viewInsets which are before the keyboard is toggled
-      EdgeInsets initial = MediaQuery.of(context).viewInsets;
-      // initial MediaQuery for orientation change
-      MediaQuery? initialRootMediaQuery = _findRootMediaQuery();
-
-      int timer = 0;
-      // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
-      while (widgetMounted && timer < waitMetricsTimeoutMillis) {
-        // TODO: reduce delay if showDialog ever exposes detection of animation end
-        await Future<void>.delayed(const Duration(milliseconds: 170));
-        timer += 170;
-
-        if (widgetMounted &&
-            (MediaQuery.of(context).viewInsets != initial ||
-                _findRootMediaQuery() != initialRootMediaQuery)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
   void resize() {
     // check to see if widget is still mounted
     // user may have closed the widget with the keyboard still open
-    if (widgetMounted) {
+    if (context.mounted) {
       _adjustMaxHeightAndOrientation();
       overlayEntry!.markNeedsBuild();
     }
@@ -104,9 +80,7 @@ class SuggestionsBox {
     BaseTypeAheadField widget = context.widget as BaseTypeAheadField;
 
     RenderBox? box = context.findRenderObject() as RenderBox?;
-    if (box == null || box.hasSize == false) {
-      return;
-    }
+    if (box == null || !box.hasSize) return;
 
     textBoxWidth = box.size.width;
     textBoxHeight = box.size.height;
@@ -219,9 +193,47 @@ class SuggestionsBox {
             2 * widget.suggestionsBoxVerticalOffset;
   }
 
-  Future<void> onChangeMetrics() async {
-    if (await _waitChangeMetrics()) {
+  Future<void> updateDimensions() async {
+    if (await _updateDimensions()) {
       resize();
     }
+  }
+
+  /// Delays until the keyboard has toggled or the orientation has fully changed
+  Future<bool> _updateDimensions() async {
+    if (context.mounted) {
+      // initial viewInsets which are before the keyboard is toggled
+      EdgeInsets initial = MediaQuery.of(context).viewInsets;
+      // initial MediaQuery for orientation change
+      MediaQuery? initialRootMediaQuery = _findRootMediaQuery();
+
+      int timer = 0;
+      // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
+      while (context.mounted && timer < _waitMetricsTimeoutMillis) {
+        // TODO: reduce delay if showDialog ever exposes detection of animation end
+        await Future<void>.delayed(const Duration(milliseconds: 170));
+        timer += 170;
+
+        if (context.mounted &&
+            (MediaQuery.of(context).viewInsets != initial ||
+                _findRootMediaQuery() != initialRootMediaQuery)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  MediaQuery? _findRootMediaQuery() {
+    MediaQuery? rootMediaQuery;
+    context.visitAncestorElements((element) {
+      if (element.widget is MediaQuery) {
+        rootMediaQuery = element.widget as MediaQuery;
+      }
+      return true;
+    });
+
+    return rootMediaQuery;
   }
 }

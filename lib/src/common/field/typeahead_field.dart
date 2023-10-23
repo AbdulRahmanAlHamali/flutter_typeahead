@@ -49,8 +49,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
     this.ignoreAccessibleNavigation = false,
     super.key,
   })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
-        assert(
-            direction == AxisDirection.down || direction == AxisDirection.up),
         assert(minCharsForSuggestions >= 0),
         assert(!hideKeyboardOnDrag ||
             hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide);
@@ -395,13 +393,12 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
   @override
   void didChangeMetrics() {
     // Catch keyboard event and orientation change; resize suggestions list
-    _suggestionsBox.onChangeMetrics();
+    _suggestionsBox.updateDimensions();
   }
 
   @override
   void dispose() {
     _suggestionsBox.close();
-    _suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibilitySubscription?.cancel();
     _effectiveFocusNode!.removeListener(_focusNodeListener);
