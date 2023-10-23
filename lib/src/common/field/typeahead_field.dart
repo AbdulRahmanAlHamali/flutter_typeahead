@@ -356,14 +356,15 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
 
 class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     with WidgetsBindingObserver {
-  FocusNode? _focusNode;
-  TextEditingController? _textEditingController;
   late final SuggestionsBox _suggestionsBox;
 
-  TextEditingController? get _effectiveController =>
-      widget.textFieldConfiguration.controller ?? _textEditingController;
-  FocusNode? get _effectiveFocusNode =>
-      widget.textFieldConfiguration.focusNode ?? _focusNode;
+  TextEditingController? _textEditingController;
+  TextEditingController get _effectiveController =>
+      widget.textFieldConfiguration.controller ?? _textEditingController!;
+
+  FocusNode? _focusNode;
+  FocusNode get _effectiveFocusNode =>
+      widget.textFieldConfiguration.focusNode ?? _focusNode!;
   late VoidCallback _focusNodeListener;
 
   final LayerLink _layerLink = LayerLink();
@@ -386,38 +387,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
           textFieldFocusNode: _effectiveFocusNode);
 
   @override
-  void didChangeMetrics() {
-    // Catch keyboard event and orientation change; resize suggestions list
-    _suggestionsBox.updateDimensions();
-  }
-
-  @override
-  void dispose() {
-    _suggestionsBox.dispose();
-    WidgetsBinding.instance.removeObserver(this);
-    _keyboardVisibilitySubscription?.cancel();
-    _effectiveFocusNode!.removeListener(_focusNodeListener);
-    _focusNode?.dispose();
-    _resizeOnScrollTimer?.cancel();
-    _scrollPosition?.removeListener(_scrollResizeListener);
-    _textEditingController?.dispose();
-    super.dispose();
-  }
-
-  KeyEventResult _onKeyEvent(FocusNode _, RawKeyEvent event) {
-    _suggestionsBox.onKeyEvent(event.logicalKey);
-    return KeyEventResult.ignored;
-  }
-
-  void _onSuggestionSelected(T selection) {
-    if (!widget.keepSuggestionsOnSuggestionSelected) {
-      _effectiveFocusNode!.unfocus();
-      _suggestionsBox.close();
-    }
-    widget.onSuggestionSelected(selection);
-  }
-
-  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -429,14 +398,9 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     final textFieldConfigurationFocusNode =
         widget.textFieldConfiguration.focusNode;
     if (textFieldConfigurationFocusNode == null) {
-      _focusNode = FocusNode(onKey: _onKeyEvent);
-    } else {
-      final previousOnKey = textFieldConfigurationFocusNode.onKey;
-      textFieldConfigurationFocusNode.onKey = ((node, event) {
-        final keyEventResult = _onKeyEvent(node, event);
-        return previousOnKey?.call(node, event) ?? keyEventResult;
-      });
+      _focusNode = FocusNode();
     }
+    _registerFocusNode(_effectiveFocusNode);
 
     _suggestionsBox = SuggestionsBox(
       context,
@@ -450,7 +414,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     widget.suggestionsBoxController?.effectiveFocusNode = _effectiveFocusNode;
 
     _focusNodeListener = () {
-      if (_effectiveFocusNode!.hasFocus) {
+      if (_effectiveFocusNode.hasFocus) {
         _suggestionsBox.open();
       } else if (!_areSuggestionsFocused) {
         if (widget.hideSuggestionsOnKeyboardHide) {
@@ -461,12 +425,12 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
       widget.onSuggestionsBoxToggle?.call(_suggestionsBox.isOpened);
     };
 
-    _effectiveFocusNode!.addListener(_focusNodeListener);
+    _effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
     _keyboardVisibilitySubscription = _keyboardVisibility?.listen((isVisible) {
       if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
-        _effectiveFocusNode!.unfocus();
+        _effectiveFocusNode.unfocus();
       }
     });
 
@@ -477,7 +441,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
         _suggestionsBox.resize();
 
         // in case we already missed the focus event
-        if (_effectiveFocusNode!.hasFocus) {
+        if (_effectiveFocusNode.hasFocus) {
           _suggestionsBox.open();
         }
       }
@@ -485,16 +449,77 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
   }
 
   @override
+  void didUpdateWidget(covariant BaseTypeAheadField<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final controller = widget.textFieldConfiguration.controller;
+    final oldController = oldWidget.textFieldConfiguration.controller;
+    if (controller != oldController) {
+      if (controller == null) {
+        _textEditingController = TextEditingController();
+      } else {
+        _textEditingController?.dispose();
+        _textEditingController = null;
+      }
+    }
+
+    final focusNode = widget.textFieldConfiguration.focusNode;
+    final oldFocusNode = oldWidget.textFieldConfiguration.focusNode;
+    if (focusNode != oldFocusNode) {
+      if (focusNode == null) {
+        _focusNode = FocusNode();
+      }
+      _registerFocusNode(_effectiveFocusNode);
+    }
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final scrollableState = Scrollable.maybeOf(context);
-    if (scrollableState != null) {
-      // The TypeAheadField is inside a scrollable widget
-      _scrollPosition = scrollableState.position;
+    _scrollPosition?.removeListener(_scrollResizeListener);
+    _scrollPosition = scrollableState?.position;
+    _scrollPosition?.isScrollingNotifier.addListener(_scrollResizeListener);
+  }
 
-      _scrollPosition!.removeListener(_scrollResizeListener);
-      _scrollPosition!.isScrollingNotifier.addListener(_scrollResizeListener);
+  @override
+  void didChangeMetrics() {
+    // Catch keyboard event and orientation change; resize suggestions list
+    _suggestionsBox.updateDimensions();
+  }
+
+  @override
+  void dispose() {
+    _suggestionsBox.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _keyboardVisibilitySubscription?.cancel();
+    _effectiveFocusNode.removeListener(_focusNodeListener);
+    _focusNode?.dispose();
+    _resizeOnScrollTimer?.cancel();
+    _scrollPosition?.removeListener(_scrollResizeListener);
+    _textEditingController?.dispose();
+    super.dispose();
+  }
+
+  KeyEventResult _onKeyEvent(FocusNode _, RawKeyEvent event) {
+    _suggestionsBox.onKeyEvent(event.logicalKey);
+    return KeyEventResult.ignored;
+  }
+
+  void _registerFocusNode(FocusNode focusNode) {
+    final previousOnKey = focusNode.onKey;
+    focusNode.onKey = ((node, event) {
+      final keyEventResult = _onKeyEvent(node, event);
+      return previousOnKey?.call(node, event) ?? keyEventResult;
+    });
+  }
+
+  void _onSuggestionSelected(T selection) {
+    if (!widget.keepSuggestionsOnSuggestionSelected) {
+      _effectiveFocusNode.unfocus();
+      _suggestionsBox.close();
     }
+    widget.onSuggestionSelected(selection);
   }
 
   void _scrollResizeListener() {
@@ -516,7 +541,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     _suggestionsBox.overlayEntry = OverlayEntry(
       builder: (context) {
         void giveTextFieldFocus() {
-          _effectiveFocusNode?.requestFocus();
+          _effectiveFocusNode.requestFocus();
           _areSuggestionsFocused = false;
         }
 

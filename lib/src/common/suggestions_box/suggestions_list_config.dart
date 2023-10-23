@@ -7,7 +7,7 @@ class SuggestionsListConfig<T> {
   SuggestionsListConfig({
     required this.suggestionsBox,
     required this.itemBuilder,
-    this.controller,
+    required this.controller,
     this.intercepting = false,
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
@@ -36,7 +36,7 @@ class SuggestionsListConfig<T> {
   });
 
   final SuggestionsBox suggestionsBox;
-  final TextEditingController? controller;
+  final TextEditingController controller;
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
