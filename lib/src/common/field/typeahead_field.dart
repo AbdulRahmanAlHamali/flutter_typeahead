@@ -7,7 +7,6 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dec
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
-import 'package:flutter_typeahead/src/utils.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 abstract class BaseTypeAheadField<T> extends StatefulWidget {
@@ -377,8 +376,8 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
   ScrollPosition? _scrollPosition;
 
   // Keyboard detection
-  final Stream<bool>? _keyboardVisibility =
-      (supportedPlatform) ? KeyboardVisibilityController().onChange : null;
+  final Stream<bool> _keyboardVisibility =
+      KeyboardVisibilityController().onChange;
   late StreamSubscription<bool>? _keyboardVisibilitySubscription;
 
   bool _areSuggestionsFocused = false;
@@ -428,7 +427,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     _effectiveFocusNode.addListener(_focusNodeListener);
 
     // hide suggestions box on keyboard closed
-    _keyboardVisibilitySubscription = _keyboardVisibility?.listen((isVisible) {
+    _keyboardVisibilitySubscription = _keyboardVisibility.listen((isVisible) {
       if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
         _effectiveFocusNode.unfocus();
       }

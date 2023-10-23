@@ -113,10 +113,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
 
   Object? _error;
 
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: widget.animationDuration,
-  );
+  late final AnimationController _animationController;
 
   late final ScrollController _scrollController =
       widget.scrollController ?? ScrollController();
@@ -133,6 +130,11 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   @override
   void initState() {
     super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: widget.animationDuration,
+    );
 
     _lastTextValue = widget.controller.text;
 
@@ -228,6 +230,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   }
 
   Future<void> _loadSuggestions() async {
+    if (!context.mounted) return;
     if (_suggestionsValid) return;
     _suggestionsValid = true;
 

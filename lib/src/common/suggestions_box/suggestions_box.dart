@@ -34,7 +34,6 @@ class SuggestionsBox {
   double maxHeight = 200;
   double textBoxWidth = 100;
   double textBoxHeight = 100;
-  late double directionUpOffset;
 
   final StreamController<LogicalKeyboardKey> _keyEventController =
       StreamController<LogicalKeyboardKey>.broadcast();
@@ -186,10 +185,6 @@ class SuggestionsBox {
   ) {
     // recalculate keyboard absolute y value
     double keyboardAbsY = windowHeight - keyboardHeight;
-
-    directionUpOffset = textBoxAbsY > keyboardAbsY
-        ? keyboardAbsY - textBoxAbsY - widget.suggestionsBoxVerticalOffset
-        : -widget.suggestionsBoxVerticalOffset;
 
     // unsafe area, ie: iPhone X notch
     double unsafeAreaHeight = rootMediaQuery.data.padding.top;
