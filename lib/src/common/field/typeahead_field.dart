@@ -131,12 +131,13 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
   final SuggestionsBoxController? suggestionsBoxController;
 
   /// The duration to wait after the user stops typing before calling
-  /// [suggestionsCallback]
+  /// [suggestionsCallback].
   ///
-  /// This is useful, because, if not set, a request for suggestions will be
-  /// sent for every character that the user types.
+  /// This prevents making unnecessary calls to [suggestionsCallback] while the
+  /// user is still typing.
   ///
-  /// This duration is set by default to 300 milliseconds
+  /// This is 300 milliseconds by default.
+  /// If you wish to immediately get suggestions, use `Duration.zero`.
   final Duration debounceDuration;
 
   /// Called when waiting for [suggestionsCallback] to return.
@@ -500,15 +501,10 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     super.dispose();
   }
 
-  KeyEventResult _onKeyEvent(FocusNode _, RawKeyEvent event) {
-    _suggestionsBox.onKeyEvent(event.logicalKey);
-    return KeyEventResult.ignored;
-  }
-
   void _registerFocusNode(FocusNode focusNode) {
     final previousOnKey = focusNode.onKey;
     focusNode.onKey = ((node, event) {
-      final keyEventResult = _onKeyEvent(node, event);
+      final keyEventResult = _suggestionsBox.onKeyEvent(node, event);
       return previousOnKey?.call(node, event) ?? keyEventResult;
     });
   }
@@ -580,7 +576,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
                 _shouldRefreshSuggestionsFocusIndex,
             giveTextFieldFocus: giveTextFieldFocus,
             onSuggestionFocus: onSuggestionFocus,
-            onKeyEvent: _onKeyEvent,
             hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
           ),
         );

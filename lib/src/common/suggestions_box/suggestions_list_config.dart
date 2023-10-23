@@ -31,7 +31,6 @@ class SuggestionsListConfig<T> {
     required this.shouldRefreshSuggestionFocusIndexNotifier,
     required this.giveTextFieldFocus,
     required this.onSuggestionFocus,
-    required this.onKeyEvent,
     required this.hideKeyboardOnDrag,
   });
 
@@ -62,6 +61,5 @@ class SuggestionsListConfig<T> {
       shouldRefreshSuggestionFocusIndexNotifier;
   final VoidCallback giveTextFieldFocus;
   final VoidCallback onSuggestionFocus;
-  final FocusOnKeyCallback onKeyEvent;
   final bool hideKeyboardOnDrag;
 }

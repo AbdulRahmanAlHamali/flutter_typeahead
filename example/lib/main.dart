@@ -103,15 +103,13 @@ class NavigationExample extends StatelessWidget {
             ),
             suggestionsCallback: (pattern) =>
                 BackendService.getSuggestions(pattern),
-            itemBuilder: (context, Map<String, String> suggestion) {
-              return ListTile(
-                leading: const Icon(Icons.shopping_cart),
-                title: Text(suggestion['name']!),
-                subtitle: Text('\$${suggestion['price']}'),
-              );
-            },
+            itemBuilder: (context, suggestion) => ListTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: Text(suggestion['name']!),
+              subtitle: Text('\$${suggestion['price']}'),
+            ),
             itemSeparatorBuilder: (context, index) => const Divider(height: 1),
-            onSuggestionSelected: (Map<String, String> suggestion) {
+            onSuggestionSelected: (suggestion) {
               Navigator.of(context).push<void>(
                 MaterialPageRoute(
                   builder: (context) => ProductPage(product: suggestion),
@@ -212,6 +210,7 @@ class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Product')),
       body: Padding(
         padding: const EdgeInsets.all(50.0),
         child: Column(

@@ -10,7 +10,6 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     required super.controller,
     this.decoration,
     super.intercepting = false,
-    super.getImmediateSuggestions = false,
     super.onSuggestionSelected,
     super.suggestionsCallback,
     super.itemSeparatorBuilder,
@@ -32,7 +31,6 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     required super.shouldRefreshSuggestionFocusIndexNotifier,
     required super.giveTextFieldFocus,
     required super.onSuggestionFocus,
-    required super.onKeyEvent,
     required super.hideKeyboardOnDrag,
   });
 
