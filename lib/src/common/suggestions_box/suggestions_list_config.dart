@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
-import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
@@ -29,7 +28,6 @@ class SuggestionsListConfig<T> {
     this.hideOnError,
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
-    required this.keyboardSuggestionSelectionNotifier,
     required this.shouldRefreshSuggestionFocusIndexNotifier,
     required this.giveTextFieldFocus,
     required this.onSuggestionFocus,
@@ -60,7 +58,6 @@ class SuggestionsListConfig<T> {
   final bool? hideOnError;
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
-  final KeyboardSuggestionSelectionNotifier keyboardSuggestionSelectionNotifier;
   final ShouldRefreshSuggestionFocusIndexNotifier
       shouldRefreshSuggestionFocusIndexNotifier;
   final VoidCallback giveTextFieldFocus;

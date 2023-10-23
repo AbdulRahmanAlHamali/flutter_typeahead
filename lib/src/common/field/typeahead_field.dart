@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
-import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 import 'package:flutter_typeahead/src/utils.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
@@ -359,9 +357,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
 class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     with WidgetsBindingObserver {
   FocusNode? _focusNode;
-  final KeyboardSuggestionSelectionNotifier
-      _keyboardSuggestionSelectionNotifier =
-      KeyboardSuggestionSelectionNotifier();
   TextEditingController? _textEditingController;
   late final SuggestionsBox _suggestionsBox;
 
@@ -398,7 +393,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
 
   @override
   void dispose() {
-    _suggestionsBox.close();
+    _suggestionsBox.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibilitySubscription?.cancel();
     _effectiveFocusNode!.removeListener(_focusNodeListener);
@@ -406,17 +401,11 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     _resizeOnScrollTimer?.cancel();
     _scrollPosition?.removeListener(_scrollResizeListener);
     _textEditingController?.dispose();
-    _keyboardSuggestionSelectionNotifier.dispose();
     super.dispose();
   }
 
   KeyEventResult _onKeyEvent(FocusNode _, RawKeyEvent event) {
-    if (event.isKeyPressed(LogicalKeyboardKey.arrowUp) ||
-        event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-      // do nothing to avoid puzzling users until keyboard arrow nav is implemented
-    } else {
-      _keyboardSuggestionSelectionNotifier.onKeyboardEvent(event);
-    }
+    _suggestionsBox.onKeyEvent(event.logicalKey);
     return KeyEventResult.ignored;
   }
 
@@ -441,17 +430,11 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
         widget.textFieldConfiguration.focusNode;
     if (textFieldConfigurationFocusNode == null) {
       _focusNode = FocusNode(onKey: _onKeyEvent);
-    } else if (textFieldConfigurationFocusNode.onKey == null) {
-      // * we add the _onKeyEvent callback to the textFieldConfiguration focusNode
+    } else {
+      final previousOnKey = textFieldConfigurationFocusNode.onKey;
       textFieldConfigurationFocusNode.onKey = ((node, event) {
         final keyEventResult = _onKeyEvent(node, event);
-        return keyEventResult;
-      });
-    } else {
-      final onKeyCopy = textFieldConfigurationFocusNode.onKey!;
-      textFieldConfigurationFocusNode.onKey = ((node, event) {
-        _onKeyEvent(node, event);
-        return onKeyCopy(node, event);
+        return previousOnKey?.call(node, event) ?? keyEventResult;
       });
     }
 
@@ -569,8 +552,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
             hideOnError: widget.hideOnError,
             keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
             minCharsForSuggestions: widget.minCharsForSuggestions,
-            keyboardSuggestionSelectionNotifier:
-                _keyboardSuggestionSelectionNotifier,
             shouldRefreshSuggestionFocusIndexNotifier:
                 _shouldRefreshSuggestionsFocusIndex,
             giveTextFieldFocus: giveTextFieldFocus,

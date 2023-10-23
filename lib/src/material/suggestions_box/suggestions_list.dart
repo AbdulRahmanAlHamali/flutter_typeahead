@@ -29,7 +29,6 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     super.hideOnError,
     super.keepSuggestionsOnLoading,
     super.minCharsForSuggestions,
-    required super.keyboardSuggestionSelectionNotifier,
     required super.shouldRefreshSuggestionFocusIndexNotifier,
     required super.giveTextFieldFocus,
     required super.onSuggestionFocus,

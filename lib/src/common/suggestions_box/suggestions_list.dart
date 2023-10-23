@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
-import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
@@ -38,7 +37,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     this.hideOnError,
     this.keepSuggestionsOnLoading,
     this.minCharsForSuggestions,
-    required this.keyboardSuggestionSelectionNotifier,
     required this.shouldRefreshSuggestionFocusIndexNotifier,
     required this.giveTextFieldFocus,
     required this.onSuggestionFocus,
@@ -70,7 +68,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
   final bool? hideOnError;
   final bool? keepSuggestionsOnLoading;
   final int? minCharsForSuggestions;
-  final KeyboardSuggestionSelectionNotifier keyboardSuggestionSelectionNotifier;
   final ShouldRefreshSuggestionFocusIndexNotifier
       shouldRefreshSuggestionFocusIndexNotifier;
   final VoidCallback giveTextFieldFocus;
@@ -114,7 +111,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     with SingleTickerProviderStateMixin {
   Iterable<T>? _suggestions;
   late bool _suggestionsValid;
-  late VoidCallback _controllerListener;
   Timer? _debounceTimer;
   bool? _isLoading, _isQueued;
   Object? _error;
@@ -125,46 +121,44 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   List<FocusNode> _focusNodes = [];
   int _suggestionIndex = -1;
 
-  _RenderSuggestionsListState() {
-    _controllerListener = () {
-      // If we came here because of a change in selected text, not because of
-      // actual change in text
-      if (widget.controller!.text == _lastTextValue) return;
+  void _onTextChange() {
+    // If we came here because of a change in selected text, not because of
+    // actual change in text
+    if (widget.controller!.text == _lastTextValue) return;
 
-      _lastTextValue = widget.controller!.text;
+    _lastTextValue = widget.controller!.text;
 
-      _debounceTimer?.cancel();
-      if (widget.controller!.text.length < widget.minCharsForSuggestions!) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _suggestions = null;
-            _suggestionsValid = true;
-          });
-        }
-        return;
-      } else {
-        _debounceTimer = Timer(widget.debounceDuration!, () async {
-          if (_debounceTimer!.isActive) return;
-          if (_isLoading!) {
-            _isQueued = true;
-            return;
-          }
-
-          await this.invalidateSuggestions();
-          while (_isQueued!) {
-            _isQueued = false;
-            await this.invalidateSuggestions();
-          }
+    _debounceTimer?.cancel();
+    if (widget.controller!.text.length < widget.minCharsForSuggestions!) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _suggestions = null;
+          _suggestionsValid = true;
         });
       }
-    };
+      return;
+    } else {
+      _debounceTimer = Timer(widget.debounceDuration!, () async {
+        if (_debounceTimer!.isActive) return;
+        if (_isLoading!) {
+          _isQueued = true;
+          return;
+        }
+
+        await this.invalidateSuggestions();
+        while (_isQueued!) {
+          _isQueued = false;
+          await this.invalidateSuggestions();
+        }
+      });
+    }
   }
 
   @override
   void didUpdateWidget(RenderSuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    widget.controller!.addListener(_controllerListener);
+    widget.controller!.addListener(_onTextChange);
     _getSuggestions();
   }
 
@@ -192,26 +186,26 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       _getSuggestions();
     }
 
-    widget.controller!.addListener(_controllerListener);
+    widget.controller!.addListener(_onTextChange);
 
-    widget.keyboardSuggestionSelectionNotifier.addListener(() {
+    widget.suggestionsBox.keyEvents.listen((event) {
       final suggestionsLength = _suggestions?.length;
-      final event = widget.keyboardSuggestionSelectionNotifier.value;
-      if (event == null || suggestionsLength == null) return;
+      if (suggestionsLength == null) return;
 
-      if (event == LogicalKeyboardKey.arrowDown &&
-          _suggestionIndex < suggestionsLength - 1) {
+      if (event == LogicalKeyboardKey.arrowDown) {
         _suggestionIndex++;
-      } else if (event == LogicalKeyboardKey.arrowUp && _suggestionIndex > -1) {
+      } else if (event == LogicalKeyboardKey.arrowUp) {
         _suggestionIndex--;
       }
 
-      if (_suggestionIndex > -1 && _suggestionIndex < _focusNodes.length) {
+      _suggestionIndex.clamp(-1, suggestionsLength - 1);
+
+      if (_suggestionIndex == -1) {
+        widget.giveTextFieldFocus();
+      } else {
         final focusNode = _focusNodes[_suggestionIndex];
         focusNode.requestFocus();
         widget.onSuggestionFocus();
-      } else {
-        widget.giveTextFieldFocus();
       }
     });
 

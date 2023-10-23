@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
 
@@ -32,6 +35,13 @@ class SuggestionsBox {
   double textBoxWidth = 100;
   double textBoxHeight = 100;
   late double directionUpOffset;
+
+  final StreamController<LogicalKeyboardKey> _keyEventController =
+      StreamController<LogicalKeyboardKey>.broadcast();
+
+  Stream<LogicalKeyboardKey> get keyEvents => _keyEventController.stream;
+
+  void onKeyEvent(LogicalKeyboardKey key) => _keyEventController.add(key);
 
   void _assertInitialized() {
     if (overlayEntry == null) {
@@ -235,5 +245,10 @@ class SuggestionsBox {
     });
 
     return rootMediaQuery;
+  }
+
+  void dispose() {
+    close();
+    _keyEventController.close();
   }
 }
