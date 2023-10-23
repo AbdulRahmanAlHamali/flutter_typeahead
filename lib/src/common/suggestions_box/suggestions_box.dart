@@ -40,7 +40,10 @@ class SuggestionsBox {
 
   Stream<LogicalKeyboardKey> get keyEvents => _keyEventController.stream;
 
-  void onKeyEvent(LogicalKeyboardKey key) => _keyEventController.add(key);
+  KeyEventResult onKeyEvent(FocusNode node, RawKeyEvent key) {
+    _keyEventController.add(key.logicalKey);
+    return KeyEventResult.ignored;
+  }
 
   void _assertInitialized() {
     if (overlayEntry == null) {

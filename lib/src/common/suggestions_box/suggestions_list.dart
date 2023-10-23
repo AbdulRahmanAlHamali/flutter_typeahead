@@ -18,7 +18,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     required this.itemBuilder,
     required this.controller,
     this.intercepting = false,
-    this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
     this.itemSeparatorBuilder,
@@ -40,14 +39,12 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     required this.shouldRefreshSuggestionFocusIndexNotifier,
     required this.giveTextFieldFocus,
     required this.onSuggestionFocus,
-    required this.onKeyEvent,
     required this.hideKeyboardOnDrag,
   });
 
   final SuggestionsBox suggestionsBox;
   BaseSuggestionsBoxDecoration? get decoration;
   final TextEditingController controller;
-  final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
   final ItemBuilder<T> itemBuilder;
@@ -72,7 +69,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
       shouldRefreshSuggestionFocusIndexNotifier;
   final VoidCallback giveTextFieldFocus;
   final VoidCallback onSuggestionFocus;
-  final FocusOnKeyCallback onKeyEvent;
   final bool hideKeyboardOnDrag;
 
   Widget createLoadingWidget(
@@ -122,7 +118,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
 
   bool _isLoading = false;
   bool _isQueued = false;
-  late bool _suggestionsValid = widget.minCharsForSuggestions! > 0;
+  bool _suggestionsValid = false;
   Iterable<T>? _suggestions;
   List<FocusNode> _focusNodes = [];
   int _suggestionIndex = -1;
@@ -137,10 +133,9 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     );
 
     _lastTextValue = widget.controller.text;
-
-    if (widget.getImmediateSuggestions) {
-      _loadSuggestions();
-    }
+    _suggestionsValid =
+        widget.controller.text.length < widget.minCharsForSuggestions!;
+    _loadSuggestions();
 
     widget.controller.addListener(_onTextChange);
     widget.suggestionsBox.keyEvents.listen(_onKey);
@@ -172,7 +167,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   }
 
   void _onKey(LogicalKeyboardKey key) {
-    // This feature is disabled for now
+    // TODO: fix this by adding a cooldown period
     return;
 
     // ignore: dead_code
@@ -201,9 +196,15 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     if (widget.controller.text == _lastTextValue) return;
     _lastTextValue = widget.controller.text;
 
+    Duration? debounceDuration = widget.debounceDuration;
+    debounceDuration ??= const Duration(milliseconds: 300);
+
     _debounceTimer?.cancel();
-    if (widget.controller.text.length > widget.minCharsForSuggestions!) {
-      _debounceTimer = Timer(widget.debounceDuration!, () async {
+    if (widget.controller.text.length >= widget.minCharsForSuggestions!) {
+      if (debounceDuration == Duration.zero) {
+        _reloadSuggestions();
+      } else {}
+      _debounceTimer = Timer(debounceDuration, () async {
         if (_isLoading) {
           _isQueued = true;
           return;
@@ -266,7 +267,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
           _suggestions = suggestions;
           _focusNodes = List.generate(
             _suggestions?.length ?? 0,
-            (index) => FocusNode(onKey: widget.onKeyEvent),
+            (index) => FocusNode(onKey: widget.suggestionsBox.onKeyEvent),
           );
         });
       }

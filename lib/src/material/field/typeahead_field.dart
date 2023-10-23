@@ -290,7 +290,6 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
         decoration: suggestionsBoxDecoration,
         controller: config.controller,
         intercepting: config.intercepting,
-        getImmediateSuggestions: config.getImmediateSuggestions,
         onSuggestionSelected: config.onSuggestionSelected,
         suggestionsCallback: config.suggestionsCallback,
         itemBuilder: config.itemBuilder,
@@ -314,7 +313,6 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
             config.shouldRefreshSuggestionFocusIndexNotifier,
         giveTextFieldFocus: config.giveTextFieldFocus,
         onSuggestionFocus: config.onSuggestionFocus,
-        onKeyEvent: config.onKeyEvent,
         hideKeyboardOnDrag: config.hideKeyboardOnDrag,
       );
 
