@@ -86,8 +86,6 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       hideOnError: config.hideOnError,
       keepSuggestionsOnLoading: config.keepSuggestionsOnLoading,
       minCharsForSuggestions: config.minCharsForSuggestions,
-      keyboardSuggestionSelectionNotifier:
-          config.keyboardSuggestionSelectionNotifier,
       shouldRefreshSuggestionFocusIndexNotifier:
           config.shouldRefreshSuggestionFocusIndexNotifier,
       giveTextFieldFocus: config.giveTextFieldFocus,
