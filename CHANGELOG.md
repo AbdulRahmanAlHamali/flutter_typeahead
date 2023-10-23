@@ -255,6 +255,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Various bug fixes
 
 ## 1.7.0 - 2019-10-16
+
+Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
+
 ### Added
 - `enableInteractiveSelection` property
 
@@ -264,9 +267,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Scrolling bug
 - Disposing overlay issue
-
-### Special Thanks
-- Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
 
 ## 1.6.1 - 2019-06-05
 ### Fixed
