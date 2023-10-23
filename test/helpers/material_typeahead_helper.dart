@@ -100,20 +100,17 @@ class _MaterialTypeAheadPageState extends State<MaterialTypeAheadPage> {
       },
       suggestionsCallback: _getFoodItems,
       noItemsFoundBuilder: _getNoResultText,
-      itemBuilder: (context, String suggestion) {
-        return ListTile(
-          tileColor: Colors.white,
-          title: Text(suggestion),
-        );
-      },
+      itemBuilder: (context, suggestion) => ListTile(
+        tileColor: Colors.white,
+        title: Text(suggestion),
+      ),
       suggestionsBoxDecoration: (widget.suggestionsBoxDecoration == null)
           ? const SuggestionsBoxDecoration(
               elevation: 2,
               hasScrollbar: true,
             )
           : widget.suggestionsBoxDecoration!,
-      getImmediateSuggestions: false,
-      onSuggestionSelected: (String suggestion) => controller.text = suggestion,
+      onSuggestionSelected: (suggestion) => controller.text = suggestion,
       minCharsForSuggestions: 1,
     );
   }

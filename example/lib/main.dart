@@ -45,12 +45,14 @@ class _MyAppState extends State<MyApp> {
               ),
               body: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
-                child: TabBarView(children: [
-                  const NavigationExample(),
-                  const FormExample(),
-                  ScrollExample(),
-                  const AlternativeLayoutArchitecture(),
-                ]),
+                child: const TabBarView(
+                  children: [
+                    NavigationExample(),
+                    FormExample(),
+                    ScrollExample(),
+                    AlternativeLayoutExample(),
+                  ],
+                ),
               )),
         ),
       );
@@ -71,7 +73,7 @@ class _MyAppState extends State<MyApp> {
             middle: const Text('Cupertino demo'),
           ),
           body: const CupertinoPageScaffold(
-            child: FavoriteCitiesPage(),
+            child: CupertinoFormExample(),
           ),
         ), //MyHomePage(),
       );
@@ -84,12 +86,11 @@ class NavigationExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        children: [
-          const SizedBox(height: 10.0),
-          TypeAheadField(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
               autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
               autofocus: true,
@@ -122,8 +123,8 @@ class NavigationExample extends StatelessWidget {
               color: Theme.of(context).cardColor,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -158,11 +159,14 @@ class _FormExampleState extends State<FormExample> {
             padding: const EdgeInsets.all(32.0),
             child: Column(
               children: [
-                const Text('What is your favorite city?'),
                 TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
-                    decoration: const InputDecoration(labelText: 'City'),
                     controller: _typeAheadController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'City',
+                      hintText: 'What is your favorite city?',
+                    ),
                   ),
                   suggestionsCallback: (pattern) =>
                       CitiesService.getSuggestions(pattern),
@@ -233,186 +237,74 @@ class ProductPage extends StatelessWidget {
 /// This example shows how to use the [TypeAheadField] in a [ListView] that
 /// scrolls. The [TypeAheadField] will resize to fit the suggestions box when
 /// scrolling.
-class ScrollExample extends StatelessWidget {
-  ScrollExample({super.key});
+class ScrollExample extends StatefulWidget {
+  const ScrollExample({super.key});
 
+  @override
+  State<ScrollExample> createState() => _ScrollExampleState();
+}
+
+class _ScrollExampleState extends State<ScrollExample> {
   final List<String> items = List.generate(50, (index) => "Item $index");
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
-      const Center(
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text("Suggestion box will resize when scrolling"),
-        ),
-      ),
-      const SizedBox(height: 200),
-      TypeAheadField<String>(
-        getImmediateSuggestions: true,
-        textFieldConfiguration: const TextFieldConfiguration(
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'What are you looking for?'),
-        ),
-        suggestionsCallback: (pattern) => items
-            .where((item) => item.toLowerCase().startsWith(
-                  pattern.toLowerCase(),
-                ))
-            .toList(),
-        itemBuilder: (context, suggestion) => ListTile(
-          title: Text(suggestion),
-        ),
-        itemSeparatorBuilder: (context, index) => const Divider(),
-        onSuggestionSelected: (suggestion) =>
-            ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Selected Item $suggestion'),
+    return ListView(
+      children: [
+        const SizedBox(height: 200),
+        Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child:
+                    Text("The suggestion box will resize as you are scrolling"),
+              ),
+              TypeAheadField<String>(
+                getImmediateSuggestions: true,
+                textFieldConfiguration: const TextFieldConfiguration(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'What are you looking for?',
+                  ),
+                ),
+                suggestionsCallback: (pattern) => items
+                    .where((item) => item.toLowerCase().startsWith(
+                          pattern.toLowerCase(),
+                        ))
+                    .toList(),
+                itemBuilder: (context, suggestion) => ListTile(
+                  title: Text(suggestion),
+                ),
+                itemSeparatorBuilder: (context, index) => const Divider(),
+                onSuggestionSelected: (suggestion) =>
+                    ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Selected Item $suggestion'),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-      ),
-      const SizedBox(height: 500),
-    ]);
-  }
-}
-
-/// This is a fake service that mimics a backend service.
-/// It returns a list of suggestions after a 1 second delay.
-/// In a real app, this would be a service that makes a network request.
-class BackendService {
-  static Future<List<Map<String, String>>> getSuggestions(String query) async {
-    await Future<void>.delayed(const Duration(seconds: 1));
-
-    return List.generate(3, (index) {
-      return {
-        'name': query + index.toString(),
-        'price': Random().nextInt(100).toString()
-      };
-    });
-  }
-}
-
-/// A fake service to filter cities based on a query.
-class CitiesService {
-  static final List<String> cities = [
-    'Beirut',
-    'Damascus',
-    'San Fransisco',
-    'Rome',
-    'Los Angeles',
-    'Madrid',
-    'Bali',
-    'Barcelona',
-    'Paris',
-    'Bucharest',
-    'New York City',
-    'Philadelphia',
-    'Sydney',
-  ];
-
-  static List<String> getSuggestions(String query) {
-    List<String> matches = <String>[];
-    matches.addAll(cities);
-
-    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
-    return matches;
-  }
-}
-
-class FavoriteCitiesPage extends StatefulWidget {
-  const FavoriteCitiesPage({super.key});
-
-  @override
-  State<FavoriteCitiesPage> createState() => _FavoriteCitiesPage();
-}
-
-class _FavoriteCitiesPage extends State<FavoriteCitiesPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _typeAheadController = TextEditingController();
-  final SuggestionsBoxController _suggestionsBoxController =
-      SuggestionsBoxController();
-  String favoriteCity = 'Unavailable';
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _suggestionsBoxController.close,
-      child: Container(
-        color: Colors.amber.withOpacity(0),
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 100.0,
-                ),
-                const Text('What is your favorite city?'),
-                CupertinoTypeAheadFormField(
-                  getImmediateSuggestions: true,
-                  suggestionsBoxController: _suggestionsBoxController,
-                  suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  textFieldConfiguration: CupertinoTextFieldConfiguration(
-                    controller: _typeAheadController,
-                  ),
-                  suggestionsCallback: (pattern) => Future.delayed(
-                    const Duration(seconds: 1),
-                    () => CitiesService.getSuggestions(pattern),
-                  ),
-                  itemBuilder: (context, suggestion) => Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(
-                      suggestion,
-                    ),
-                  ),
-                  itemSeparatorBuilder: (context, index) => const Divider(),
-                  onSuggestionSelected: (suggestion) =>
-                      _typeAheadController.text = suggestion,
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please select a city' : null,
-                ),
-                const SizedBox(height: 10.0),
-                CupertinoButton(
-                  child: const Text('Submit'),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      setState(() => favoriteCity = _typeAheadController.text);
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  'Your favorite city is $favoriteCity!',
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+        const SizedBox(height: 500),
+      ],
     );
   }
 }
 
-class AlternativeLayoutArchitecture extends StatelessWidget {
-  const AlternativeLayoutArchitecture({super.key});
+class AlternativeLayoutExample extends StatelessWidget {
+  const AlternativeLayoutExample({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 10.0,
-          ),
-          TypeAheadField(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(32),
+          child: TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
               autofocus: true,
               style: DefaultTextStyle.of(context)
@@ -454,7 +346,128 @@ class AlternativeLayoutArchitecture extends StatelessWidget {
               color: Theme.of(context).cardColor,
             ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+}
+
+/// This is a fake service that mimics a backend service.
+/// It returns a list of suggestions after a 1 second delay.
+/// In a real app, this would be a service that makes a network request.
+class BackendService {
+  static Future<List<Map<String, String>>> getSuggestions(String query) async {
+    await Future<void>.delayed(const Duration(seconds: 1));
+
+    return List.generate(3, (index) {
+      return {
+        'name': query + index.toString(),
+        'price': Random().nextInt(100).toString()
+      };
+    });
+  }
+}
+
+/// A fake service to filter cities based on a query.
+class CitiesService {
+  static final List<String> cities = [
+    'Beirut',
+    'Damascus',
+    'San Fransisco',
+    'Rome',
+    'Los Angeles',
+    'Madrid',
+    'Bali',
+    'Barcelona',
+    'Paris',
+    'Bucharest',
+    'New York City',
+    'Philadelphia',
+    'Sydney',
+  ];
+
+  static Future<List<String>> getSuggestions(String query) async {
+    List<String> matches = <String>[];
+    matches.addAll(cities);
+
+    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
+    return matches;
+  }
+}
+
+class CupertinoFormExample extends StatefulWidget {
+  const CupertinoFormExample({super.key});
+
+  @override
+  State<CupertinoFormExample> createState() => _FavoriteCitiesPage();
+}
+
+class _FavoriteCitiesPage extends State<CupertinoFormExample> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _typeAheadController = TextEditingController();
+  final SuggestionsBoxController _suggestionsBoxController =
+      SuggestionsBoxController();
+  String favoriteCity = 'Unavailable';
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _suggestionsBoxController.close,
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('What is your favorite city?'),
+                  const SizedBox(height: 10),
+                  CupertinoTypeAheadFormField(
+                    suggestionsBoxController: _suggestionsBoxController,
+                    suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    textFieldConfiguration: CupertinoTextFieldConfiguration(
+                      controller: _typeAheadController,
+                    ),
+                    suggestionsCallback: (pattern) => Future.delayed(
+                      const Duration(seconds: 1),
+                      () => CitiesService.getSuggestions(pattern),
+                    ),
+                    itemBuilder: (context, suggestion) => Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Text(
+                        suggestion,
+                      ),
+                    ),
+                    itemSeparatorBuilder: (context, index) => const Divider(),
+                    onSuggestionSelected: (suggestion) =>
+                        _typeAheadController.text = suggestion,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please select a city' : null,
+                  ),
+                ],
+              ),
+              const Spacer(),
+              CupertinoButton(
+                child: const Text('Submit'),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    setState(() => favoriteCity = _typeAheadController.text);
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Your favorite city is $favoriteCity!',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
