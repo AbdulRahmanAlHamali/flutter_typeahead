@@ -6,9 +6,9 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   const CupertinoSuggestionsList({
     super.key,
     required super.suggestionsBox,
+    required super.controller,
     required super.itemBuilder,
     this.decoration,
-    super.controller,
     super.intercepting = false,
     super.getImmediateSuggestions = false,
     super.onSuggestionSelected,

@@ -16,7 +16,7 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     super.key,
     required this.suggestionsBox,
     required this.itemBuilder,
-    this.controller,
+    required this.controller,
     this.intercepting = false,
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
@@ -46,7 +46,7 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
 
   final SuggestionsBox suggestionsBox;
   BaseSuggestionsBoxDecoration? get decoration;
-  final TextEditingController? controller;
+  final TextEditingController controller;
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
@@ -109,105 +109,39 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
 
 class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     with SingleTickerProviderStateMixin {
-  Iterable<T>? _suggestions;
-  late bool _suggestionsValid;
   Timer? _debounceTimer;
-  bool? _isLoading, _isQueued;
+
   Object? _error;
-  AnimationController? _animationController;
-  String? _lastTextValue;
+
+  late final AnimationController _animationController = AnimationController(
+    vsync: this,
+    duration: widget.animationDuration,
+  );
+
   late final ScrollController _scrollController =
       widget.scrollController ?? ScrollController();
+
+  String? _lastTextValue;
+
+  bool _isLoading = false;
+  bool _isQueued = false;
+  late bool _suggestionsValid = widget.minCharsForSuggestions! > 0;
+  Iterable<T>? _suggestions;
   List<FocusNode> _focusNodes = [];
   int _suggestionIndex = -1;
-
-  void _onTextChange() {
-    // If we came here because of a change in selected text, not because of
-    // actual change in text
-    if (widget.controller!.text == _lastTextValue) return;
-
-    _lastTextValue = widget.controller!.text;
-
-    _debounceTimer?.cancel();
-    if (widget.controller!.text.length < widget.minCharsForSuggestions!) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _suggestions = null;
-          _suggestionsValid = true;
-        });
-      }
-      return;
-    } else {
-      _debounceTimer = Timer(widget.debounceDuration!, () async {
-        if (_debounceTimer!.isActive) return;
-        if (_isLoading!) {
-          _isQueued = true;
-          return;
-        }
-
-        await this.invalidateSuggestions();
-        while (_isQueued!) {
-          _isQueued = false;
-          await this.invalidateSuggestions();
-        }
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(RenderSuggestionsList<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    widget.controller!.addListener(_onTextChange);
-    _getSuggestions();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _getSuggestions();
-  }
 
   @override
   void initState() {
     super.initState();
 
-    _animationController = AnimationController(
-      vsync: this,
-      duration: widget.animationDuration,
-    );
-
-    _suggestionsValid = widget.minCharsForSuggestions! > 0 ? true : false;
-    _isLoading = false;
-    _isQueued = false;
-    _lastTextValue = widget.controller!.text;
+    _lastTextValue = widget.controller.text;
 
     if (widget.getImmediateSuggestions) {
-      _getSuggestions();
+      _loadSuggestions();
     }
 
-    widget.controller!.addListener(_onTextChange);
-
-    widget.suggestionsBox.keyEvents.listen((event) {
-      final suggestionsLength = _suggestions?.length;
-      if (suggestionsLength == null) return;
-
-      if (event == LogicalKeyboardKey.arrowDown) {
-        _suggestionIndex++;
-      } else if (event == LogicalKeyboardKey.arrowUp) {
-        _suggestionIndex--;
-      }
-
-      _suggestionIndex.clamp(-1, suggestionsLength - 1);
-
-      if (_suggestionIndex == -1) {
-        widget.giveTextFieldFocus();
-      } else {
-        final focusNode = _focusNodes[_suggestionIndex];
-        focusNode.requestFocus();
-        widget.onSuggestionFocus();
-      }
-    });
+    widget.controller.addListener(_onTextChange);
+    widget.suggestionsBox.keyEvents.listen(_onKey);
 
     widget.shouldRefreshSuggestionFocusIndexNotifier.addListener(() {
       if (_suggestionIndex != -1) {
@@ -216,18 +150,90 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     });
   }
 
-  Future<void> invalidateSuggestions() async {
-    _suggestionsValid = false;
-    await _getSuggestions();
+  @override
+  void didUpdateWidget(RenderSuggestionsList<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    oldWidget.controller.removeListener(_onTextChange);
+    widget.controller.addListener(_onTextChange);
+    _onTextChange();
   }
 
-  Future<void> _getSuggestions() async {
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _debounceTimer?.cancel();
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+    widget.controller.removeListener(_onTextChange);
+    super.dispose();
+  }
+
+  void _onKey(LogicalKeyboardKey key) {
+    // This feature is disabled for now
+    return;
+
+    // ignore: dead_code
+    final suggestionsLength = _suggestions?.length;
+    if (suggestionsLength == null) return;
+
+    if (key == LogicalKeyboardKey.arrowDown) {
+      _suggestionIndex++;
+    } else if (key == LogicalKeyboardKey.arrowUp) {
+      _suggestionIndex--;
+    }
+
+    _suggestionIndex.clamp(-1, suggestionsLength - 1);
+
+    if (_suggestionIndex == -1) {
+      widget.giveTextFieldFocus();
+    } else {
+      final focusNode = _focusNodes[_suggestionIndex];
+      focusNode.requestFocus();
+      widget.onSuggestionFocus();
+    }
+  }
+
+  void _onTextChange() {
+    // ignore changes in selection only
+    if (widget.controller.text == _lastTextValue) return;
+    _lastTextValue = widget.controller.text;
+
+    _debounceTimer?.cancel();
+    if (widget.controller.text.length > widget.minCharsForSuggestions!) {
+      _debounceTimer = Timer(widget.debounceDuration!, () async {
+        if (_isLoading) {
+          _isQueued = true;
+          return;
+        }
+
+        await this._reloadSuggestions();
+        if (_isQueued) {
+          _isQueued = false;
+          await this._reloadSuggestions();
+        }
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+        _suggestions = null;
+        _suggestionsValid = true;
+      });
+    }
+  }
+
+  Future<void> _reloadSuggestions() async {
+    _suggestionsValid = false;
+    await _loadSuggestions();
+  }
+
+  Future<void> _loadSuggestions() async {
     if (_suggestionsValid) return;
     _suggestionsValid = true;
 
     if (mounted) {
       setState(() {
-        _animationController!.forward(from: 1);
+        _animationController.forward(from: 1);
 
         _isLoading = true;
         _error = null;
@@ -237,8 +243,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       Object? error;
 
       try {
-        suggestions =
-            await widget.suggestionsCallback!(widget.controller!.text);
+        suggestions = await widget.suggestionsCallback!(widget.controller.text);
       } catch (e) {
         error = e;
       }
@@ -251,7 +256,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
           if (error != null || suggestions?.isEmpty == true) {
             animationStart = 1.0;
           }
-          _animationController!.forward(from: animationStart);
+          _animationController.forward(from: animationStart);
 
           _error = error;
           _isLoading = false;
@@ -266,19 +271,9 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   }
 
   @override
-  void dispose() {
-    _animationController!.dispose();
-    _debounceTimer?.cancel();
-    for (final focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     bool isEmpty =
-        (_suggestions?.isEmpty ?? false) && widget.controller!.text == "";
+        (_suggestions?.isEmpty ?? false) && widget.controller.text == "";
     if ((_suggestions == null || isEmpty) &&
         _isLoading == false &&
         _error == null) {
@@ -293,7 +288,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     );
 
     Widget child;
-    if (_isLoading!) {
+    if (_isLoading) {
       if (widget.hideOnLoading!) {
         child = const SizedBox(height: 0);
       } else {
@@ -320,7 +315,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
         : SizeTransition(
             axisAlignment: -1,
             sizeFactor: CurvedAnimation(
-              parent: _animationController!,
+              parent: _animationController,
               curve: Curves.fastOutSlowIn,
             ),
             child: child,
