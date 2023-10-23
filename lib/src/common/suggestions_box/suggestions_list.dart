@@ -314,16 +314,19 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       child = widget.createSuggestionsWidget(context, state);
     }
 
-    final animationChild = widget.transitionBuilder != null
-        ? widget.transitionBuilder!(context, child, _animationController)
-        : SizeTransition(
-            axisAlignment: -1,
-            sizeFactor: CurvedAnimation(
-              parent: _animationController,
-              curve: Curves.fastOutSlowIn,
-            ),
-            child: child,
-          );
+    if (widget.transitionBuilder != null) {
+      child = widget.transitionBuilder!(context, child, _animationController);
+    } else {
+      // TODO: implicit animation with AnimatedSize?
+      child = SizeTransition(
+        axisAlignment: -1,
+        sizeFactor: CurvedAnimation(
+          parent: _animationController,
+          curve: Curves.fastOutSlowIn,
+        ),
+        child: child,
+      );
+    }
 
     BoxConstraints constraints;
     if (widget.decoration!.constraints == null) {
@@ -346,7 +349,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
         state,
         ConstrainedBox(
           constraints: constraints,
-          child: animationChild,
+          child: child,
         ),
       ),
     );

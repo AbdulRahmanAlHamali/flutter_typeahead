@@ -18,7 +18,6 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String> {
   BaseTypeAheadFormField({
     super.key,
     String? initialValue,
-    this.getImmediateSuggestions = false,
     super.enabled = true,
     super.autovalidateMode,
     super.onSaved,
@@ -78,7 +77,6 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String> {
   /// The decoration of the sheet that contains the suggestions.
   BaseSuggestionsBoxDecoration? get suggestionsBoxDecoration;
 
-  final bool getImmediateSuggestions;
   final ErrorBuilder? errorBuilder;
   final WidgetBuilder? noItemsFoundBuilder;
   final WidgetBuilder? loadingBuilder;

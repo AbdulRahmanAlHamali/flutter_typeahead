@@ -19,7 +19,6 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
   CupertinoTypeAheadFormField({
     super.key,
     super.initialValue,
-    super.getImmediateSuggestions,
     super.enabled,
     super.autovalidateMode,
     super.onSaved,
@@ -66,7 +65,6 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
   Widget buildTextField(BaseTypeAheadFormFieldState<T> field,
       covariant CupertinoTextFieldConfiguration config) {
     return CupertinoTypeAheadField(
-      getImmediateSuggestions: getImmediateSuggestions,
       transitionBuilder: transitionBuilder,
       errorBuilder: errorBuilder,
       noItemsFoundBuilder: noItemsFoundBuilder,

@@ -96,19 +96,16 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
       },
       suggestionsCallback: _getFoodItems,
       noItemsFoundBuilder: _getNoResultText,
-      itemBuilder: (context, String suggestion) {
-        return CupertinoListTile(
-          backgroundColor: Colors.white,
-          title: Text(suggestion),
-        );
-      },
+      itemBuilder: (context, suggestion) => CupertinoListTile(
+        backgroundColor: Colors.white,
+        title: Text(suggestion),
+      ),
       suggestionsBoxDecoration: (widget.suggestionsBoxDecoration == null)
           ? const CupertinoSuggestionsBoxDecoration(
               hasScrollbar: true,
             )
           : widget.suggestionsBoxDecoration!,
-      getImmediateSuggestions: false,
-      onSuggestionSelected: (String suggestion) => controller.text = suggestion,
+      onSuggestionSelected: (suggestion) => controller.text = suggestion,
       minCharsForSuggestions: 1,
     );
   }

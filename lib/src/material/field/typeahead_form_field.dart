@@ -17,7 +17,6 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
   TypeAheadFormField({
     super.key,
     super.initialValue,
-    super.getImmediateSuggestions,
     super.enabled,
     super.autovalidateMode,
     super.onSaved,
@@ -66,7 +65,6 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     covariant TextFieldConfiguration config,
   ) {
     return TypeAheadField(
-      getImmediateSuggestions: getImmediateSuggestions,
       transitionBuilder: transitionBuilder,
       errorBuilder: errorBuilder,
       noItemsFoundBuilder: noItemsFoundBuilder,
