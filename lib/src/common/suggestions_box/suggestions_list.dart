@@ -167,7 +167,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   }
 
   void _onKey(LogicalKeyboardKey key) {
-    // TODO: fix this by adding a cooldown period
+    // this feature is currently disabled
     return;
 
     // ignore: dead_code
@@ -180,7 +180,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       _suggestionIndex--;
     }
 
-    _suggestionIndex.clamp(-1, suggestionsLength - 1);
+    _suggestionIndex = _suggestionIndex.clamp(-1, suggestionsLength - 1);
 
     if (_suggestionIndex == -1) {
       widget.giveTextFieldFocus();
