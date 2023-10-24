@@ -172,7 +172,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       keyboardDismissBehavior: hideKeyboardOnDrag
           ? ScrollViewKeyboardDismissBehavior.onDrag
           : ScrollViewKeyboardDismissBehavior.manual,
-      controller: scrollController,
+      controller: controller,
       reverse: suggestionsBox.direction == AxisDirection.down
           ? false
           : suggestionsBox.autoFlipListDirection,

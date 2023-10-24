@@ -260,7 +260,6 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
     super.transitionBuilder,
     super.animationStart,
     super.animationDuration,
-    super.getImmediateSuggestions,
     super.suggestionsBoxVerticalOffset,
     super.direction,
     super.hideOnLoading,

@@ -27,7 +27,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
     this.transitionBuilder,
     this.animationStart = 0.25,
     this.animationDuration = const Duration(milliseconds: 500),
-    this.getImmediateSuggestions = false,
     this.suggestionsBoxVerticalOffset = 5.0,
     this.direction = AxisDirection.down,
     this.hideOnLoading = false,
@@ -246,16 +245,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
   ///
   /// Defaults to 5.0
   final double suggestionsBoxVerticalOffset;
-
-  /// If set to true, suggestions will be fetched immediately when the field is
-  /// added to the view.
-  ///
-  /// But the suggestions box will only be shown when the field receives focus.
-  /// To make the field receive focus immediately, you can set the `autofocus`
-  /// property in the [textFieldConfiguration] to true
-  ///
-  /// Defaults to false
-  final bool getImmediateSuggestions;
 
   /// If set to true, no loading box will be shown while suggestions are
   /// being fetched. [loadingBuilder] will also be ignored.
@@ -561,7 +550,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
             suggestionsCallback: widget.suggestionsCallback,
             animationDuration: widget.animationDuration,
             animationStart: widget.animationStart,
-            getImmediateSuggestions: widget.getImmediateSuggestions,
             onSuggestionSelected: _onSuggestionSelected,
             itemBuilder: widget.itemBuilder,
             itemSeparatorBuilder: widget.itemSeparatorBuilder,

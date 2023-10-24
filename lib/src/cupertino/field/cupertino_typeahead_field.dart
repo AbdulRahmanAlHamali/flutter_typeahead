@@ -33,7 +33,6 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
     super.transitionBuilder,
     super.animationStart = 0.25,
     super.animationDuration = const Duration(milliseconds: 500),
-    super.getImmediateSuggestions = false,
     super.suggestionsBoxVerticalOffset = 5.0,
     super.direction = AxisDirection.down,
     super.hideOnLoading = false,
