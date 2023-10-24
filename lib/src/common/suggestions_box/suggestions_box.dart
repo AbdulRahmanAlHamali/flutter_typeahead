@@ -41,6 +41,7 @@ class SuggestionsBox {
   Stream<LogicalKeyboardKey> get keyEvents => _keyEventController.stream;
 
   KeyEventResult onKeyEvent(FocusNode node, RawKeyEvent key) {
+    if (key is RawKeyUpEvent) return KeyEventResult.ignored;
     _keyEventController.add(key.logicalKey);
     return KeyEventResult.ignored;
   }
