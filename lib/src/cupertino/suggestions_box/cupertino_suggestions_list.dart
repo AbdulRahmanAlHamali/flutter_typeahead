@@ -191,19 +191,21 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   }
 
   Widget _itemBuilder(BuildContext context, T suggestion) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: itemBuilder(
-          context,
-          suggestion,
+    return TextFieldTapRegion(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: itemBuilder(
+            context,
+            suggestion,
+          ),
         ),
+        onTap: () {
+          giveTextFieldFocus();
+          onSuggestionSelected?.call(suggestion);
+        },
       ),
-      onTap: () {
-        giveTextFieldFocus();
-        onSuggestionSelected?.call(suggestion);
-      },
     );
   }
 
