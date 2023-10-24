@@ -31,16 +31,18 @@ class _MyAppState extends State<MyApp> {
               appBar: AppBar(
                 leading: IconButton(
                   icon: const Icon(Icons.phone_iphone),
-                  onPressed: () => setState(() {
-                    isCupertino = true;
-                  }),
+                  onPressed: () => setState(() => isCupertino = true),
                 ),
-                title: const TabBar(tabs: [
-                  Tab(text: 'Example 1: Navigation'),
-                  Tab(text: 'Example 2: Form'),
-                  Tab(text: 'Example 3: Scroll'),
-                  Tab(text: 'Example 4: Alternative Layout')
-                ]),
+                title: const Text('Examples'),
+                bottom: const TabBar(
+                  isScrollable: true,
+                  tabs: [
+                    Tab(text: 'Navigation'),
+                    Tab(text: 'Form'),
+                    Tab(text: 'Scroll'),
+                    Tab(text: 'Alternative Layout')
+                  ],
+                ),
               ),
               body: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
@@ -258,7 +260,6 @@ class _ScrollExampleState extends State<ScrollExample> {
                     Text("The suggestion box will resize as you are scrolling"),
               ),
               TypeAheadField<String>(
-                getImmediateSuggestions: true,
                 textFieldConfiguration: const TextFieldConfiguration(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
