@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io' show Platform;
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -50,7 +49,7 @@ class _MyAppState extends State<MyApp> {
                     NavigationExample(),
                     FormExample(),
                     ScrollExample(),
-                    AlternativeLayoutExample(),
+                    LayoutExample(),
                   ],
                 ),
               )),
@@ -107,7 +106,7 @@ class NavigationExample extends StatelessWidget {
             itemBuilder: (context, suggestion) => ListTile(
               leading: const Icon(Icons.shopping_cart),
               title: Text(suggestion['name']!),
-              subtitle: Text('\$${suggestion['price']}'),
+              subtitle: Text(suggestion['price']!),
             ),
             itemSeparatorBuilder: (context, index) => const Divider(height: 1),
             onSuggestionSelected: (suggestion) {
@@ -147,58 +146,52 @@ class _FormExampleState extends State<FormExample> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // close the suggestions box when the user taps outside of it
       onTap: () => suggestionBoxController.close(),
-      child: Container(
-        // Add zero opacity to make the gesture detector work
-        color: Colors.amber.withOpacity(0),
-        // Create the form for the user to enter their favorite city
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              children: [
-                TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: _typeAheadController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'City',
-                      hintText: 'What is your favorite city?',
-                    ),
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            children: [
+              TypeAheadFormField(
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: _typeAheadController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'City',
+                    hintText: 'What is your favorite city?',
                   ),
-                  suggestionsCallback: (pattern) =>
-                      CitiesService.getSuggestions(pattern),
-                  itemBuilder: (context, suggestion) => ListTile(
-                    title: Text(suggestion),
-                  ),
-                  itemSeparatorBuilder: (context, index) => const Divider(),
-                  transitionBuilder: (context, suggestionsBox, controller) =>
-                      suggestionsBox,
-                  onSuggestionSelected: (suggestion) =>
-                      _typeAheadController.text = suggestion,
-                  suggestionsBoxController: suggestionBoxController,
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please select a city' : null,
-                  onSaved: (value) => _selectedCity = value,
                 ),
-                const Spacer(),
-                ElevatedButton(
-                  child: const Text('Submit'),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Your Favorite City is $_selectedCity'),
-                        ),
-                      );
-                    }
-                  },
-                )
-              ],
-            ),
+                suggestionsCallback: (pattern) =>
+                    CitiesService.getSuggestions(pattern),
+                itemBuilder: (context, suggestion) => ListTile(
+                  title: Text(suggestion),
+                ),
+                itemSeparatorBuilder: (context, index) => const Divider(),
+                transitionBuilder: (context, suggestionsBox, controller) =>
+                    suggestionsBox,
+                onSuggestionSelected: (suggestion) =>
+                    _typeAheadController.text = suggestion,
+                suggestionsBoxController: suggestionBoxController,
+                validator: (value) =>
+                    value!.isEmpty ? 'Please select a city' : null,
+                onSaved: (value) => _selectedCity = value,
+              ),
+              const Spacer(),
+              ElevatedButton(
+                child: const Text('Submit'),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Your Favorite City is $_selectedCity'),
+                      ),
+                    );
+                  }
+                },
+              )
+            ],
           ),
         ),
       ),
@@ -215,19 +208,21 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Product')),
-      body: Padding(
-        padding: const EdgeInsets.all(50.0),
-        child: Column(
-          children: [
-            Text(
-              product['name']!,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            Text(
-              '${product['price']!} USD',
-              style: Theme.of(context).textTheme.titleMedium,
-            )
-          ],
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(60),
+          child: Column(
+            children: [
+              Text(
+                product['name']!,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Text(
+                '${product['price']!} USD',
+                style: Theme.of(context).textTheme.titleMedium,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -295,8 +290,8 @@ class _ScrollExampleState extends State<ScrollExample> {
   }
 }
 
-class AlternativeLayoutExample extends StatelessWidget {
-  const AlternativeLayoutExample({super.key});
+class LayoutExample extends StatelessWidget {
+  const LayoutExample({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -319,13 +314,20 @@ class AlternativeLayoutExample extends StatelessWidget {
                 BackendService.getSuggestions(pattern),
             itemBuilder: (context, suggestion) => ListTile(
               tileColor: Theme.of(context).colorScheme.secondaryContainer,
-              leading: const Icon(Icons.shopping_cart),
+              textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+              leading: Icon(
+                Icons.shopping_cart,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               title: Text(suggestion['name']!),
-              subtitle: Text('\$${suggestion['price']}'),
+              subtitle: Text(suggestion['price']!),
             ),
-            layoutArchitecture: (items, scrollContoller) => GridView.count(
+            layoutArchitecture: (items, scrollContoller) => GridView.extent(
               controller: scrollContoller,
-              crossAxisCount: 2,
+              maxCrossAxisExtent: 200,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
               childAspectRatio: 5 / 5,
@@ -359,12 +361,25 @@ class BackendService {
   static Future<List<Map<String, String>>> getSuggestions(String query) async {
     await Future<void>.delayed(const Duration(seconds: 1));
 
-    return List.generate(3, (index) {
-      return {
-        'name': query + index.toString(),
-        'price': Random().nextInt(100).toString()
-      };
-    });
+    query = query.trim();
+    if (query.isEmpty) {
+      query = 'Hiking Boots';
+    }
+
+    return [
+      {
+        'name': '$query with long Shoelaces',
+        'price': '\$11.99',
+      },
+      {
+        'name': '$query with Heels',
+        'price': '\$74.99',
+      },
+      {
+        'name': '$query with High Heels',
+        'price': '\$37.99',
+      },
+    ];
   }
 }
 
