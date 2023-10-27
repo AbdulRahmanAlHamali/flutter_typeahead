@@ -15,7 +15,6 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
   final bool getImmediateSuggestions;
   final SuggestionSelectionCallback<T>? onSuggestionSelected;
   final SuggestionsCallback<T>? suggestionsCallback;
-  final SuggestionsLoadMoreCallback<T>? suggestionsLoadMoreCallback;
   final ItemBuilder<T>? itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;
   final LayoutArchitecture? layoutArchitecture;
@@ -43,7 +42,6 @@ class CupertinoSuggestionsList<T> extends StatefulWidget {
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
-    this.suggestionsLoadMoreCallback,
     this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -83,22 +81,16 @@ class _CupertinoSuggestionsListState<T>
   String? _lastTextValue;
   late final ScrollController _scrollController =
       widget.scrollController ?? ScrollController();
-  int _page = 1;
-  bool _isLoadMoreRunning = false;
-  bool _hasMoreData = true;
 
   @override
   void didUpdateWidget(CupertinoSuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    widget.controller!.addListener(this._controllerListener);
-    _page = 1;
     _getSuggestions();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _page = 1;
     _getSuggestions();
   }
 
@@ -155,31 +147,14 @@ class _CupertinoSuggestionsListState<T>
     };
 
     widget.controller!.addListener(this._controllerListener);
-
-    if (widget.suggestionsLoadMoreCallback != null) {
-      _scrollController.addListener(_scrollListener);
-    }
-  }
-
-  _scrollListener() {
-    if (_scrollController.offset >=
-            _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      if (_hasMoreData) {
-        _suggestionsValid = false;
-        _isLoadMoreRunning = true;
-        this._getSuggestions(loadType: 'append');
-      }
-    }
   }
 
   Future<void> invalidateSuggestions() async {
     _suggestionsValid = false;
-    _page = 1;
     _getSuggestions();
   }
 
-  Future<void> _getSuggestions({String? loadType}) async {
+  Future<void> _getSuggestions() async {
     if (_suggestionsValid) return;
     _suggestionsValid = true;
 
@@ -195,12 +170,8 @@ class _CupertinoSuggestionsListState<T>
       Object? error;
 
       try {
-        if (widget.suggestionsCallback != null)
-          suggestions =
-              await widget.suggestionsCallback!(widget.controller!.text);
-        else
-          suggestions = await widget.suggestionsLoadMoreCallback!(
-              widget.controller!.text, this._page);
+        suggestions =
+            await widget.suggestionsCallback!(widget.controller!.text);
       } catch (e) {
         error = e;
       }
@@ -217,16 +188,7 @@ class _CupertinoSuggestionsListState<T>
 
           this._error = error;
           this._isLoading = false;
-          this._isLoadMoreRunning = false;
-          this._page += 1;
-          if (loadType == 'append') {
-            this._suggestions = [...this._suggestions!, ...suggestions!];
-            if (suggestions.isEmpty) {
-              _hasMoreData = false;
-            }
-          } else {
-            this._suggestions = suggestions;
-          }
+          this._suggestions = suggestions;
         });
       }
     }
@@ -385,15 +347,7 @@ class _CupertinoSuggestionsListState<T>
 
   Widget createSuggestionsWidget() {
     if (widget.layoutArchitecture == null) {
-      return Column(mainAxisSize: MainAxisSize.min, children: [
-        Flexible(child: defaultSuggestionsWidget()),
-        if (this._isLoadMoreRunning)
-          const Center(
-              child: Padding(
-            padding: EdgeInsets.all(8),
-            child: CupertinoActivityIndicator(),
-          )),
-      ]);
+      return defaultSuggestionsWidget();
     } else {
       return customSuggestionsWidget();
     }
@@ -415,10 +369,6 @@ class _CupertinoSuggestionsListState<T>
         primary: false,
         shrinkWrap: true,
         controller: _scrollController,
-        physics: widget.suggestionsLoadMoreCallback != null
-            ? const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics())
-            : null,
         keyboardDismissBehavior: widget.hideKeyboardOnDrag
             ? ScrollViewKeyboardDismissBehavior.onDrag
             : ScrollViewKeyboardDismissBehavior.manual,

@@ -44,7 +44,7 @@ class _CupertinoTypeAheadPageState extends State<CupertinoTypeAheadPage> {
   ];
 
   /// This is to trigger a loading builder when searching for items
-  Future<List<String>> _getFoodItems(String pattern, {int? page}) async {
+  Future<List<String>> _getFoodItems(String pattern) async {
     pattern = pattern.trim();
     if (pattern.isNotEmpty) {
       return Future.delayed(
