@@ -1,361 +1,428 @@
-## 4.8.0 - 24-Sept-2023
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## 4.9.0 - 2023-10-22
+### Added
+- "Pull to load more" feature (#519)
+
+## 4.8.0 - 2023-09-24
+### Changed
+- General cleanup of the codebase (#523)
+
+## 4.7.0 - 2023-09-05
+## Added
 
-PR # 523 - Cleanup
+- expands property to TextFieldConfiguration (#512)
+- scrollbarAlwaysVisible argument (#512)
+
+### Fixed
+- ignoreAccessibleNavigation flag to prevent non-selection bug (#512)
+
+## 4.6.2 - 2023-06-19
+### Added
+- `itemSeparatorBuilder` to Material `TypeAheadFormField` (#500)
+
+## 4.6.1 - 2023-06-04
+### Fixed
+- Issue with scrollbar click-through (#494)
+- Mouse events propagating through the `SuggestionBox` to the underlying `HTMLElementView` (#495)
+
+## 4.6.0 - 2023-05-29
+### Added
+- Support for alternative layouts of results, such as Grid (#493)
+
+## 4.5.0 - 2023-05-28
+### Added
+- `itemSeparatorBuilder` option (#489)
+- `autofillHints` properties (#489)
+
+### Fixed
+- Removed top padding on scrollbar (#489)
+
+## 4.4.0 - 2023-05-20
+### Added
+- `onTapOutside` callback to typeahead (#486)
+- Placeholder style customization (#485)
+- `autoFlipMinHeight` option (#468)
+
+## 4.3.8 - 2023-04-30
+### Fixed
+- Incorrect vertical offset calculation of suggestion box for Flutter mobile web (#484)
+
+## 4.3.7 - 2023-02-26
+### Changed
+- Updated the changelog file
+
+## 4.3.6 - 2023-02-18
+### Fixed
+- Visibility of Cupertino decoration and formatted code
+
+## 4.3.5 - 2023-02-17
+### Fixed
+- Visibility of suggestions box classes
+
+## 4.3.4 - 2023-02-16
+### Changed
+- Improved the main example for better readability on pub.dev
+
+## 4.3.3 - 2023-02-01
+### Fixed
+- Applied PR to fix `onSelected` issue introduced in Flutter 3.7.0
+
+## 4.3.2 - 2023-01-28
+### Changed
+- Updated SDK level to 2.19.0 for Flutter 3.7.0
+
+## 4.3.1 - 2023-01-28
+### Fixed
+- Used `maybeOf` for scrollable to prevent exceptions in Flutter (#47)
+
+## 4.3.0 - 2022-11-15
+### Added
+- `onReset` callback to `TypeAheadFormField` (#36)
+- Feature to block up and down keys (#35)
+
+## 4.2.0 - 2022-10-27
+### Added
+- `autoFlipListDirection` option (#31)
+
+### Fixed
+- Suggestions box behavior on web platforms (#32)
+
+## 4.1.1 - 2022-09-17
+### Fixed
+- Issues with web platforms and arrow keys (#28)
+
+## 4.1.0 - 2022-09-05
+### Added
+- Null safety to suggestions box controller (#09)
+- Improved support for VoiceOver/TalkBack (#17)
+- Key up and down features (#18)
+- `hideKeyboardOnDrag` option (#22)
+
+### Changed
+- Updated README with a pub.dev shield (#24)
+
+## 4.0.0 - 2022-05-15
+### Fixed
+- Warnings related to Flutter 3.0 (#95)
+
+## 3.2.7 - 2022-05-15
+### Reverted
+- Previous fix for Flutter 3.0 warnings (#95)
+
+## 3.2.6 - 2022-05-15
+### Fixed
+- Issue of suggestions not hiding on close (#93)
+- Warnings related to Flutter 3.0 (#95)
+
+## 3.2.5 - 2022-04-18
+### Fixed
+- Deprecated `maxLengthEnforced` property (#83)
+
+## 3.2.4 - 2021-12-09
+### Fixed
+- Resizing issue before opening the suggestion box (#60)
+
+## 3.2.3 - 2021-11-21
+### Added
+- Option for minimum number of characters before `suggestionsCallback` is called (#49)
+- Support for `textAlignVertical` (#44)
+
+### Changed
+- Made `maxLines` nullable (#54)
+- Made some variables public (#47)
+
+### Fixed
+- Deprecated information in example (#47)
+
+## 3.2.1 - 2021-09-10
+### Added
+- `Scrollcontroller` as an optional parameter (#27)
+
+### Fixed
+- Display issues with `ErrorBuilder` Widget (#35)
+- Strong mode and type issues (#39)
+
+## 3.2.2 - 2021-08-20
+### Added
+- Support for Windows and MacOS by making `keyboard_visibility` optional (#33)
+
+## 3.2.0 - 2021-07-09
+### Changed
+- File structure reorganization (#26)
+
+### Fixed
+- Scrollbar `ScrollController` issue (#25)
+
+## 3.1.3 - 2021-05-07
+### Changed
+- Allowed `suggestionsCallback` to return null (#08)
 
-## 4.7.0 - 5-Sept-2023
+## 3.1.2 - 2021-05-01
+### Fixed
+- Missing size guard in `_adjustMaxHeightAndOrientation` (#03)
+- Issue with suggestions callback being called immediately (#06)
 
-PR # 512 - 3 Major fixes (see PR) 
+## 3.1.1 - 2021-03-28
+### Fixed
+- Styling of CHANGELOG.md (#97)
 
-## 4.6.2 - 19-June-2023
+## 3.1.0 - 2021-03-21
+### Added
+- `autoFillHints` for `TextFieldConfiguration` (#95)
+- Feature to check if the overlay is open (#94)
+- Check for platform and run the correct example demo (#91)
 
-PR # 500 - itemSeparatorBuilder added to material typeaheadformfield
+### Fixed
+- Various bug fixes, including null safety (#92)
+- Cancel the debounce timer when widget is destroyed (#87)
+- possible race condition with await (#85)
 
-## 4.6.1 - 04-June-2023
+## 3.0.0-nullsafety.0 - 2021-02-09
+### Changed
+- Null-safety pre-release (#90)
 
-PR # 494 - Fix for scrollbar clickthrough
-PR # 495 - Fix mouse events propagating through the SuggestionBox to the underlying HTMLElementView
+## 2.0.0 - 2021-01-11
+### Breaking Changes
+- Changed Types for some calls
 
-## 4.6.0 - 29-May-2023
+### Changed
+- Re-applied changes from 1.9.2
 
-PR # 493 - Support alternative (for example Grid) layouts of results
+## 1.9.3 - 2021-01-10
+### Changed
+- Reverted back to settings of 1.9.1; changes in 1.9.2 will be part of 2.0.0
 
-## 4.5.0 - 28-May-2023
+## 1.9.2 - 2021-01-06
+### Fixed
+- Removed unneeded typecasts and added String types (#267)
 
-PR # 489 - Added itemSeparatorBuilder, Removed top padding on scrollbar, Added autofillHints properties
+## 1.9.1 - 2020-12-03
+### Fixed
+- Changed default setting to disabled for `autovalidateMode` and fixed typo (#256)
 
-## 4.4.0 - 20-May-2023
+## 1.9.0 - 2020-12-01
+### Added
+- `hideKeyboard` property to handle edge cases where text field has focus (#238)
+- `enabled` and `autovalidateMode` properties (#248)
+- `enableSuggestions` to TextField Configuration (#249)
 
-PR # 486 - add onTapOutside callback to typeahead
-PR # 485 - support placeholder style customization
-PR # 468 - Add "autoFlipMinHeight"
+### Changed
+- Updated `flutter_keyboard_visibility` to version 4.X (#255)
 
-## 4.3.8 - 30-April-2023
+## 1.8.8 - 2020-08-12
+### Fixed
+- Fixed typos and updated validator tests and examples to remove deprecated constants
 
-PR # 484 - Fix for incorrect vertical offset calculation of suggestion box for flutter mobile web
+## 1.8.7 - 2020-07-30
+### Fixed
+- Fixed `dispose()` error in tests
 
-## 4.3.7 - 26-February-2023
+## 1.8.6 - 2020-07-05
+### Fixed
+- Fixed "flashing" bug
 
-Update Changelog file
+## 1.8.5 - 2020-07-01
+### Changed
+- Updated `flutter_Keyboard_visibility` dependency to ^3.0.0
 
-## 4.3.6 - 18-February-2023
-Fixed visibility of cupertino decoration and formated code
+## 1.8.4 - 2020-06-30
+### Fixed
+- Merged 3 PRs addressing various bug fixes
 
-## 4.3.5 - 17-February-2023
-Fix in visibility of suggestions box classes
+## 1.8.3 - 2020-06-11
+### Fixed
+- Addressed keyboard visibility issues (contribution from @alphamikle)
 
-## 4.3.4 - 16-February-2023
-Improved the main example to be able to read it in pub dev,
+## 1.8.1 - 2020-04-08
+### Fixed
+- Various bug fixes
 
-## 4.3.3 - 1-Feburary-2023
+## 1.8.0 - 2020-01-23
+### Added
+- `onTap` property to `TextFieldConfiguration`
+- `offsetX` property to `SuggestionsBoxDecoration` and `CupertinoSuggestionsBoxDecoration`
+- Support for iOS 13 dark mode
 
--- Apply PR to fix onSelected issue introduced in Flutter 3.7.0
+### Changed
+- Switched from List to Iterable for flexibility
 
-## 4.3.2 - 28-January-2023
+### Fixed
+- Various bug fixes
 
--- Update sdk level to 2.19.0 for Flutter 3.7.0
+## 1.7.0 - 2019-10-16
 
-## 4.3.1 - 28-January-2023
+Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
 
--- PR #447 - fix: Use maybeOf for scrollable to not throw an exception in flutter …
+### Added
+- `enableInteractiveSelection` property
 
-## 4.3.0 - 15-November-2022
+### Changed
+- Updated `keyboard_visibility` dependency
 
--- PR #436 - Added onReset callback to TypeAheadFormField
--- PR #435 - Block up and down keys
+### Fixed
+- Scrolling bug
+- Disposing overlay issue
 
-## 4.2.0 - 27-October-2022
+## 1.6.1 - 2019-06-05
+### Fixed
+- `onChanged` now properly triggers for TypeAheadFormField
 
--- PR #432 - Fix suggestions box behavior on web
--- PR #431 - Add autoFlipListDirection option
+## 1.6.0 - 2019-05-19
+### Added
+- `CupertinoTypeAheadField` for Cupertino users
 
-## 4.1.1 - 17-September-2022
-
--- PR #428 - Fix some issues with web / arrows etc.
-
-## 4.1.0 - 5-September-2022
-
--- PR #409 - Add null safety to suggestions box controller
--- PR #417 - Improved support for VoiceOver/TalkBack
--- PR #418 - Feat/key up down
--- PR #422 - Adding hideKeyboardOnDrag option
--- PR #424 - Updated README: added pub.dev shield
-
-## 4.0.0 - 15-May-2022
-
--- PR #395 - Fix Flutter 3.0 warnings
-
-## 3.2.7 - 15-May-2022
-
--- REVERT PR #395 - Fix Flutter 3.0 warnings
-
-## 3.2.6 - 15-May-2022
-
--- PR #393 - Hide suggestion on close issue fix
--- PR #395 - Fix Flutter 3.0 warnings
-
-## 3.2.5 - 18-Apr-2022
-
--- PR #383 - Fix maxLengthEnforced deprecation
-
-## 3.2.4 - 9-Dec-2021
-
--- PR #360 - Resize before opening box (fixes issue 220)
-
-## 3.2.3 - 21-Nov-2021
-
--- PR #354 - Make maxLines nullable
--- PR #349 - Add option for min number of chars before suggestionsCallback is called
--- PR #347 - Un private some variables
--- PR #347 - Fix deprecated info's in example
--- PR #344 - Add textAlignVertical support, fixes #231
-
-## 3.2.2 - 20-Aug-2021
-
--- PR #333 - support Windows and MacOS by making keyboard_visibility optional
-
-## 3.2.1 - 10-Sept-2021
-
--- PR #327 - Added Scrollcontroler as optional parameter
--- PR #335 - Fix ErrorBuilder Widget display
--- PR #339 - Strong mode and type fixes
-
-## 3.2.0 - 9-Jul-2021
-
--- PR #326 - file structure reorganisation
--- PR #325 - Fix Scrollbar ScrollController
-
-## 3.1.3 - 7-May-2021
-
--- PR #308 - Allow suggestionsCallback to return null
-
-## 3.1.2 - 1-May-2021
-
--- PR #303 - Guard against missing size in \_adjustMaxHeightAndOrientation
--- PR #306 - Fixed Issue #286 - Suggestions callback called immediately
-
-## 3.1.1 - 28-March-2021
-
--- PR #297 - Fix styling of CHANGELOG.md
-
-## 3.1.0 - 21-March-2021
-
--- PR #295 - autoFillHints for TextFieldConfiguration
--- PR #294 - Check if the overlay is open
--- PR #292 - Various bug fixes, including null safety
--- PR #291 - Check for platform and run the correct example demo
--- PR #287 - Cancel the debounce timer when widget is destroyed
--- PR #285 - Fix possible race condition by doing an await
-
-## 3.0.0-nullsafety.0 - 9-Feburary-2021
-
--- PR #290 Null-safety pre-release
-
-## 2.0.0 - 11-January-2021
-
--- NOTE!! BREAKING CHANGE! Not major but changed Types for some calls
--- RE-APPLY : 1.9.2 will become 2.0.0
-
-## 1.9.3 - 10-January-2021
-
--- REVERT : Reverting back to 1.9.1 as 1.9.3. 1.9.2 will become 2.0.0
-
-## 1.9.2 - 06-January-2021
-
--- #267 : Remove undeeded typecasts and add String types
-
-## 1.9.1 - 03-December-2020
-
--- #256 : Change default to disabled for autovalidateMode and fix typo
-
-## 1.9.0 - 01-December-2020
-
-- Merged 4 PRs:
-  -- #238 : Added hideKeyboard even if textfield has focus (edge case)
-  -- #248 : Added enabled and autovalidateMode properties. Resolves Issue #247
-  -- #249 : Added enableSuggestions to Textfield Configuration. Resolves Issue #210
-  -- #255 : Update to use flutter_keyboard_visibility 4.X from 3.X
-
-## 1.8.8 - 12-August-2020
-
-- Merged PR to fix typo and validator tests and examples using deprecated consts.
-
-## 1.8.7 - 30-July-2020
-
-- Merged PR to fix dispose() error in tests.
-
-## 1.8.6 - 05/07/2020
-
-- Merged PR to fix "flashing" bug.
-
-## 1.8.5 - 01/07/2020
-
-- Dependency Update : Updated flutter_Keyboard_visibility to ^3.0.0 from ^2.0.0
-
-## 1.8.4 - 30/06/2020
-
-- Bug Fix : Merged 3 PRs for various bug fixes.
-
-## 1.8.3 - 11/06/2020
-
-- Bug Fix : PR to address keyboard visibility issues from @alphamikle
-
-## 1.8.1 - 08/04/2020
-
-- Bug fixes
-
-## 1.8.0 - 23/01/2020
-
-- Change from List to Iterable for flexibility
-- Added `onTap` property to `TextFieldConfiguration`
-- Added `offsetX` property to `SuggestionsBoxDecoration` and `CupertinoSuggestionsBoxDecoration`
-- Support iOS 13 dark mode
-- Bug fixes
-
-## 1.7.0 - 16/10/2019
-
-- Updated keyboard_visibility dependency
-- Scolling bug fix
-- Added new property `enableInteractiveSelection`
-- Fix disposing overlay
-
-Thanks to MisterJimson, davidmartos96, pparadox11, diegoveloper
-
-## 1.6.1 - 05/06/2019
-
-- Fixed onChanged not being called for TypeAheadFormField
-
-## 1.6.0 - 19/05/2019
-
-- Added CupertinoTypeAheadField for Cupertino users
+### Changed
 - Updated example project
-- Bug fixes
 
-## 1.5.0 - 25/04/2019
+### Fixed
+- Various bug fixes
 
-- Added `suggestionsBoxController` property and `SuggestionsBoxController` class to allow manual control of the suggestions box
-- Fix suggestions box height problems in dialogs
-- Add `textDirection` property to `TextFieldConfiguration`
+## 1.5.0 - 2019-04-25
+### Added
+- `suggestionsBoxController` property and `SuggestionsBoxController` class for manual control
+- `textDirection` property to `TextFieldConfiguration`
 
-## 1.4.1 - 09/04/2019
+### Fixed
+- Height issues of suggestions box in dialogs
 
-- Fixed BoxConstraints width parameters being ignored in `SuggestionsBoxDecoration`
+## 1.4.1 - 2019-04-09
+### Fixed
+- Width parameters in `BoxConstraints` are now respected in `SuggestionsBoxDecoration`
 
-## 1.4.0 - 26/03/2019
+## 1.4.0 - 2019-03-26
+### Added
+- `autoFlipDirection` property for automatic direction flipping of the suggestions list when space is limited
 
-- Added property `autoFlipDirection` to allow automatic direction flipping if
-  there is not enough space for the suggestions list
+## 1.3.0 - 2019-03-19
+### Changed
+- Limited the number of `suggestionsCallbacks` until the current call is finished
 
-## 1.3.0 - 19/03/2019
+## 1.2.1 - 2019-03-19
+### Changed
+- Optimizations
 
-- Limit number of suggestionsCallbacks until current call is finished
+### Fixed
+- Various bug fixes
 
-## 1.2.1 - 19/03/2019
+## 1.2.0 - 2019-03-05
+### Added
+- Property `keepSuggestionsOnLoading` for maintaining suggestions during loading
 
-- Bug fixes & optimizations
+### Changed
+- Suggestions box no longer shows circular progress indicator by default when loading
 
-## 1.2.0 - 05/03/2019
+## 1.1.0 - 2019-03-01
+### Added
+- Property `hideSuggestionsOnKeyboardHide` to control suggestions box behavior
 
-- Added property `keepSuggestionsOnLoading`
-- Changed default behavior: suggestions box will no longer
-  show circular progress indicator when loading; it will maintain previous results if available
+### Changed
+- Suggestions box now closes by default when keyboard hides
+- Width resizes properly on orientation changes
+- Suggestions box displays above the keyboard for AxisDirection.Up
 
-## 1.1.0 - 01/03/2019
+### Fixed
+- FocusNode errors
+- Keyboard height calculation errors
 
-- Suggestions box now closes on keyboard hide by default
-- Added property `hideSuggestionsOnKeyboardHide`
-- Width now properly resizes on orientation changes
-- Suggestions box will display above keyboard when keyboard hides the box for AxisDirection.Up
-- Fix FocusNode errors
-- Fix keyboard height calculation
+## 1.0.5 - 2019-02-21
+### Fixed
+- Suggestions no longer called on TextBox focus
 
-## 1.0.4/5 - 21/02/2019
+## 1.0.4 - 2019-02-21
+### Fixed
+- Suggestions no longer called on TextBox focus
 
-- Fix suggestions being called on TextBox focus
+## 1.0.3 - 2019-02-12
+### Changed
+- Suggestions box resizes when scrolling
 
-## 1.0.3 - 12/02/2019
+## 1.0.2 - 2019-02-07
+### Fixed
+- Bug in `maxHeight` property
 
-- Resize suggestion box when scrolling
+## 1.0.1 - 2019-02-06
+### Added
+- Properties `hideOnLoading`, `hideOnEmpty`, `hideOnError` to control visibility of suggestions box
 
-## 1.0.2 - 07/02/2019
+## 0.6.1 - 2019-01-26
+### Added
+- Documentation for the `direction` option
 
-- Bug fix for `maxHeight` property
+### Fixed
+- Types <T> now work properly
 
-## 1.0.1 - 06/02/2019
+## 0.6.0 - 2019-01-23
+### Added
+- Property `direction` for controlling the growth direction of suggestions
 
-- Added properties `hideOnLoading`, `hideOnEmpty`, and `hideOnError` to hide the suggestions box
+## 0.5.2 - 2019-01-19
+### Added
+- Contributing guidelines
 
-## 0.6.1 - 26/01/2019
+### Changed
+- CHANGLELOG.md is now reverse sorted
 
-- Allow types <T> to properly work.
-- Add documentation for direction: option.
+## 0.5.1 - 2019-01-10
+### Fixed
+- Various bug fixes
 
-## 0.6.0 - 23/01/2019
+## 0.5.0 - 2019-01-05
+### Added
+- `hasScrollbar` property for optional scrollbar display
 
-- Added property `direction` to allow the suggestions to grow either up or down
+### Fixed
+- Suggestion box no longer hides behind the keyboard
+- Animations controller is now properly disposed
 
-## 0.5.2 - 19/01/2019
+## 0.4.1 - 2018-09-20
+### Added
+- Property `getImmediateSuggestions` to the form field implementation
 
-- Added contributing guidelines and reverse sorted the CHANGLELOG.md file.
+## 0.4.0 - 2018-09-20
+### Added
+- `getImmediateSuggestions` property for fetching suggestions before user input
 
-## 0.5.1 - 10/01/2019
+### Changed
+- Added assertion to disallow simultaneous definition of `initialValue` and `textFieldConfiguration.controller`
 
-- Bug fixes
+## 0.3.0 - 2018-09-15
+### Added
+- Constraints property to the `SuggestionsBoxDecorations` allowing setting of the height and width of the suggestions box
 
-## 0.5.0 - 05/01/2019
+## 0.2.1 - 2018-09-04
+### Added
+- Mention of 'autocomplete' in README and pubspec
 
-- Added the hasScrollbar property which allows the optional display of a `Scrollbar`
-- Fixed the case where the suggestion box becomes hidden behind the keyboard
-- Fixed the bug of not disposing the animations controller
-
-## 0.4.1 - 20/09/2018
-
-- Added property `getImmediateSuggestions` to the form field implementation
-
-## 0.4.0 - 20/09/2018
-
-- Added property `getImmediateSuggestions` to allow fetching
-  suggestions before the user types
-- Added assertion in the form field to disallow having `initialValue`
-  and `textFieldConfiguration.controller` defined at the same time
-
-## 0.3.0 - 15/09/2018
-
-- Added a constraints property to the `SuggestionsBoxDecorations`
-  which allows to set the height and width of the suggestions box
-
-## 0.2.1 - 04/09/2018
-
-- Added mention of 'autocomplete' in README and pubspec
+### Changed
 - Executed 'flutter format'
 
-## 0.2.0 - 02/09/2018
+## 0.2.0 - 2018-09-02
+### Added
+- More configuration properties to the `TextField`
+- Configurable vertical offset for the suggestions box
+- Meta-tags to README for SEO
+- "How you can help" section to README
 
-- Changed the suggestions box decoration
-  to decorate a material sheet instead of
-  decorating a container
+### Changed
+- Suggestions box decoration
 - Moved the `TextField` properties inside a class
-  called `TextFieldConfiguration`, which is provided
-  to the `TypeAhead` widgets through a
-  `textFieldConfiguration` property. This was done to
-  decrease the clutter in the interface
-- Added more configuration properties to the
-  `TextField`
-- Added a configurable vertical offset for the
-  suggestions box
-- Changed the mechanism used to open/close the suggestions box
-- Added meta-tags to README for SEO
+- Mechanism used to open/close the suggestions box
 - Updated the GIF to show the changes
-- Added "How you can help" section to README
 
-## 0.1.2 - 31/08/2018
+## 0.1.2 - 2018-08-31
+### Fixed
+- Small issue in README
 
-- Small fix to README
+## 0.1.1 - 2018-08-31
+### Fixed
+- CHANGELOG format
+- Small issue in documentation
 
-## 0.1.1 - 31/08/2018
-
-- Fixed CHANGELOG.
-- Small fix to documentation
-
-## 0.1.0 - 31/08/2018
-
-- Initial Release.
+## 0.1.0 - 2018-08-31
+### Added
+- Initial Release
