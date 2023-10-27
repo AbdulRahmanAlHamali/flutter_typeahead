@@ -22,7 +22,6 @@ class SuggestionsListConfig<T> {
     this.transitionBuilder,
     this.animationDuration,
     this.animationStart,
-    this.direction,
     this.hideOnLoading,
     this.hideOnEmpty,
     this.hideOnError,
@@ -51,7 +50,6 @@ class SuggestionsListConfig<T> {
   final AnimationTransitionBuilder? transitionBuilder;
   final Duration? animationDuration;
   final double? animationStart;
-  final AxisDirection? direction;
   final bool? hideOnLoading;
   final bool? hideOnEmpty;
   final bool? hideOnError;

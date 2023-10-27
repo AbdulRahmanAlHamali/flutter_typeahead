@@ -143,7 +143,7 @@ class _FormExampleState extends State<FormExample> {
 
   String? _selectedCity;
 
-  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+  SuggestionsBox suggestionBoxController = SuggestionsBox();
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +174,7 @@ class _FormExampleState extends State<FormExample> {
                     suggestionsBox,
                 onSuggestionSelected: (suggestion) =>
                     _typeAheadController.text = suggestion,
-                suggestionsBoxController: suggestionBoxController,
+                suggestionsBox: suggestionBoxController,
                 validator: (value) =>
                     value!.isEmpty ? 'Please select a city' : null,
                 onSaved: (value) => _selectedCity = value,
@@ -421,8 +421,7 @@ class CupertinoFormExample extends StatefulWidget {
 class _FavoriteCitiesPage extends State<CupertinoFormExample> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  final SuggestionsBoxController _suggestionsBoxController =
-      SuggestionsBoxController();
+  final SuggestionsBox _suggestionsBoxController = SuggestionsBox();
   String favoriteCity = 'Unavailable';
 
   @override
@@ -441,7 +440,7 @@ class _FavoriteCitiesPage extends State<CupertinoFormExample> {
                   const Text('What is your favorite city?'),
                   const SizedBox(height: 10),
                   CupertinoTypeAheadFormField(
-                    suggestionsBoxController: _suggestionsBoxController,
+                    suggestionsBox: _suggestionsBoxController,
                     suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                     ),

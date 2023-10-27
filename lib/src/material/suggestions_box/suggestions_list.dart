@@ -22,7 +22,6 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     super.transitionBuilder,
     super.animationDuration,
     super.animationStart,
-    super.direction,
     super.hideOnLoading,
     super.hideOnEmpty,
     super.hideOnError,
