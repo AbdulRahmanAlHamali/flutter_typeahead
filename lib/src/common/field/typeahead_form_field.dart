@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
@@ -28,7 +28,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String> {
     this.loadingBuilder,
     this.onSuggestionsBoxToggle,
     this.debounceDuration = const Duration(milliseconds: 300),
-    this.suggestionsBoxController,
+    this.suggestionsBox,
     required this.onSuggestionSelected,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
@@ -82,7 +82,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String> {
   final WidgetBuilder? loadingBuilder;
   final void Function(bool)? onSuggestionsBoxToggle;
   final Duration debounceDuration;
-  final SuggestionsBoxController? suggestionsBoxController;
+  final SuggestionsBox? suggestionsBox;
   final SuggestionSelectionCallback<T> onSuggestionSelected;
   final ItemBuilder<T> itemBuilder;
   final IndexedWidgetBuilder? itemSeparatorBuilder;

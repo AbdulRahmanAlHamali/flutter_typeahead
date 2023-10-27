@@ -30,7 +30,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
     this.transitionBuilder,
     this.animationDuration,
     this.animationStart,
-    this.direction,
     this.hideOnLoading,
     this.hideOnEmpty,
     this.hideOnError,
@@ -59,7 +58,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget {
   final AnimationTransitionBuilder? transitionBuilder;
   final Duration? animationDuration;
   final double? animationStart;
-  final AxisDirection? direction;
   final bool? hideOnLoading;
   final bool? hideOnEmpty;
   final bool? hideOnError;
@@ -248,39 +246,36 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
 
       try {
         suggestions = await widget.suggestionsCallback!(widget.controller.text);
-      } catch (e) {
+      } on Exception catch (e) {
         error = e;
       }
 
-      if (mounted) {
-        // if it wasn't removed in the meantime
-        setState(() {
-          double? animationStart = widget.animationStart;
-          // allow suggestionsCallback to return null and not throw error here
-          if (error != null || suggestions?.isEmpty == true) {
-            animationStart = 1.0;
-          }
-          _animationController.forward(from: animationStart);
+      if (!mounted) return;
 
-          _error = error;
-          _isLoading = false;
-          _suggestions = suggestions;
-          _focusNodes = List.generate(
-            _suggestions?.length ?? 0,
-            (index) => FocusNode(onKey: widget.suggestionsBox.onKeyEvent),
-          );
-        });
-      }
+      setState(() {
+        double? animationStart = widget.animationStart;
+        // allow suggestionsCallback to return null and not throw error here
+        if (error != null || suggestions?.isEmpty == true) {
+          animationStart = 1.0;
+        }
+        _animationController.forward(from: animationStart);
+
+        _error = error;
+        _isLoading = false;
+        _suggestions = suggestions;
+        _focusNodes = List.generate(
+          _suggestions?.length ?? 0,
+          (index) => FocusNode(onKey: widget.suggestionsBox.onKeyEvent),
+        );
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     bool isEmpty =
-        (_suggestions?.isEmpty ?? false) && widget.controller.text == "";
-    if ((_suggestions == null || isEmpty) &&
-        _isLoading == false &&
-        _error == null) {
+        (_suggestions?.isEmpty ?? true) && widget.controller.text.isEmpty;
+    if (isEmpty && !_isLoading && _error == null) {
       return const SizedBox();
     }
 

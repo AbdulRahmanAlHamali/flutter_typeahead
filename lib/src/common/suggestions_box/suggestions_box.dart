@@ -4,105 +4,199 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
 
-class SuggestionsBox {
-  SuggestionsBox(
-    this.context,
-    this.direction,
-    this.autoFlipDirection,
-    this.autoFlipListDirection,
-    this.autoFlipMinHeight,
-  )   : desiredDirection = direction,
-        assert(
-          direction == AxisDirection.down || direction == AxisDirection.up,
-          'SuggestionsBox direction must be either AxisDirection.down or AxisDirection.up',
-        );
+class SuggestionsBox extends ChangeNotifier {
+  /// A controller of a SuggestionsBox.
+  /// This is used to open, close, toggle and resize the suggestions box.
+  SuggestionsBox({
+    AxisDirection direction = AxisDirection.down,
+    bool autoFlipDirection = false,
+    bool autoFlipListDirection = true,
+    double autoFlipMinHeight = 64.0,
+  })  : _direction = direction,
+        _desiredDirection = direction,
+        _autoFlipDirection = autoFlipDirection,
+        _autoFlipListDirection = autoFlipListDirection,
+        _autoFlipMinHeight = autoFlipMinHeight;
 
-  static const int _waitMetricsTimeoutMillis = 1000;
+  /// The direction in which the suggestions box opens.
+  /// Depending on the available space,
+  /// this might not be the same as the [desiredDirection].
+  AxisDirection get direction => _direction;
+  AxisDirection _direction;
 
-  final BuildContext context;
-  final AxisDirection desiredDirection;
-  final bool autoFlipDirection;
-  final bool autoFlipListDirection;
-  final double autoFlipMinHeight;
+  /// The desired direction of the suggestions box.
+  /// This is the direction that the suggestions box will open in if there is
+  /// enough room. If there is not enough room, the suggestions box will open
+  /// in the opposite direction.
+  AxisDirection get desiredDirection => _desiredDirection;
+  set desiredDirection(AxisDirection value) {
+    if (_desiredDirection == value) return;
+    if (value != AxisDirection.down && value != AxisDirection.up) {
+      throw ArgumentError(
+        'SuggestionsBox desiredDirection must be either AxisDirection.down or AxisDirection.up',
+      );
+    }
+    _desiredDirection = value;
+    notifyListeners();
+    _maybeResize();
+  }
 
-  OverlayEntry? overlayEntry;
-  AxisDirection direction;
+  AxisDirection _desiredDirection;
 
-  bool _isOpened = false;
-  bool get isOpened => _isOpened;
+  /// Whether the suggestions box should automatically flip direction.
+  bool get autoFlipDirection => _autoFlipDirection;
+  set autoFlipDirection(bool value) {
+    if (_autoFlipDirection == value) return;
+    _autoFlipDirection = value;
+    notifyListeners();
+    _maybeResize();
+  }
 
-  double maxHeight = 200;
-  double textBoxWidth = 100;
-  double textBoxHeight = 100;
+  bool _autoFlipDirection;
 
+  /// Whether the suggestions list should automatically flip direction.
+  bool get autoFlipListDirection => _autoFlipListDirection;
+  set autoFlipListDirection(bool value) {
+    if (_autoFlipListDirection == value) return;
+    _autoFlipListDirection = value;
+    notifyListeners();
+    _maybeResize();
+  }
+
+  bool _autoFlipListDirection;
+
+  /// The minimum height at which the suggestions box should automatically flip direction.
+  double get autoFlipMinHeight => _autoFlipMinHeight;
+  set autoFlipMinHeight(double value) {
+    if (_autoFlipMinHeight == value) return;
+    _autoFlipMinHeight = value;
+    notifyListeners();
+    _maybeResize();
+  }
+
+  double _autoFlipMinHeight;
+
+  /// The [BuildContext] of the [TypeAheadField] that this SuggestionsBox is attached to.
+  BuildContext get _context {
+    if (__context == null) {
+      throw StateError('SuggestionsBox must be attached before using it.');
+    }
+    return __context!;
+  }
+
+  BuildContext? __context;
+
+  /// The [OverlayEntry] which represents the content of this SuggestionsBox.
+  OverlayEntry get _overlayEntry {
+    if (__overlayEntry == null) {
+      throw StateError('SuggestionsBox must be attached before using it.');
+    }
+    return __overlayEntry!;
+  }
+
+  OverlayEntry? __overlayEntry;
+
+  /// Attach this SuggestionsBox to a [TypeAheadField].
+  /// This is called by the [TypeAheadField] itself.
+  void attach({
+    required BuildContext context,
+    required OverlayEntry overlayEntry,
+  }) {
+    __context = context;
+    __overlayEntry = overlayEntry;
+    resize();
+  }
+
+  /// Whether this SuggestionsBox is attached to a [TypeAheadField].
+  bool get isAttached => __overlayEntry != null;
+
+  /// The maximum height of the suggestions box.
+  double get maxHeight => _maxHeight;
+  double _maxHeight = 200;
+
+  /// The width of the suggestions box.
+  double get width => _boxWidth;
+  double _boxWidth = 100;
+
+  /// The height of the suggestions box.
+  double get height => _boxHeight;
+  double _boxHeight = 100;
+
+  /// Whether the suggestions box is open.
+  bool get isOpen => _isOpen;
+  bool _isOpen = false;
+
+  /// A stream of key events that occur on the [TypeAheadField].
+  Stream<LogicalKeyboardKey> get keyEvents => _keyEventController.stream;
   final StreamController<LogicalKeyboardKey> _keyEventController =
       StreamController<LogicalKeyboardKey>.broadcast();
 
-  Stream<LogicalKeyboardKey> get keyEvents => _keyEventController.stream;
-
+  /// Should be called when a key is pressed on the [TypeAheadField].
+  /// This is used internally. Do not call this method directly.
   KeyEventResult onKeyEvent(FocusNode node, RawKeyEvent key) {
     if (key is RawKeyUpEvent) return KeyEventResult.ignored;
     _keyEventController.add(key.logicalKey);
     return KeyEventResult.ignored;
   }
 
-  void _assertInitialized() {
-    if (overlayEntry == null) {
-      throw StateError(
-        'SuggestionsBox must be initialized '
-        'before calling this method',
-      );
-    }
-  }
-
+  /// Opens the suggestions box.
   void open() {
-    _assertInitialized();
-    if (isOpened) return;
+    if (isOpen) return;
     resize();
-    Overlay.of(context).insert(overlayEntry!);
-    _isOpened = true;
+    Overlay.of(_context).insert(_overlayEntry);
+    _isOpen = true;
+    notifyListeners();
   }
 
+  /// Closes the suggestions box.
   void close() {
-    _assertInitialized();
-    if (!isOpened) return;
-    overlayEntry!.remove();
-    _isOpened = false;
+    if (!isOpen) return;
+    _overlayEntry.remove();
+    _isOpen = false;
+    notifyListeners();
   }
 
+  /// Opens the suggestions box if closed and vice-versa.
   void toggle() {
-    if (isOpened) {
+    if (isOpen) {
       close();
     } else {
       open();
     }
   }
 
-  void resize() {
-    // check to see if widget is still mounted
-    // user may have closed the widget with the keyboard still open
-    if (context.mounted) {
-      _adjustMaxHeightAndOrientation();
-      overlayEntry!.markNeedsBuild();
-    }
+  /// Resizes the suggestions box,
+  /// if it is attached to a [TypeAheadField].
+  void _maybeResize() {
+    if (!isAttached) return;
+    resize();
   }
 
-  // See if there's enough room in the desired direction for the overlay to display
-  // correctly. If not, try the opposite direction if things look more roomy there
-  void _adjustMaxHeightAndOrientation() {
-    BaseTypeAheadField widget = context.widget as BaseTypeAheadField;
+  /// Resizes the suggestions box.
+  void resize() {
+    if (!_context.mounted) return;
+    _adjustMaxHeightAndOrientation();
+    _overlayEntry.markNeedsBuild();
+  }
 
-    RenderBox? box = context.findRenderObject() as RenderBox?;
+  // Resize the suggestions box based on the available height.
+  // If there's not enough room in the desired direction, flip the direction
+  // and see if there's enough room there.
+  void _adjustMaxHeightAndOrientation() {
+    BaseTypeAheadField widget = _context.widget as BaseTypeAheadField;
+
+    RenderBox? box = _context.findRenderObject() as RenderBox?;
     if (box == null || !box.hasSize) return;
 
-    textBoxWidth = box.size.width;
-    textBoxHeight = box.size.height;
+    _boxWidth = box.size.width;
+    _boxHeight = box.size.height;
+    notifyListeners();
 
     // top of text box
     double textBoxAbsY = box.localToGlobal(Offset.zero).dy;
 
     // height of window
-    double windowHeight = MediaQuery.of(context).size.height;
+    double windowHeight = MediaQuery.of(_context).size.height;
 
     // we need to find the root MediaQuery for the unsafe area height
     // we cannot use BuildContext.ancestorWidgetOfExactType because
@@ -117,10 +211,12 @@ class SuggestionsBox {
 
     // if there's enough room in the desired direction, update the direction and the max height
     if (maxHDesired >= autoFlipMinHeight || !autoFlipDirection) {
-      direction = desiredDirection;
+      _direction = desiredDirection;
+      notifyListeners();
       // Sometimes textBoxAbsY is NaN, so we need to check for that
       if (!maxHDesired.isNaN) {
-        maxHeight = maxHDesired;
+        _maxHeight = maxHDesired;
+        notifyListeners();
       }
     } else {
       // There's not enough room in the desired direction so see how much room is in the opposite direction
@@ -130,16 +226,21 @@ class SuggestionsBox {
 
       // if there's more room in this opposite direction, update the direction and maxHeight
       if (maxHFlipped > maxHDesired) {
-        direction = flipped;
+        _direction = flipped;
+        notifyListeners();
 
         // Not sure if this is needed, but it's here just in case
         if (!maxHFlipped.isNaN) {
-          maxHeight = maxHFlipped;
+          _maxHeight = maxHFlipped;
+          notifyListeners();
         }
       }
     }
 
-    if (maxHeight < 0) maxHeight = 0;
+    if (maxHeight < 0) {
+      _maxHeight = 0;
+      notifyListeners();
+    }
   }
 
   double _calculateMaxHeight(
@@ -174,7 +275,7 @@ class SuggestionsBox {
     return windowHeight -
         keyboardHeight -
         unsafeAreaHeight -
-        textBoxHeight -
+        height -
         textBoxAbsY -
         2 * widget.suggestionsBoxVerticalOffset;
   }
@@ -202,41 +303,34 @@ class SuggestionsBox {
             2 * widget.suggestionsBoxVerticalOffset;
   }
 
+  static const int _waitMetricsTimeoutMillis = 1000;
+
+  // Delays until the keyboard has toggled or the orientation has fully changed
   Future<void> updateDimensions() async {
-    if (await _updateDimensions()) {
-      resize();
-    }
-  }
+    if (!_context.mounted) return;
+    // initial viewInsets which are before the keyboard is toggled
+    EdgeInsets initial = MediaQuery.of(_context).viewInsets;
+    // initial MediaQuery for orientation change
+    MediaQuery? initialRootMediaQuery = _findRootMediaQuery();
 
-  /// Delays until the keyboard has toggled or the orientation has fully changed
-  Future<bool> _updateDimensions() async {
-    if (context.mounted) {
-      // initial viewInsets which are before the keyboard is toggled
-      EdgeInsets initial = MediaQuery.of(context).viewInsets;
-      // initial MediaQuery for orientation change
-      MediaQuery? initialRootMediaQuery = _findRootMediaQuery();
+    int timer = 0;
+    // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
+    while (_context.mounted && timer < _waitMetricsTimeoutMillis) {
+      // TODO: reduce delay if showDialog ever exposes detection of animation end
+      await Future<void>.delayed(const Duration(milliseconds: 170));
+      timer += 170;
 
-      int timer = 0;
-      // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
-      while (context.mounted && timer < _waitMetricsTimeoutMillis) {
-        // TODO: reduce delay if showDialog ever exposes detection of animation end
-        await Future<void>.delayed(const Duration(milliseconds: 170));
-        timer += 170;
-
-        if (context.mounted &&
-            (MediaQuery.of(context).viewInsets != initial ||
-                _findRootMediaQuery() != initialRootMediaQuery)) {
-          return true;
-        }
+      if (!_context.mounted) return;
+      if (MediaQuery.of(_context).viewInsets != initial ||
+          _findRootMediaQuery() != initialRootMediaQuery) {
+        resize();
       }
     }
-
-    return false;
   }
 
   MediaQuery? _findRootMediaQuery() {
     MediaQuery? rootMediaQuery;
-    context.visitAncestorElements((element) {
+    _context.visitAncestorElements((element) {
       if (element.widget is MediaQuery) {
         rootMediaQuery = element.widget as MediaQuery;
       }
@@ -246,8 +340,10 @@ class SuggestionsBox {
     return rootMediaQuery;
   }
 
+  @override
   void dispose() {
     close();
     _keyEventController.close();
+    super.dispose();
   }
 }

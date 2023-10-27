@@ -28,7 +28,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     super.onSuggestionsBoxToggle,
     super.debounceDuration,
     this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
-    super.suggestionsBoxController,
+    super.suggestionsBox,
     required super.onSuggestionSelected,
     required super.itemBuilder,
     super.itemSeparatorBuilder,
@@ -71,7 +71,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
       loadingBuilder: loadingBuilder,
       debounceDuration: debounceDuration,
       suggestionsBoxDecoration: suggestionsBoxDecoration,
-      suggestionsBoxController: suggestionsBoxController,
+      suggestionsBox: suggestionsBox,
       textFieldConfiguration: config.copyWith(
         decoration: config.decoration.copyWith(errorText: field.errorText),
       ),

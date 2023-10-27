@@ -19,7 +19,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
     required this.onSuggestionSelected,
     required this.textFieldConfiguration,
     this.debounceDuration = const Duration(milliseconds: 300),
-    this.suggestionsBoxController,
+    this.suggestionsBox,
     this.scrollController,
     this.loadingBuilder,
     this.noItemsFoundBuilder,
@@ -125,9 +125,9 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
   /// The decoration of the sheet that contains the suggestions.
   BaseSuggestionsBoxDecoration? get suggestionsBoxDecoration;
 
-  /// Used to control the `_SuggestionsBox`. Allows manual control to
-  /// open, close, toggle, or resize the `_SuggestionsBox`.
-  final SuggestionsBoxController? suggestionsBoxController;
+  /// Allows directly controlling the suggestions box,
+  /// like opening and closing it programmatically.
+  final SuggestionsBox? suggestionsBox;
 
   /// The duration to wait after the user stops typing before calling
   /// [suggestionsCallback].
@@ -218,15 +218,17 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
   /// Defaults to 500 milliseconds.
   final Duration animationDuration;
 
-  /// Determine the [SuggestionBox]'s direction.
+  /// Determine the [SuggestionsBox]'s direction.
   ///
-  /// If [AxisDirection.down], the [SuggestionBox] will be below the [TextField]
+  /// If [AxisDirection.down], the [SuggestionsBox] will be below the [TextField]
   /// and the [_SuggestionsList] will grow **down**.
   ///
-  /// If [AxisDirection.up], the [SuggestionBox] will be above the [TextField]
+  /// If [AxisDirection.up], the [SuggestionsBox] will be above the [TextField]
   /// and the [_SuggestionsList] will grow **up**.
   ///
   /// [AxisDirection.left] and [AxisDirection.right] are not allowed.
+  ///
+  /// This is ignored if [suggestionsBox] is provided.
   final AxisDirection direction;
 
   /// The value at which the [transitionBuilder] animation starts.
@@ -295,17 +297,23 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
   /// direction.
   ///
   /// Defaults to false
+  ///
+  /// This is ignored if [suggestionsBox] is provided.
   final bool autoFlipDirection;
 
   /// If set to false, suggestion list will not be reversed according to the
   /// [autoFlipDirection] property.
   ///
   /// Defaults to true.
+  ///
+  /// This is ignored if [suggestionsBox] is provided.
   final bool autoFlipListDirection;
 
   /// Minimum height below [autoFlipDirection] is triggered
   ///
   /// Defaults to 64.0.
+  ///
+  /// This is ignored if [suggestionsBox] is provided.
   final double autoFlipMinHeight;
 
   final bool hideKeyboard;
@@ -345,16 +353,11 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget {
 
 class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     with WidgetsBindingObserver {
-  late final SuggestionsBox _suggestionsBox;
+  late SuggestionsBox _suggestionsBox;
 
-  TextEditingController? _textEditingController;
-  TextEditingController get _effectiveController =>
-      widget.textFieldConfiguration.controller ?? _textEditingController!;
+  late TextEditingController _textEditingController;
 
-  FocusNode? _focusNode;
-  FocusNode get _effectiveFocusNode =>
-      widget.textFieldConfiguration.focusNode ?? _focusNode!;
-  late VoidCallback _focusNodeListener;
+  late FocusNode _focusNode;
 
   final LayerLink _layerLink = LayerLink();
 
@@ -365,100 +368,58 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
   // Will have a value if the typeahead is inside a scrollable widget
   ScrollPosition? _scrollPosition;
 
-  // Keyboard detection
-  final Stream<bool> _keyboardVisibility =
-      KeyboardVisibilityController().onChange;
   late StreamSubscription<bool>? _keyboardVisibilitySubscription;
 
   bool _areSuggestionsFocused = false;
   late final _shouldRefreshSuggestionsFocusIndex =
-      ShouldRefreshSuggestionFocusIndexNotifier(
-          textFieldFocusNode: _effectiveFocusNode);
+      ShouldRefreshSuggestionFocusIndexNotifier(textFieldFocusNode: _focusNode);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    if (widget.textFieldConfiguration.controller == null) {
-      _textEditingController = TextEditingController();
-    }
+    _suggestionsBox = widget.suggestionsBox ??
+        SuggestionsBox(
+          // These properties are only used if the suggestionsBox is not provided
+          direction: widget.direction,
+          autoFlipDirection: widget.autoFlipDirection,
+          autoFlipListDirection: widget.autoFlipListDirection,
+          autoFlipMinHeight: widget.autoFlipMinHeight,
+        );
 
-    final textFieldConfigurationFocusNode =
-        widget.textFieldConfiguration.focusNode;
-    if (textFieldConfigurationFocusNode == null) {
-      _focusNode = FocusNode();
-    }
-    _registerFocusNode(_effectiveFocusNode);
+    _registerSuggestionsBox(_suggestionsBox);
 
-    _suggestionsBox = SuggestionsBox(
-      context,
-      widget.direction,
-      widget.autoFlipDirection,
-      widget.autoFlipListDirection,
-      widget.autoFlipMinHeight,
-    );
+    _textEditingController =
+        widget.textFieldConfiguration.controller ?? TextEditingController();
 
-    widget.suggestionsBoxController?.suggestionsBox = _suggestionsBox;
-    widget.suggestionsBoxController?.effectiveFocusNode = _effectiveFocusNode;
+    _focusNode = widget.textFieldConfiguration.focusNode ?? FocusNode();
+    _registerFocusNode(_focusNode);
 
-    _focusNodeListener = () {
-      if (_effectiveFocusNode.hasFocus) {
-        _suggestionsBox.open();
-      } else if (!_areSuggestionsFocused) {
-        if (widget.hideSuggestionsOnKeyboardHide) {
-          _suggestionsBox.close();
-        }
-      }
-
-      widget.onSuggestionsBoxToggle?.call(_suggestionsBox.isOpened);
-    };
-
-    _effectiveFocusNode.addListener(_focusNodeListener);
-
-    // hide suggestions box on keyboard closed
-    _keyboardVisibilitySubscription = _keyboardVisibility.listen((isVisible) {
-      if (widget.hideSuggestionsOnKeyboardHide && !isVisible) {
-        _effectiveFocusNode.unfocus();
-      }
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((duration) {
-      if (mounted) {
-        _initOverlayEntry();
-        // calculate initial suggestions list size
-        _suggestionsBox.resize();
-
-        // in case we already missed the focus event
-        if (_effectiveFocusNode.hasFocus) {
-          _suggestionsBox.open();
-        }
-      }
-    });
+    _keyboardVisibilitySubscription = KeyboardVisibilityController()
+        .onChange
+        .listen(_onKeyboardVisibilityChanged);
   }
 
   @override
   void didUpdateWidget(covariant BaseTypeAheadField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final controller = widget.textFieldConfiguration.controller;
-    final oldController = oldWidget.textFieldConfiguration.controller;
-    if (controller != oldController) {
-      if (controller == null) {
-        _textEditingController = TextEditingController();
-      } else {
-        _textEditingController?.dispose();
-        _textEditingController = null;
+    if (_textEditingController != widget.textFieldConfiguration.controller) {
+      if (oldWidget.textFieldConfiguration.controller == null) {
+        _textEditingController.dispose();
       }
+      _textEditingController =
+          widget.textFieldConfiguration.controller ?? TextEditingController();
     }
 
-    final focusNode = widget.textFieldConfiguration.focusNode;
-    final oldFocusNode = oldWidget.textFieldConfiguration.focusNode;
-    if (focusNode != oldFocusNode) {
-      if (focusNode == null) {
-        _focusNode = FocusNode();
+    if (_focusNode != widget.textFieldConfiguration.focusNode) {
+      _focusNode.removeListener(_onFocusChanged);
+      if (oldWidget.textFieldConfiguration.focusNode == null) {
+        _focusNode.dispose();
       }
-      _registerFocusNode(_effectiveFocusNode);
+      _focusNode = widget.textFieldConfiguration.focusNode ?? FocusNode();
+      _registerFocusNode(_focusNode);
     }
   }
 
@@ -482,25 +443,58 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     _suggestionsBox.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibilitySubscription?.cancel();
-    _effectiveFocusNode.removeListener(_focusNodeListener);
-    _focusNode?.dispose();
+    _focusNode.removeListener(_onFocusChanged);
+    _focusNode.dispose();
     _resizeOnScrollTimer?.cancel();
     _scrollPosition?.removeListener(_scrollResizeListener);
-    _textEditingController?.dispose();
+    _textEditingController.dispose();
     super.dispose();
   }
 
+  /// Creates the overlay entry and show the suggestions box on the screen.
+  void _registerSuggestionsBox(SuggestionsBox box) {
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      if (!mounted) return;
+      _initOverlayEntry();
+      box.resize();
+      if (_focusNode.hasFocus) {
+        box.open();
+      }
+    });
+  }
+
   void _registerFocusNode(FocusNode focusNode) {
-    final previousOnKey = focusNode.onKey;
+    var previousOnKey = focusNode.onKey;
     focusNode.onKey = ((node, event) {
       final keyEventResult = _suggestionsBox.onKeyEvent(node, event);
       return previousOnKey?.call(node, event) ?? keyEventResult;
     });
+
+    _focusNode.addListener(_onFocusChanged);
+  }
+
+  void _onFocusChanged() {
+    if (_focusNode.hasFocus) {
+      _suggestionsBox.open();
+    } else if (!_areSuggestionsFocused) {
+      if (widget.hideSuggestionsOnKeyboardHide) {
+        _suggestionsBox.close();
+      }
+    }
+
+    widget.onSuggestionsBoxToggle?.call(_suggestionsBox.isOpen);
+  }
+
+  /// hide suggestions box on keyboard closed
+  void _onKeyboardVisibilityChanged(bool visible) {
+    if (!visible && widget.hideSuggestionsOnKeyboardHide) {
+      _suggestionsBox.close();
+    }
   }
 
   void _onSuggestionSelected(T selection) {
     if (!widget.keepSuggestionsOnSuggestionSelected) {
-      _effectiveFocusNode.unfocus();
+      _focusNode.unfocus();
       _suggestionsBox.close();
     }
     widget.onSuggestionSelected(selection);
@@ -511,10 +505,8 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
     _resizeOnScrollTimer?.cancel();
     if (isScrolling) {
       // Scroll started
-      _resizeOnScrollTimer =
-          Timer.periodic(_resizeOnScrollRefreshRate, (timer) {
-        _suggestionsBox.resize();
-      });
+      _resizeOnScrollTimer = Timer.periodic(
+          _resizeOnScrollRefreshRate, (_) => _suggestionsBox.resize());
     } else {
       // Scroll finished
       _suggestionsBox.resize();
@@ -522,109 +514,119 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
   }
 
   void _initOverlayEntry() {
-    _suggestionsBox.overlayEntry = OverlayEntry(
-      builder: (context) {
-        void giveTextFieldFocus() {
-          _effectiveFocusNode.requestFocus();
-          _areSuggestionsFocused = false;
-        }
-
-        void onSuggestionFocus() {
-          if (!_areSuggestionsFocused) {
-            _areSuggestionsFocused = true;
+    _suggestionsBox.attach(
+      context: context,
+      overlayEntry: OverlayEntry(
+        builder: (context) {
+          void giveTextFieldFocus() {
+            _focusNode.requestFocus();
+            _areSuggestionsFocused = false;
           }
-        }
 
-        final suggestionsList = widget.buildSuggestionsList(
-          context,
-          SuggestionsListConfig(
-            suggestionsBox: _suggestionsBox,
-            debounceDuration: widget.debounceDuration,
-            intercepting: widget.intercepting,
-            controller: _effectiveController,
-            loadingBuilder: widget.loadingBuilder,
-            scrollController: widget.scrollController,
-            noItemsFoundBuilder: widget.noItemsFoundBuilder,
-            errorBuilder: widget.errorBuilder,
-            transitionBuilder: widget.transitionBuilder,
-            suggestionsCallback: widget.suggestionsCallback,
-            animationDuration: widget.animationDuration,
-            animationStart: widget.animationStart,
-            onSuggestionSelected: _onSuggestionSelected,
-            itemBuilder: widget.itemBuilder,
-            itemSeparatorBuilder: widget.itemSeparatorBuilder,
-            layoutArchitecture: widget.layoutArchitecture,
-            direction: _suggestionsBox.direction,
-            hideOnLoading: widget.hideOnLoading,
-            hideOnEmpty: widget.hideOnEmpty,
-            hideOnError: widget.hideOnError,
-            keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
-            minCharsForSuggestions: widget.minCharsForSuggestions,
-            shouldRefreshSuggestionFocusIndexNotifier:
-                _shouldRefreshSuggestionsFocusIndex,
-            giveTextFieldFocus: giveTextFieldFocus,
-            onSuggestionFocus: onSuggestionFocus,
-            hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
-          ),
-        );
-
-        double w = _suggestionsBox.textBoxWidth;
-        BoxConstraints? constraints =
-            widget.suggestionsBoxDecoration?.constraints;
-        if (constraints != null) {
-          if (constraints.minWidth != 0.0 &&
-              constraints.maxWidth != double.infinity) {
-            w = (constraints.minWidth + constraints.maxWidth) / 2;
-          } else if (constraints.minWidth != 0.0 && constraints.minWidth > w) {
-            w = constraints.minWidth;
-          } else if (constraints.maxWidth != double.infinity &&
-              constraints.maxWidth < w) {
-            w = constraints.maxWidth;
+          void onSuggestionFocus() {
+            if (!_areSuggestionsFocused) {
+              _areSuggestionsFocused = true;
+            }
           }
-        }
 
-        final Widget compositedFollower = CompositedTransformFollower(
-          link: _layerLink,
-          showWhenUnlinked: false,
-          offset: Offset(
-              widget.suggestionsBoxDecoration?.offsetX ?? 0.0,
-              _suggestionsBox.direction == AxisDirection.down
-                  ? _suggestionsBox.textBoxHeight +
-                      widget.suggestionsBoxVerticalOffset
-                  : -widget.suggestionsBoxVerticalOffset),
-          child: _suggestionsBox.direction == AxisDirection.down
-              ? suggestionsList
-              : FractionalTranslation(
-                  translation:
-                      const Offset(0, -1), // visually flips list to go up
-                  child: suggestionsList,
-                ),
-        );
+          final suggestionsList = widget.buildSuggestionsList(
+            context,
+            SuggestionsListConfig(
+              suggestionsBox: _suggestionsBox,
+              debounceDuration: widget.debounceDuration,
+              intercepting: widget.intercepting,
+              controller: _textEditingController,
+              loadingBuilder: widget.loadingBuilder,
+              scrollController: widget.scrollController,
+              noItemsFoundBuilder: widget.noItemsFoundBuilder,
+              errorBuilder: widget.errorBuilder,
+              transitionBuilder: widget.transitionBuilder,
+              suggestionsCallback: widget.suggestionsCallback,
+              animationDuration: widget.animationDuration,
+              animationStart: widget.animationStart,
+              onSuggestionSelected: _onSuggestionSelected,
+              itemBuilder: widget.itemBuilder,
+              itemSeparatorBuilder: widget.itemSeparatorBuilder,
+              layoutArchitecture: widget.layoutArchitecture,
+              hideOnLoading: widget.hideOnLoading,
+              hideOnEmpty: widget.hideOnEmpty,
+              hideOnError: widget.hideOnError,
+              keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
+              minCharsForSuggestions: widget.minCharsForSuggestions,
+              shouldRefreshSuggestionFocusIndexNotifier:
+                  _shouldRefreshSuggestionsFocusIndex,
+              giveTextFieldFocus: giveTextFieldFocus,
+              onSuggestionFocus: onSuggestionFocus,
+              hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
+            ),
+          );
 
-        // When wrapped in the Positioned widget, the suggestions box widget
-        // is placed before the Scaffold semantically. In order to have the
-        // suggestions box navigable from the search input or keyboard,
-        // Semantics > Align > ConstrainedBox are needed. This does not change
-        // the style visually. However, when VO/TB are not enabled it is
-        // necessary to use the Positioned widget to allow the elements to be
-        // properly tappable.
-        return MediaQuery.of(context).accessibleNavigation &&
-                !widget.ignoreAccessibleNavigation
-            ? Semantics(
-                container: true,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: w),
-                    child: compositedFollower,
+          double width = _suggestionsBox.width;
+          BoxConstraints? constraints =
+              widget.suggestionsBoxDecoration?.constraints;
+          if (constraints != null) {
+            if (constraints.minWidth != 0.0 &&
+                constraints.maxWidth != double.infinity) {
+              width = (constraints.minWidth + constraints.maxWidth) / 2;
+            } else if (constraints.minWidth != 0.0 &&
+                constraints.minWidth > width) {
+              width = constraints.minWidth;
+            } else if (constraints.maxWidth != double.infinity &&
+                constraints.maxWidth < width) {
+              width = constraints.maxWidth;
+            }
+          }
+
+          final Widget compositedFollower = CompositedTransformFollower(
+            link: _layerLink,
+            showWhenUnlinked: false,
+            offset: Offset(
+                widget.suggestionsBoxDecoration?.offsetX ?? 0.0,
+                _suggestionsBox.direction == AxisDirection.down
+                    ? _suggestionsBox.height +
+                        widget.suggestionsBoxVerticalOffset
+                    : -widget.suggestionsBoxVerticalOffset),
+            child: _suggestionsBox.direction == AxisDirection.down
+                ? suggestionsList
+                : FractionalTranslation(
+                    // visually flips list to go up
+                    translation: const Offset(0, -1),
+                    child: suggestionsList,
                   ),
+          );
+
+          bool accessibleNavigation =
+              MediaQuery.of(context).accessibleNavigation;
+          if (widget.ignoreAccessibleNavigation) {
+            accessibleNavigation = false;
+          }
+
+          if (accessibleNavigation) {
+            // When wrapped in the Positioned widget, the suggestions box widget
+            // is placed before the Scaffold semantically. In order to have the
+            // suggestions box navigable from the search input or keyboard,
+            // Semantics > Align > ConstrainedBox are needed. This does not change
+            // the style visually. However, when VO/TB are not enabled it is
+            // necessary to use the Positioned widget to allow the elements to be
+            // properly tappable.
+            return Semantics(
+              container: true,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: width),
+                  child: compositedFollower,
                 ),
-              )
-            : Positioned(
-                width: w,
-                child: compositedFollower,
-              );
-      },
+              ),
+            );
+          } else {
+            return Positioned(
+              width: width,
+              child: compositedFollower,
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -637,8 +639,8 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>>
         child: widget.buildTextField(
           context,
           widget.textFieldConfiguration.copyWith(
-            focusNode: _effectiveFocusNode,
-            controller: _effectiveController,
+            focusNode: _focusNode,
+            controller: _textEditingController,
             readOnly: widget.hideKeyboard,
           ),
         ),
