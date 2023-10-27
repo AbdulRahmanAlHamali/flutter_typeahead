@@ -369,15 +369,15 @@ class BackendService {
 
     return [
       {
-        'name': '$query with long Shoelaces',
+        'name': '$query with long shoelaces',
         'price': '\$11.99',
       },
       {
-        'name': '$query with Heels',
+        'name': '$query with steel caps',
         'price': '\$74.99',
       },
       {
-        'name': '$query with High Heels',
+        'name': '$query with high heels',
         'price': '\$37.99',
       },
     ];
