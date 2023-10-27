@@ -331,6 +331,7 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
       decoration: config.decoration,
       enableInteractiveSelection: config.enableInteractiveSelection,
       enabled: config.enabled,
+      enableSuggestions: config.enableSuggestions,
       expands: config.expands,
       inputFormatters: config.inputFormatters,
       keyboardAppearance: config.keyboardAppearance,
