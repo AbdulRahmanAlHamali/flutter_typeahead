@@ -110,6 +110,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       decoration: config.decoration,
       enableInteractiveSelection: config.enableInteractiveSelection,
       enabled: config.enabled,
+      enableSuggestions: config.enableSuggestions,
       focusNode: config.focusNode,
       inputFormatters: config.inputFormatters,
       keyboardAppearance: config.keyboardAppearance,
