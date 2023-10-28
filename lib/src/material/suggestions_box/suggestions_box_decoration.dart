@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dec
 class SuggestionsBoxDecoration extends BaseSuggestionsBoxDecoration {
   /// Creates a SuggestionsBoxDecoration
   const SuggestionsBoxDecoration({
-    this.elevation = 4.0,
+    this.elevation = 4,
     super.color,
     this.shape,
     super.hasScrollbar,

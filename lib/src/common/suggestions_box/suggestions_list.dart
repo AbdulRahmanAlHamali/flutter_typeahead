@@ -285,7 +285,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
         double? animationStart = widget.animationStart;
         // allow suggestionsCallback to return null and not throw error here
         if (error != null || suggestions?.isEmpty == true) {
-          animationStart = 1.0;
+          animationStart = 1;
         }
         _animationController.forward(from: animationStart);
 

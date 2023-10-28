@@ -36,7 +36,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
     required this.suggestionsCallback,
-    this.suggestionsBoxVerticalOffset = 5.0,
+    this.suggestionsBoxVerticalOffset = 5,
     required this.textFieldConfiguration,
     this.transitionBuilder,
     this.animationDuration = const Duration(milliseconds: 500),
