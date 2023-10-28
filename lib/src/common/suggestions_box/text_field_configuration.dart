@@ -12,7 +12,7 @@ abstract class BaseTextFieldConfiguration {
     this.controller,
     this.cursorColor,
     this.cursorRadius,
-    this.cursorWidth = 2.0,
+    this.cursorWidth = 2,
     this.enableInteractiveSelection = true,
     this.enableSuggestions = true,
     this.enabled = true,

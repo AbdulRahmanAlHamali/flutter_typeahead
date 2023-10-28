@@ -33,7 +33,7 @@ class SuggestionsListConfig<T> {
   /// Duration of the animation for showing and hiding the suggestions box.
   final Duration? animationDuration;
 
-  /// The starting point of the animation as a double between 0.0 and 1.0.
+  /// The starting point of the animation as a double between 0 and 1.
   final double? animationStart;
 
   /// Controller for the text field used for input.

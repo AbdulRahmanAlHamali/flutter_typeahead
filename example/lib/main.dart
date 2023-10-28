@@ -107,7 +107,7 @@ class NavigationExample extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: const EdgeInsets.all(32),
           child: TypeAheadField(
             textFieldConfiguration: TextFieldConfiguration(
               autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
@@ -136,8 +136,8 @@ class NavigationExample extends StatelessWidget {
               );
             },
             suggestionsBoxDecoration: SuggestionsBoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              elevation: 8.0,
+              borderRadius: BorderRadius.circular(10),
+              elevation: 8,
               color: Theme.of(context).cardColor,
             ),
           ),
@@ -169,7 +169,7 @@ class _FormExampleState extends State<FormExample> {
       child: Form(
         key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: const EdgeInsets.all(32),
           child: Column(
             children: [
               TypeAheadFormField(
@@ -272,7 +272,7 @@ class _ScrollExampleState extends State<ScrollExample> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child:
                     Text("The suggestion box will resize as you are scrolling"),
               ),
@@ -361,8 +361,8 @@ class LayoutExample extends StatelessWidget {
               );
             },
             suggestionsBoxDecoration: SuggestionsBoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              elevation: 8.0,
+              borderRadius: BorderRadius.circular(10),
+              elevation: 8,
               color: Theme.of(context).cardColor,
             ),
           ),

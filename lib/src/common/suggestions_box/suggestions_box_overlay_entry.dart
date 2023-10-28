@@ -62,7 +62,7 @@ class SuggestionsBoxOverlayEntry extends StatelessWidget {
       height: height,
       constraints: decoration?.constraints,
       offset: Offset(
-        decoration?.offsetX ?? 0.0,
+        decoration?.offsetX ?? 0,
         verticalOffset,
       ),
       child: child,

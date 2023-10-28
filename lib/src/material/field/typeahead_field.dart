@@ -91,7 +91,7 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.
 /// Form(
 ///   key: this._formKey,
 ///   child: Padding(
-///     padding: EdgeInsets.all(32.0),
+///     padding: EdgeInsets.all(32),
 ///     child: Column(
 ///       children: [
 ///         Text(
@@ -125,7 +125,7 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.
 ///           },
 ///           onSaved: (value) => this._selectedCity = value,
 ///         ),
-///         SizedBox(height: 10.0,),
+///         SizedBox(height: 10),
 ///         RaisedButton(
 ///           child: Text('Submit'),
 ///           onPressed: () {
@@ -189,7 +189,7 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.
 /// `animationDuration`, the `animationStart`, and the `transitionBuilder`.
 ///
 /// The `animationDuration` specifies how long the animation should take, while the
-/// `animationStart` specified what point (between 0.0 and 1.0) the animation
+/// `animationStart` specified what point (between 0 and 1) the animation
 /// should start from. The `transitionBuilder` accepts the `suggestionsBox` and
 /// `animationController` as parameters, and should return a widget that uses
 /// the `animationController` to animate the display of the `suggestionsBox`.
@@ -228,7 +228,7 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.
 /// of the suggestions box, you can write:
 /// ```dart
 /// suggestionsBoxDecoration: SuggestionsBoxDecoration(
-///   elevation: 0.0
+///   elevation: 0,
 /// )
 /// ```
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)

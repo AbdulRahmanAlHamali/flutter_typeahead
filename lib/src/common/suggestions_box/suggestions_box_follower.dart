@@ -28,7 +28,7 @@ class SuggestionsBoxFollower extends StatelessWidget {
     BoxConstraints? constraints = this.constraints;
 
     if (constraints != null) {
-      bool hasMinWidth = constraints.minWidth != 0.0;
+      bool hasMinWidth = constraints.minWidth != 0;
       bool hasMaxWidth = constraints.maxWidth != double.infinity;
 
       if (hasMinWidth && hasMaxWidth) {
@@ -40,8 +40,8 @@ class SuggestionsBoxFollower extends StatelessWidget {
       }
     }
 
-    double offsetX = offset?.dx ?? 0.0;
-    double verticalOffset = offset?.dy ?? 5.0;
+    double offsetX = offset?.dx ?? 0;
+    double verticalOffset = offset?.dy ?? 5;
 
     double offsetY;
     if (direction == AxisDirection.down) {
