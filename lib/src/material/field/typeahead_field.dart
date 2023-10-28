@@ -242,44 +242,44 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.
 class TypeAheadField<T> extends BaseTypeAheadField<T> {
   const TypeAheadField({
     super.key,
-    required super.suggestionsCallback,
-    required super.itemBuilder,
-    super.itemSeparatorBuilder,
-    super.layoutArchitecture,
-    super.intercepting,
-    required super.onSuggestionSelected,
-    TextFieldConfiguration super.textFieldConfiguration =
-        const TextFieldConfiguration(),
-    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
-    super.debounceDuration,
-    super.suggestionsBox,
-    super.scrollController,
-    super.loadingBuilder,
-    super.noItemsFoundBuilder,
-    super.errorBuilder,
-    super.transitionBuilder,
-    super.animationStart,
     super.animationDuration,
-    super.suggestionsBoxVerticalOffset,
-    super.direction,
-    super.hideOnLoading,
-    super.hideOnEmpty,
-    super.hideOnError,
-    super.hideSuggestionsOnKeyboardHide,
-    super.keepSuggestionsOnLoading,
-    super.keepSuggestionsOnSuggestionSelected,
+    super.animationStart,
     super.autoFlipDirection,
     super.autoFlipListDirection,
     super.autoFlipMinHeight,
-    super.hideKeyboard,
-    super.minCharsForSuggestions,
-    super.onSuggestionsBoxToggle,
+    super.debounceDuration,
+    super.direction,
+    super.errorBuilder,
     super.hideKeyboardOnDrag,
+    super.hideOnEmpty,
+    super.hideOnError,
+    super.hideOnLoading,
+    super.hideSuggestionsOnKeyboardHide,
     super.ignoreAccessibleNavigation,
+    super.intercepting,
+    required super.itemBuilder,
+    super.itemSeparatorBuilder,
+    super.keepSuggestionsOnLoading,
+    super.keepSuggestionsOnSuggestionSelected,
+    super.layoutArchitecture,
+    super.loadingBuilder,
+    super.minCharsForSuggestions,
+    super.noItemsFoundBuilder,
+    required super.onSuggestionSelected,
+    super.scrollController,
+    super.suggestionsBoxController,
+    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
+    super.suggestionsBoxVerticalOffset,
+    required super.suggestionsCallback,
+    this.textFieldConfiguration = const TextFieldConfiguration(),
+    super.transitionBuilder,
   });
 
   @override
   final SuggestionsBoxDecoration? suggestionsBoxDecoration;
+
+  @override
+  final TextFieldConfiguration textFieldConfiguration;
 
   @override
   Widget buildSuggestionsList(
@@ -291,7 +291,6 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
         debounceDuration: config.debounceDuration,
         decoration: suggestionsBoxDecoration,
         errorBuilder: config.errorBuilder,
-        giveTextFieldFocus: config.giveTextFieldFocus,
         hideKeyboardOnDrag: config.hideKeyboardOnDrag,
         hideOnEmpty: config.hideOnEmpty,
         hideOnError: config.hideOnError,
@@ -304,12 +303,9 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
         loadingBuilder: config.loadingBuilder,
         minCharsForSuggestions: config.minCharsForSuggestions,
         noItemsFoundBuilder: config.noItemsFoundBuilder,
-        onSuggestionFocus: config.onSuggestionFocus,
         onSuggestionSelected: config.onSuggestionSelected,
         scrollController: config.scrollController,
-        shouldRefreshSuggestionFocusIndexNotifier:
-            config.shouldRefreshSuggestionFocusIndexNotifier,
-        suggestionsBox: config.suggestionsBox,
+        suggestionsBoxController: config.suggestionsBoxController,
         suggestionsCallback: config.suggestionsCallback,
         transitionBuilder: config.transitionBuilder,
       );
@@ -329,9 +325,10 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
       cursorWidth: config.cursorWidth,
       decoration: config.decoration,
       enableInteractiveSelection: config.enableInteractiveSelection,
-      enabled: config.enabled,
       enableSuggestions: config.enableSuggestions,
+      enabled: config.enabled,
       expands: config.expands,
+      focusNode: config.focusNode,
       inputFormatters: config.inputFormatters,
       keyboardAppearance: config.keyboardAppearance,
       keyboardType: config.keyboardType,
@@ -353,7 +350,6 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
       textCapitalization: config.textCapitalization,
       textDirection: config.textDirection,
       textInputAction: config.textInputAction,
-      focusNode: config.focusNode,
     );
   }
 }

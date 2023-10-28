@@ -6,7 +6,7 @@ abstract class BaseSuggestionsBoxDecoration {
     this.scrollbarThumbAlwaysVisible = false,
     this.constraints,
     this.color,
-    this.offsetX = 0.0,
+    this.offsetX = 0,
   });
 
   /// Defines if a scrollbar will be displayed or not.

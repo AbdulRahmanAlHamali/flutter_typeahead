@@ -1,100 +1,166 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
-import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_focus.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// Renders all the suggestions using a ListView as default.
 /// If `layoutArchitecture` is specified, uses that instead.
-abstract class RenderSuggestionsList<T> extends StatefulWidget {
+abstract class RenderSuggestionsList<T> extends StatefulWidget
+    implements SuggestionsListConfig<T> {
   const RenderSuggestionsList({
     super.key,
-    required this.suggestionsBox,
-    required this.itemBuilder,
-    required this.controller,
-    this.intercepting = false,
-    this.onSuggestionSelected,
-    this.suggestionsCallback,
-    this.itemSeparatorBuilder,
-    this.layoutArchitecture,
-    this.scrollController,
-    this.debounceDuration,
-    this.loadingBuilder,
-    this.noItemsFoundBuilder,
-    this.errorBuilder,
-    this.transitionBuilder,
     this.animationDuration,
     this.animationStart,
-    this.hideOnLoading,
+    required this.controller,
+    this.debounceDuration,
+    this.errorBuilder,
+    this.hideKeyboardOnDrag = false,
     this.hideOnEmpty,
     this.hideOnError,
+    this.hideOnLoading,
+    required this.itemBuilder,
+    this.itemSeparatorBuilder,
+    this.intercepting = false,
     this.keepSuggestionsOnLoading,
+    this.keepSuggestionsOnSelect,
+    this.layoutArchitecture,
+    this.loadingBuilder,
     this.minCharsForSuggestions,
-    required this.shouldRefreshSuggestionFocusIndexNotifier,
-    required this.giveTextFieldFocus,
-    required this.onSuggestionFocus,
-    required this.hideKeyboardOnDrag,
+    this.noItemsFoundBuilder,
+    this.onSuggestionSelected,
+    this.scrollController,
+    required this.suggestionsBoxController,
+    this.suggestionsCallback,
+    this.transitionBuilder,
   });
 
-  final SuggestionsBox suggestionsBox;
-  BaseSuggestionsBoxDecoration? get decoration;
-  final TextEditingController controller;
-  final SuggestionSelectionCallback<T>? onSuggestionSelected;
-  final SuggestionsCallback<T>? suggestionsCallback;
-  final ItemBuilder<T> itemBuilder;
-  final IndexedWidgetBuilder? itemSeparatorBuilder;
-  final LayoutArchitecture? layoutArchitecture;
-  final ScrollController? scrollController;
-  final Duration? debounceDuration;
-  final WidgetBuilder? loadingBuilder;
-  final bool intercepting;
-  final WidgetBuilder? noItemsFoundBuilder;
-  final ErrorBuilder? errorBuilder;
-  final AnimationTransitionBuilder? transitionBuilder;
+  @override
   final Duration? animationDuration;
+  @override
   final double? animationStart;
-  final bool? hideOnLoading;
-  final bool? hideOnEmpty;
-  final bool? hideOnError;
-  final bool? keepSuggestionsOnLoading;
-  final int? minCharsForSuggestions;
-  final ShouldRefreshSuggestionFocusIndexNotifier
-      shouldRefreshSuggestionFocusIndexNotifier;
-  final VoidCallback giveTextFieldFocus;
-  final VoidCallback onSuggestionFocus;
+  @override
+  final TextEditingController controller;
+  @override
+  final Duration? debounceDuration;
+  @override
+  final ErrorBuilder? errorBuilder;
+  @override
   final bool hideKeyboardOnDrag;
+  @override
+  final bool? hideOnEmpty;
+  @override
+  final bool? hideOnError;
+  @override
+  final bool? hideOnLoading;
+  @override
+  final ItemBuilder<T> itemBuilder;
+  @override
+  final IndexedWidgetBuilder? itemSeparatorBuilder;
+  @override
+  final bool intercepting;
+  @override
+  final bool? keepSuggestionsOnLoading;
+  @override
+  final bool? keepSuggestionsOnSelect;
+  @override
+  final LayoutArchitecture? layoutArchitecture;
+  @override
+  final WidgetBuilder? loadingBuilder;
+  @override
+  final int? minCharsForSuggestions;
+  @override
+  final WidgetBuilder? noItemsFoundBuilder;
+  @override
+  final SuggestionSelectionCallback<T>? onSuggestionSelected;
+  @override
+  final ScrollController? scrollController;
+  @override
+  final SuggestionsBoxController suggestionsBoxController;
+  @override
+  final SuggestionsCallback<T>? suggestionsCallback;
+  @override
+  final AnimationTransitionBuilder? transitionBuilder;
 
+  BaseSuggestionsBoxDecoration? get decoration;
+
+  /// Creates a widget to display while suggestions are loading.
+  @protected
   Widget createLoadingWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   );
 
+  /// Creates a widget to display when an error has occurred.
+  @protected
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   );
 
+  /// Creates a widget to display when no suggestions are available.
+  @protected
   Widget createNoItemsFoundWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   );
 
+  /// Creates a widget to display the suggestions.
+  @protected
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   );
 
+  /// Creates a widget to wrap all the other widgets.
+  @protected
   Widget createWidgetWrapper(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
     Widget child,
   ) =>
       child;
+
+  /// Call to select a suggestion.
+  ///
+  /// Handles closing the suggestions box if [keepSuggestionsOnSelect] is false.
+  @protected
+  void onSelected(T suggestion) {
+    if (!(keepSuggestionsOnSelect ?? false)) {
+      suggestionsBoxController.close(retainFocus: true);
+    }
+    onSuggestionSelected?.call(suggestion);
+  }
+
+  @protected
+  Widget createDefaultLayout(
+    Iterable<Widget> items,
+    ScrollController controller,
+  ) {
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      primary: false,
+      shrinkWrap: true,
+      keyboardDismissBehavior: hideKeyboardOnDrag
+          ? ScrollViewKeyboardDismissBehavior.onDrag
+          : ScrollViewKeyboardDismissBehavior.manual,
+      controller: controller,
+      // TODO: re-enable this
+      /*
+      reverse: suggestionsBoxController.direction == AxisDirection.down
+          ? false
+          : suggestionsBoxController.autoFlipListDirection,
+      */
+      itemCount: items.length,
+      itemBuilder: (context, index) => items.elementAt(index),
+      separatorBuilder: (context, index) =>
+          itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
+    );
+  }
 
   @override
   State<RenderSuggestionsList<T>> createState() =>
@@ -118,8 +184,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   bool _isQueued = false;
   bool _suggestionsValid = false;
   Iterable<T>? _suggestions;
-  List<FocusNode> _focusNodes = [];
-  int _suggestionIndex = -1;
 
   @override
   void initState() {
@@ -136,13 +200,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
     _loadSuggestions();
 
     widget.controller.addListener(_onTextChange);
-    widget.suggestionsBox.keyEvents.listen(_onKey);
-
-    widget.shouldRefreshSuggestionFocusIndexNotifier.addListener(() {
-      if (_suggestionIndex != -1) {
-        _suggestionIndex = -1;
-      }
-    });
   }
 
   @override
@@ -157,36 +214,8 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   void dispose() {
     _animationController.dispose();
     _debounceTimer?.cancel();
-    for (final focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
     widget.controller.removeListener(_onTextChange);
     super.dispose();
-  }
-
-  void _onKey(LogicalKeyboardKey key) {
-    // this feature is currently disabled
-    return;
-
-    // ignore: dead_code
-    final suggestionsLength = _suggestions?.length;
-    if (suggestionsLength == null) return;
-
-    if (key == LogicalKeyboardKey.arrowDown) {
-      _suggestionIndex++;
-    } else if (key == LogicalKeyboardKey.arrowUp) {
-      _suggestionIndex--;
-    }
-
-    _suggestionIndex = _suggestionIndex.clamp(-1, suggestionsLength - 1);
-
-    if (_suggestionIndex == -1) {
-      widget.giveTextFieldFocus();
-    } else {
-      final focusNode = _focusNodes[_suggestionIndex];
-      focusNode.requestFocus();
-      widget.onSuggestionFocus();
-    }
   }
 
   void _onTextChange() {
@@ -263,10 +292,13 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
         _error = error;
         _isLoading = false;
         _suggestions = suggestions;
+        /*
         _focusNodes = List.generate(
           _suggestions?.length ?? 0,
-          (index) => FocusNode(onKey: widget.suggestionsBox.onKeyEvent),
+          (index) =>
+              FocusNode(onKey: widget.suggestionsBoxController.onKeyEvent),
         );
+        */
       });
     }
   }
@@ -279,8 +311,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       return const SizedBox();
     }
 
-    SuggestionsListConfigState<T> state = SuggestionsListConfigState<T>(
-      focusNodes: _focusNodes,
+    SuggestionsListState<T> state = SuggestionsListState<T>(
       scrollController: _scrollController,
       suggestions: _suggestions,
       error: _error,
@@ -323,43 +354,27 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       );
     }
 
-    BoxConstraints constraints;
-    if (widget.decoration!.constraints == null) {
-      constraints = BoxConstraints(
-        maxHeight: widget.suggestionsBox.maxHeight,
-      );
-    } else {
-      double maxHeight = min(widget.decoration!.constraints!.maxHeight,
-          widget.suggestionsBox.maxHeight);
-      constraints = widget.decoration!.constraints!.copyWith(
-        minHeight: min(widget.decoration!.constraints!.minHeight, maxHeight),
-        maxHeight: maxHeight,
-      );
-    }
-
-    return PointerInterceptor(
-      intercepting: widget.intercepting,
-      child: widget.createWidgetWrapper(
-        context,
-        state,
-        ConstrainedBox(
-          constraints: constraints,
-          child: child,
+    return SuggestionsListFocus(
+      controller: widget.suggestionsBoxController,
+      child: PointerInterceptor(
+        intercepting: widget.intercepting,
+        child: widget.createWidgetWrapper(
+          context,
+          state,
+          child,
         ),
       ),
     );
   }
 }
 
-class SuggestionsListConfigState<T> {
-  SuggestionsListConfigState({
-    required this.focusNodes,
+class SuggestionsListState<T> {
+  SuggestionsListState({
     required this.scrollController,
     this.suggestions,
     this.error,
   });
 
-  final List<FocusNode> focusNodes;
   final ScrollController scrollController;
   final Iterable<T>? suggestions;
   final Object? error;
