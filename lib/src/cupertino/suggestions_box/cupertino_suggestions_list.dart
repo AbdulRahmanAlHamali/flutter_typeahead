@@ -5,41 +5,39 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.da
 class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   const CupertinoSuggestionsList({
     super.key,
-    required super.suggestionsBox,
-    required super.controller,
-    required super.itemBuilder,
-    this.decoration,
-    super.intercepting = false,
-    super.onSuggestionSelected,
-    super.suggestionsCallback,
-    super.itemSeparatorBuilder,
-    super.layoutArchitecture,
-    super.scrollController,
-    super.debounceDuration,
-    super.loadingBuilder,
-    super.noItemsFoundBuilder,
-    super.errorBuilder,
-    super.transitionBuilder,
     super.animationDuration,
     super.animationStart,
-    super.hideOnLoading,
+    required super.controller,
+    super.debounceDuration,
+    this.decoration,
+    super.errorBuilder,
+    required super.hideKeyboardOnDrag,
     super.hideOnEmpty,
     super.hideOnError,
+    super.hideOnLoading,
+    super.intercepting = false,
+    required super.itemBuilder,
+    super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
+    super.layoutArchitecture,
+    super.loadingBuilder,
     super.minCharsForSuggestions,
-    required super.shouldRefreshSuggestionFocusIndexNotifier,
-    required super.giveTextFieldFocus,
-    required super.onSuggestionFocus,
-    required super.hideKeyboardOnDrag,
+    super.noItemsFoundBuilder,
+    super.onSuggestionSelected,
+    super.scrollController,
+    required super.suggestionsBoxController,
+    super.suggestionsCallback,
+    super.transitionBuilder,
   });
 
   @override
   final CupertinoSuggestionsBoxDecoration? decoration;
 
   @override
+  @protected
   Widget createLoadingWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
@@ -70,9 +68,10 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   }
 
   @override
+  @protected
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
@@ -100,9 +99,10 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   }
 
   @override
+  @protected
   Widget createNoItemsFoundWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
@@ -126,14 +126,15 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   }
 
   @override
+  @protected
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
     LayoutArchitecture? layoutArchitecture = this.layoutArchitecture;
-    layoutArchitecture ??= _defaultLayout;
+    layoutArchitecture ??= createDefaultLayout;
 
     Iterable<T>? suggestions = state.suggestions;
     if (suggestions == null) {
@@ -170,47 +171,26 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     return child;
   }
 
-  Widget _defaultLayout(Iterable<Widget> items, ScrollController controller) {
-    return ListView.separated(
-      padding: EdgeInsets.zero,
-      primary: false,
-      shrinkWrap: true,
-      keyboardDismissBehavior: hideKeyboardOnDrag
-          ? ScrollViewKeyboardDismissBehavior.onDrag
-          : ScrollViewKeyboardDismissBehavior.manual,
-      controller: controller,
-      reverse: suggestionsBox.direction == AxisDirection.down
-          ? false
-          : suggestionsBox.autoFlipListDirection,
-      itemCount: items.length,
-      itemBuilder: (context, index) => items.elementAt(index),
-      separatorBuilder: (context, index) =>
-          itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
-    );
-  }
-
   Widget _itemBuilder(BuildContext context, T suggestion) {
     return TextFieldTapRegion(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           child: itemBuilder(
             context,
             suggestion,
           ),
+          onTap: () => onSelected(suggestion),
         ),
-        onTap: () {
-          giveTextFieldFocus();
-          onSuggestionSelected?.call(suggestion);
-        },
       ),
     );
   }
 
   @override
+  @protected
   Widget createWidgetWrapper(
-      BuildContext context, SuggestionsListConfigState<T> state, Widget child) {
+      BuildContext context, SuggestionsListState<T> state, Widget child) {
     Color? color = decoration?.color;
     color ??= CupertinoTheme.of(context).barBackgroundColor;
 

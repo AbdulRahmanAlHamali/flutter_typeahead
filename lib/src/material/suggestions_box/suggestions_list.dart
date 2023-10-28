@@ -5,7 +5,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.da
 class SuggestionsList<T> extends RenderSuggestionsList<T> {
   const SuggestionsList({
     super.key,
-    required super.suggestionsBox,
+    required super.suggestionsBoxController,
     required super.itemBuilder,
     required super.controller,
     this.decoration,
@@ -26,10 +26,8 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     super.hideOnEmpty,
     super.hideOnError,
     super.keepSuggestionsOnLoading,
+    super.keepSuggestionsOnSelect,
     super.minCharsForSuggestions,
-    required super.shouldRefreshSuggestionFocusIndexNotifier,
-    required super.giveTextFieldFocus,
-    required super.onSuggestionFocus,
     required super.hideKeyboardOnDrag,
   });
 
@@ -37,9 +35,10 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   final SuggestionsBoxDecoration? decoration;
 
   @override
+  @protected
   Widget createLoadingWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
@@ -67,9 +66,10 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   }
 
   @override
+  @protected
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
@@ -93,9 +93,10 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   }
 
   @override
+  @protected
   Widget createNoItemsFoundWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
@@ -117,14 +118,15 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   }
 
   @override
+  @protected
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
   ) {
     Widget child;
 
     LayoutArchitecture? layoutArchitecture = this.layoutArchitecture;
-    layoutArchitecture ??= _defaultLayout;
+    layoutArchitecture ??= createDefaultLayout;
 
     Iterable<T>? suggestions = state.suggestions;
     if (suggestions == null) {
@@ -140,7 +142,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
         (index) => _itemBuilder(
           context,
           suggestions.elementAt(index),
-          state.focusNodes[index],
+          // state.focusNodes[index],
         ),
       ),
       state.scrollController,
@@ -163,43 +165,21 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     return TextFieldTapRegion(child: child);
   }
 
-  Widget _defaultLayout(Iterable<Widget> items, ScrollController controller) {
-    return ListView.separated(
-      padding: EdgeInsets.zero,
-      primary: false,
-      shrinkWrap: true,
-      keyboardDismissBehavior: hideKeyboardOnDrag
-          ? ScrollViewKeyboardDismissBehavior.onDrag
-          : ScrollViewKeyboardDismissBehavior.manual,
-      controller: controller,
-      reverse: suggestionsBox.direction == AxisDirection.down
-          ? false
-          : suggestionsBox.autoFlipListDirection,
-      itemCount: items.length,
-      itemBuilder: (context, index) => items.elementAt(index),
-      separatorBuilder: (context, index) =>
-          itemSeparatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
-    );
-  }
-
-  Widget _itemBuilder(BuildContext context, T suggestion, FocusNode focusNode) {
+  Widget _itemBuilder(BuildContext context, T suggestion) {
     return TextFieldTapRegion(
       child: InkWell(
         focusColor: Theme.of(context).hoverColor,
-        focusNode: focusNode,
         child: itemBuilder(context, suggestion),
-        onTap: () {
-          giveTextFieldFocus();
-          onSuggestionSelected?.call(suggestion);
-        },
+        onTap: () => onSelected(suggestion),
       ),
     );
   }
 
   @override
+  @protected
   Widget createWidgetWrapper(
     BuildContext context,
-    SuggestionsListConfigState<T> state,
+    SuggestionsListState<T> state,
     Widget child,
   ) {
     return Material(

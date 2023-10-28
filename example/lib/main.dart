@@ -17,59 +17,76 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool isCupertino = !kIsWeb && Platform.isIOS;
+  bool darkMode = false;
 
   @override
   Widget build(BuildContext context) {
     if (!isCupertino) {
       return MaterialApp(
         title: 'flutter_typeahead demo',
-        scrollBehavior: const MaterialScrollBehavior().copyWith(
-            dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch}),
+        scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+        }),
+        theme: darkMode ? ThemeData.dark() : ThemeData.light(),
         home: DefaultTabController(
           length: 4,
           child: Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                  icon: const Icon(Icons.phone_iphone),
-                  onPressed: () => setState(() => isCupertino = true),
-                ),
-                title: const Text('Examples'),
-                bottom: const TabBar(
-                  isScrollable: true,
-                  tabs: [
-                    Tab(text: 'Navigation'),
-                    Tab(text: 'Form'),
-                    Tab(text: 'Scroll'),
-                    Tab(text: 'Alternative Layout')
-                  ],
-                ),
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.phone_iphone),
+                onPressed: () => setState(() => isCupertino = true),
               ),
-              body: GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
-                child: const TabBarView(
-                  children: [
-                    NavigationExample(),
-                    FormExample(),
-                    ScrollExample(),
-                    LayoutExample(),
-                  ],
+              title: const Text('Examples'),
+              actions: [
+                IconButton(
+                  icon: darkMode
+                      ? const Icon(Icons.light_mode)
+                      : const Icon(Icons.dark_mode),
+                  onPressed: () => setState(() => darkMode = !darkMode),
                 ),
-              )),
+              ],
+              bottom: const TabBar(
+                isScrollable: true,
+                tabs: [
+                  Tab(text: 'Navigation'),
+                  Tab(text: 'Form'),
+                  Tab(text: 'Scroll'),
+                  Tab(text: 'Alternative Layout')
+                ],
+              ),
+            ),
+            body: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: const TabBarView(
+                children: [
+                  NavigationExample(),
+                  FormExample(),
+                  ScrollExample(),
+                  LayoutExample(),
+                ],
+              ),
+            ),
+          ),
         ),
       );
     } else {
       return CupertinoApp(
         title: 'Cupertino demo',
-        theme: const CupertinoThemeData(
-          brightness: Brightness.light,
+        theme: CupertinoThemeData(
+          brightness: darkMode ? Brightness.dark : Brightness.light,
         ),
         home: Scaffold(
           appBar: CupertinoNavigationBar(
             leading: IconButton(
-              icon: const Icon(Icons.android),
-              onPressed: () => setState(() {
-                isCupertino = false;
-              }),
+              icon: const Icon(CupertinoIcons.device_phone_portrait),
+              onPressed: () => setState(() => isCupertino = false),
+            ),
+            trailing: IconButton(
+              icon: darkMode
+                  ? const Icon(CupertinoIcons.sun_max)
+                  : const Icon(CupertinoIcons.moon),
+              onPressed: () => setState(() => darkMode = !darkMode),
             ),
             middle: const Text('Cupertino demo'),
           ),
@@ -110,7 +127,7 @@ class NavigationExample extends StatelessWidget {
               title: Text(suggestion['name']!),
               subtitle: Text(suggestion['price']!),
             ),
-            itemSeparatorBuilder: (context, index) => const Divider(height: 1),
+            itemSeparatorBuilder: (context, index) => const Divider(),
             onSuggestionSelected: (suggestion) {
               Navigator.of(context).push<void>(
                 MaterialPageRoute(
@@ -143,7 +160,7 @@ class _FormExampleState extends State<FormExample> {
 
   String? _selectedCity;
 
-  SuggestionsBox suggestionBoxController = SuggestionsBox();
+  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +191,7 @@ class _FormExampleState extends State<FormExample> {
                     suggestionsBox,
                 onSuggestionSelected: (suggestion) =>
                     _typeAheadController.text = suggestion,
-                suggestionsBox: suggestionBoxController,
+                suggestionsBoxController: suggestionBoxController,
                 validator: (value) =>
                     value!.isEmpty ? 'Please select a city' : null,
                 onSaved: (value) => _selectedCity = value,
@@ -421,7 +438,8 @@ class CupertinoFormExample extends StatefulWidget {
 class _FavoriteCitiesPage extends State<CupertinoFormExample> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  final SuggestionsBox _suggestionsBoxController = SuggestionsBox();
+  final SuggestionsBoxController _suggestionsBoxController =
+      SuggestionsBoxController();
   String favoriteCity = 'Unavailable';
 
   @override
@@ -440,7 +458,7 @@ class _FavoriteCitiesPage extends State<CupertinoFormExample> {
                   const Text('What is your favorite city?'),
                   const SizedBox(height: 10),
                   CupertinoTypeAheadFormField(
-                    suggestionsBox: _suggestionsBoxController,
+                    suggestionsBoxController: _suggestionsBoxController,
                     suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                     ),

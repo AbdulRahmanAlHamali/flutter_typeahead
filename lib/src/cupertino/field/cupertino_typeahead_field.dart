@@ -17,45 +17,41 @@ import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_sugges
 /// validated, etc.
 class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
   const CupertinoTypeAheadField({
-    Key? key,
-    required super.suggestionsCallback,
-    required super.itemBuilder,
-    super.itemSeparatorBuilder,
-    required super.onSuggestionSelected,
-    CupertinoTextFieldConfiguration super.textFieldConfiguration =
-        const CupertinoTextFieldConfiguration(),
-    this.suggestionsBoxDecoration = const CupertinoSuggestionsBoxDecoration(),
-    super.debounceDuration = const Duration(milliseconds: 300),
-    super.suggestionsBox,
-    super.loadingBuilder,
-    super.noItemsFoundBuilder,
-    super.errorBuilder,
-    super.transitionBuilder,
-    super.animationStart = 0.25,
+    super.key,
     super.animationDuration = const Duration(milliseconds: 500),
-    super.suggestionsBoxVerticalOffset = 5.0,
-    super.direction = AxisDirection.down,
-    super.hideOnLoading = false,
-    super.hideOnEmpty = false,
-    super.hideOnError = false,
-    super.hideSuggestionsOnKeyboardHide = true,
-    super.keepSuggestionsOnLoading = true,
-    super.keepSuggestionsOnSuggestionSelected = false,
+    super.animationStart = 0.25,
     super.autoFlipDirection = false,
     super.autoFlipListDirection = true,
-    super.autoFlipMinHeight = 64.0,
-    super.minCharsForSuggestions = 0,
+    super.autoFlipMinHeight = 64,
+    super.debounceDuration = const Duration(milliseconds: 300),
+    super.direction = AxisDirection.down,
+    super.errorBuilder,
     super.hideKeyboardOnDrag = true,
-  })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
-        assert(
-            direction == AxisDirection.down || direction == AxisDirection.up),
-        assert(minCharsForSuggestions >= 0),
-        assert(!hideKeyboardOnDrag ||
-            hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide),
-        super(key: key);
+    super.hideOnEmpty = false,
+    super.hideOnError = false,
+    super.hideOnLoading = false,
+    super.hideSuggestionsOnKeyboardHide = true,
+    required super.itemBuilder,
+    super.itemSeparatorBuilder,
+    super.keepSuggestionsOnLoading = true,
+    super.keepSuggestionsOnSuggestionSelected = false,
+    super.loadingBuilder,
+    super.minCharsForSuggestions = 0,
+    super.noItemsFoundBuilder,
+    required super.onSuggestionSelected,
+    super.suggestionsBoxController,
+    this.suggestionsBoxDecoration = const CupertinoSuggestionsBoxDecoration(),
+    super.suggestionsBoxVerticalOffset = 5,
+    required super.suggestionsCallback,
+    this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
+    super.transitionBuilder,
+  });
 
   @override
   final CupertinoSuggestionsBoxDecoration? suggestionsBoxDecoration;
+
+  @override
+  final CupertinoTextFieldConfiguration textFieldConfiguration;
 
   @override
   Widget buildSuggestionsList(
@@ -67,7 +63,6 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       debounceDuration: config.debounceDuration,
       decoration: suggestionsBoxDecoration,
       errorBuilder: config.errorBuilder,
-      giveTextFieldFocus: config.giveTextFieldFocus,
       hideKeyboardOnDrag: config.hideKeyboardOnDrag,
       hideOnEmpty: config.hideOnEmpty,
       hideOnError: config.hideOnError,
@@ -80,12 +75,9 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       loadingBuilder: config.loadingBuilder,
       minCharsForSuggestions: config.minCharsForSuggestions,
       noItemsFoundBuilder: config.noItemsFoundBuilder,
-      onSuggestionFocus: config.onSuggestionFocus,
       onSuggestionSelected: config.onSuggestionSelected,
       scrollController: config.scrollController,
-      shouldRefreshSuggestionFocusIndexNotifier:
-          config.shouldRefreshSuggestionFocusIndexNotifier,
-      suggestionsBox: config.suggestionsBox,
+      suggestionsBoxController: config.suggestionsBoxController,
       suggestionsCallback: config.suggestionsCallback,
       transitionBuilder: config.transitionBuilder,
     );
