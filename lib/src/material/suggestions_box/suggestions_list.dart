@@ -44,23 +44,16 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
   ) {
     Widget child;
 
-    if (keepSuggestionsOnLoading! && state.suggestions != null) {
-      if (state.suggestions!.isEmpty) {
-        child = createNoItemsFoundWidget(context, state);
-      } else {
-        child = createSuggestionsWidget(context, state);
-      }
+    if (loadingBuilder != null) {
+      child = loadingBuilder!(context);
     } else {
-      if (loadingBuilder != null) {
-        child = loadingBuilder!(context);
-      } else {
-        child = const Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
+      child = const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [CircularProgressIndicator()],
+        ),
+      );
     }
 
     return child;

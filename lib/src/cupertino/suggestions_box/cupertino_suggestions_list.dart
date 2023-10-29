@@ -13,7 +13,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     this.decoration,
     super.direction,
     super.errorBuilder,
-    required super.hideKeyboardOnDrag,
+    super.hideKeyboardOnDrag,
     super.hideOnEmpty,
     super.hideOnError,
     super.hideOnLoading,
@@ -21,6 +21,7 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
     required super.itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
+    super.keepSuggestionsOnSelect,
     super.layoutArchitecture,
     super.loadingBuilder,
     super.minCharsForSuggestions,
@@ -43,27 +44,16 @@ class CupertinoSuggestionsList<T> extends RenderSuggestionsList<T> {
   ) {
     Widget child;
 
-    bool keepSuggestionsOnLoading = this.keepSuggestionsOnLoading ?? true;
-    Iterable<T>? suggestions = state.suggestions;
-
-    if (keepSuggestionsOnLoading && suggestions != null) {
-      if (suggestions.isEmpty) {
-        child = createNoItemsFoundWidget(context, state);
-      } else {
-        child = createSuggestionsWidget(context, state);
-      }
+    if (loadingBuilder != null) {
+      child = loadingBuilder!(context);
     } else {
-      if (loadingBuilder != null) {
-        child = loadingBuilder!(context);
-      } else {
-        child = const Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: CupertinoActivityIndicator(),
-          ),
-        );
-      }
+      child = const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [CupertinoActivityIndicator()],
+        ),
+      );
     }
 
     return child;

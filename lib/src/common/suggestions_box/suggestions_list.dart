@@ -139,6 +139,8 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
   void onSelected(T suggestion) {
     if (!(keepSuggestionsOnSelect ?? false)) {
       suggestionsBoxController.close(retainFocus: true);
+    } else {
+      suggestionsBoxController.focusBox();
     }
     onSuggestionSelected?.call(suggestion);
   }
@@ -296,8 +298,10 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
       error: error,
     );
 
+    bool keepSuggestionsOnLoading = widget.keepSuggestionsOnLoading ?? true;
+
     Widget child;
-    if (isLoading) {
+    if (isLoading && !keepSuggestionsOnLoading) {
       if (widget.hideOnLoading!) {
         child = const SizedBox();
       } else {

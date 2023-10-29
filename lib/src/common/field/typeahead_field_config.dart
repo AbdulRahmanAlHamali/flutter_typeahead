@@ -63,9 +63,6 @@ abstract class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsListConfig.animationStart}
   double get animationStart;
 
-  /// {@macro flutter_typeahead.SuggestionsBox.verticalOffset}
-  double get suggestionsBoxVerticalOffset;
-
   /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnLoading}
   bool get hideOnLoading;
 

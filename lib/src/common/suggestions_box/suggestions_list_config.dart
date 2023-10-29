@@ -179,11 +179,11 @@ class SuggestionsListConfig<T> {
   final bool intercepting;
 
   /// {@template flutter_typeahead.SuggestionsListConfig.keepSuggestionsOnLoading}
-  /// Whether to keep the suggestions visible even during loading.
+  /// Whether to keep the previous suggestions visible even during loading.
   ///
   /// If enabled, [loadingBuilder] will be ignored.
   ///
-  /// Defaults to `false`.
+  /// Defaults to `true`.
   /// {@endtemplate}
   final bool? keepSuggestionsOnLoading;
 
@@ -193,12 +193,12 @@ class SuggestionsListConfig<T> {
   /// Note that if this is enabled, the only way
   /// to close the suggestions box is either via the
   /// [SuggestionsBoxController] or when the user closes the software
-  /// keyboard with [hideSuggestionsOnKeyboardHide] set to true.
+  /// keyboard with [hideOnUnfocus] set to true.
   ///
   /// Users with a physical keyboard will be unable to close the
   /// box without additional logic.
   ///
-  /// Defaults to false.
+  /// Defaults to `false`.
   /// {@endtemplate}
   final bool? keepSuggestionsOnSelect;
 

@@ -52,11 +52,19 @@ class SuggestionsBoxController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Unfocuses the suggestions list and returns the focus to the text field.
+  /// Unfocuses the suggestions list and returns the focus to the suggestions box.
   void unfocusSuggestions() {
     if (!suggestionsFocused) return;
     _suggestionsFocused = false;
     notifyListeners();
+  }
+
+  /// Focuses the suggestions box.
+  // This is implemented by focusing the suggestions list and then unfocusing it,
+  // which is somewhat hacky but works.
+  void focusBox() {
+    focusSuggestions();
+    unfocusSuggestions();
   }
 
   /// Resizes the suggestions box.
