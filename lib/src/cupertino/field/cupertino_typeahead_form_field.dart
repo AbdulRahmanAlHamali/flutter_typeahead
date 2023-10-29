@@ -57,7 +57,7 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
   });
 
   @override
-  final CupertinoSuggestionsBoxDecoration? suggestionsBoxDecoration;
+  final CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration;
 
   @override
   Widget buildTextField(BaseTypeAheadFormFieldState<T> field,

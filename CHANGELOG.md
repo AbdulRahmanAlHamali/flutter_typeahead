@@ -12,6 +12,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - keepSuggestionsOnSuggestionSelected renamed to keepSuggestionsOnSelect
 - hideSuggestionsOnKeyboardHide renamed to hideOnUnfocus
+- moved verticalOffset into SuggestionsBoxDecoration as offsetY
 
 ### Fixed
 - enableSuggestions was not passed to TextField

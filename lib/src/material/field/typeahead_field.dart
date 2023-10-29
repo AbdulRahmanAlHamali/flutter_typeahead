@@ -43,7 +43,7 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
   });
 
   @override
-  final SuggestionsBoxDecoration? suggestionsBoxDecoration;
+  final SuggestionsBoxDecoration suggestionsBoxDecoration;
 
   @override
   final TextFieldConfiguration textFieldConfiguration;

@@ -13,8 +13,7 @@ class SuggestionsBoxOverlayEntry extends StatelessWidget {
     required this.width,
     required this.height,
     required this.maxHeight,
-    this.verticalOffset = 5,
-    this.decoration,
+    required this.decoration,
     this.ignoreAccessibleNavigation = false,
   });
 
@@ -24,8 +23,7 @@ class SuggestionsBoxOverlayEntry extends StatelessWidget {
   final double width;
   final double height;
   final double maxHeight;
-  final double verticalOffset;
-  final BaseSuggestionsBoxDecoration? decoration;
+  final BaseSuggestionsBoxDecoration decoration;
   final bool ignoreAccessibleNavigation;
 
   @override
@@ -33,18 +31,18 @@ class SuggestionsBoxOverlayEntry extends StatelessWidget {
     Widget child = suggestionsListBuilder(context);
 
     BoxConstraints constraints;
-    if (decoration?.constraints == null) {
+    if (decoration.constraints == null) {
       constraints = BoxConstraints(
         maxHeight: maxHeight,
       );
     } else {
-      constraints = decoration!.constraints!.copyWith(
+      constraints = decoration.constraints!.copyWith(
         minHeight: min(
-          decoration!.constraints!.minHeight,
+          decoration.constraints!.minHeight,
           maxHeight,
         ),
         maxHeight: min(
-          decoration!.constraints!.maxHeight,
+          decoration.constraints!.maxHeight,
           maxHeight,
         ),
       );
@@ -60,10 +58,10 @@ class SuggestionsBoxOverlayEntry extends StatelessWidget {
       direction: direction,
       width: width,
       height: height,
-      constraints: decoration?.constraints,
+      constraints: decoration.constraints,
       offset: Offset(
-        decoration?.offsetX ?? 0,
-        verticalOffset,
+        decoration.offsetX,
+        decoration.offsetY,
       ),
       child: child,
     );

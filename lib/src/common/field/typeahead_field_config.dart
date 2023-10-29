@@ -30,7 +30,7 @@ abstract class TypeaheadFieldConfig<T> {
   SuggestionsBoxController? get suggestionsBoxController;
 
   /// The decoration of the sheet that contains the suggestions.
-  BaseSuggestionsBoxDecoration? get suggestionsBoxDecoration;
+  BaseSuggestionsBoxDecoration get suggestionsBoxDecoration;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.debounce}
   Duration get debounceDuration;
