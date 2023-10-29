@@ -48,7 +48,7 @@ abstract class TypeaheadFieldConfig<T> {
   bool get intercepting;
 
   /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
-  /// that the TypeAhead widget displays
+  /// that the TypeAhead widget displays.
   BaseTextFieldConfiguration get textFieldConfiguration;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.transitionBuilder}
@@ -75,12 +75,8 @@ abstract class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnError}
   bool get hideOnError;
 
-  /// If set to false, the suggestions box will stay opened after
-  /// the keyboard is closed.
-  ///
-  /// Defaults to true.
-  // TODO: use this
-  bool get hideSuggestionsOnKeyboardHide;
+  /// {@macro flutter_typeahead.SuggestionsBox.hideOnUnfocus}
+  bool get hideOnUnfocus;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.keepSuggestionsOnLoading}
   bool get keepSuggestionsOnLoading;
@@ -103,8 +99,11 @@ abstract class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsListConfig.hideKeyboardOnDrag}
   bool get hideKeyboardOnDrag;
 
-  /// Allows a bypass of a problem on Flutter 3.7+ with the accessibility through Overlay
-  /// that prevents flutter_typeahead to register a click on the list of suggestions properly.
+  /// Workaround for an Android OS issue with Flutter 3.7+ that causes the suggestions list
+  /// to switch to accessibility mode incorrectly and therefore become unresponsive to gestures.
+  ///
+  /// This is device manifacturer specific. Note that enabling this will
+  /// make the suggestions list non-accessible for users with accessibility needs.
   ///
   /// Defaults to false.
   bool get ignoreAccessibleNavigation;

@@ -21,7 +21,7 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
     super.hideOnEmpty,
     super.hideOnError,
     super.hideOnLoading,
-    super.hideSuggestionsOnKeyboardHide,
+    super.hideOnUnfocus,
     super.ignoreAccessibleNavigation,
     super.intercepting,
     required super.itemBuilder,

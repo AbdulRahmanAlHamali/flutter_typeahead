@@ -261,7 +261,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
     this.hideOnLoading = false,
     this.hideOnEmpty = false,
     this.hideOnError = false,
-    this.hideSuggestionsOnKeyboardHide = true,
+    this.hideOnUnfocus = true,
     this.keepSuggestionsOnLoading = true,
     this.keepSuggestionsOnSelect = false,
     this.autoFlipDirection = false,
@@ -274,8 +274,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   })  : assert(animationStart >= 0 && animationStart <= 1),
         assert(minCharsForSuggestions >= 0),
         assert(
-          !hideKeyboardOnDrag ||
-              hideKeyboardOnDrag && !hideSuggestionsOnKeyboardHide,
+          !hideKeyboardOnDrag || hideKeyboardOnDrag && !hideOnUnfocus,
         );
 
   @override
@@ -303,7 +302,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   @override
   final bool hideOnLoading;
   @override
-  final bool hideSuggestionsOnKeyboardHide;
+  final bool hideOnUnfocus;
   @override
   final bool ignoreAccessibleNavigation;
   @override
@@ -412,6 +411,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
     return SuggestionsBox(
       controller: _suggestionsBoxController,
       focusNode: _focusNode,
+      hideOnUnfocus: widget.hideOnUnfocus,
       suggestionsListBuilder: (context) => widget.buildSuggestionsList(
         context,
         SuggestionsListConfig(
