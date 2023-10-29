@@ -49,9 +49,9 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     required super.onSuggestionSelected,
     super.suggestionsBoxController,
     this.suggestionsBoxDecoration = const CupertinoSuggestionsBoxDecoration(),
-    super.suggestionsBoxVerticalOffset,
     required super.suggestionsCallback,
-    required super.textFieldConfiguration,
+    CupertinoTextFieldConfiguration super.textFieldConfiguration =
+        const CupertinoTextFieldConfiguration(),
     super.transitionBuilder,
     super.validator,
   });
@@ -86,7 +86,6 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
       onSuggestionSelected: onSuggestionSelected,
       suggestionsBoxController: suggestionsBoxController,
       suggestionsBoxDecoration: suggestionsBoxDecoration,
-      suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
       suggestionsCallback: suggestionsCallback,
       textFieldConfiguration: config,
       transitionBuilder: transitionBuilder,

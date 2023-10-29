@@ -47,9 +47,9 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     required super.onSuggestionSelected,
     super.suggestionsBoxController,
     this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
-    super.suggestionsBoxVerticalOffset,
     required super.suggestionsCallback,
-    required TextFieldConfiguration super.textFieldConfiguration,
+    TextFieldConfiguration super.textFieldConfiguration =
+        const TextFieldConfiguration(),
     super.transitionBuilder,
     super.validator,
   });
@@ -89,7 +89,6 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
       onSuggestionSelected: onSuggestionSelected,
       suggestionsBoxController: suggestionsBoxController,
       suggestionsBoxDecoration: suggestionsBoxDecoration,
-      suggestionsBoxVerticalOffset: suggestionsBoxVerticalOffset,
       suggestionsCallback: suggestionsCallback,
       textFieldConfiguration: config.copyWith(
         decoration: config.decoration.copyWith(errorText: field.errorText),
