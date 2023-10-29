@@ -5,8 +5,10 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/root_media_query.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dimension_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_overlay_entry.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_scroll_connector.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
 class SuggestionsBox<T> extends StatefulWidget {
@@ -324,9 +326,15 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
     return SuggestionsBoxFocusConnector(
       controller: widget.controller,
       focusNode: widget.focusNode,
-      child: CompositedTransformTarget(
-        link: _layerLink,
-        child: widget.child,
+      child: SuggestionsBoxScrollConnector(
+        controller: widget.controller,
+        child: SuggestionsBoxDimensionConnector(
+          controller: widget.controller,
+          child: CompositedTransformTarget(
+            link: _layerLink,
+            child: widget.child,
+          ),
+        ),
       ),
     );
   }
