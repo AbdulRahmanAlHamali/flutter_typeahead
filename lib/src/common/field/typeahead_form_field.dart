@@ -16,7 +16,7 @@ import 'package:flutter_typeahead/src/typedef.dart';
 /// that displays a list of suggestions as the user types
 abstract class BaseTypeAheadFormField<T> extends FormField<String>
     implements TypeaheadFieldConfig<T> {
-  /// Creates a [TypeAheadFormField]
+  /// Creates a [TypeAheadFormField].
   BaseTypeAheadFormField({
     super.key,
     String? initialValue,
@@ -48,7 +48,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     this.hideSuggestionsOnKeyboardHide = true,
     this.intercepting = false,
     this.keepSuggestionsOnLoading = true,
-    this.keepSuggestionsOnSuggestionSelected = false,
+    this.keepSuggestionsOnSelect = false,
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
@@ -119,7 +119,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   @override
   final bool keepSuggestionsOnLoading;
   @override
-  final bool keepSuggestionsOnSuggestionSelected;
+  final bool keepSuggestionsOnSelect;
   @override
   final LayoutArchitecture? layoutArchitecture;
   @override

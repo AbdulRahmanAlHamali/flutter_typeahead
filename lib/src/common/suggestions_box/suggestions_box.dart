@@ -38,28 +38,49 @@ class SuggestionsBox<T> extends StatefulWidget {
   /// The child of the suggestions box.
   final Widget child;
 
+  /// {@template flutter_typeahead.SuggestionsBox.direction}
   /// The direction in which the suggestions box opens.
   ///
+  /// Must be either [AxisDirection.down] or [AxisDirection.up].
+  ///
   /// Defaults to [AxisDirection.down].
+  /// {@endtemplate}
   final AxisDirection direction;
 
-  /// Whether the suggestions box should automatically flip direction if there's not enough space.
+  /// {@template flutter_typeahead.SuggestionsBox.autoFlipDirection}
+  /// Whether the suggestions box should automatically flip direction if there's not enough space
+  /// in the desired direction, but there is enough space in the opposite direction.
   ///
   /// Defaults to false.
+  ///
+  /// See also:
+  /// * [autoFlipListDirection], which controls whether the suggestions list should be reversed if the suggestions box is flipped.
+  /// * [autoFlipMinHeight], which controls the minimum height the suggesttions box can have before attempting to flip.
+  /// {@endtemplate}
   final bool autoFlipDirection;
 
+  /// {@template flutter_typeahead.SuggestionsBox.autoFlipListDirection}
   /// Whether the suggestions list should be reversed if the suggestions box is flipped.
   ///
   /// Defaults to true.
+  /// {@endtemplate}
   final bool autoFlipListDirection;
 
-  /// The minimum height the suggesttions box can have  before attempting to flip.
+  /// {@template flutter_typeahead.SuggestionsBox.autoFlipMinHeight}
+  /// The minimum height the suggesttions box can have before attempting to flip.
+  ///
+  /// Defaults to 64.
+  /// {@endtemplate}
   final double autoFlipMinHeight;
 
   /// The decoration of the suggestions box.
   final BaseSuggestionsBoxDecoration? decoration;
 
+  /// {@template flutter_typeahead.SuggestionsBox.verticalOffset}
   /// The vertical offset of the suggestions box.
+  ///
+  /// Defaults to `5`.
+  /// {@endtemplate}
   final double verticalOffset;
 
   /// Whether the suggestions box should be hidden when the focus node of the child of the suggestions box loses focus.

@@ -292,13 +292,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
         _error = error;
         _isLoading = false;
         _suggestions = suggestions;
-        /*
-        _focusNodes = List.generate(
-          _suggestions?.length ?? 0,
-          (index) =>
-              FocusNode(onKey: widget.suggestionsBoxController.onKeyEvent),
-        );
-        */
       });
     }
   }
@@ -330,8 +323,8 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       } else {
         child = widget.createErrorWidget(context, state);
       }
-    } else if (_suggestions!.isEmpty) {
-      if (widget.hideOnEmpty!) {
+    } else if (_suggestions?.isEmpty ?? false) {
+      if (widget.hideOnEmpty ?? false) {
         child = const SizedBox(height: 0);
       } else {
         child = widget.createNoItemsFoundWidget(context, state);

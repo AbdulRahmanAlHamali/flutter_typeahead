@@ -13,7 +13,7 @@ import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_d
 /// * [TypeAheadField], A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
 /// that displays a list of suggestions as the user types
 class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
-  /// Creates a [TypeAheadFormField]
+  /// Creates a [TypeAheadFormField].
   TypeAheadFormField({
     super.animationDuration,
     super.animationStart,
@@ -36,7 +36,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     required super.itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
-    super.keepSuggestionsOnSuggestionSelected,
+    super.keepSuggestionsOnSelect,
     super.key,
     super.layoutArchitecture,
     super.loadingBuilder,
@@ -81,7 +81,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
       itemBuilder: itemBuilder,
       itemSeparatorBuilder: itemSeparatorBuilder,
       keepSuggestionsOnLoading: keepSuggestionsOnLoading,
-      keepSuggestionsOnSuggestionSelected: keepSuggestionsOnSuggestionSelected,
+      keepSuggestionsOnSelect: keepSuggestionsOnSelect,
       layoutArchitecture: layoutArchitecture,
       loadingBuilder: loadingBuilder,
       minCharsForSuggestions: minCharsForSuggestions,
