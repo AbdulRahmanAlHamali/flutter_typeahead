@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- contextMenuBuilder on TextFieldConfiguration
+- contentInsertionConfiguration on TextFieldConfiguration
+
+### Changed
+- keepSuggestionsOnSuggestionSelected renamed to keepSuggestionsOnSelect
+
+### Fixed
+- enableSuggestions was not passed to TextField
+- CupertinoTypeAheadField theme brightness
+
+### Removed
+- hideKeyboard parameter - use TextfieldConfiguration.enabled instead
+- CupertinoSuggestionsBoxController - use SuggestionsBoxController instead
+
 ## 4.9.0 - 2023-10-22
 ### Added
 - "Pull to load more" feature (#519)
@@ -14,7 +30,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 4.7.0 - 2023-09-05
 ## Added
-
 - expands property to TextFieldConfiguration (#512)
 - scrollbarAlwaysVisible argument (#512)
 
@@ -255,7 +270,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Various bug fixes
 
 ## 1.7.0 - 2019-10-16
-
 Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
 
 ### Added
