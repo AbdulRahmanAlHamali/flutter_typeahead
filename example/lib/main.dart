@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             body: GestureDetector(
-              // onTap: () => FocusScope.of(context).unfocus(),
+              onTap: () => FocusScope.of(context).unfocus(),
               child: const TabBarView(
                 children: [
                   NavigationExample(),
@@ -109,7 +109,6 @@ class NavigationExample extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(32),
           child: TypeAheadField(
-            hideSuggestionsOnKeyboardHide: false,
             textFieldConfiguration: TextFieldConfiguration(
               autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
               autofocus: true,
@@ -161,59 +160,53 @@ class _FormExampleState extends State<FormExample> {
 
   String? _selectedCity;
 
-  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => suggestionBoxController.close(),
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            children: [
-              TypeAheadFormField(
-                textFieldConfiguration: TextFieldConfiguration(
-                  controller: _typeAheadController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'City',
-                    hintText: 'What is your favorite city?',
-                  ),
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          children: [
+            TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                controller: _typeAheadController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'City',
+                  hintText: 'What is your favorite city?',
                 ),
-                suggestionsCallback: (pattern) =>
-                    CitiesService.getSuggestions(pattern),
-                itemBuilder: (context, suggestion) => ListTile(
-                  title: Text(suggestion),
-                ),
-                itemSeparatorBuilder: (context, index) =>
-                    const Divider(height: 1),
-                transitionBuilder: (context, suggestionsBox, controller) =>
-                    suggestionsBox,
-                onSuggestionSelected: (suggestion) =>
-                    _typeAheadController.text = suggestion,
-                suggestionsBoxController: suggestionBoxController,
-                validator: (value) =>
-                    value!.isEmpty ? 'Please select a city' : null,
-                onSaved: (value) => _selectedCity = value,
               ),
-              const Spacer(),
-              ElevatedButton(
-                child: const Text('Submit'),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Your Favorite City is $_selectedCity'),
-                      ),
-                    );
-                  }
-                },
-              )
-            ],
-          ),
+              suggestionsCallback: (pattern) =>
+                  CitiesService.getSuggestions(pattern),
+              itemBuilder: (context, suggestion) => ListTile(
+                title: Text(suggestion),
+              ),
+              itemSeparatorBuilder: (context, index) =>
+                  const Divider(height: 1),
+              transitionBuilder: (context, suggestionsBox, controller) =>
+                  suggestionsBox,
+              onSuggestionSelected: (suggestion) =>
+                  _typeAheadController.text = suggestion,
+              validator: (value) =>
+                  value!.isEmpty ? 'Please select a city' : null,
+              onSaved: (value) => _selectedCity = value,
+            ),
+            const Spacer(),
+            ElevatedButton(
+              child: const Text('Submit'),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Your Favorite City is $_selectedCity'),
+                    ),
+                  );
+                }
+              },
+            )
+          ],
         ),
       ),
     );
@@ -440,69 +433,63 @@ class CupertinoFormExample extends StatefulWidget {
 class _FavoriteCitiesPage extends State<CupertinoFormExample> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  final SuggestionsBoxController _suggestionsBoxController =
-      SuggestionsBoxController();
   String favoriteCity = 'Unavailable';
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _suggestionsBoxController.close,
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('What is your favorite city?'),
-                  const SizedBox(height: 10),
-                  CupertinoTypeAheadFormField(
-                    suggestionsBoxController: _suggestionsBoxController,
-                    suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    textFieldConfiguration: CupertinoTextFieldConfiguration(
-                      controller: _typeAheadController,
-                    ),
-                    suggestionsCallback: (pattern) => Future.delayed(
-                      const Duration(seconds: 1),
-                      () => CitiesService.getSuggestions(pattern),
-                    ),
-                    itemBuilder: (context, suggestion) => Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Text(
-                        suggestion,
-                      ),
-                    ),
-                    itemSeparatorBuilder: (context, index) =>
-                        const Divider(height: 1),
-                    onSuggestionSelected: (suggestion) =>
-                        _typeAheadController.text = suggestion,
-                    validator: (value) =>
-                        value!.isEmpty ? 'Please select a city' : null,
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('What is your favorite city?'),
+                const SizedBox(height: 10),
+                CupertinoTypeAheadFormField(
+                  suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
-              ),
-              const Spacer(),
-              CupertinoButton(
-                child: const Text('Submit'),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    setState(() => favoriteCity = _typeAheadController.text);
-                  }
-                },
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Your favorite city is $favoriteCity!',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+                  textFieldConfiguration: CupertinoTextFieldConfiguration(
+                    controller: _typeAheadController,
+                  ),
+                  suggestionsCallback: (pattern) => Future.delayed(
+                    const Duration(seconds: 1),
+                    () => CitiesService.getSuggestions(pattern),
+                  ),
+                  itemBuilder: (context, suggestion) => Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Text(
+                      suggestion,
+                    ),
+                  ),
+                  itemSeparatorBuilder: (context, index) =>
+                      const Divider(height: 1),
+                  onSuggestionSelected: (suggestion) =>
+                      _typeAheadController.text = suggestion,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please select a city' : null,
+                ),
+              ],
+            ),
+            const Spacer(),
+            CupertinoButton(
+              child: const Text('Submit'),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  setState(() => favoriteCity = _typeAheadController.text);
+                }
+              },
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Your favorite city is $favoriteCity!',
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
