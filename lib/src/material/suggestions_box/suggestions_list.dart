@@ -5,30 +5,32 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.da
 class SuggestionsList<T> extends RenderSuggestionsList<T> {
   const SuggestionsList({
     super.key,
-    required super.suggestionsBoxController,
-    required super.itemBuilder,
-    required super.controller,
-    this.decoration,
-    super.intercepting = false,
-    super.onSuggestionSelected,
-    super.suggestionsCallback,
-    super.itemSeparatorBuilder,
-    super.layoutArchitecture,
-    super.scrollController,
-    super.debounceDuration,
-    super.loadingBuilder,
-    super.noItemsFoundBuilder,
-    super.errorBuilder,
-    super.transitionBuilder,
     super.animationDuration,
     super.animationStart,
-    super.hideOnLoading,
+    super.autoFlipListDirection,
+    required super.controller,
+    super.debounceDuration,
+    this.decoration,
+    super.direction,
+    super.errorBuilder,
+    required super.hideKeyboardOnDrag,
     super.hideOnEmpty,
     super.hideOnError,
+    super.hideOnLoading,
+    super.intercepting = false,
+    required super.itemBuilder,
+    super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
     super.keepSuggestionsOnSelect,
+    super.layoutArchitecture,
+    super.loadingBuilder,
     super.minCharsForSuggestions,
-    required super.hideKeyboardOnDrag,
+    super.noItemsFoundBuilder,
+    super.onSuggestionSelected,
+    super.scrollController,
+    required super.suggestionsBoxController,
+    super.suggestionsCallback,
+    super.transitionBuilder,
   });
 
   @override
@@ -52,8 +54,7 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       if (loadingBuilder != null) {
         child = loadingBuilder!(context);
       } else {
-        child = const Align(
-          alignment: Alignment.center,
+        child = const Center(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
             child: CircularProgressIndicator(),
@@ -142,7 +143,6 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
         (index) => _itemBuilder(
           context,
           suggestions.elementAt(index),
-          // state.focusNodes[index],
         ),
       ),
       state.scrollController,

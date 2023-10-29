@@ -39,13 +39,7 @@ class SuggestionsBox<T> extends StatefulWidget {
   /// The child of the suggestions box.
   final Widget child;
 
-  /// {@template flutter_typeahead.SuggestionsBox.direction}
-  /// The direction in which the suggestions box opens.
-  ///
-  /// Must be either [AxisDirection.down] or [AxisDirection.up].
-  ///
-  /// Defaults to [AxisDirection.down].
-  /// {@endtemplate}
+  /// {@macro flutter_typeahead.SuggestionsListConfig.direction}
   final AxisDirection direction;
 
   /// {@template flutter_typeahead.SuggestionsBox.autoFlipDirection}
@@ -60,11 +54,7 @@ class SuggestionsBox<T> extends StatefulWidget {
   /// {@endtemplate}
   final bool autoFlipDirection;
 
-  /// {@template flutter_typeahead.SuggestionsBox.autoFlipListDirection}
-  /// Whether the suggestions list should be reversed if the suggestions box is flipped.
-  ///
-  /// Defaults to true.
-  /// {@endtemplate}
+  /// {@macro flutter_typeahead.SuggestionsListConfig.autoFlipListDirection}
   final bool autoFlipListDirection;
 
   /// {@template flutter_typeahead.SuggestionsBox.autoFlipMinHeight}
@@ -116,7 +106,11 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
     overlayEntry = _createOverlay();
     direction = desiredDirection;
 
-    widget.controller.addListener(onOpenedChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      overlay.insert(overlayEntry);
+    });
+
     resizeSubscription = widget.controller.resizeEvents.listen((_) => resize());
   }
 
@@ -124,8 +118,6 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
   void didUpdateWidget(covariant SuggestionsBox<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(onOpenedChanged);
-      widget.controller.addListener(onOpenedChanged);
       resizeSubscription.cancel();
       resizeSubscription =
           widget.controller.resizeEvents.listen((_) => resize());
@@ -140,26 +132,15 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
     if (newOverlay != overlay) {
       overlay = newOverlay;
       overlayEntry.remove();
+      overlayEntry = _createOverlay();
       overlay.insert(overlayEntry);
     }
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(onOpenedChanged);
     resizeSubscription.cancel();
     super.dispose();
-  }
-
-  /// Handles when the suggestions box is opened or closed via the controller.
-  void onOpenedChanged() {
-    if (widget.controller.isOpen) {
-      if (overlayEntry.mounted) return;
-      overlay.insert(overlayEntry);
-    } else {
-      if (!overlayEntry.mounted) return;
-      overlayEntry.remove();
-    }
   }
 
   void rebuildOverlay() {

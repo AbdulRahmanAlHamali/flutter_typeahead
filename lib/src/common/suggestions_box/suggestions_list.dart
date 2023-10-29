@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_animation.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_focus.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
@@ -16,8 +17,10 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
     super.key,
     this.animationDuration,
     this.animationStart,
+    this.autoFlipListDirection = true,
     required this.controller,
     this.debounceDuration,
+    this.direction = AxisDirection.down,
     this.errorBuilder,
     this.hideKeyboardOnDrag = false,
     this.hideOnEmpty,
@@ -44,9 +47,13 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
   @override
   final double? animationStart;
   @override
+  final bool autoFlipListDirection;
+  @override
   final TextEditingController controller;
   @override
   final Duration? debounceDuration;
+  @override
+  final AxisDirection direction;
   @override
   final ErrorBuilder? errorBuilder;
   @override
@@ -149,12 +156,7 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
           ? ScrollViewKeyboardDismissBehavior.onDrag
           : ScrollViewKeyboardDismissBehavior.manual,
       controller: controller,
-      // TODO: re-enable this
-      /*
-      reverse: suggestionsBoxController.direction == AxisDirection.down
-          ? false
-          : suggestionsBoxController.autoFlipListDirection,
-      */
+      reverse: direction == AxisDirection.up ? autoFlipListDirection : false,
       itemCount: items.length,
       itemBuilder: (context, index) => items.elementAt(index),
       separatorBuilder: (context, index) =>
@@ -167,185 +169,154 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
       _RenderSuggestionsListState<T>();
 }
 
-class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
-    with SingleTickerProviderStateMixin {
-  Timer? _debounceTimer;
-
-  Object? _error;
-
-  late final AnimationController _animationController;
-
+class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
   late final ScrollController _scrollController =
       widget.scrollController ?? ScrollController();
 
-  String? _lastTextValue;
-
-  bool _isLoading = false;
-  bool _isQueued = false;
-  bool _suggestionsValid = false;
-  Iterable<T>? _suggestions;
+  bool isLoading = false;
+  bool isQueued = false;
+  bool suggestionsValid = false;
+  String? lastTextValue;
+  Iterable<T>? suggestions;
+  Timer? debounceTimer;
+  Object? error;
 
   @override
   void initState() {
     super.initState();
 
-    _animationController = AnimationController(
-      vsync: this,
-      duration: widget.animationDuration,
-    );
+    lastTextValue = widget.controller.text;
 
-    _lastTextValue = widget.controller.text;
-    _suggestionsValid =
+    suggestionsValid =
         widget.controller.text.length < widget.minCharsForSuggestions!;
-    _loadSuggestions();
 
-    widget.controller.addListener(_onTextChange);
+    onOpenChange();
+    widget.suggestionsBoxController.addListener(onOpenChange);
+
+    widget.controller.addListener(onTextChange);
   }
 
   @override
   void didUpdateWidget(RenderSuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(_onTextChange);
-      widget.controller.addListener(_onTextChange);
-      _onTextChange();
+      oldWidget.controller.removeListener(onTextChange);
+      widget.controller.addListener(onTextChange);
+      onTextChange();
     }
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
-    _debounceTimer?.cancel();
-    widget.controller.removeListener(_onTextChange);
+    debounceTimer?.cancel();
+    widget.controller.removeListener(onTextChange);
     super.dispose();
   }
 
-  void _onTextChange() {
+  void onOpenChange() {
+    if (widget.suggestionsBoxController.isOpen && !suggestionsValid) {
+      _loadSuggestions();
+    }
+  }
+
+  void onTextChange() {
     // ignore changes in selection only
-    if (widget.controller.text == _lastTextValue) return;
-    _lastTextValue = widget.controller.text;
+    if (widget.controller.text == lastTextValue) return;
+    lastTextValue = widget.controller.text;
 
     Duration? debounceDuration = widget.debounceDuration;
     debounceDuration ??= const Duration(milliseconds: 300);
 
-    _debounceTimer?.cancel();
+    debounceTimer?.cancel();
     if (widget.controller.text.length >= widget.minCharsForSuggestions!) {
       if (debounceDuration == Duration.zero) {
         _reloadSuggestions();
-      } else {}
-      _debounceTimer = Timer(debounceDuration, () async {
-        if (_isLoading) {
-          _isQueued = true;
-          return;
-        }
+      } else {
+        debounceTimer = Timer(debounceDuration, () async {
+          if (isLoading) {
+            isQueued = true;
+            return;
+          }
 
-        await this._reloadSuggestions();
-        if (_isQueued) {
-          _isQueued = false;
           await this._reloadSuggestions();
-        }
-      });
+          if (isQueued) {
+            isQueued = false;
+            await this._reloadSuggestions();
+          }
+        });
+      }
     } else {
       setState(() {
-        _isLoading = false;
-        _suggestions = null;
-        _suggestionsValid = true;
+        isLoading = false;
+        suggestions = null;
+        suggestionsValid = true;
       });
     }
   }
 
   Future<void> _reloadSuggestions() async {
-    _suggestionsValid = false;
+    suggestionsValid = false;
     await _loadSuggestions();
   }
 
   Future<void> _loadSuggestions() async {
     if (!context.mounted) return;
-    if (_suggestionsValid) return;
-    _suggestionsValid = true;
+    if (suggestionsValid) return;
+    suggestionsValid = true;
 
-    if (mounted) {
-      setState(() {
-        _animationController.forward(from: 1);
+    if (!mounted) return;
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
 
-        _isLoading = true;
-        _error = null;
-      });
-
-      Iterable<T>? suggestions;
-      Object? error;
-
-      try {
-        suggestions = await widget.suggestionsCallback!(widget.controller.text);
-      } on Exception catch (e) {
-        error = e;
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        double? animationStart = widget.animationStart;
-        // allow suggestionsCallback to return null and not throw error here
-        if (error != null || suggestions?.isEmpty == true) {
-          animationStart = 1;
-        }
-        _animationController.forward(from: animationStart);
-
-        _error = error;
-        _isLoading = false;
-        _suggestions = suggestions;
-      });
+    try {
+      suggestions = await widget.suggestionsCallback!(widget.controller.text);
+    } on Exception catch (e) {
+      error = e;
     }
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isEmpty = _suggestions?.isEmpty ?? true;
-    if (isEmpty && !_isLoading && _error == null) {
+    bool isEmpty = suggestions?.isEmpty ?? true;
+    if (isEmpty && !isLoading && error == null) {
       return const SizedBox();
     }
 
     SuggestionsListState<T> state = SuggestionsListState<T>(
       scrollController: _scrollController,
-      suggestions: _suggestions,
-      error: _error,
+      suggestions: suggestions,
+      error: error,
     );
 
     Widget child;
-    if (_isLoading) {
+    if (isLoading) {
       if (widget.hideOnLoading!) {
-        child = const SizedBox(height: 0);
+        child = const SizedBox();
       } else {
         child = widget.createLoadingWidget(context, state);
       }
-    } else if (_error != null) {
+    } else if (error != null) {
       if (widget.hideOnError!) {
-        child = const SizedBox(height: 0);
+        child = const SizedBox();
       } else {
         child = widget.createErrorWidget(context, state);
       }
     } else if (isEmpty) {
       if (widget.hideOnEmpty ?? false) {
-        child = const SizedBox(height: 0);
+        child = const SizedBox();
       } else {
         child = widget.createNoItemsFoundWidget(context, state);
       }
     } else {
       child = widget.createSuggestionsWidget(context, state);
-    }
-
-    if (widget.transitionBuilder != null) {
-      child = widget.transitionBuilder!(context, child, _animationController);
-    } else {
-      // TODO: implicit animation with AnimatedSize?
-      child = SizeTransition(
-        axisAlignment: -1,
-        sizeFactor: CurvedAnimation(
-          parent: _animationController,
-          curve: Curves.fastOutSlowIn,
-        ),
-        child: child,
-      );
     }
 
     return SuggestionsListFocus(
@@ -355,7 +326,13 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
         child: widget.createWidgetWrapper(
           context,
           state,
-          child,
+          SuggestionsListAnimation(
+            controller: widget.suggestionsBoxController,
+            transitionBuilder: widget.transitionBuilder,
+            direction: widget.direction,
+            animationStart: widget.animationStart,
+            child: child,
+          ),
         ),
       ),
     );

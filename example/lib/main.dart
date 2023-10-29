@@ -107,8 +107,10 @@ class NavigationExample extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(32),
+          padding:
+              const EdgeInsets.all(32).add(const EdgeInsets.only(top: 400)),
           child: TypeAheadField(
+            direction: AxisDirection.up,
             textFieldConfiguration: TextFieldConfiguration(
               autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
               autofocus: true,
