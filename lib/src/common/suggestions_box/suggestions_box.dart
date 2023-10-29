@@ -19,11 +19,10 @@ class SuggestionsBox<T> extends StatefulWidget {
     required this.suggestionsListBuilder,
     required this.focusNode,
     required this.child,
-    this.decoration,
+    required this.decoration,
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
-    this.verticalOffset = 5,
     this.hideOnUnfocus = true,
     this.ignoreAccessibleNavigation = false,
   });
@@ -76,14 +75,7 @@ class SuggestionsBox<T> extends StatefulWidget {
   final double autoFlipMinHeight;
 
   /// The decoration of the suggestions box.
-  final BaseSuggestionsBoxDecoration? decoration;
-
-  /// {@template flutter_typeahead.SuggestionsBox.verticalOffset}
-  /// The vertical offset of the suggestions box.
-  ///
-  /// Defaults to `5`.
-  /// {@endtemplate}
-  final double verticalOffset;
+  final BaseSuggestionsBoxDecoration decoration;
 
   /// {@template flutter_typeahead.SuggestionsBox.hideOnUnfocus}
   /// Whether the suggestions box should be hidden when the child of the suggestions box loses focus.
@@ -276,7 +268,7 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
         unsafeAreaHeight -
         height -
         textBoxAbsY -
-        2 * widget.verticalOffset;
+        2 * widget.decoration.offsetY;
   }
 
   double calculateMaxHeightUp(
@@ -293,8 +285,8 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
     double unsafeAreaHeight = rootMediaQuery.data.padding.top;
 
     return textBoxAbsY > keyboardAbsY
-        ? keyboardAbsY - unsafeAreaHeight - 2 * widget.verticalOffset
-        : textBoxAbsY - unsafeAreaHeight - 2 * widget.verticalOffset;
+        ? keyboardAbsY - unsafeAreaHeight - 2 * widget.decoration.offsetY
+        : textBoxAbsY - unsafeAreaHeight - 2 * widget.decoration.offsetY;
   }
 
   OverlayEntry _createOverlay() {
@@ -306,7 +298,6 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
         width: width,
         height: height,
         maxHeight: maxHeight,
-        verticalOffset: widget.verticalOffset,
         decoration: widget.decoration,
         ignoreAccessibleNavigation: widget.ignoreAccessibleNavigation,
       ),

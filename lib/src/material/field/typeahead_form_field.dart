@@ -55,7 +55,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
   });
 
   @override
-  final SuggestionsBoxDecoration? suggestionsBoxDecoration;
+  final SuggestionsBoxDecoration suggestionsBoxDecoration;
 
   @override
   Widget buildTextField(

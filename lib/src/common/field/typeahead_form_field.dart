@@ -80,7 +80,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
 
   /// The decoration of the sheet that contains the suggestions.
   @override
-  BaseSuggestionsBoxDecoration? get suggestionsBoxDecoration;
+  BaseSuggestionsBoxDecoration get suggestionsBoxDecoration;
 
   @override
   final Duration animationDuration;

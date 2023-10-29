@@ -41,7 +41,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
   });
 
   @override
-  final CupertinoSuggestionsBoxDecoration? suggestionsBoxDecoration;
+  final CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration;
 
   @override
   final CupertinoTextFieldConfiguration textFieldConfiguration;

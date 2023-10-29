@@ -410,6 +410,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
   Widget build(BuildContext context) {
     return SuggestionsBox(
       controller: _suggestionsBoxController,
+      decoration: widget.suggestionsBoxDecoration,
       focusNode: _focusNode,
       hideOnUnfocus: widget.hideOnUnfocus,
       suggestionsListBuilder: (context) => widget.buildSuggestionsList(
