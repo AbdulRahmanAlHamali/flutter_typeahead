@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_text_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
@@ -438,13 +439,17 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
           hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
         ),
       ),
-      child: PointerInterceptor(
-        intercepting: widget.intercepting,
-        child: widget.buildTextField(
-          context,
-          widget.textFieldConfiguration.copyWith(
-            focusNode: _focusNode,
-            controller: _textEditingController,
+      child: SuggestionsBoxTextConnector(
+        controller: _suggestionsBoxController,
+        textEditingController: _textEditingController,
+        child: PointerInterceptor(
+          intercepting: widget.intercepting,
+          child: widget.buildTextField(
+            context,
+            widget.textFieldConfiguration.copyWith(
+              focusNode: _focusNode,
+              controller: _textEditingController,
+            ),
           ),
         ),
       ),

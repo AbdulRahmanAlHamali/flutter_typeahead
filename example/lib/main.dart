@@ -127,7 +127,7 @@ class NavigationExample extends StatelessWidget {
               title: Text(suggestion['name']!),
               subtitle: Text(suggestion['price']!),
             ),
-            itemSeparatorBuilder: (context, index) => const Divider(),
+            itemSeparatorBuilder: (context, index) => const Divider(height: 1),
             onSuggestionSelected: (suggestion) {
               Navigator.of(context).push<void>(
                 MaterialPageRoute(
@@ -186,7 +186,8 @@ class _FormExampleState extends State<FormExample> {
                 itemBuilder: (context, suggestion) => ListTile(
                   title: Text(suggestion),
                 ),
-                itemSeparatorBuilder: (context, index) => const Divider(),
+                itemSeparatorBuilder: (context, index) =>
+                    const Divider(height: 1),
                 transitionBuilder: (context, suggestionsBox, controller) =>
                     suggestionsBox,
                 onSuggestionSelected: (suggestion) =>
@@ -291,7 +292,8 @@ class _ScrollExampleState extends State<ScrollExample> {
                 itemBuilder: (context, suggestion) => ListTile(
                   title: Text(suggestion),
                 ),
-                itemSeparatorBuilder: (context, index) => const Divider(),
+                itemSeparatorBuilder: (context, index) =>
+                    const Divider(height: 1),
                 onSuggestionSelected: (suggestion) =>
                     ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -474,7 +476,8 @@ class _FavoriteCitiesPage extends State<CupertinoFormExample> {
                         suggestion,
                       ),
                     ),
-                    itemSeparatorBuilder: (context, index) => const Divider(),
+                    itemSeparatorBuilder: (context, index) =>
+                        const Divider(height: 1),
                     onSuggestionSelected: (suggestion) =>
                         _typeAheadController.text = suggestion,
                     validator: (value) =>

@@ -205,9 +205,11 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
   @override
   void didUpdateWidget(RenderSuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    oldWidget.controller.removeListener(_onTextChange);
-    widget.controller.addListener(_onTextChange);
-    _onTextChange();
+    if (widget.controller != oldWidget.controller) {
+      oldWidget.controller.removeListener(_onTextChange);
+      widget.controller.addListener(_onTextChange);
+      _onTextChange();
+    }
   }
 
   @override
@@ -298,8 +300,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
 
   @override
   Widget build(BuildContext context) {
-    bool isEmpty =
-        (_suggestions?.isEmpty ?? true) && widget.controller.text.isEmpty;
+    bool isEmpty = _suggestions?.isEmpty ?? true;
     if (isEmpty && !_isLoading && _error == null) {
       return const SizedBox();
     }
@@ -323,7 +324,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>>
       } else {
         child = widget.createErrorWidget(context, state);
       }
-    } else if (_suggestions?.isEmpty ?? false) {
+    } else if (isEmpty) {
       if (widget.hideOnEmpty ?? false) {
         child = const SizedBox(height: 0);
       } else {
