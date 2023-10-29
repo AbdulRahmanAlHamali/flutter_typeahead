@@ -26,7 +26,9 @@ users as they type
 
 See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead#-installing-tab-).
 
-Note: As for Typeahead 3.X this package is based on Dart 2.12 (null-safety). You may also want to explore the new built in Flutter 2 widgets that have similar behavior.
+Note: As for Typeahead 3.x this package is based on Dart 2.12 (null-safety). You may also want to explore the new built in Flutter 2 widgets that have similar behavior.
+
+Note: As of Typeahead 5.x this package is based on Dart 3.0 (null-safety enforced). To use this package, please upgrade your Flutter SDK.
 
 ## Usage examples
 
@@ -173,15 +175,12 @@ TypeAheadField(
     crossAxisCount: 2,
     crossAxisSpacing: 8,
     mainAxisSpacing: 8,
-    childAspectRatio: 5 / 5,
     primary: false,
     shrinkWrap: true,
     children: items.toList(),
   ),
 );
 ```
-
-### Cupertino Example:
 
 ### Cupertino Example:
 
@@ -194,30 +193,28 @@ Please see the Cupertino code in the example project.
 Placing TypeAheadField in widgets with animations may cause the suggestions box
 to resize incorrectly. Since animation times are variable, this has to be
 corrected manually at the end of the animation. You will need to add a
-SuggestionsBoxController described below and the following code for the
-AnimationController.
+`SuggestionsBoxController` described below and the following code for the
+`AnimationController``.
 
 ```dart
-void Function(AnimationStatus) _statusListener;
-
 @override
 void initState() {
   super.initState();
-  _statusListener = (AnimationStatus status) {
-    if (status == AnimationStatus.completed ||
-        status == AnimationStatus.dismissed) {
-      _suggestionsBoxController.resize();
-    }
-  };
-
   _animationController.addStatusListener(_statusListener);
+}
+
+void _statusListener(AnimationStatus status) {
+  if (status == AnimationStatus.completed ||
+      status == AnimationStatus.dismissed) {
+    _suggestionsBoxController.resize();
+  }
 }
 
 @override
   void dispose() {
-    _animationController.removeStatusListener(_statusListener);
-    _animationController.dispose();
-    super.dispose();
+  _animationController.removeStatusListener(_statusListener);
+  _animationController.dispose();
+  super.dispose();
 }
 ```
 
@@ -225,14 +222,10 @@ void initState() {
 
 There is a known issue with opening dialogs where the suggestions box will sometimes appear too small. This is a timing issue caused by the animations described above. Currently, `showDialog` has a duration of 150 ms for the animations. TypeAheadField has a delay of 170 ms to compensate for this. Until the end of the animation can be properly detected and fixed using the solution above, this temporary fix will work most of the time. If the suggestions box is too small, closing and reopening the keyboard will usually fix the issue.
 
-### Cupertino
-
-The Cupertino classes in TypeAhead are still new. There are also differences in the Cupertino widgets vs the Material ones. Some behavior will not translate when moving between the two.
-
 ## Customizations
 
 TypeAhead widgets consist of a TextField and a suggestion box that shows
-as the user types. Both are highly customizable
+as the user types. Both are highly customizable.
 
 ### Customizing the TextField
 
@@ -350,7 +343,7 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
 
 By default, the list grows towards the bottom. However, you can use the `direction` property to customize the growth direction to be one of `AxisDirection.down` or `AxisDirection.up`, the latter of which will cause the list to grow up, where the first suggestion is at the bottom of the list, and the last suggestion is at the top.
 
-Set `autoFlipDirection` to true to allow the suggestions list to automatically flip direction whenever it detects that there is not enough space for the current direction. This is useful for scenarios where the TypeAheadField is in a scrollable widget or when the developer wants to ensure the list is always viewable despite different user screen sizes.
+Set `autoFlipDirection` to `true` to allow the suggestions list to automatically flip direction whenever it detects that there is not enough space for the current direction. This is useful for scenarios where the TypeAheadField is in a scrollable widget or when the developer wants to ensure the list is always viewable despite different user screen sizes.
 
 #### Controlling the suggestions box
 
@@ -364,9 +357,9 @@ Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typ
 
 ## Team:
 
-| [<img src="https://avatars.githubusercontent.com/u/16646600?v=3" width="100px;"/>](https://github.com/AbdulRahmanAlHamali)|[<img src="https://avatars.githubusercontent.com/u/2034925?v=3" width="100px;"/>](https://github.com/sjmcdowall)|[<img src="https://avatars.githubusercontent.com/u/5499214?v=3" width="100px;"/>](https://github.com/KaYBlitZ)|
-|---|---|---|
-|AbdulRahman AlHamali|S McDowall|Kenneth Liang|
+| [<img src="https://avatars.githubusercontent.com/u/16646600?v=3" width="100px;"/>](https://github.com/AbdulRahmanAlHamali) | [<img src="https://avatars.githubusercontent.com/u/2034925?v=3" width="100px;"/>](https://github.com/sjmcdowall) | [<img src="https://avatars.githubusercontent.com/u/5499214?v=3" width="100px;"/>](https://github.com/KaYBlitZ) |
+| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| AbdulRahman AlHamali                                                                                                       | S McDowall                                                                                                       | Kenneth Liang                                                                                                  |
 
 ## Shout out to the contributors!
 
