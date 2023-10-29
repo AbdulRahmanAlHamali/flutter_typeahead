@@ -35,7 +35,8 @@ class _SuggestionsBoxScrollConnectorState
   void didChangeDependencies() {
     super.didChangeDependencies();
     final scrollableState = Scrollable.maybeOf(context);
-    scrollPosition?.removeListener(_onScrollPositionChanged);
+    scrollPosition?.isScrollingNotifier
+        .removeListener(_onScrollPositionChanged);
     scrollPosition = scrollableState?.position;
     scrollPosition?.isScrollingNotifier.addListener(_onScrollPositionChanged);
   }
@@ -48,6 +49,7 @@ class _SuggestionsBoxScrollConnectorState
   }
 
   void _onScrollPositionChanged() {
+    if (!mounted) return;
     bool isScrolling = scrollPosition!.isScrollingNotifier.value;
     resizeTicker?.cancel();
     if (isScrolling) {

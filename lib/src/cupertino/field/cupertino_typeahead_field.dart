@@ -23,7 +23,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
     super.hideOnEmpty = false,
     super.hideOnError = false,
     super.hideOnLoading = false,
-    super.hideSuggestionsOnKeyboardHide = true,
+    super.hideOnUnfocus = true,
     required super.itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading = true,

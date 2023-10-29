@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             body: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
+              // onTap: () => FocusScope.of(context).unfocus(),
               child: const TabBarView(
                 children: [
                   NavigationExample(),
@@ -109,6 +109,7 @@ class NavigationExample extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(32),
           child: TypeAheadField(
+            hideSuggestionsOnKeyboardHide: false,
             textFieldConfiguration: TextFieldConfiguration(
               autofillHints: ["AutoFillHints 1", "AutoFillHints 2"],
               autofocus: true,

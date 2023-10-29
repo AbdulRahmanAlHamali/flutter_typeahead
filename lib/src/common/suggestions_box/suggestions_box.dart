@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/root_media_query.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dimension_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_overlay_entry.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_scroll_connector.dart';
 
@@ -85,7 +85,13 @@ class SuggestionsBox<T> extends StatefulWidget {
   /// {@endtemplate}
   final double verticalOffset;
 
-  /// Whether the suggestions box should be hidden when the focus node of the child of the suggestions box loses focus.
+  /// {@template flutter_typeahead.SuggestionsBox.hideOnUnfocus}
+  /// Whether the suggestions box should be hidden when the child of the suggestions box loses focus.
+  ///
+  /// If disabled, the suggestions box will remain open when the user e.g. closes the keyboard.
+  ///
+  /// Defaults to true.
+  /// {@endtemplate}
   final bool hideOnUnfocus;
 
   /// Whether the suggestions box should ignore the [MediaQueryData.accessibleNavigation] setting.
@@ -110,8 +116,6 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
 
   late StreamSubscription<void> resizeSubscription;
 
-  late StreamSubscription<bool> _keyboardVisibilitySubscription;
-
   @override
   void initState() {
     super.initState();
@@ -122,10 +126,6 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
 
     widget.controller.addListener(onOpenedChanged);
     resizeSubscription = widget.controller.resizeEvents.listen((_) => resize());
-
-    _keyboardVisibilitySubscription = KeyboardVisibilityController()
-        .onChange
-        .listen(_onKeyboardVisibilityChanged);
   }
 
   @override
@@ -156,7 +156,6 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
   void dispose() {
     widget.controller.removeListener(onOpenedChanged);
     resizeSubscription.cancel();
-    _keyboardVisibilitySubscription.cancel();
     super.dispose();
   }
 
@@ -168,13 +167,6 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
     } else {
       if (!overlayEntry.mounted) return;
       overlayEntry.remove();
-    }
-  }
-
-  /// hide suggestions box on keyboard closed
-  void _onKeyboardVisibilityChanged(bool visible) {
-    if (!visible && widget.hideOnUnfocus) {
-      widget.controller.close();
     }
   }
 
@@ -326,13 +318,18 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
     return SuggestionsBoxFocusConnector(
       controller: widget.controller,
       focusNode: widget.focusNode,
+      hideOnUnfocus: widget.hideOnUnfocus,
       child: SuggestionsBoxScrollConnector(
         controller: widget.controller,
         child: SuggestionsBoxDimensionConnector(
           controller: widget.controller,
-          child: CompositedTransformTarget(
-            link: _layerLink,
-            child: widget.child,
+          child: SuggestionsBoxKeyboardConnector(
+            controller: widget.controller,
+            hideOnUnfocus: widget.hideOnUnfocus,
+            child: CompositedTransformTarget(
+              link: _layerLink,
+              child: widget.child,
+            ),
           ),
         ),
       ),

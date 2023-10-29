@@ -45,7 +45,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     this.hideOnLoading = false,
     this.hideOnEmpty = false,
     this.hideOnError = false,
-    this.hideSuggestionsOnKeyboardHide = true,
+    this.hideOnUnfocus = true,
     this.intercepting = false,
     this.keepSuggestionsOnLoading = true,
     this.keepSuggestionsOnSelect = false,
@@ -107,7 +107,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   @override
   final bool hideOnLoading;
   @override
-  final bool hideSuggestionsOnKeyboardHide;
+  final bool hideOnUnfocus;
   @override
   final bool ignoreAccessibleNavigation;
   @override
