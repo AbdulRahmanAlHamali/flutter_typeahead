@@ -7,8 +7,10 @@ class SuggestionsListConfig<T> {
   SuggestionsListConfig({
     this.animationDuration,
     this.animationStart,
+    this.autoFlipListDirection = true,
     required this.controller,
     this.debounceDuration,
+    this.direction = AxisDirection.down,
     this.errorBuilder,
     this.hideKeyboardOnDrag = false,
     this.hideOnEmpty,
@@ -52,6 +54,13 @@ class SuggestionsListConfig<T> {
   /// {@endtemplate}
   final double? animationStart;
 
+  /// {@template flutter_typeahead.SuggestionsListConfig.autoFlipListDirection}
+  /// Whether the suggestions list should be reversed if the suggestions box is flipped.
+  ///
+  /// Defaults to true.
+  /// {@endtemplate}
+  final bool autoFlipListDirection;
+
   /// Controller for the text field used for input.
   final TextEditingController controller;
 
@@ -66,6 +75,15 @@ class SuggestionsListConfig<T> {
   /// Defaults to 300 milliseconds.
   /// {@endtemplate}
   final Duration? debounceDuration;
+
+  /// {@template flutter_typeahead.SuggestionsListConfig.direction}
+  /// The direction in which the suggestions box opens.
+  ///
+  /// Must be either [AxisDirection.down] or [AxisDirection.up].
+  ///
+  /// Defaults to [AxisDirection.down].
+  /// {@endtemplate}
+  final AxisDirection direction;
 
   //// {@template flutter_typeahead.SuggestionsListConfig.errorBuilder}
   /// Builder function for displaying an error when [suggestionsCallback] throws an exception.

@@ -52,9 +52,11 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
     return CupertinoSuggestionsList<T>(
       animationDuration: config.animationDuration,
       animationStart: config.animationStart,
+      autoFlipListDirection: config.autoFlipListDirection,
       controller: config.controller,
       debounceDuration: config.debounceDuration,
       decoration: suggestionsBoxDecoration,
+      direction: config.direction,
       errorBuilder: config.errorBuilder,
       hideKeyboardOnDrag: config.hideKeyboardOnDrag,
       hideOnEmpty: config.hideOnEmpty,

@@ -57,6 +57,7 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
         controller: config.controller,
         debounceDuration: config.debounceDuration,
         decoration: suggestionsBoxDecoration,
+        direction: config.direction,
         errorBuilder: config.errorBuilder,
         hideKeyboardOnDrag: config.hideKeyboardOnDrag,
         hideOnEmpty: config.hideOnEmpty,
