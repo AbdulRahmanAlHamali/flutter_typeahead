@@ -80,6 +80,7 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
       itemSeparatorBuilder: itemSeparatorBuilder,
       keepSuggestionsOnLoading: keepSuggestionsOnLoading,
       keepSuggestionsOnSelect: keepSuggestionsOnSelect,
+      layoutArchitecture: layoutArchitecture,
       loadingBuilder: loadingBuilder,
       minCharsForSuggestions: minCharsForSuggestions,
       noItemsFoundBuilder: noItemsFoundBuilder,

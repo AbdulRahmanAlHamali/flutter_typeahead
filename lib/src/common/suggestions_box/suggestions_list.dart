@@ -217,7 +217,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
   }
 
   void onOpenChange() {
-    if (widget.suggestionsBoxController.isOpen && !suggestionsValid) {
+    if (widget.suggestionsBoxController.isOpen) {
       _loadSuggestions();
     }
   }
@@ -289,9 +289,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
   @override
   Widget build(BuildContext context) {
     bool isEmpty = suggestions?.isEmpty ?? true;
-    if (isEmpty && !isLoading && error == null) {
-      return const SizedBox();
-    }
 
     SuggestionsListState<T> state = SuggestionsListState<T>(
       scrollController: _scrollController,
@@ -299,12 +296,13 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
       error: error,
     );
 
-    bool keepSuggestionsOnLoading = widget.keepSuggestionsOnLoading ?? true;
-
     Widget child;
-    if (isLoading && !keepSuggestionsOnLoading) {
+    if (isLoading) {
+      bool keepSuggestionsOnLoading = widget.keepSuggestionsOnLoading ?? true;
       if (widget.hideOnLoading!) {
         child = const SizedBox();
+      } else if (!keepSuggestionsOnLoading) {
+        child = widget.createSuggestionsWidget(context, state);
       } else {
         child = widget.createLoadingWidget(context, state);
       }
