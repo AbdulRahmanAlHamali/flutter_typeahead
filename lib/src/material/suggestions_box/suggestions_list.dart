@@ -98,12 +98,11 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
       child = noItemsFoundBuilder!(context);
     } else {
       child = Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(8),
         child: Text(
-          'No Items Found!',
+          'No items found!',
           textAlign: TextAlign.center,
-          style:
-              TextStyle(color: Theme.of(context).disabledColor, fontSize: 18),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       );
     }

@@ -1,0 +1,147 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+abstract class FieldOption<T> extends ValueNotifier<T> {
+  FieldOption({
+    required this.key,
+    required this.title,
+    required T value,
+    this.icon,
+  }) : super(value);
+
+  /// The name of the property on the TypeAheadField class that this setting
+  /// corresponds to, if any.
+  final String key;
+  final String title;
+  final IconData? icon;
+
+  FutureOr<void> change();
+}
+
+class ToggleFieldOption extends FieldOption<bool> {
+  ToggleFieldOption({
+    required super.key,
+    required super.title,
+    super.icon,
+    this.iconFalse,
+    required super.value,
+  });
+
+  final IconData? iconFalse;
+
+  @override
+  FutureOr<void> change() => value = !value;
+}
+
+class ChoiceFieldOption<T> extends FieldOption<T> {
+  ChoiceFieldOption({
+    required super.key,
+    required super.title,
+    super.icon,
+    required super.value,
+    required this.choices,
+  });
+
+  final List<T> choices;
+
+  @override
+  FutureOr<void> change() {
+    final index = choices.indexOf(value);
+    value = choices[(index + 1) % choices.length];
+  }
+}
+
+class FieldSettings extends ChangeNotifier {
+  FieldSettings() {
+    for (final setting in values) {
+      setting.addListener(notifyListeners);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final setting in values) {
+      setting.removeListener(notifyListeners);
+    }
+    super.dispose();
+  }
+
+  List<FieldOption> get values => [
+        cupertino,
+        darkMode,
+        direction,
+        gridLayout,
+        dividers,
+        loadingDelay,
+        debounce,
+      ];
+
+  List<FieldOption> search(String pattern) {
+    return values.where(
+      (setting) {
+        String title = setting.title.toLowerCase().split(' ').join('');
+        String search = pattern.toLowerCase().split(' ').join('');
+        return title.contains(search);
+      },
+    ).toList();
+  }
+
+  final ToggleFieldOption cupertino = ToggleFieldOption(
+    key: 'cupertino',
+    title: 'Cupertino',
+    value: !kIsWeb && Platform.isIOS,
+    icon: CupertinoIcons.device_phone_portrait,
+    iconFalse: Icons.phone_android,
+  );
+
+  final ToggleFieldOption darkMode = ToggleFieldOption(
+    key: 'darkMode',
+    title: 'Dark Mode',
+    value: false,
+    icon: Icons.dark_mode,
+    iconFalse: Icons.light_mode,
+  );
+
+  final ChoiceFieldOption<AxisDirection> direction = ChoiceFieldOption(
+    key: 'direction',
+    title: 'Direction',
+    value: AxisDirection.down,
+    icon: Icons.swap_vert,
+    choices: [
+      AxisDirection.up,
+      AxisDirection.down,
+    ],
+  );
+
+  final ToggleFieldOption gridLayout = ToggleFieldOption(
+    key: 'gridLayout',
+    title: 'Grid Layout',
+    value: false,
+    icon: Icons.grid_on,
+  );
+
+  final ToggleFieldOption dividers = ToggleFieldOption(
+    key: 'dividers',
+    title: 'Dividers',
+    value: true,
+    icon: Icons.border_clear,
+  );
+
+  final ToggleFieldOption loadingDelay = ToggleFieldOption(
+    key: 'loadingDelay',
+    title: 'Loading Delay',
+    value: true,
+    icon: Icons.timer,
+  );
+
+  final ToggleFieldOption debounce = ToggleFieldOption(
+    key: 'debounce',
+    title: 'Debounce',
+    value: true,
+    icon: Icons.input,
+  );
+}
