@@ -114,7 +114,6 @@ class _SuggestionsListAnimationState extends State<SuggestionsListAnimation>
     );
 
     child = Visibility(
-      maintainState: true,
       visible: !hidden,
       child: child,
     );
