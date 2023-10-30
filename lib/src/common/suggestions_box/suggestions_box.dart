@@ -95,6 +95,7 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
 
   late OverlayState overlay;
   late OverlayEntry overlayEntry;
+  late ValueNotifier<SuggestionsBoxOverlayEntryConfig> overlayEntryConfig;
 
   late StreamSubscription<void> resizeSubscription;
 
@@ -102,9 +103,22 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
   void initState() {
     super.initState();
 
-    overlay = Overlay.of(context);
-    overlayEntry = _createOverlay();
     direction = desiredDirection;
+
+    overlay = Overlay.of(context);
+    overlayEntryConfig = ValueNotifier<SuggestionsBoxOverlayEntryConfig>(
+      SuggestionsBoxOverlayEntryConfig(
+        layerLink: _layerLink,
+        suggestionsListBuilder: widget.suggestionsListBuilder,
+        direction: direction,
+        width: width,
+        height: height,
+        maxHeight: maxHeight,
+        decoration: widget.decoration,
+        ignoreAccessibleNavigation: widget.ignoreAccessibleNavigation,
+      ),
+    );
+    overlayEntry = _createOverlay();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -122,6 +136,10 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
       resizeSubscription =
           widget.controller.resizeEvents.listen((_) => resize());
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      resize();
+    });
   }
 
   @override
@@ -139,13 +157,33 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
 
   @override
   void dispose() {
+    overlayEntry.remove();
+    overlayEntryConfig.dispose();
     resizeSubscription.cancel();
     super.dispose();
   }
 
+  /// Rebuilds the overlay entry config.
+  ///
+  /// The reason this setup is so complicated is because we need to rebuild SuggestionsBoxOverlayEntry
+  /// from inside the OverlayEntry builder, because the OverlayEntry is not
+  /// a direct child of the SuggestionsBox, so it doesn't get rebuilt when the SuggestionsBox is rebuilt.
+  ///
+  /// To overcome this, we use a ValueNotifier to communicate our parameters.
   void rebuildOverlay() {
-    // TODO: make this less jank
-    overlayEntry.markNeedsBuild();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      overlayEntryConfig.value = SuggestionsBoxOverlayEntryConfig(
+        layerLink: _layerLink,
+        suggestionsListBuilder: widget.suggestionsListBuilder,
+        direction: direction,
+        width: width,
+        height: height,
+        maxHeight: maxHeight,
+        decoration: widget.decoration,
+        ignoreAccessibleNavigation: widget.ignoreAccessibleNavigation,
+      );
+    });
   }
 
   // Resize the suggestions box based on the available height.
@@ -270,20 +308,11 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
         : textBoxAbsY - unsafeAreaHeight - 2 * widget.decoration.offsetY;
   }
 
-  OverlayEntry _createOverlay() {
-    return OverlayEntry(
-      builder: (context) => SuggestionsBoxOverlayEntry(
-        layerLink: _layerLink,
-        suggestionsListBuilder: widget.suggestionsListBuilder,
-        direction: direction,
-        width: width,
-        height: height,
-        maxHeight: maxHeight,
-        decoration: widget.decoration,
-        ignoreAccessibleNavigation: widget.ignoreAccessibleNavigation,
-      ),
-    );
-  }
+  OverlayEntry _createOverlay() => OverlayEntry(
+        builder: (context) => SuggestionsBoxOverlayEntry(
+          config: overlayEntryConfig,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
