@@ -274,6 +274,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                     border: Border.all(color: CupertinoColors.inactiveGray),
                     borderRadius: borderRadius,
                   ),
+                  placeholder: hintText,
                 ),
                 suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
                   borderRadius: borderRadius,
