@@ -154,56 +154,68 @@ class ExampleTypeAhead extends StatelessWidget
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Expanded(
-                      child: ListView(
-                        children: products.value.entries
-                            .map(
-                              (entry) => ListTile(
-                                title: Text(entry.key.name),
-                                subtitle: entry.key.description != null
-                                    ? Text(entry.key.description!)
-                                    : null,
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'x${entry.value}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    Text(
-                                      ', \$${entry.key.price * entry.value}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    IconButton(
-                                      tooltip: 'Remove',
-                                      icon: const Icon(
-                                          Icons.remove_circle_outline),
-                                      onPressed: () {
-                                        products.value = Map.of(products.value)
-                                          ..update(
-                                            entry.key,
-                                            (value) => value - 1,
-                                            ifAbsent: () => 0,
-                                          );
-                                        if ((products.value[entry.key] ?? 0) <=
-                                            0) {
+                    if (products.value.isNotEmpty)
+                      Expanded(
+                        child: ListView(
+                          children: products.value.entries
+                              .map(
+                                (entry) => ListTile(
+                                  title: Text(entry.key.name),
+                                  subtitle: entry.key.description != null
+                                      ? Text(entry.key.description!)
+                                      : null,
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'x${entry.value}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      Text(
+                                        ', \$${entry.key.price * entry.value}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Remove',
+                                        icon: const Icon(
+                                            Icons.remove_circle_outline),
+                                        onPressed: () {
                                           products.value =
                                               Map.of(products.value)
-                                                ..remove(entry.key);
-                                        }
-                                      },
-                                    ),
-                                  ],
+                                                ..update(
+                                                  entry.key,
+                                                  (value) => value - 1,
+                                                  ifAbsent: () => 0,
+                                                );
+                                          if ((products.value[entry.key] ??
+                                                  0) <=
+                                              0) {
+                                            products.value =
+                                                Map.of(products.value)
+                                                  ..remove(entry.key);
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
+                              )
+                              .toList(),
+                        ),
+                      )
+                    else
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Your cart is empty',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                      )
                   ],
                 ),
               ),
@@ -310,58 +322,71 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 ),
               ),
               const SizedBox(height: 8),
-              Expanded(
-                child: ListView(
-                  children: products.value.entries
-                      .map(
-                        (entry) => CupertinoListTile(
-                          title: Text(entry.key.name),
-                          subtitle: entry.key.description != null
-                              ? Text(entry.key.description!)
-                              : null,
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'x${entry.value}',
-                                style: CupertinoTheme.of(context)
-                                    .textTheme
-                                    .textStyle
-                                    .copyWith(fontSize: 18),
-                              ),
-                              Text(
-                                ', \$${entry.key.price * entry.value}',
-                                style: CupertinoTheme.of(context)
-                                    .textTheme
-                                    .textStyle
-                                    .copyWith(fontSize: 18),
-                              ),
-                              CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  products.value = Map.of(products.value)
-                                    ..update(
-                                      entry.key,
-                                      (value) => value - 1,
-                                      ifAbsent: () => 0,
-                                    );
-                                  if ((products.value[entry.key] ?? 0) <= 0) {
-                                    products.value = Map.of(products.value)
-                                      ..remove(entry.key);
-                                  }
-                                },
-                                child: const Icon(
-                                  CupertinoIcons.minus_circled,
-                                  size: 24,
+              if (products.value.isNotEmpty)
+                Expanded(
+                  child: ListView(
+                    children: products.value.entries
+                        .map(
+                          (entry) => CupertinoListTile(
+                            title: Text(entry.key.name),
+                            subtitle: entry.key.description != null
+                                ? Text(entry.key.description!)
+                                : null,
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'x${entry.value}',
+                                  style: CupertinoTheme.of(context)
+                                      .textTheme
+                                      .textStyle
+                                      .copyWith(fontSize: 18),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  ', \$${entry.key.price * entry.value}',
+                                  style: CupertinoTheme.of(context)
+                                      .textTheme
+                                      .textStyle
+                                      .copyWith(fontSize: 18),
+                                ),
+                                CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    products.value = Map.of(products.value)
+                                      ..update(
+                                        entry.key,
+                                        (value) => value - 1,
+                                        ifAbsent: () => 0,
+                                      );
+                                    if ((products.value[entry.key] ?? 0) <= 0) {
+                                      products.value = Map.of(products.value)
+                                        ..remove(entry.key);
+                                    }
+                                  },
+                                  child: const Icon(
+                                    CupertinoIcons.minus_circled,
+                                    size: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                      .toList(),
+                        )
+                        .toList(),
+                  ),
+                )
+              else
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Your cart is empty',
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .textStyle
+                          .copyWith(fontSize: 18),
+                    ),
+                  ),
                 ),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
