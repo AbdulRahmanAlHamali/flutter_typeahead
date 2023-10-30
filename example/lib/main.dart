@@ -78,13 +78,27 @@ class _AppState extends State<App> {
   }
 }
 
-class ExampleField extends StatelessWidget {
-  const ExampleField({
+mixin SharedExampleFieldConfig {
+  FieldSettings get settings;
+
+  final String hintText = 'What are you looking for?';
+  final BorderRadius borderRadius = BorderRadius.circular(10);
+  void onSuggestionSelected(FieldOption setting) => setting.change();
+  Future<List<FieldOption>> suggestionsCallback(String pattern) async =>
+      Future<List<FieldOption>>.delayed(
+        Duration(seconds: settings.loadingDelay.value ? 1 : 0),
+        () => settings.search(pattern),
+      );
+}
+
+class ExampleField extends StatelessWidget with SharedExampleFieldConfig {
+  ExampleField({
     super.key,
     required this.settings,
     required this.controller,
   });
 
+  @override
   final FieldSettings settings;
   final TextEditingController controller;
 
@@ -107,13 +121,13 @@ class ExampleField extends StatelessWidget {
               style: DefaultTextStyle.of(context)
                   .style
                   .copyWith(fontStyle: FontStyle.italic),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'What are you looking for?',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: hintText,
               ),
             ),
             suggestionsBoxDecoration: SuggestionsBoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: borderRadius,
               elevation: 8,
               color: Theme.of(context).cardColor,
             ),
@@ -149,12 +163,8 @@ class ExampleField extends StatelessWidget {
                 );
               }
             },
-            onSuggestionSelected: (setting) => setting.change(),
-            suggestionsCallback: (pattern) async =>
-                Future<List<FieldOption>>.delayed(
-              Duration(seconds: settings.loadingDelay.value ? 1 : 0),
-              () => settings.search(pattern),
-            ),
+            onSuggestionSelected: onSuggestionSelected,
+            suggestionsCallback: suggestionsCallback,
           ),
         ),
       ],
@@ -162,13 +172,15 @@ class ExampleField extends StatelessWidget {
   }
 }
 
-class CupertinoExampleField extends StatelessWidget {
-  const CupertinoExampleField({
+class CupertinoExampleField extends StatelessWidget
+    with SharedExampleFieldConfig {
+  CupertinoExampleField({
     super.key,
     required this.settings,
     required this.controller,
   });
 
+  @override
   final FieldSettings settings;
   final TextEditingController controller;
 
@@ -192,10 +204,10 @@ class CupertinoExampleField extends StatelessWidget {
                   .style
                   .copyWith(fontStyle: FontStyle.italic),
               padding: const EdgeInsets.all(12),
-              placeholder: 'What are you looking for?',
+              placeholder: hintText,
             ),
             suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: borderRadius,
             ),
             itemBuilder: (context, setting) {
               if (setting is ToggleFieldOption) {
@@ -227,12 +239,8 @@ class CupertinoExampleField extends StatelessWidget {
                 );
               }
             },
-            onSuggestionSelected: (setting) => setting.change(),
-            suggestionsCallback: (pattern) async =>
-                Future<List<FieldOption>>.delayed(
-              Duration(seconds: settings.loadingDelay.value ? 1 : 0),
-              () => settings.search(pattern),
-            ),
+            onSuggestionSelected: onSuggestionSelected,
+            suggestionsCallback: suggestionsCallback,
           ),
         ),
       ],
