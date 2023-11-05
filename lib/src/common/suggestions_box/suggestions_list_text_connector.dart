@@ -25,7 +25,6 @@ class SuggestionsListTextConnector extends StatefulWidget {
 class _SuggestionsListTextConnectorState
     extends State<SuggestionsListTextConnector> {
   String? previousText;
-  bool wasClosed = false;
 
   @override
   void initState() {
@@ -53,12 +52,7 @@ class _SuggestionsListTextConnectorState
     previousText = widget.textEditingController.text;
 
     if (!widget.controller.isOpen && widget.controller.retainFocus) {
-      if (wasClosed) {
-        wasClosed = false;
-        widget.controller.open();
-      } else {
-        wasClosed = true;
-      }
+      widget.controller.open();
     }
   }
 

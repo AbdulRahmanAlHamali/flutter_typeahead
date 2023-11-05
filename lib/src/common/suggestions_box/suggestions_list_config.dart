@@ -4,7 +4,7 @@ import 'package:flutter_typeahead/src/typedef.dart';
 
 /// Configuration for the suggestions list.
 class SuggestionsListConfig<T> {
-  SuggestionsListConfig({
+  const SuggestionsListConfig({
     this.animationDuration,
     this.animationStart,
     this.autoFlipListDirection = true,

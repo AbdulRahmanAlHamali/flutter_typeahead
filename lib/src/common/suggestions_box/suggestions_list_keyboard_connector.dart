@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 
 /// Enables keyboard navigation for the suggestions list.
-class SuggestionsListFocus<T> extends StatefulWidget {
-  const SuggestionsListFocus({
+class SuggestionsListKeyboardConnector<T> extends StatefulWidget {
+  const SuggestionsListKeyboardConnector({
     super.key,
     required this.controller,
     required this.child,
@@ -16,11 +16,12 @@ class SuggestionsListFocus<T> extends StatefulWidget {
   final Widget child;
 
   @override
-  State<SuggestionsListFocus<T>> createState() =>
-      _SuggestionsListFocusState<T>();
+  State<SuggestionsListKeyboardConnector<T>> createState() =>
+      _SuggestionsListKeyboardConnectorState<T>();
 }
 
-class _SuggestionsListFocusState<T> extends State<SuggestionsListFocus<T>> {
+class _SuggestionsListKeyboardConnectorState<T>
+    extends State<SuggestionsListKeyboardConnector<T>> {
   late final FocusScopeNode focusNode = FocusScopeNode(
     debugLabel: 'SuggestionsListFocus',
     onKeyEvent: (node, key) => widget.controller.onKeyEvent(node, key),
@@ -39,7 +40,8 @@ class _SuggestionsListFocusState<T> extends State<SuggestionsListFocus<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsListFocus<T> oldWidget) {
+  void didUpdateWidget(
+      covariant SuggestionsListKeyboardConnector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller.removeListener(onControllerChanged);
