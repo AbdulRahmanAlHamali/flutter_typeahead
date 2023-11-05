@@ -24,3 +24,5 @@ example/android/gradlew.bat
 example/example.iml
 example/ios/Flutter/flutter_export_environment.sh
 example/pubspec.lock`
+
+coverage

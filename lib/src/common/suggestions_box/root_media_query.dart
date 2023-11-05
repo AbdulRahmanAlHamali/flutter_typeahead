@@ -7,7 +7,6 @@ MediaQuery? rootMediaQueryOf(BuildContext context) {
     if (element.widget is MediaQuery) {
       rootMediaQuery = element.widget as MediaQuery;
       context.dependOnInheritedElement(element as InheritedModelElement);
-      return false;
     }
     return true;
   });

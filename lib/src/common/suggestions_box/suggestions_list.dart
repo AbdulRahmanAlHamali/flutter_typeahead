@@ -5,7 +5,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_con
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_animation.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_focus.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_connector.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
@@ -138,12 +138,14 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
   /// Handles closing the suggestions box if [keepSuggestionsOnSelect] is false.
   @protected
   void onSelected(T suggestion) {
+    // We call this before closing the suggestions list
+    // so that the text field can be updated without reopening the suggestions list.
+    onSuggestionSelected?.call(suggestion);
     if (!(keepSuggestionsOnSelect ?? false)) {
       suggestionsBoxController.close(retainFocus: true);
     } else {
       suggestionsBoxController.focusBox();
     }
-    onSuggestionSelected?.call(suggestion);
   }
 
   @protected
@@ -322,7 +324,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
       child = widget.createSuggestionsWidget(context, state);
     }
 
-    return SuggestionsListFocus(
+    return SuggestionsListKeyboardConnector(
       controller: widget.suggestionsBoxController,
       child: SuggestionsListTextConnector(
         controller: widget.suggestionsBoxController,

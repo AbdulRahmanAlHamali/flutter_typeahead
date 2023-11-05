@@ -38,7 +38,7 @@ class _SuggestionsBoxFocusConnectorState
     registerFocusNode(widget.focusNode);
     widget.controller.addListener(onControllerChanged);
 
-    WidgetsBinding.instance.addPostFrameCallback((duration) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       widget.controller.resize();
       if (widget.focusNode.hasFocus) {
@@ -95,13 +95,9 @@ class _SuggestionsBoxFocusConnectorState
 
   void onControllerChanged() {
     if (widget.controller.isOpen) {
-      if (!widget.focusNode.hasFocus) {
-        widget.focusNode.requestFocus();
-      }
+      widget.focusNode.requestFocus();
     } else if (!widget.controller.retainFocus) {
-      if (widget.focusNode.hasFocus) {
-        widget.focusNode.unfocus();
-      }
+      widget.focusNode.unfocus();
     }
   }
 

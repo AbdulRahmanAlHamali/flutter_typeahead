@@ -15,7 +15,7 @@ class SuggestionsBoxTapConnector extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFieldTapRegion(
       child: Listener(
-        behavior: HitTestBehavior.translucent,
+        behavior: HitTestBehavior.deferToChild,
         onPointerDown: (event) {
           if (!controller.isOpen && controller.retainFocus) {
             controller.open();
