@@ -6,6 +6,13 @@ import 'package:flutter_typeahead_example/options.dart';
 
 typedef ProductController = ValueNotifier<Map<Product, int>>;
 
+extension SumTotal on ProductController {
+  double get total => value.entries.fold<double>(
+        0,
+        (total, entry) => total + entry.key.price * entry.value,
+      );
+}
+
 mixin SharedExampleTypeAheadConfig {
   FieldSettings get settings;
   ProductController get products;
@@ -143,11 +150,7 @@ class ExampleTypeAhead extends StatelessWidget
                               style: Theme.of(context).textTheme.titleLarge),
                           const Spacer(),
                           Text(
-                            'Total: \$${products.value.entries.fold<double>(
-                                  0,
-                                  (total, entry) =>
-                                      total + entry.key.price * entry.value,
-                                ).toStringAsFixed(2)}',
+                            'Total: \$${products.total.toStringAsFixed(2)}',
                             style: Theme.of(context).textTheme.titleMedium,
                           )
                         ],
@@ -223,7 +226,10 @@ class ExampleTypeAhead extends StatelessWidget
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: () => products.value = {},
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => CheckoutDialog(products: products),
+                    ),
                     child: const Text('Checkout'),
                   ),
                 ],
@@ -309,11 +315,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                             .copyWith(fontSize: 24)),
                     const Spacer(),
                     Text(
-                      'Total: \$${products.value.entries.fold<double>(
-                            0,
-                            (total, entry) =>
-                                total + entry.key.price * entry.value,
-                          ).toStringAsFixed(2)}',
+                      'Total: \$${products.total.toStringAsFixed(2)}',
                       style: CupertinoTheme.of(context)
                           .textTheme
                           .textStyle
@@ -392,7 +394,11 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CupertinoButton(
-                    onPressed: () => products.value = {},
+                    onPressed: () => showCupertinoDialog(
+                      context: context,
+                      builder: (context) =>
+                          CupertinoCheckoutDialog(products: products),
+                    ),
                     child: const Text('Checkout'),
                   ),
                 ],
@@ -401,6 +407,90 @@ class CupertinoExampleTypeAhead extends StatelessWidget
           ),
         );
       },
+    );
+  }
+}
+
+class CheckoutDialog extends StatelessWidget {
+  const CheckoutDialog({
+    super.key,
+    required this.products,
+  });
+
+  final ProductController products;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Are you sure?'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+              'Would you like to check out for \$${products.total.toStringAsFixed(2)}?'),
+          Text(
+            'This will clear your shopping cart.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: Navigator.of(context).pop,
+          child: const Text('CANCEL'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            products.value = {};
+          },
+          child: const Text('CONFIRM'),
+        ),
+      ],
+    );
+  }
+}
+
+class CupertinoCheckoutDialog extends StatelessWidget {
+  const CupertinoCheckoutDialog({
+    super.key,
+    required this.products,
+  });
+
+  final ProductController products;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: const Text('Are you sure?'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+              'Would you like to check out for \$${products.total.toStringAsFixed(2)}?'),
+          Text(
+            'This will clear your shopping cart.',
+            style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+                  fontSize: 14,
+                ),
+          ),
+        ],
+      ),
+      actions: [
+        CupertinoDialogAction(
+          onPressed: Navigator.of(context).pop,
+          child: const Text('Cancel'),
+        ),
+        CupertinoDialogAction(
+          onPressed: () {
+            Navigator.of(context).pop();
+            products.value = {};
+          },
+          child: const Text('Confirm'),
+        ),
+      ],
     );
   }
 }
