@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dec
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_animation.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_reopen_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_connector.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
@@ -314,7 +314,7 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
 
     return SuggestionsListKeyboardConnector(
       controller: widget.suggestionsBoxController,
-      child: SuggestionsListReopenConnector(
+      child: SuggestionsListTextConnector(
         controller: widget.suggestionsBoxController,
         textEditingController: widget.controller,
         child: PointerInterceptor(

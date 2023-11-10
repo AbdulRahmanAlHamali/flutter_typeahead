@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-/// A widget that helps reopening the suggestions list,
-/// after a suggestion has been selected.
+/// A widget that helps reopening the suggestions list when the text changes.
 ///
-/// This happens when the user starts typing again or
-/// taps on the text field.
-class SuggestionsListReopenConnector extends StatefulWidget {
-  const SuggestionsListReopenConnector({
+/// This happens when the user starts typing again after
+/// a suggestion has been selected.
+class SuggestionsListTextConnector extends StatefulWidget {
+  const SuggestionsListTextConnector({
     super.key,
     required this.controller,
     required this.textEditingController,
@@ -19,12 +18,12 @@ class SuggestionsListReopenConnector extends StatefulWidget {
   final Widget child;
 
   @override
-  State<SuggestionsListReopenConnector> createState() =>
-      _SuggestionsListReopenConnectorState();
+  State<SuggestionsListTextConnector> createState() =>
+      _SuggestionsListTextConnectorState();
 }
 
-class _SuggestionsListReopenConnectorState
-    extends State<SuggestionsListReopenConnector> {
+class _SuggestionsListTextConnectorState
+    extends State<SuggestionsListTextConnector> {
   String? previousText;
 
   @override
@@ -34,7 +33,7 @@ class _SuggestionsListReopenConnectorState
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsListReopenConnector oldWidget) {
+  void didUpdateWidget(covariant SuggestionsListTextConnector oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.textEditingController != widget.textEditingController) {
       oldWidget.textEditingController.removeListener(onTextChange);
@@ -48,7 +47,6 @@ class _SuggestionsListReopenConnectorState
     super.dispose();
   }
 
-  /// Opens the suggestions list if the text has changed.
   void onTextChange() {
     if (previousText == widget.textEditingController.text) return;
     previousText = widget.textEditingController.text;
@@ -58,21 +56,6 @@ class _SuggestionsListReopenConnectorState
     }
   }
 
-  /// Opens the suggestions list if the user taps on the text field.
-  void onTapField() {
-    if (!widget.controller.isOpen && widget.controller.retainFocus) {
-      widget.controller.open();
-    }
-  }
-
   @override
-  Widget build(BuildContext context) {
-    return TextFieldTapRegion(
-      child: Listener(
-        behavior: HitTestBehavior.deferToChild,
-        onPointerDown: (event) => onTapField(),
-        child: widget.child,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => widget.child;
 }
