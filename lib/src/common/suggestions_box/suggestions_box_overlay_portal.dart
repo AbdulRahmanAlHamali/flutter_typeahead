@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_blox_floater.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 
-class SuggestionsBoxOverlayEntry extends StatefulWidget {
-  const SuggestionsBoxOverlayEntry({
+class SuggestionsBoxOverlayPortal extends StatefulWidget {
+  const SuggestionsBoxOverlayPortal({
     super.key,
     required this.controller,
     required this.listBuilder,
@@ -25,12 +25,12 @@ class SuggestionsBoxOverlayEntry extends StatefulWidget {
   final Offset? offset;
 
   @override
-  State<SuggestionsBoxOverlayEntry> createState() =>
-      _SuggestionsBoxOverlayEntryState();
+  State<SuggestionsBoxOverlayPortal> createState() =>
+      _SuggestionsBoxOverlayPortalState();
 }
 
-class _SuggestionsBoxOverlayEntryState
-    extends State<SuggestionsBoxOverlayEntry> {
+class _SuggestionsBoxOverlayPortalState
+    extends State<SuggestionsBoxOverlayPortal> {
   FloaterLink link = FloaterLink();
   late StreamSubscription<void> resizeSubscription;
 
@@ -42,7 +42,7 @@ class _SuggestionsBoxOverlayEntryState
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsBoxOverlayEntry oldWidget) {
+  void didUpdateWidget(covariant SuggestionsBoxOverlayPortal oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       resizeSubscription.cancel();

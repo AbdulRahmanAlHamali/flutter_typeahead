@@ -4,7 +4,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dec
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dimension_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_keyboard_connector.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_overlay_entry.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_overlay_portal.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
 class SuggestionsBox<T> extends StatelessWidget {
@@ -86,7 +86,7 @@ class SuggestionsBox<T> extends StatelessWidget {
         hideOnUnfocus: hideOnUnfocus,
         child: SuggestionsBoxDimensionConnector(
           controller: controller,
-          child: SuggestionsBoxOverlayEntry(
+          child: SuggestionsBoxOverlayPortal(
             controller: controller,
             direction: direction,
             listBuilder: suggestionsListBuilder,
