@@ -18,7 +18,6 @@ class SuggestionsListConfig<T> {
     this.hideOnLoading,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
-    this.intercepting = false,
     this.keepSuggestionsOnLoading,
     this.keepSuggestionsOnSelect,
     this.layoutArchitecture,
@@ -166,17 +165,6 @@ class SuggestionsListConfig<T> {
   /// Equivalent to [ListView.separated.separatorBuilder].
   /// {@endtemplate}
   final IndexedWidgetBuilder? itemSeparatorBuilder;
-
-  /// {@template flutter_typeahead.SuggestionsListConfig.intercepting}
-  /// Changes the way hits are intercepted.
-  ///
-  /// This is useful as a workaround for [Flutter#98507](https://github.com/flutter/flutter/issues/98507)
-  /// An issue commonly experienced when placing the [TypeAheadFormField] on a google map in Flutter Web.
-  ///
-  /// Defaults to `false`.
-  /// {@endtemplate}
-  // TODO: this issue was marked fixed, test if this is still needed
-  final bool intercepting;
 
   /// {@template flutter_typeahead.SuggestionsListConfig.keepSuggestionsOnLoading}
   /// Whether to keep the previous suggestions visible even during loading.

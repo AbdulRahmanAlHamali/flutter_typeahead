@@ -11,8 +11,8 @@ class CupertinoSuggestionsBoxDecoration extends BaseSuggestionsBoxDecoration {
     super.color,
     this.border,
     this.borderRadius,
-    super.offsetX,
     super.scrollbarThumbAlwaysVisible,
+    super.offset,
   });
 
   final BoxBorder? border;

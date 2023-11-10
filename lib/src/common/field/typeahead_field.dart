@@ -344,27 +344,20 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
 }
 
 class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
-  late SuggestionsBoxController _suggestionsBoxController;
   late TextEditingController _textEditingController;
   late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-
-    _suggestionsBoxController =
-        widget.suggestionsBoxController ?? SuggestionsBoxController();
-
     _textEditingController =
         widget.textFieldConfiguration.controller ?? TextEditingController();
-
     _focusNode = widget.textFieldConfiguration.focusNode ?? FocusNode();
   }
 
   @override
   void didUpdateWidget(covariant BaseTypeAheadField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (oldWidget.textFieldConfiguration.controller !=
         widget.textFieldConfiguration.controller) {
       if (oldWidget.textFieldConfiguration.controller == null) {
@@ -373,7 +366,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
       _textEditingController =
           widget.textFieldConfiguration.controller ?? TextEditingController();
     }
-
     if (oldWidget.textFieldConfiguration.focusNode !=
         widget.textFieldConfiguration.focusNode) {
       if (oldWidget.textFieldConfiguration.focusNode == null) {
@@ -385,9 +377,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
 
   @override
   void dispose() {
-    if (widget.suggestionsBoxController == null) {
-      _suggestionsBoxController.dispose();
-    }
     if (widget.textFieldConfiguration.controller == null) {
       _textEditingController.dispose();
     }
@@ -400,14 +389,15 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
   @override
   Widget build(BuildContext context) {
     return SuggestionsBox(
-      controller: _suggestionsBoxController,
+      controller: widget.suggestionsBoxController,
       direction: widget.direction,
-      decoration: widget.suggestionsBoxDecoration,
+      offset: widget.suggestionsBoxDecoration.offset,
       focusNode: _focusNode,
       autoFlipDirection: widget.autoFlipDirection,
       autoFlipMinHeight: widget.autoFlipMinHeight,
       hideOnUnfocus: widget.hideOnUnfocus,
-      suggestionsListBuilder: (context) => widget.buildSuggestionsList(
+      suggestionsBuilder: (context, suggestionsBoxController) =>
+          widget.buildSuggestionsList(
         context,
         SuggestionsListConfig<T>(
           animationDuration: widget.animationDuration,
@@ -421,7 +411,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
           hideOnEmpty: widget.hideOnEmpty,
           hideOnError: widget.hideOnError,
           hideOnLoading: widget.hideOnLoading,
-          intercepting: widget.intercepting,
           itemBuilder: widget.itemBuilder,
           itemSeparatorBuilder: widget.itemSeparatorBuilder,
           keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
@@ -432,7 +421,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
           noItemsFoundBuilder: widget.noItemsFoundBuilder,
           onSuggestionSelected: widget.onSuggestionSelected,
           scrollController: widget.scrollController,
-          suggestionsBoxController: _suggestionsBoxController,
+          suggestionsBoxController: suggestionsBoxController,
           suggestionsCallback: widget.suggestionsCallback,
           transitionBuilder: widget.transitionBuilder,
         ),

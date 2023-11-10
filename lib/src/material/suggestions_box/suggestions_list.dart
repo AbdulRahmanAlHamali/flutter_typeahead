@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.dart';
 
-class SuggestionsList<T> extends RenderSuggestionsList<T> {
+class SuggestionsList<T> extends BaseSuggestionsList<T> {
   const SuggestionsList({
     super.key,
     super.animationDuration,
@@ -17,7 +17,6 @@ class SuggestionsList<T> extends RenderSuggestionsList<T> {
     super.hideOnEmpty,
     super.hideOnError,
     super.hideOnLoading,
-    super.intercepting = false,
     required super.itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,

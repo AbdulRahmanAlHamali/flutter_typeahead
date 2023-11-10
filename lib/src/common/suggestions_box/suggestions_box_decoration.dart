@@ -6,8 +6,7 @@ abstract class BaseSuggestionsBoxDecoration {
     this.scrollbarThumbAlwaysVisible = false,
     this.constraints,
     this.color,
-    this.offsetX = 0,
-    this.offsetY = 5,
+    this.offset,
   });
 
   /// Defines if a scrollbar will be displayed or not.
@@ -29,13 +28,11 @@ abstract class BaseSuggestionsBoxDecoration {
   /// Same as [Material.color](https://docs.flutter.io/flutter/material/Material/color.html)
   final Color? color;
 
-  /// The horizontal offset of the suggestions box.
+  /// {@template flutter_typeahead.BaseSuggestionsBoxDecoration.offset}
+  /// The offset of the suggestions box.
+  /// The value is automatically flipped if the suggestions box is flipped.
   ///
-  /// Defaults to 0.
-  final double offsetX;
-
-  /// The vertical offset of the suggestions box.
-  ///
-  /// Defaults to 5.
-  final double offsetY;
+  /// Defaults to `Offset(0, 5)`.
+  /// {@endtemplate}
+  final Offset? offset;
 }

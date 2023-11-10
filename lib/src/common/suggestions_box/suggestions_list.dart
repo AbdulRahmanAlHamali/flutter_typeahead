@@ -12,9 +12,9 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// Renders all the suggestions using a ListView as default.
 /// If `layoutArchitecture` is specified, uses that instead.
-abstract class RenderSuggestionsList<T> extends StatefulWidget
+abstract class BaseSuggestionsList<T> extends StatefulWidget
     implements SuggestionsListConfig<T> {
-  const RenderSuggestionsList({
+  const BaseSuggestionsList({
     super.key,
     this.animationDuration,
     this.animationStart,
@@ -29,7 +29,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
     this.hideOnLoading,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
-    this.intercepting = false,
     this.keepSuggestionsOnLoading,
     this.keepSuggestionsOnSelect,
     this.layoutArchitecture,
@@ -69,8 +68,6 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
   final ItemBuilder<T> itemBuilder;
   @override
   final IndexedWidgetBuilder? itemSeparatorBuilder;
-  @override
-  final bool intercepting;
   @override
   final bool? keepSuggestionsOnLoading;
   @override
@@ -170,11 +167,10 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
   }
 
   @override
-  State<RenderSuggestionsList<T>> createState() =>
-      _RenderSuggestionsListState<T>();
+  State<BaseSuggestionsList<T>> createState() => _BaseSuggestionsListState<T>();
 }
 
-class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
+class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
   late final ScrollController _scrollController =
       widget.scrollController ?? ScrollController();
 
@@ -198,7 +194,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
   }
 
   @override
-  void didUpdateWidget(RenderSuggestionsList<T> oldWidget) {
+  void didUpdateWidget(BaseSuggestionsList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller.removeListener(onTextChange);
@@ -321,7 +317,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
         controller: widget.suggestionsBoxController,
         textEditingController: widget.controller,
         child: PointerInterceptor(
-          intercepting: widget.intercepting,
           child: widget.createWidgetWrapper(
             context,
             state,
@@ -330,6 +325,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
               transitionBuilder: widget.transitionBuilder,
               direction: widget.direction,
               animationStart: widget.animationStart,
+              animationDuration: widget.animationDuration,
               child: child,
             ),
           ),

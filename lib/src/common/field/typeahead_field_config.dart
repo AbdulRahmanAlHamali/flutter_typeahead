@@ -95,13 +95,4 @@ abstract class TypeaheadFieldConfig<T> {
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.hideKeyboardOnDrag}
   bool get hideKeyboardOnDrag;
-
-  /// Workaround for an Android OS issue with Flutter 3.7+ that causes the suggestions list
-  /// to switch to accessibility mode incorrectly and therefore become unresponsive to gestures.
-  ///
-  /// This is device manifacturer specific. Note that enabling this will
-  /// make the suggestions list non-accessible for users with accessibility needs.
-  ///
-  /// Defaults to false.
-  bool get ignoreAccessibleNavigation;
 }
