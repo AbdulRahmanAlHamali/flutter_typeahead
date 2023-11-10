@@ -57,9 +57,8 @@ class _AppState extends State<App> {
                               foregroundColor: Colors.white,
                             ),
                             icon: const Icon(Icons.arrow_forward),
-                            onPressed: () {
-                              DefaultTabController.of(context).animateTo(1);
-                            },
+                            onPressed: () =>
+                                DefaultTabController.of(context).animateTo(1),
                             label: const Text('Settings'),
                           );
                         } else {
@@ -68,9 +67,8 @@ class _AppState extends State<App> {
                               foregroundColor: Colors.white,
                             ),
                             icon: const Icon(Icons.arrow_back),
-                            onPressed: () {
-                              DefaultTabController.of(context).animateTo(0);
-                            },
+                            onPressed: () =>
+                                DefaultTabController.of(context).animateTo(0),
                             label: const Text('Demo'),
                           );
                         }

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
+/// Hides the suggestions box when the keyboard is closed.
 class SuggestionsBoxKeyboardConnector extends StatefulWidget {
   const SuggestionsBoxKeyboardConnector({
     super.key,

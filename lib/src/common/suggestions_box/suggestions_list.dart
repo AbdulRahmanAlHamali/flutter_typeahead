@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dec
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_animation.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_reopen_connector.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
@@ -144,7 +144,7 @@ abstract class RenderSuggestionsList<T> extends StatefulWidget
     if (!(keepSuggestionsOnSelect ?? false)) {
       suggestionsBoxController.close(retainFocus: true);
     } else {
-      suggestionsBoxController.focusBox();
+      suggestionsBoxController.focusChild();
     }
   }
 
@@ -265,7 +265,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
   }
 
   Future<void> _loadSuggestions() async {
-    if (!context.mounted) return;
+    if (!mounted) return;
     if (suggestionsValid) return;
     suggestionsValid = true;
 
@@ -326,7 +326,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
 
     return SuggestionsListKeyboardConnector(
       controller: widget.suggestionsBoxController,
-      child: SuggestionsListTextConnector(
+      child: SuggestionsListReopenConnector(
         controller: widget.suggestionsBoxController,
         textEditingController: widget.controller,
         child: PointerInterceptor(

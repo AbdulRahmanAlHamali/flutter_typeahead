@@ -14,7 +14,9 @@ void main() {
       child = Container();
     });
 
-    tearDown(() => controller.dispose());
+    tearDown(() {
+      controller.dispose();
+    });
 
     testWidgets('closes suggestions box when keyboard is hidden',
         (WidgetTester tester) async {

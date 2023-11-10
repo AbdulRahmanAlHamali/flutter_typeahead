@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 
+/// Connects the suggestions box to the focus node of the child.
+///
+/// This is a two way connection:
+/// * When the focus of the child changes, the suggestions box is opened or closed.
+/// * When the suggestions box is opened, the focus is moved to the suggestions box.
 class SuggestionsBoxFocusConnector extends StatefulWidget {
   const SuggestionsBoxFocusConnector({
     super.key,

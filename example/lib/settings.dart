@@ -79,15 +79,14 @@ class SettingsTypeAhead extends StatelessWidget
             ),
             itemBuilder: (context, setting) {
               if (setting is ToggleFieldOption) {
+                IconData? icon = setting.value
+                    ? setting.icon
+                    : setting.iconFalse ?? setting.icon;
                 return IgnorePointer(
                   child: CheckboxListTile(
                     key: ValueKey(setting.value),
                     title: Text(setting.title),
-                    secondary: Icon(
-                      setting.value
-                          ? setting.icon
-                          : setting.iconFalse ?? setting.icon,
-                    ),
+                    secondary: icon != null ? Icon(icon) : null,
                     value: setting.value,
                     onChanged: (_) {},
                   ),

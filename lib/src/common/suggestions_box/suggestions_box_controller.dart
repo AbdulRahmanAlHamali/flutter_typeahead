@@ -41,28 +41,28 @@ class SuggestionsBoxController extends ChangeNotifier {
   final StreamController<void> _resizeEventController =
       StreamController<void>.broadcast();
 
-  /// Whether the suggestions list is focused.
+  /// Whether the suggestions box is focused.
   bool get suggestionsFocused => _suggestionsFocused;
   bool _suggestionsFocused = false;
 
-  /// Focuses the suggestions list.
+  /// Focuses the suggestions box.
   void focusSuggestions() {
     if (suggestionsFocused) return;
     _suggestionsFocused = true;
     notifyListeners();
   }
 
-  /// Unfocuses the suggestions list and returns the focus to the suggestions box.
+  /// Unfocuses the suggestions box and returns the focus to the suggestions box.
   void unfocusSuggestions() {
     if (!suggestionsFocused) return;
     _suggestionsFocused = false;
     notifyListeners();
   }
 
-  /// Focuses the suggestions box.
-  // This is implemented by focusing the suggestions list and then unfocusing it,
-  // which is somewhat hacky but works.
-  void focusBox() {
+  /// Focuses the child of the suggestions box.
+  // This is implemented by focusing the suggestions box and then unfocusing it,
+  // which is kind of jank, but the easiest way to do it with our current setup.
+  void focusChild() {
     focusSuggestions();
     unfocusSuggestions();
   }
