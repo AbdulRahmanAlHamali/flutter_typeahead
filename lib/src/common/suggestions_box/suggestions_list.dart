@@ -250,6 +250,7 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
 
   Future<void> loadSuggestions() async {
     if (!mounted) return;
+    if (suggestions != null) return;
 
     setState(() {
       isLoading = true;
@@ -258,7 +259,7 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
 
     try {
       bool hasCharacters =
-          widget.controller.text.length > widget.minCharsForSuggestions!;
+          widget.controller.text.length >= widget.minCharsForSuggestions!;
       if (hasCharacters) {
         suggestions = await widget.suggestionsCallback!(widget.controller.text);
       } else {
