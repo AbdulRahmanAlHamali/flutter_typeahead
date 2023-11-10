@@ -254,7 +254,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
     this.hideOnError = false,
     this.hideOnLoading = false,
     this.hideOnUnfocus = true,
-    this.ignoreAccessibleNavigation = false,
     this.intercepting = false,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
@@ -302,8 +301,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   @override
   final bool hideOnUnfocus;
   @override
-  final bool ignoreAccessibleNavigation;
-  @override
   final ItemBuilder<T> itemBuilder;
   @override
   final IndexedWidgetBuilder? itemSeparatorBuilder;
@@ -348,9 +345,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
 
 class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
   late SuggestionsBoxController _suggestionsBoxController;
-
   late TextEditingController _textEditingController;
-
   late FocusNode _focusNode;
 
   @override
@@ -409,10 +404,12 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
       direction: widget.direction,
       decoration: widget.suggestionsBoxDecoration,
       focusNode: _focusNode,
+      autoFlipDirection: widget.autoFlipDirection,
+      autoFlipMinHeight: widget.autoFlipMinHeight,
       hideOnUnfocus: widget.hideOnUnfocus,
       suggestionsListBuilder: (context) => widget.buildSuggestionsList(
         context,
-        SuggestionsListConfig(
+        SuggestionsListConfig<T>(
           animationDuration: widget.animationDuration,
           animationStart: widget.animationStart,
           autoFlipListDirection: widget.autoFlipListDirection,

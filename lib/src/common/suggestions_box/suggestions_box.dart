@@ -20,7 +20,6 @@ class SuggestionsBox<T> extends StatelessWidget {
     this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
     this.hideOnUnfocus = true,
-    this.ignoreAccessibleNavigation = false,
   });
 
   /// The controller of the suggestions box.
@@ -71,9 +70,6 @@ class SuggestionsBox<T> extends StatelessWidget {
   /// Defaults to true.
   /// {@endtemplate}
   final bool hideOnUnfocus;
-
-  /// Whether the suggestions box should ignore the [MediaQueryData.accessibleNavigation] setting.
-  final bool ignoreAccessibleNavigation;
 
   @override
   Widget build(BuildContext context) {

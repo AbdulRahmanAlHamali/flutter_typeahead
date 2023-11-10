@@ -34,7 +34,6 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     this.hideOnError = false,
     this.hideOnLoading = false,
     this.hideOnUnfocus = true,
-    this.ignoreAccessibleNavigation = false,
     String? initialValue,
     this.intercepting = false,
     required this.itemBuilder,
@@ -107,8 +106,6 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   final bool hideOnLoading;
   @override
   final bool hideOnUnfocus;
-  @override
-  final bool ignoreAccessibleNavigation;
   @override
   final ItemBuilder<T> itemBuilder;
   @override
