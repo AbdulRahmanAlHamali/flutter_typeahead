@@ -23,7 +23,7 @@ class _SuggestionsBoxDimensionConnectorState
     extends State<SuggestionsBoxDimensionConnector>
     with WidgetsBindingObserver {
   /// We do not want to run multiple updates at the same time.
-  bool isUpdating = false;
+  Timer? timer;
 
   @override
   void initState() {
@@ -46,10 +46,9 @@ class _SuggestionsBoxDimensionConnectorState
   /// To counter-act this, we continously resize
   /// the suggestions box for a second whenever the keyboard is toggled.
   Future<void> updateDimensions() async {
-    if (isUpdating) return;
-    isUpdating = true;
     const Duration pollingDuration = Duration(seconds: 1);
     const Duration pollingInterval = Duration(milliseconds: 170);
+    DateTime start = DateTime.now();
 
     // The suggestions list is an OverlayEntry, so we
     // use the Overlay to get the correct MediaQueryData.
@@ -58,8 +57,13 @@ class _SuggestionsBoxDimensionConnectorState
 
     EdgeInsets insets = mediaQuery.viewInsets;
 
-    Timer timer = Timer.periodic(pollingInterval, (timer) {
+    timer?.cancel();
+    timer = Timer.periodic(pollingInterval, (timer) {
       if (!context.mounted) {
+        timer.cancel();
+        return;
+      }
+      if (DateTime.now().difference(start) > pollingDuration) {
         timer.cancel();
         return;
       }
@@ -72,9 +76,6 @@ class _SuggestionsBoxDimensionConnectorState
         widget.controller.resize();
       }
     });
-
-    await Future.delayed(pollingDuration, timer.cancel);
-    isUpdating = false;
   }
 
   @override
