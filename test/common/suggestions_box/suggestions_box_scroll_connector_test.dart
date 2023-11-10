@@ -11,7 +11,9 @@ void main() {
       controller = SuggestionsBoxController();
     });
 
-    tearDown(() => controller.dispose());
+    tearDown(() {
+      controller.dispose();
+    });
 
     testWidgets('resizes the suggestions box when scrolling',
         (WidgetTester tester) async {

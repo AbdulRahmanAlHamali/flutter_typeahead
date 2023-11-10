@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/root_media_query.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 
+/// Ensures the suggestions list is resized when the keyboard is toggled.
 class SuggestionsBoxDimensionConnector extends StatefulWidget {
   const SuggestionsBoxDimensionConnector({
     super.key,
@@ -20,6 +22,9 @@ class SuggestionsBoxDimensionConnector extends StatefulWidget {
 class _SuggestionsBoxDimensionConnectorState
     extends State<SuggestionsBoxDimensionConnector>
     with WidgetsBindingObserver {
+  /// We do not want to run multiple updates at the same time.
+  bool isUpdating = false;
+
   @override
   void initState() {
     super.initState();
@@ -27,10 +32,7 @@ class _SuggestionsBoxDimensionConnectorState
   }
 
   @override
-  void didChangeMetrics() {
-    // Catch keyboard event and orientation change; resize suggestions list
-    updateDimensions();
-  }
+  void didChangeMetrics() => updateDimensions();
 
   @override
   void dispose() {
@@ -38,31 +40,41 @@ class _SuggestionsBoxDimensionConnectorState
     super.dispose();
   }
 
-  // Delays until the keyboard has toggled or the orientation has fully changed
+  /// The way android handles keyboard visibility is
+  /// incredibly inconsistent and unreliable.
+  ///
+  /// To counter-act this, we continously resize
+  /// the suggestions box for a second whenever the keyboard is toggled.
   Future<void> updateDimensions() async {
-    const int waitMetricsTimeoutMillis = 1000;
+    if (isUpdating) return;
+    isUpdating = true;
+    const Duration pollingDuration = Duration(seconds: 1);
+    const Duration pollingInterval = Duration(milliseconds: 170);
 
-    // initial viewInsets which are before the keyboard is toggled
-    EdgeInsets initial = MediaQuery.of(context).viewInsets;
-    // initial MediaQuery for orientation change
-    MediaQuery? initialRootMediaQuery = rootMediaQueryOf(context);
+    // The suggestions list is an OverlayEntry, so we
+    // use the Overlay to get the correct MediaQueryData.
+    OverlayState overlay = Overlay.of(context);
+    MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
 
-    int timer = 0;
-    // viewInsets or MediaQuery have changed once keyboard has toggled or orientation has changed
-    while (timer < waitMetricsTimeoutMillis) {
-      // TODO: reduce delay if showDialog ever exposes detection of animation end
-      int step = 170;
+    EdgeInsets insets = mediaQuery.viewInsets;
 
-      await Future.delayed(Duration(milliseconds: step));
-      timer += step;
+    Timer timer = Timer.periodic(pollingInterval, (timer) {
+      if (!context.mounted) {
+        timer.cancel();
+        return;
+      }
 
-      if (!context.mounted) return;
+      MediaQueryData currentMediaQuery = MediaQuery.of(overlay.context);
+      bool mediaQueryChanged = mediaQuery != currentMediaQuery;
+      bool insetsChanged = insets != currentMediaQuery.viewInsets;
 
-      if (MediaQuery.of(context).viewInsets != initial ||
-          rootMediaQueryOf(context) != initialRootMediaQuery) {
+      if (mediaQueryChanged || insetsChanged) {
         widget.controller.resize();
       }
-    }
+    });
+
+    await Future.delayed(pollingDuration, timer.cancel);
+    isUpdating = false;
   }
 
   @override

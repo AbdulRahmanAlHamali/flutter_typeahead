@@ -1,172 +1,100 @@
-import 'dart:math';
+import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_follower.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_blox_floater.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 
-@immutable
-class SuggestionsBoxOverlayEntryConfig {
-  const SuggestionsBoxOverlayEntryConfig({
-    required this.layerLink,
-    required this.suggestionsListBuilder,
-    required this.direction,
-    required this.width,
-    required this.height,
-    required this.maxHeight,
-    required this.decoration,
-    this.ignoreAccessibleNavigation = false,
+class SuggestionsBoxOverlayEntry extends StatefulWidget {
+  const SuggestionsBoxOverlayEntry({
+    super.key,
+    required this.controller,
+    required this.listBuilder,
+    required this.child,
+    this.direction = AxisDirection.down,
+    this.constraints,
+    this.offset,
   });
 
-  final LayerLink layerLink;
-  final WidgetBuilder suggestionsListBuilder;
-  final AxisDirection direction;
-  final double width;
-  final double height;
-  final double maxHeight;
-  final BaseSuggestionsBoxDecoration decoration;
-  final bool ignoreAccessibleNavigation;
+  final SuggestionsBoxController controller;
 
-  SuggestionsBoxOverlayEntryConfig copyWith({
-    LayerLink? layerLink,
-    WidgetBuilder? suggestionsListBuilder,
-    AxisDirection? direction,
-    double? width,
-    double? height,
-    double? maxHeight,
-    BaseSuggestionsBoxDecoration? decoration,
-    bool? ignoreAccessibleNavigation,
-  }) {
-    return SuggestionsBoxOverlayEntryConfig(
-      layerLink: layerLink ?? this.layerLink,
-      suggestionsListBuilder:
-          suggestionsListBuilder ?? this.suggestionsListBuilder,
-      direction: direction ?? this.direction,
-      width: width ?? this.width,
-      height: height ?? this.height,
-      maxHeight: maxHeight ?? this.maxHeight,
-      decoration: decoration ?? this.decoration,
-      ignoreAccessibleNavigation:
-          ignoreAccessibleNavigation ?? this.ignoreAccessibleNavigation,
-    );
+  final WidgetBuilder listBuilder;
+  final Widget child;
+
+  final AxisDirection direction;
+  final BoxConstraints? constraints;
+  final Offset? offset;
+
+  @override
+  State<SuggestionsBoxOverlayEntry> createState() =>
+      _SuggestionsBoxOverlayEntryState();
+}
+
+class _SuggestionsBoxOverlayEntryState
+    extends State<SuggestionsBoxOverlayEntry> {
+  FloaterLink link = FloaterLink();
+  late StreamSubscription<void> resizeSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    resizeSubscription =
+        widget.controller.resizeEvents.listen((_) => link.markNeedsBuild());
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SuggestionsBoxOverlayEntryConfig &&
-          runtimeType == other.runtimeType &&
-          layerLink == other.layerLink &&
-          suggestionsListBuilder == other.suggestionsListBuilder &&
-          direction == other.direction &&
-          width == other.width &&
-          height == other.height &&
-          maxHeight == other.maxHeight &&
-          decoration == other.decoration &&
-          ignoreAccessibleNavigation == other.ignoreAccessibleNavigation;
+  void didUpdateWidget(covariant SuggestionsBoxOverlayEntry oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller != oldWidget.controller) {
+      resizeSubscription.cancel();
+      resizeSubscription =
+          widget.controller.resizeEvents.listen((_) => link.markNeedsBuild());
+    }
+  }
 
   @override
-  int get hashCode => Object.hash(
-        layerLink,
-        suggestionsListBuilder,
-        direction,
-        width,
-        height,
-        maxHeight,
-        decoration,
-        ignoreAccessibleNavigation,
-      );
-}
-
-class SuggestionsBoxOverlayEntry extends StatelessWidget {
-  const SuggestionsBoxOverlayEntry({
-    super.key,
-    required this.config,
-  });
-
-  final ValueNotifier<SuggestionsBoxOverlayEntryConfig> config;
+  void dispose() {
+    resizeSubscription.cancel();
+    link.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: config,
-      builder: (context, value, child) {
-        final SuggestionsBoxOverlayEntryConfig(
-          :layerLink,
-          :suggestionsListBuilder,
-          :direction,
-          :width,
-          // :height,
-          :maxHeight,
-          :decoration,
-          :ignoreAccessibleNavigation
-        ) = value;
+    Offset offset = widget.offset ?? const Offset(0, 5);
 
-        Widget child = suggestionsListBuilder(context);
+    if (widget.direction == AxisDirection.up) {
+      offset = Offset(offset.dx, -offset.dy);
+    }
 
-        BoxConstraints? constraints = decoration.constraints;
-        if (constraints == null) {
-          constraints = BoxConstraints(
-            maxHeight: maxHeight,
-          );
-        } else {
-          constraints = constraints.copyWith(
-            minHeight: min(
-              constraints.minHeight,
-              maxHeight,
-            ),
-            maxHeight: min(
-              constraints.maxHeight,
-              maxHeight,
+    return Floater(
+      link: link,
+      direction: widget.direction,
+      offset: offset,
+      followHeight: false,
+      builder: (context) {
+        Widget list = widget.listBuilder(context);
+
+        if (widget.constraints != null) {
+          list = Align(
+            alignment: Alignment.topLeft,
+            child: ConstrainedBox(
+              constraints: widget.constraints!,
+              child: list,
             ),
           );
         }
 
-        child = ConstrainedBox(
-          constraints: constraints,
-          child: child,
+        list = Semantics(
+          container: true,
+          child: list,
         );
 
-        child = SuggestionsBoxFollower(
-          layerLink: layerLink,
-          direction: direction,
-          constraints: decoration.constraints,
-          offset: Offset(
-            decoration.offsetX,
-            decoration.offsetY,
-          ),
-          child: child,
-        );
-
-        bool accessibleNavigation = MediaQuery.of(context).accessibleNavigation;
-        if (ignoreAccessibleNavigation) {
-          accessibleNavigation = false;
-        }
-
-        if (accessibleNavigation) {
-          // When wrapped in the Positioned widget, the suggestions box widget
-          // is placed before the Scaffold semantically. In order to have the
-          // suggestions box navigable from the search input or keyboard,
-          // Semantics > Align > ConstrainedBox are needed. This does not change
-          // the style visually. However, when VO/TB are not enabled it is
-          // necessary to use the Positioned widget to allow the elements to be
-          // properly tappable.
-          return Semantics(
-            container: true,
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: width),
-                child: child,
-              ),
-            ),
-          );
-        } else {
-          return Positioned(
-            width: width,
-            child: child,
-          );
-        }
+        return list;
       },
+      child: FloaterTarget(
+        link: link,
+        child: widget.child,
+      ),
     );
   }
 }

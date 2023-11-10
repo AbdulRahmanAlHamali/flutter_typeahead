@@ -5,23 +5,25 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 
 /// Enables keyboard navigation for the suggestions list.
-class SuggestionsListKeyboardConnector<T> extends StatefulWidget {
+class SuggestionsListKeyboardConnector extends StatefulWidget {
   const SuggestionsListKeyboardConnector({
     super.key,
     required this.controller,
+    this.direction = AxisDirection.down,
     required this.child,
   });
 
   final SuggestionsBoxController controller;
+  final AxisDirection direction;
   final Widget child;
 
   @override
-  State<SuggestionsListKeyboardConnector<T>> createState() =>
-      _SuggestionsListKeyboardConnectorState<T>();
+  State<SuggestionsListKeyboardConnector> createState() =>
+      _SuggestionsListKeyboardConnectorState();
 }
 
-class _SuggestionsListKeyboardConnectorState<T>
-    extends State<SuggestionsListKeyboardConnector<T>> {
+class _SuggestionsListKeyboardConnectorState
+    extends State<SuggestionsListKeyboardConnector> {
   late final FocusScopeNode focusNode = FocusScopeNode(
     debugLabel: 'SuggestionsListFocus',
     onKeyEvent: (node, key) => widget.controller.onKeyEvent(node, key),
@@ -40,8 +42,7 @@ class _SuggestionsListKeyboardConnectorState<T>
   }
 
   @override
-  void didUpdateWidget(
-      covariant SuggestionsListKeyboardConnector<T> oldWidget) {
+  void didUpdateWidget(covariant SuggestionsListKeyboardConnector oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller.removeListener(onControllerChanged);
@@ -88,20 +89,25 @@ class _SuggestionsListKeyboardConnectorState<T>
   }
 
   void onKeyEvent(LogicalKeyboardKey key) {
-    if (key == LogicalKeyboardKey.arrowDown) {
-      updateSelected(suggestionIndex + 1);
-    } else if (key == LogicalKeyboardKey.arrowUp) {
-      updateSelected(suggestionIndex - 1);
+    Map<LogicalKeyboardKey, int> keyMap = {
+      LogicalKeyboardKey.arrowUp: -1,
+      LogicalKeyboardKey.arrowDown: 1,
+    };
+
+    if (widget.direction == AxisDirection.up) {
+      keyMap = {
+        LogicalKeyboardKey.arrowUp: 1,
+        LogicalKeyboardKey.arrowDown: -1,
+      };
+    }
+
+    if (keyMap.containsKey(key)) {
+      int delta = keyMap[key]!;
+      updateSelected(suggestionIndex + delta);
     }
   }
 
   void updateSelected(int index) {
-    // TODO: enable this feature
-    // This seems to work, but was disabled for some reason. We will leave it disabled
-    // until we can figure out why it was disabled.
-    return;
-
-    // ignore: dead_code
     if (index == suggestionIndex) return;
     if (index <= -1) {
       suggestionIndex = -1;

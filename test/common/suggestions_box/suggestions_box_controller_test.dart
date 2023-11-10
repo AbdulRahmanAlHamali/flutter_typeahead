@@ -7,9 +7,13 @@ void main() {
   group('SuggestionsBoxController', () {
     late SuggestionsBoxController controller;
 
-    setUp(() => controller = SuggestionsBoxController());
+    setUp(() {
+      controller = SuggestionsBoxController();
+    });
 
-    tearDown(() => controller.dispose());
+    tearDown(() {
+      controller.dispose();
+    });
 
     test('opens suggestions list', () {
       bool wasOpened = false;
@@ -79,7 +83,7 @@ void main() {
     });
 
     test('shifts focus to suggestions box', () {
-      controller.focusBox();
+      controller.focusChild();
       expect(controller.suggestionsFocused, isFalse);
     });
 
