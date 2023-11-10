@@ -14,9 +14,9 @@ class SuggestionsBoxDecoration extends BaseSuggestionsBoxDecoration {
     this.shadowColor = Colors.black,
     super.constraints,
     this.clipBehavior = Clip.none,
-    super.offsetX,
     super.scrollbarThumbAlwaysVisible,
     this.scrollbarTrackAlwaysVisible = false,
+    super.offset,
   });
 
   /// The z-coordinate at which to place the suggestions box. This controls the size

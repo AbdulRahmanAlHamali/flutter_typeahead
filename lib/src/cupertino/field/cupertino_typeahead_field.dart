@@ -64,7 +64,6 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       hideOnEmpty: config.hideOnEmpty,
       hideOnError: config.hideOnError,
       hideOnLoading: config.hideOnLoading,
-      intercepting: config.intercepting,
       itemBuilder: config.itemBuilder,
       itemSeparatorBuilder: config.itemSeparatorBuilder,
       keepSuggestionsOnLoading: config.keepSuggestionsOnLoading,
