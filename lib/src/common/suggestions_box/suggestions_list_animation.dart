@@ -32,14 +32,14 @@ class _SuggestionsListAnimationState extends State<SuggestionsListAnimation>
     with SingleTickerProviderStateMixin {
   late final AnimationController animationController;
   late Duration animationDuration;
+  final Duration defaultAnimationDuration = const Duration(milliseconds: 200);
 
   bool hidden = false;
 
   @override
   void initState() {
     super.initState();
-    animationDuration =
-        widget.animationDuration ?? const Duration(milliseconds: 200);
+    animationDuration = widget.animationDuration ?? defaultAnimationDuration;
     animationController = AnimationController(
       vsync: this,
       duration: animationDuration,
@@ -61,8 +61,7 @@ class _SuggestionsListAnimationState extends State<SuggestionsListAnimation>
       widget.controller.addListener(onOpenedChanged);
     }
     if (widget.animationDuration != oldWidget.animationDuration) {
-      animationDuration =
-          widget.animationDuration ?? const Duration(milliseconds: 200);
+      animationDuration = widget.animationDuration ?? defaultAnimationDuration;
       animationController.duration = animationDuration;
     }
   }

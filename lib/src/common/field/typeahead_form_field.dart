@@ -19,7 +19,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   /// Creates a [TypeAheadFormField].
   BaseTypeAheadFormField({
     super.key,
-    this.animationDuration = const Duration(milliseconds: 500),
+    this.animationDuration = const Duration(milliseconds: 200),
     this.animationStart = 0.25,
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
