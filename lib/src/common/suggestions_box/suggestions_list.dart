@@ -180,7 +180,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
 
   bool isLoading = false;
   bool isQueued = false;
-  bool suggestionsValid = false;
   String? lastTextValue;
   Iterable<T>? suggestions;
   Timer? debounceTimer;
@@ -191,9 +190,6 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
     super.initState();
 
     lastTextValue = widget.controller.text;
-
-    suggestionsValid =
-        widget.controller.text.length < widget.minCharsForSuggestions!;
 
     onOpenChange();
     widget.suggestionsBoxController.addListener(onOpenChange);
@@ -220,7 +216,7 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
 
   void onOpenChange() {
     if (widget.suggestionsBoxController.isOpen) {
-      _loadSuggestions();
+      loadSuggestions();
     }
   }
 
@@ -233,50 +229,45 @@ class _RenderSuggestionsListState<T> extends State<RenderSuggestionsList<T>> {
     debounceDuration ??= const Duration(milliseconds: 300);
 
     debounceTimer?.cancel();
-    if (widget.controller.text.length >= widget.minCharsForSuggestions!) {
-      if (debounceDuration == Duration.zero) {
-        _reloadSuggestions();
-      } else {
-        debounceTimer = Timer(debounceDuration, () async {
-          if (isLoading) {
-            isQueued = true;
-            return;
-          }
-
-          await this._reloadSuggestions();
-          if (isQueued) {
-            isQueued = false;
-            await this._reloadSuggestions();
-          }
-        });
-      }
+    if (debounceDuration == Duration.zero) {
+      reloadSuggestions();
     } else {
-      setState(() {
-        isLoading = false;
-        suggestions = null;
-        suggestionsValid = true;
+      debounceTimer = Timer(debounceDuration, () async {
+        if (isLoading) {
+          isQueued = true;
+          return;
+        }
+
+        await reloadSuggestions();
+        if (isQueued) {
+          isQueued = false;
+          await reloadSuggestions();
+        }
       });
     }
   }
 
-  Future<void> _reloadSuggestions() async {
-    suggestionsValid = false;
-    await _loadSuggestions();
+  Future<void> reloadSuggestions() async {
+    suggestions = null;
+    await loadSuggestions();
   }
 
-  Future<void> _loadSuggestions() async {
+  Future<void> loadSuggestions() async {
     if (!mounted) return;
-    if (suggestionsValid) return;
-    suggestionsValid = true;
 
-    if (!mounted) return;
     setState(() {
       isLoading = true;
       error = null;
     });
 
     try {
-      suggestions = await widget.suggestionsCallback!(widget.controller.text);
+      bool hasCharacters =
+          widget.controller.text.length > widget.minCharsForSuggestions!;
+      if (hasCharacters) {
+        suggestions = await widget.suggestionsCallback!(widget.controller.text);
+      } else {
+        suggestions = null;
+      }
     } on Exception catch (e) {
       error = e;
     }
