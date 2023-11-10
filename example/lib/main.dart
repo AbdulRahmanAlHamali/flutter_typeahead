@@ -77,7 +77,7 @@ class _AppState extends State<App> {
                   ],
                 ),
                 body: GestureDetector(
-                  onTap: () => FocusScope.of(context).unfocus(),
+                  onTap: () => primaryFocus?.unfocus(),
                   child: TabBarView(
                     children: [
                       ExampleTypeAhead(
@@ -136,7 +136,7 @@ class _AppState extends State<App> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
+                      onTap: () => primaryFocus?.unfocus(),
                       child: TabBarView(
                         children: [
                           CupertinoExampleTypeAhead(
