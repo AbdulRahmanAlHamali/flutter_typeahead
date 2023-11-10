@@ -33,7 +33,6 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     super.hideOnError,
     super.hideOnLoading,
     super.hideOnUnfocus,
-    super.ignoreAccessibleNavigation,
     super.initialValue,
     super.intercepting,
     required super.itemBuilder,
