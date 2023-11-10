@@ -36,6 +36,7 @@ class _SuggestionsBoxDimensionConnectorState
 
   @override
   void dispose() {
+    timer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
