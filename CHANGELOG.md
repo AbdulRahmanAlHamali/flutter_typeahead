@@ -13,7 +13,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - keepSuggestionsOnSuggestionSelected renamed to hideOnSelect
 - hideSuggestionsOnKeyboardHide renamed to hideOnUnfocus
 - moved verticalOffset into SuggestionsBoxDecoration as offsetY
-- hideKeyboard moved to the TextFieldConfiguration as readOnly
 
 ### Fixed
 - enableSuggestions was not passed to TextField
@@ -22,6 +21,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 - hideKeyboard parameter - use TextfieldConfiguration.enabled instead
 - CupertinoSuggestionsBoxController - use SuggestionsBoxController instead
+- intercepting parameter - now always true
 
 ## 4.9.0 - 2023-10-22
 ### Added
