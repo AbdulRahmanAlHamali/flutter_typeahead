@@ -68,6 +68,8 @@ class SuggestionsBoxController extends ChangeNotifier {
   }
 
   /// Resizes the suggestions box.
+  ///
+  /// You usually don't need to call this method manually.
   void resize() {
     ChangeNotifier.debugAssertNotDisposed(this);
     _resizeEventController.add(null);
