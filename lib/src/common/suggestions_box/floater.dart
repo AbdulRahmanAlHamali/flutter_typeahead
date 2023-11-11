@@ -179,10 +179,7 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
     final List<dynamic> newDependencies = createDependencies();
     if (!listEquals(dependencies, newDependencies)) {
       dependencies = newDependencies;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {});
-        controller.show();
-      });
+      updateOverlay();
     }
   }
 
