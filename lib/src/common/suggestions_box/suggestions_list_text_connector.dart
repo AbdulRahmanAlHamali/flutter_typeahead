@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 /// A widget that helps reopening the suggestions list when the text changes.
 ///

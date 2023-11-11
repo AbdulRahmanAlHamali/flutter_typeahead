@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
+import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_decoration.dart';
 
 class CupertinoSuggestionsList<T> extends BaseSuggestionsList<T> {
   const CupertinoSuggestionsList({

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
+import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_decoration.dart';
 
 class SuggestionsList<T> extends BaseSuggestionsList<T> {
   const SuggestionsList({

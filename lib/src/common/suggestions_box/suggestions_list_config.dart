@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/typedef.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
 /// Configuration for the suggestions list.
 class SuggestionsListConfig<T> {

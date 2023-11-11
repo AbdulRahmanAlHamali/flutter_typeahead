@@ -4,7 +4,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_control
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
-import 'package:flutter_typeahead/src/typedef.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 /// implementation of [TypeAheadField], that allows the value to be saved,

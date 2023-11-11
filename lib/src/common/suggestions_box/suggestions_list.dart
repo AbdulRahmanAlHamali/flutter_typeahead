@@ -7,7 +7,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_an
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_connector.dart';
-import 'package:flutter_typeahead/src/typedef.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// Renders all the suggestions using a ListView as default.

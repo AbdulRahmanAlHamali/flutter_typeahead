@@ -1,6 +1,6 @@
 library flutter_typeahead;
 
-export 'package:flutter_typeahead/src/typedef.dart';
+export 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 export 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 export 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
 export 'package:flutter_typeahead/src/material/field/text_field_configuration.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_keyboard_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 void main() {
   group('SuggestionsBoxKeyboardConnector', () {
