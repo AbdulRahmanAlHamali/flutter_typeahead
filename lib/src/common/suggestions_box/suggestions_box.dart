@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_blox_floater.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_dimension_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_tap_connector.dart';
@@ -175,10 +174,7 @@ class _SuggestionsBoxState extends State<SuggestionsBox> {
             hideOnUnfocus: widget.hideOnUnfocus,
             child: SuggestionsBoxTapConnector(
               controller: controller,
-              child: SuggestionsBoxDimensionConnector(
-                controller: controller,
-                child: widget.child,
-              ),
+              child: widget.child,
             ),
           ),
         ),
