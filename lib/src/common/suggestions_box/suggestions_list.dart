@@ -138,7 +138,7 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
     // We call this before closing the suggestions list
     // so that the text field can be updated without reopening the suggestions list.
     onSuggestionSelected?.call(suggestion);
-    if (!(hideOnSelect ?? false)) {
+    if (hideOnSelect ?? true) {
       suggestionsController.close(retainFocus: true);
     } else {
       suggestionsController.focusChild();
