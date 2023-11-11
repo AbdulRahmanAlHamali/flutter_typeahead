@@ -1,2 +1,0 @@
-cd ..
-flutter test
