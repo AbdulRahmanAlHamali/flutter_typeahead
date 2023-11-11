@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
+import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 

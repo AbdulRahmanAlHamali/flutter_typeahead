@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
+import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
 
 /// Supply an instance of this class to the [TypeAheadField.textFieldConfiguration]
 /// property to configure the displayed text field
