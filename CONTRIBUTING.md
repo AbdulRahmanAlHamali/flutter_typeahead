@@ -26,15 +26,49 @@ If you'd like to add a feature or fix a bug, we're more than happy to accept pul
 - Write new tests that cover your code base changes
 - Make sure all current tests pass
 - If you would like to make a bigger / fundamental change to the codebase, please file a lightweight example PR / issue.
+- Commit messages should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
-## Before Uploading
+## Before Publishing
 
-If you are an uploader here are some additional steps before publishing.
+If you are about to publish the package to pub.dev, please make sure that you have done the following:
 
-- Update the version:
-  - if it is only a bug fix, increase the last digit.
-  - if it provides a new feature, increase the middle digit.
-  - if it has breaking changes, you should increase the first digit.
-- Then, mention all the changes in the CHANGELOG.md.
-- Merge into master.
-- Upload to Pub Dart.
+### Update the changelog.
+
+This is easiest with [cider](https://pub.dev/packages/cider), which follows
+the [Keep a Changelog format](https://keepachangelog.com/en/1.0.0/):
+
+```bash
+cider log <type> <message>
+```
+
+Where `<type>` is one of `added`, `changed`, `deprecated`, `removed`, `fixed`, `security`, and `<message>` is a short description of the change.
+
+### Update the version.
+
+This is easiest with [cider](https://pub.dev/packages/cider) which follows [Semantic Versioning](https://semver.org/):
+
+```bash
+cider bump <version>
+```
+
+Where `<version>` is one of `major`, `minor`, `patch`, `build`, or a specific version number.
+
+As a reminder:
+
+- patch: backwards-compatible bug fixes
+- minor: backwards-compatible new features
+- major: backwards-incompatible changes
+
+### Finalize the changelog:
+
+```bash
+cider release
+```
+
+### Upload the package
+
+Commit your changes for the versio, then upload the package to pub.dev:
+
+```bash
+dart pub publish
+```

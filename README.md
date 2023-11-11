@@ -24,7 +24,7 @@ users as they type
 
 ## Installation
 
-See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead#-installing-tab-).
+See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead/install).
 
 Note: As for Typeahead 3.x this package is based on Dart 2.12 (null-safety). You may also want to explore the new built in Flutter 2 widgets that have similar behavior.
 
@@ -36,12 +36,6 @@ You can import the package with:
 
 ```dart
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-```
-
-For Cupertino users import:
-
-```dart
-import 'package:flutter_typeahead/cupertino_flutter_typeahead.dart';
 ```
 
 Use it as follows:
@@ -104,11 +98,13 @@ Here's another example, where we use the TypeAheadFormField inside a `Form`:
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 final TextEditingController _typeAheadController = TextEditingController();
 String _selectedCity;
-...
+
+// ...
+
 Form(
   key: this._formKey,
   child: Padding(
-    padding: EdgeInsets.all(32.0),
+    padding: EdgeInsets.all(32),
     child: Column(
       children: [
         Text('What is your favorite city?'),
@@ -131,7 +127,7 @@ Form(
               value!.isEmpty ? 'Please select a city' : null,
           onSaved: (value) => this._selectedCity = value,
         ),
-        SizedBox(height: 10.0),
+        SizedBox(height: 12),
         RaisedButton(
           child: Text('Submit'),
           onPressed: () {
@@ -163,7 +159,7 @@ The `transitionBuilder` allows us to customize the animation of the
 suggestion box. In this example, we are returning the suggestionsBox
 immediately, meaning that we don't want any animation.
 
-### Material with Alternative Layout Architecture:
+### Custom Layout Architecture:
 
 By default, TypeAhead uses a `ListView` to render the items created by `itemBuilder`. If you specify a `layoutArchitecture` component, it will use this component instead. For example, here's how we render the items in a grid using the standard `GridView`:
 
@@ -182,46 +178,6 @@ TypeAheadField(
 );
 ```
 
-### Cupertino Example:
-
-Please see the Cupertino code in the example project.
-
-## Known Issues
-
-### Animations
-
-Placing TypeAheadField in widgets with animations may cause the suggestions box
-to resize incorrectly. Since animation times are variable, this has to be
-corrected manually at the end of the animation. You will need to add a
-`SuggestionsBoxController` described below and the following code for the
-`AnimationController``.
-
-```dart
-@override
-void initState() {
-  super.initState();
-  _animationController.addStatusListener(_statusListener);
-}
-
-void _statusListener(AnimationStatus status) {
-  if (status == AnimationStatus.completed ||
-      status == AnimationStatus.dismissed) {
-    _suggestionsBoxController.resize();
-  }
-}
-
-@override
-  void dispose() {
-  _animationController.removeStatusListener(_statusListener);
-  _animationController.dispose();
-  super.dispose();
-}
-```
-
-#### Dialogs
-
-There is a known issue with opening dialogs where the suggestions box will sometimes appear too small. This is a timing issue caused by the animations described above. Currently, `showDialog` has a duration of 150 ms for the animations. TypeAheadField has a delay of 170 ms to compensate for this. Until the end of the animation can be properly detected and fixed using the solution above, this temporary fix will work most of the time. If the suggestions box is too small, closing and reopening the keyboard will usually fix the issue.
-
 ## Customizations
 
 TypeAhead widgets consist of a TextField and a suggestion box that shows
@@ -238,10 +194,10 @@ etc.
 ### Customizing the suggestions box
 
 TypeAhead provides default configurations for the suggestions box. You can,
-however, override most of them. This is done by passing a `SuggestionsBoxDecoration`
-to the `suggestionsBoxDecoration` property.
+however, override most of them. This is done by passing a `SuggestionsDecoration`
+to the `suggestionsDecoration` property.
 
-Use the `offsetX` property in `SuggestionsBoxDecoration` to shift the suggestions box along the x-axis.
+Use the `offset` property in `SuggestionsDecoration` to shift the suggestions box along the x and y axis.
 You may also pass BoxConstraints to `constraints` in `SuggestionsBoxDecoration` to adjust the width
 and height of the suggestions box. Using the two together will allow the suggestions box to be placed
 almost anywhere.
@@ -251,14 +207,14 @@ The suggestions box scrollbar is by default only visible during scrolling. Use t
 
 The `scrollbarTrackAlwaysVisible` property (Material only!) can be used to make the scrollbar track stay visible even when not scrolling.
 
-#### Customizing the loader, the error and the "no items found" message
+#### Customizing the loader, the error and the empty message
 
 You can use the `loadingBuilder`, `errorBuilder` and `noItemsFoundBuilder` to
 customize their corresponding widgets. For example, to show a custom error
 widget:
 
 ```dart
-errorBuilder: (BuildContext context, Object error) =>
+errorBuilder: (context, error) =>
   Text(
     '$error',
     style: TextStyle(
@@ -282,7 +238,7 @@ the `noItemsFoundBuilder`. Set `hideOnError` to true to hide the box when there
 is an error retrieving suggestions. This will also ignore the `errorBuilder`.
 
 By default, the suggestions box will automatically hide when the keyboard is hidden.
-To change this behavior, set `hideSuggestionsOnKeyboardHide` to false.
+To change this behavior, set `hideWithKeyboard` to false.
 
 #### Customizing the animation
 
@@ -291,17 +247,16 @@ You can customize the suggestion box animation through 3 parameters: the
 
 The `animationDuration` specifies how long the animation should take, while the
 `animationStart` specified what point (between 0.0 and 1.0) the animation
-should start from. The `transitionBuilder` accepts the `suggestionsBox` and
-`animationController` as parameters, and should return a widget that uses
-the `animationController` to animate the display of the `suggestionsBox`.
-For example:
+should start and end on.
+
+The `transitionBuilder` is a callback that is used build the animation:
 
 ```dart
-transitionBuilder: (context, suggestionsBox, animationController) =>
+transitionBuilder: (context, child, controller) =>
   FadeTransition(
-    child: suggestionsBox,
+    child: child,
     opacity: CurvedAnimation(
-      parent: animationController,
+      parent: controller,
       curve: Curves.fastOutSlowIn
     ),
   )
@@ -322,20 +277,17 @@ we wait until the user is idle for a duration of time, and then call the
 `suggestionsCallback`. The duration defaults to 300 milliseconds, but can be
 configured using the `debounceDuration` parameter.
 
-#### Customizing the offset of the suggestions box
-
-By default, the suggestions box is displayed 5 pixels below the `TextField`.
-You can change this by changing the `suggestionsBoxVerticalOffset` property.
-
-#### Customizing the decoration of the suggestions box
+#### Customizing the decoration of the suggestions
 
 You can also customize the decoration of the suggestions box using the
-`suggestionsBoxDecoration` property. For example, to remove the elevation
-of the suggestions box, you can write:
+`suggestionsDecoration` property.
+
+For example, you may remove the elevation or the offset of the suggestions box:
 
 ```dart
-suggestionsBoxDecoration: SuggestionsBoxDecoration(
+suggestionsDecoration: SuggestionsDecoration(
   elevation: 0.0
+  offset: Offset(0.0, 0.0)
 )
 ```
 
@@ -343,12 +295,12 @@ suggestionsBoxDecoration: SuggestionsBoxDecoration(
 
 By default, the list grows towards the bottom. However, you can use the `direction` property to customize the growth direction to be one of `AxisDirection.down` or `AxisDirection.up`, the latter of which will cause the list to grow up, where the first suggestion is at the bottom of the list, and the last suggestion is at the top.
 
-Set `autoFlipDirection` to `true` to allow the suggestions list to automatically flip direction whenever it detects that there is not enough space for the current direction. This is useful for scenarios where the TypeAheadField is in a scrollable widget or when the developer wants to ensure the list is always viewable despite different user screen sizes.
+Set `autoFlipDirection` to `true` to allow the suggestions list to automatically flip direction whenever it detects that there is not enough space for the current direction. This is useful for scenarios where the `TypeAheadField` is in a scrollable widget or when the developer wants to ensure the list is always viewable despite different user screen sizes.
 
 #### Controlling the suggestions box
 
-Manual control of the suggestions box can be achieved by creating an instance of `SuggestionsBoxController` and
-passing it to the `suggestionsBoxController` property. This will allow you to manually open, close, toggle, or
+Manual control of the suggestions box can be achieved by creating an instance of `SuggestionsController` and
+passing it to the `suggestionsController` property. This will allow you to manually open, close, toggle, or
 resize the suggestions box.
 
 ## For more information
@@ -363,8 +315,8 @@ Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typ
 
 ## Shout out to the contributors!
 
-This project is the result of the collective effort of contributors who participated effectively by submitting pull requests, reporting issues, and answering questions. Thank you for your proactiveness, and we hope flutter_typeahead made your lifes at least a little easier!
+This project is the result of the collective effort of contributors who participated effectively by submitting pull requests, reporting issues, and answering questions. Thank you for your proactiveness, and we hope `flutter_typeahead` made your lifes at least a little easier!
 
 ## How you can help
 
-[Contribution Guidelines](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/blob/master/CONTRIBUTING.md)
+[Contribution Guidelines](CONTRIBUTING.md)
