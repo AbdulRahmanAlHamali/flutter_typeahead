@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_tap_connector.dart';
 
 void main() {
   group('SuggestionsBoxTapConnector', () {
-    late SuggestionsBoxController controller;
+    late SuggestionsController controller;
 
     setUp(() {
-      controller = SuggestionsBoxController();
+      controller = SuggestionsController();
     });
 
     tearDown(() => controller.dispose());

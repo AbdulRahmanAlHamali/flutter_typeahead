@@ -72,7 +72,7 @@ class SettingsTypeAhead extends StatelessWidget
                 hintText: hintText,
               ),
             ),
-            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+            suggestionsDecoration: SuggestionsDecoration(
               borderRadius: borderRadius,
               elevation: 8,
               color: Theme.of(context).cardColor,
@@ -154,7 +154,7 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
               padding: const EdgeInsets.all(12),
               placeholder: hintText,
             ),
-            suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
+            suggestionsDecoration: CupertinoSuggestionsDecoration(
               borderRadius: borderRadius,
             ),
             itemBuilder: (context, setting) {

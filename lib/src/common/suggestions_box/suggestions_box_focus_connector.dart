@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 /// Connects the suggestions box to the focus node of the child.
 ///
@@ -16,7 +16,7 @@ class SuggestionsBoxFocusConnector extends StatefulWidget {
   });
 
   /// The controller of the suggestions box.
-  final SuggestionsBoxController controller;
+  final SuggestionsController controller;
 
   /// The focus node of the child of the suggestions box.
   final FocusNode focusNode;

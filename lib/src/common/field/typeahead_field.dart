@@ -265,7 +265,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
     this.noItemsFoundBuilder,
     required this.onSuggestionSelected,
     this.scrollController,
-    this.suggestionsBoxController,
+    this.suggestionsController,
     required this.suggestionsCallback,
     this.transitionBuilder,
   })  : assert(animationStart >= 0 && animationStart <= 1),
@@ -323,7 +323,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   @override
   final ScrollController? scrollController;
   @override
-  final SuggestionsBoxController? suggestionsBoxController;
+  final SuggestionsController? suggestionsController;
   @override
   final SuggestionsCallback<T> suggestionsCallback;
   @override
@@ -389,9 +389,9 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
   @override
   Widget build(BuildContext context) {
     return SuggestionsBox(
-      controller: widget.suggestionsBoxController,
+      controller: widget.suggestionsController,
       direction: widget.direction,
-      offset: widget.suggestionsBoxDecoration.offset,
+      offset: widget.suggestionsDecoration.offset,
       focusNode: _focusNode,
       autoFlipDirection: widget.autoFlipDirection,
       autoFlipMinHeight: widget.autoFlipMinHeight,
@@ -421,7 +421,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
           noItemsFoundBuilder: widget.noItemsFoundBuilder,
           onSuggestionSelected: widget.onSuggestionSelected,
           scrollController: widget.scrollController,
-          suggestionsBoxController: suggestionsBoxController,
+          suggestionsController: suggestionsBoxController,
           suggestionsCallback: widget.suggestionsCallback,
           transitionBuilder: widget.transitionBuilder,
         ),

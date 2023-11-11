@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_ke
 
 void main() {
   group('SuggestionsListKeyboardConnector Tests', () {
-    late SuggestionsBoxController controller;
+    late SuggestionsController controller;
     late List<FocusNode> focusNodes;
     late FocusNode outsideFocusNode;
 
@@ -17,7 +17,7 @@ void main() {
     }
 
     setUp(() {
-      controller = SuggestionsBoxController();
+      controller = SuggestionsController();
       controller.addListener(onSuggestionsListUnfocus);
       focusNodes =
           List.generate(2, (_) => FocusNode(onKeyEvent: controller.onKeyEvent));

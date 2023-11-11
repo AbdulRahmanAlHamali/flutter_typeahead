@@ -5,10 +5,10 @@ import 'package:flutter/widgets.dart';
 
 /// A controller of a SuggestionsBox.
 /// This is used to open, close, toggle and resize the suggestions box.
-class SuggestionsBoxController extends ChangeNotifier {
+class SuggestionsController extends ChangeNotifier {
   /// A controller of a SuggestionsBox.
   /// This is used to open, close, toggle and resize the suggestions box.
-  SuggestionsBoxController();
+  SuggestionsController();
 
   /// Whether the suggestions box is open.
   bool get isOpen => _isOpen;

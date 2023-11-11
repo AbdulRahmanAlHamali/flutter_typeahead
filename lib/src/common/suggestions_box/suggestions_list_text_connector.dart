@@ -3,8 +3,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 /// A widget that helps reopening the suggestions list when the text changes.
 ///
-/// This happens when the user starts typing again after
-/// a suggestion has been selected.
+/// This happens after a suggestion has been selected.
 class SuggestionsListTextConnector extends StatefulWidget {
   const SuggestionsListTextConnector({
     super.key,
@@ -13,7 +12,7 @@ class SuggestionsListTextConnector extends StatefulWidget {
     required this.child,
   });
 
-  final SuggestionsBoxController controller;
+  final SuggestionsController controller;
   final TextEditingController textEditingController;
   final Widget child;
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/material/field/text_field_configuration.dart';
-import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.dart';
 
 /// {@macro flutter_typeahead.BaseTypeAheadField}
@@ -33,15 +33,15 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
     super.noItemsFoundBuilder,
     required super.onSuggestionSelected,
     super.scrollController,
-    super.suggestionsBoxController,
-    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
+    super.suggestionsController,
+    this.suggestionsDecoration = const SuggestionsDecoration(),
     required super.suggestionsCallback,
     this.textFieldConfiguration = const TextFieldConfiguration(),
     super.transitionBuilder,
   });
 
   @override
-  final SuggestionsBoxDecoration suggestionsBoxDecoration;
+  final SuggestionsDecoration suggestionsDecoration;
 
   @override
   final TextFieldConfiguration textFieldConfiguration;
@@ -54,7 +54,7 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
         animationStart: config.animationStart,
         controller: config.controller,
         debounceDuration: config.debounceDuration,
-        decoration: suggestionsBoxDecoration,
+        decoration: suggestionsDecoration,
         direction: config.direction,
         errorBuilder: config.errorBuilder,
         hideKeyboardOnDrag: config.hideKeyboardOnDrag,
@@ -71,7 +71,7 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
         noItemsFoundBuilder: config.noItemsFoundBuilder,
         onSuggestionSelected: config.onSuggestionSelected,
         scrollController: config.scrollController,
-        suggestionsBoxController: config.suggestionsBoxController,
+        suggestionsController: config.suggestionsController,
         suggestionsCallback: config.suggestionsCallback,
         transitionBuilder: config.transitionBuilder,
       );

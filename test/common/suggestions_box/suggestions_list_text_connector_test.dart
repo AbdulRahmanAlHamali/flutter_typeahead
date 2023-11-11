@@ -5,11 +5,11 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_te
 
 void main() {
   group('SuggestionsListTextConnector', () {
-    late SuggestionsBoxController controller;
+    late SuggestionsController controller;
     late TextEditingController textEditingController;
 
     setUp(() {
-      controller = SuggestionsBoxController();
+      controller = SuggestionsController();
       textEditingController = TextEditingController();
     });
 

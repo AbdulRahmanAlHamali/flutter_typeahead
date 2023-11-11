@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
 /// Configuration for the suggestions list.
@@ -26,7 +26,7 @@ class SuggestionsListConfig<T> {
     this.noItemsFoundBuilder,
     this.onSuggestionSelected,
     this.scrollController,
-    required this.suggestionsBoxController,
+    required this.suggestionsController,
     this.suggestionsCallback,
     this.transitionBuilder,
   });
@@ -180,7 +180,7 @@ class SuggestionsListConfig<T> {
   ///
   /// Note that if this is enabled, the only way
   /// to close the suggestions box is either via the
-  /// [SuggestionsBoxController] or when the user closes the software
+  /// [SuggestionsController] or when the user closes the software
   /// keyboard with [hideOnUnfocus] set to true.
   ///
   /// Users with a physical keyboard will be unable to close the
@@ -288,7 +288,7 @@ class SuggestionsListConfig<T> {
   /// This can be used to programmatically open and close the suggestions box,
   /// or to trigger a resize after a layout change.
   /// {@endtemplate}
-  final SuggestionsBoxController suggestionsBoxController;
+  final SuggestionsController suggestionsController;
 
   /// {@template flutter_typeahead.SuggestionsListConfig.suggestionsCallback}
   /// Called with the search pattern to get the search suggestions.

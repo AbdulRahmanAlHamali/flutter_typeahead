@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 /// Enables keyboard navigation for the suggestions list.
 class SuggestionsListKeyboardConnector extends StatefulWidget {
@@ -13,7 +13,7 @@ class SuggestionsListKeyboardConnector extends StatefulWidget {
     required this.child,
   });
 
-  final SuggestionsBoxController controller;
+  final SuggestionsController controller;
   final AxisDirection direction;
   final Widget child;
 
@@ -75,7 +75,7 @@ class _SuggestionsListKeyboardConnectorState
   }
 
   /// Handles the state of the controller updating
-  /// the [SuggestionsBoxController.suggestionsFocused] property
+  /// the [SuggestionsController.suggestionsFocused] property
   void onControllerChanged() {
     bool hasFocus = widget.controller.suggestionsFocused;
     if (hasFocus != wasFocused) {

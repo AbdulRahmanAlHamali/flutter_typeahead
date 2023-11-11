@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-abstract class BaseSuggestionsBoxDecoration {
-  const BaseSuggestionsBoxDecoration({
+abstract class BaseSuggestionsDecoration {
+  const BaseSuggestionsDecoration({
     this.hasScrollbar = true,
     this.scrollbarThumbAlwaysVisible = false,
     this.constraints,

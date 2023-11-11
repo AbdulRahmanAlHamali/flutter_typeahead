@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_form_field.dart';
 import 'package:flutter_typeahead/src/cupertino/field/cupertino_text_field_configuration.dart';
 import 'package:flutter_typeahead/src/cupertino/field/cupertino_typeahead_field.dart';
-import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_decoration.dart';
 
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 /// implementation of [TypeAheadField], that allows the value to be saved,
@@ -46,8 +46,8 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     super.onReset,
     super.onSaved,
     required super.onSuggestionSelected,
-    super.suggestionsBoxController,
-    this.suggestionsBoxDecoration = const CupertinoSuggestionsBoxDecoration(),
+    super.suggestionsController,
+    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
     required super.suggestionsCallback,
     CupertinoTextFieldConfiguration super.textFieldConfiguration =
         const CupertinoTextFieldConfiguration(),
@@ -56,7 +56,7 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
   });
 
   @override
-  final CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration;
+  final CupertinoSuggestionsDecoration suggestionsDecoration;
 
   @override
   Widget buildTextField(BaseTypeAheadFormFieldState<T> field,
@@ -84,8 +84,8 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
       minCharsForSuggestions: minCharsForSuggestions,
       noItemsFoundBuilder: noItemsFoundBuilder,
       onSuggestionSelected: onSuggestionSelected,
-      suggestionsBoxController: suggestionsBoxController,
-      suggestionsBoxDecoration: suggestionsBoxDecoration,
+      suggestionsController: suggestionsController,
+      suggestionsDecoration: suggestionsDecoration,
       suggestionsCallback: suggestionsCallback,
       textFieldConfiguration: config,
       transitionBuilder: transitionBuilder,
