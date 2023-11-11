@@ -275,18 +275,16 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 textFieldConfiguration: CupertinoTextFieldConfiguration(
                   controller: controller,
                   autofocus: true,
-                  style: DefaultTextStyle.of(context)
-                      .style
-                      .copyWith(fontStyle: FontStyle.italic),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: CupertinoColors.inactiveGray),
-                    borderRadius: borderRadius,
-                  ),
+                  padding: const EdgeInsets.all(12),
                   placeholder: hintText,
+                  placeholderStyle:
+                      CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+                            color: CupertinoColors.placeholderText,
+                            fontStyle: FontStyle.italic,
+                          ),
                 ),
                 suggestionsDecoration: CupertinoSuggestionsDecoration(
                   borderRadius: borderRadius,
-                  color: CupertinoColors.white,
                 ),
                 itemBuilder: (context, product) => CupertinoListTile(
                   title: Text(product.name),

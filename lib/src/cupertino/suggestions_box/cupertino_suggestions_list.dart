@@ -183,24 +183,24 @@ class CupertinoSuggestionsList<T> extends BaseSuggestionsList<T> {
   Widget createWidgetWrapper(
       BuildContext context, SuggestionsListState<T> state, Widget child) {
     Color? color = decoration?.color;
-    color ??= CupertinoTheme.of(context).barBackgroundColor;
+    color ??= CupertinoTheme.of(context).barBackgroundColor.withOpacity(1);
 
     BoxBorder? border = decoration?.border;
     border ??= Border.all(
-      color: const CupertinoDynamicColor.withBrightness(
-        color: Color(0x33000000),
-        darkColor: Color(0x33FFFFFF),
-      ),
-      width: 0,
+      color: CupertinoColors.separator.resolveFrom(context),
+      width: 1,
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color,
-        border: border,
-        borderRadius: decoration?.borderRadius,
+    return DefaultTextStyle(
+      style: CupertinoTheme.of(context).textTheme.textStyle,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: color,
+          border: border,
+          borderRadius: decoration?.borderRadius,
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

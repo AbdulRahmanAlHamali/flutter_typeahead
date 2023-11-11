@@ -6,7 +6,7 @@ import 'package:flutter_typeahead_example/options.dart';
 mixin SharedSettingsTypeAheadConfig {
   FieldSettings get settings;
 
-  final String hintText = 'What are you looking for?';
+  final String hintText = 'Search demo settings';
   final BorderRadius borderRadius = BorderRadius.circular(10);
   void onSuggestionSelected(FieldOption setting) => setting.change();
   List<FieldOption> suggestionsCallback(String pattern) =>
@@ -148,11 +148,13 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
             textFieldConfiguration: CupertinoTextFieldConfiguration(
               controller: controller,
               autofocus: true,
-              style: DefaultTextStyle.of(context)
-                  .style
-                  .copyWith(fontStyle: FontStyle.italic),
               padding: const EdgeInsets.all(12),
               placeholder: hintText,
+              placeholderStyle:
+                  CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+                        color: CupertinoColors.placeholderText,
+                        fontStyle: FontStyle.italic,
+                      ),
             ),
             suggestionsDecoration: CupertinoSuggestionsDecoration(
               borderRadius: borderRadius,
