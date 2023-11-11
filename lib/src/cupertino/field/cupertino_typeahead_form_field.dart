@@ -36,7 +36,6 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     super.hideWithKeyboard,
     super.hideOnSelect,
     super.initialValue,
-    super.intercepting,
     required super.itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,

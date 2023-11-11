@@ -36,7 +36,6 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     this.hideWithKeyboard = true,
     this.hideOnUnfocus = true,
     String? initialValue,
-    this.intercepting = false,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
@@ -115,8 +114,6 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   final ItemBuilder<T> itemBuilder;
   @override
   final IndexedWidgetBuilder? itemSeparatorBuilder;
-  @override
-  final bool intercepting;
   @override
   final bool keepSuggestionsOnLoading;
   @override

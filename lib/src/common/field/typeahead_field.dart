@@ -256,7 +256,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
     this.hideOnUnfocus = true,
     this.hideWithKeyboard = true,
     this.hideOnSelect = true,
-    this.intercepting = false,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
@@ -309,8 +308,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   final ItemBuilder<T> itemBuilder;
   @override
   final IndexedWidgetBuilder? itemSeparatorBuilder;
-  @override
-  final bool intercepting;
   @override
   final bool keepSuggestionsOnLoading;
   @override
@@ -430,7 +427,6 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
         ),
       ),
       child: PointerInterceptor(
-        intercepting: widget.intercepting,
         child: widget.buildTextField(
           context,
           widget.textFieldConfiguration.copyWith(
