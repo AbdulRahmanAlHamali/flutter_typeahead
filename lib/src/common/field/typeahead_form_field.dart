@@ -39,7 +39,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
-    this.hideOnSelect = false,
+    this.hideOnSelect = true,
     this.layoutArchitecture,
     this.loadingBuilder,
     this.minCharsForSuggestions = 0,
