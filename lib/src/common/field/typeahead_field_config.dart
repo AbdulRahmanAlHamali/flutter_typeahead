@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
+import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
 /// Base class to contain all the configuration parameters for the [TypeAheadField].
