@@ -10,7 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - contentInsertionConfiguration on TextFieldConfiguration
 
 ### Changed
-- keepSuggestionsOnSuggestionSelected renamed to keepSuggestionsOnSelect
+- keepSuggestionsOnSuggestionSelected renamed to hideOnSelect
 - hideSuggestionsOnKeyboardHide renamed to hideOnUnfocus
 - moved verticalOffset into SuggestionsBoxDecoration as offsetY
 

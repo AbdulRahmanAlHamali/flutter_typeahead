@@ -258,7 +258,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
-    this.keepSuggestionsOnSelect = false,
+    this.hideOnSelect = false,
     this.layoutArchitecture,
     this.loadingBuilder,
     this.minCharsForSuggestions = 0,
@@ -309,7 +309,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   @override
   final bool keepSuggestionsOnLoading;
   @override
-  final bool keepSuggestionsOnSelect;
+  final bool hideOnSelect;
   @override
   final LayoutArchitecture? layoutArchitecture;
   @override
@@ -414,7 +414,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
           itemBuilder: widget.itemBuilder,
           itemSeparatorBuilder: widget.itemSeparatorBuilder,
           keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
-          keepSuggestionsOnSelect: widget.keepSuggestionsOnSelect,
+          hideOnSelect: widget.hideOnSelect,
           layoutArchitecture: widget.layoutArchitecture,
           loadingBuilder: widget.loadingBuilder,
           minCharsForSuggestions: widget.minCharsForSuggestions,
