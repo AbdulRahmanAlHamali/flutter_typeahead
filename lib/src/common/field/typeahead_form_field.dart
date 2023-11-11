@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
@@ -48,7 +48,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     super.onSaved,
     required this.onSuggestionSelected,
     this.scrollController,
-    this.suggestionsBoxController,
+    this.suggestionsController,
     required this.suggestionsCallback,
     required this.textFieldConfiguration,
     this.transitionBuilder,
@@ -78,7 +78,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
 
   /// The decoration of the sheet that contains the suggestions.
   @override
-  BaseSuggestionsBoxDecoration get suggestionsBoxDecoration;
+  BaseSuggestionsDecoration get suggestionsDecoration;
 
   @override
   final Duration animationDuration;
@@ -129,7 +129,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   @override
   final ScrollController? scrollController;
   @override
-  final SuggestionsBoxController? suggestionsBoxController;
+  final SuggestionsController? suggestionsController;
   @override
   final SuggestionsCallback<T> suggestionsCallback;
   @override

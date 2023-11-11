@@ -6,11 +6,11 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_key
 
 void main() {
   group('SuggestionsBoxKeyboardConnector', () {
-    late SuggestionsBoxController controller;
+    late SuggestionsController controller;
     late Widget child;
 
     setUp(() {
-      controller = SuggestionsBoxController();
+      controller = SuggestionsController();
       child = Container();
     });
 

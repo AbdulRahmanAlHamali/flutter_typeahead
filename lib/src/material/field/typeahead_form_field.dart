@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_form_field.dart';
 import 'package:flutter_typeahead/src/material/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
-import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_decoration.dart';
 
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 /// implementation of [TypeAheadField], that allows the value to be saved,
@@ -44,8 +44,8 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     super.onReset,
     super.onSaved,
     required super.onSuggestionSelected,
-    super.suggestionsBoxController,
-    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
+    super.suggestionsController,
+    this.suggestionsDecoration = const SuggestionsDecoration(),
     required super.suggestionsCallback,
     TextFieldConfiguration super.textFieldConfiguration =
         const TextFieldConfiguration(),
@@ -54,7 +54,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
   });
 
   @override
-  final SuggestionsBoxDecoration suggestionsBoxDecoration;
+  final SuggestionsDecoration suggestionsDecoration;
 
   @override
   Widget buildTextField(
@@ -85,8 +85,8 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
       minCharsForSuggestions: minCharsForSuggestions,
       noItemsFoundBuilder: noItemsFoundBuilder,
       onSuggestionSelected: onSuggestionSelected,
-      suggestionsBoxController: suggestionsBoxController,
-      suggestionsBoxDecoration: suggestionsBoxDecoration,
+      suggestionsController: suggestionsController,
+      suggestionsDecoration: suggestionsDecoration,
       suggestionsCallback: suggestionsCallback,
       textFieldConfiguration: config.copyWith(
         decoration: config.decoration.copyWith(errorText: field.errorText),

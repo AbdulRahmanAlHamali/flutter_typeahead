@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
 
 /// Supply an instance of this class to the [TypeAheadField.suggestionsBoxDecoration]
 /// property to configure the suggestions box decoration
-class SuggestionsBoxDecoration extends BaseSuggestionsBoxDecoration {
+class SuggestionsDecoration extends BaseSuggestionsDecoration {
   /// Creates a SuggestionsBoxDecoration
-  const SuggestionsBoxDecoration({
+  const SuggestionsDecoration({
     this.elevation = 4,
     super.color,
     this.shape,

@@ -1,14 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 void main() {
   group('SuggestionsBoxController', () {
-    late SuggestionsBoxController controller;
+    late SuggestionsController controller;
 
     setUp(() {
-      controller = SuggestionsBoxController();
+      controller = SuggestionsController();
     });
 
     tearDown(() {
@@ -60,7 +60,7 @@ void main() {
       expect(controller.isOpen, isFalse);
       // we reset the controller afterwards because otherwise our teardown
       // will try to dispose it again.
-      controller = SuggestionsBoxController();
+      controller = SuggestionsController();
     });
 
     test('sends resize event', () async {

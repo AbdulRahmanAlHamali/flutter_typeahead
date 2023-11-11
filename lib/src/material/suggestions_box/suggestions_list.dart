@@ -27,13 +27,13 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
     super.noItemsFoundBuilder,
     super.onSuggestionSelected,
     super.scrollController,
-    required super.suggestionsBoxController,
+    required super.suggestionsController,
     super.suggestionsCallback,
     super.transitionBuilder,
   });
 
   @override
-  final SuggestionsBoxDecoration? decoration;
+  final SuggestionsDecoration? decoration;
 
   @override
   @protected
@@ -139,7 +139,7 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
       state.scrollController,
     );
 
-    SuggestionsBoxDecoration? decoration = this.decoration;
+    SuggestionsDecoration? decoration = this.decoration;
     if (decoration != null && decoration.hasScrollbar) {
       child = MediaQuery.removePadding(
         context: context,

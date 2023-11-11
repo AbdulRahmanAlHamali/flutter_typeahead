@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/typedef.dart';
 
@@ -27,10 +27,10 @@ abstract class TypeaheadFieldConfig<T> {
   ScrollController? get scrollController;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.suggestionsBox}
-  SuggestionsBoxController? get suggestionsBoxController;
+  SuggestionsController? get suggestionsController;
 
   /// The decoration of the sheet that contains the suggestions.
-  BaseSuggestionsBoxDecoration get suggestionsBoxDecoration;
+  BaseSuggestionsDecoration get suggestionsDecoration;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.debounce}
   Duration get debounceDuration;

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_animation.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
@@ -37,7 +37,7 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
     this.noItemsFoundBuilder,
     this.onSuggestionSelected,
     this.scrollController,
-    required this.suggestionsBoxController,
+    required this.suggestionsController,
     this.suggestionsCallback,
     this.transitionBuilder,
   });
@@ -85,13 +85,13 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
   @override
   final ScrollController? scrollController;
   @override
-  final SuggestionsBoxController suggestionsBoxController;
+  final SuggestionsController suggestionsController;
   @override
   final SuggestionsCallback<T>? suggestionsCallback;
   @override
   final AnimationTransitionBuilder? transitionBuilder;
 
-  BaseSuggestionsBoxDecoration? get decoration;
+  BaseSuggestionsDecoration? get decoration;
 
   /// Creates a widget to display while suggestions are loading.
   @protected
@@ -139,9 +139,9 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
     // so that the text field can be updated without reopening the suggestions list.
     onSuggestionSelected?.call(suggestion);
     if (!(keepSuggestionsOnSelect ?? false)) {
-      suggestionsBoxController.close(retainFocus: true);
+      suggestionsController.close(retainFocus: true);
     } else {
-      suggestionsBoxController.focusChild();
+      suggestionsController.focusChild();
     }
   }
 
@@ -188,7 +188,7 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
     lastTextValue = widget.controller.text;
 
     onOpenChange();
-    widget.suggestionsBoxController.addListener(onOpenChange);
+    widget.suggestionsController.addListener(onOpenChange);
 
     widget.controller.addListener(onTextChange);
   }
@@ -211,7 +211,7 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
   }
 
   void onOpenChange() {
-    if (widget.suggestionsBoxController.isOpen) {
+    if (widget.suggestionsController.isOpen) {
       loadSuggestions();
     }
   }
@@ -313,16 +313,16 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
     }
 
     return SuggestionsListKeyboardConnector(
-      controller: widget.suggestionsBoxController,
+      controller: widget.suggestionsController,
       child: SuggestionsListTextConnector(
-        controller: widget.suggestionsBoxController,
+        controller: widget.suggestionsController,
         textEditingController: widget.controller,
         child: PointerInterceptor(
           child: widget.createWidgetWrapper(
             context,
             state,
             SuggestionsListAnimation(
-              controller: widget.suggestionsBoxController,
+              controller: widget.suggestionsController,
               transitionBuilder: widget.transitionBuilder,
               direction: widget.direction,
               animationStart: widget.animationStart,

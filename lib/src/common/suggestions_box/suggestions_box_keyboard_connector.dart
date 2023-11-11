@@ -13,7 +13,7 @@ class SuggestionsBoxKeyboardConnector extends StatefulWidget {
     this.hideOnUnfocus = true,
   });
 
-  final SuggestionsBoxController controller;
+  final SuggestionsController controller;
   final Widget child;
   final bool hideOnUnfocus;
 

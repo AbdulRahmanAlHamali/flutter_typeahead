@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/cupertino/field/cupertino_text_field_configuration.dart';
-import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_box_decoration.dart';
+import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_list.dart';
 
 /// {@macro flutter_typeahead.BaseTypeAheadField}
@@ -35,15 +35,15 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
     super.noItemsFoundBuilder,
     required super.onSuggestionSelected,
     super.scrollController,
-    super.suggestionsBoxController,
-    this.suggestionsBoxDecoration = const CupertinoSuggestionsBoxDecoration(),
+    super.suggestionsController,
+    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
     required super.suggestionsCallback,
     this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
     super.transitionBuilder,
   });
 
   @override
-  final CupertinoSuggestionsBoxDecoration suggestionsBoxDecoration;
+  final CupertinoSuggestionsDecoration suggestionsDecoration;
 
   @override
   final CupertinoTextFieldConfiguration textFieldConfiguration;
@@ -57,7 +57,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       autoFlipListDirection: config.autoFlipListDirection,
       controller: config.controller,
       debounceDuration: config.debounceDuration,
-      decoration: suggestionsBoxDecoration,
+      decoration: suggestionsDecoration,
       direction: config.direction,
       errorBuilder: config.errorBuilder,
       hideKeyboardOnDrag: config.hideKeyboardOnDrag,
@@ -74,7 +74,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
       noItemsFoundBuilder: config.noItemsFoundBuilder,
       onSuggestionSelected: config.onSuggestionSelected,
       scrollController: config.scrollController,
-      suggestionsBoxController: config.suggestionsBoxController,
+      suggestionsController: config.suggestionsController,
       suggestionsCallback: config.suggestionsCallback,
       transitionBuilder: config.transitionBuilder,
     );

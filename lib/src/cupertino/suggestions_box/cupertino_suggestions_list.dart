@@ -27,13 +27,13 @@ class CupertinoSuggestionsList<T> extends BaseSuggestionsList<T> {
     super.noItemsFoundBuilder,
     super.onSuggestionSelected,
     super.scrollController,
-    required super.suggestionsBoxController,
+    required super.suggestionsController,
     super.suggestionsCallback,
     super.transitionBuilder,
   });
 
   @override
-  final CupertinoSuggestionsBoxDecoration? decoration;
+  final CupertinoSuggestionsDecoration? decoration;
 
   @override
   @protected
@@ -146,7 +146,7 @@ class CupertinoSuggestionsList<T> extends BaseSuggestionsList<T> {
       state.scrollController,
     );
 
-    CupertinoSuggestionsBoxDecoration? decoration = this.decoration;
+    CupertinoSuggestionsDecoration? decoration = this.decoration;
     if (decoration != null && decoration.hasScrollbar) {
       child = MediaQuery.removePadding(
         context: context,

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 /// A widget that helps resizing the suggestions box when the user is scrolling.
 // TODO: this does not work well on Windows.
@@ -12,7 +12,7 @@ class SuggestionsBoxScrollConnector extends StatefulWidget {
     required this.child,
   });
 
-  final SuggestionsBoxController controller;
+  final SuggestionsController controller;
   final Widget child;
 
   @override

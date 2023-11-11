@@ -116,7 +116,7 @@ class ExampleTypeAhead extends StatelessWidget
                     hintText: hintText,
                   ),
                 ),
-                suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                suggestionsDecoration: SuggestionsDecoration(
                   borderRadius: borderRadius,
                   elevation: 8,
                   color: Theme.of(context).cardColor,
@@ -284,7 +284,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                   ),
                   placeholder: hintText,
                 ),
-                suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
+                suggestionsDecoration: CupertinoSuggestionsDecoration(
                   borderRadius: borderRadius,
                   color: CupertinoColors.white,
                 ),
