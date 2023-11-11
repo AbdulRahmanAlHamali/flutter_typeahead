@@ -120,6 +120,8 @@ class Floater extends StatefulWidget {
     this.followHeight = true,
     this.direction = AxisDirection.down,
     this.offset = Offset.zero,
+    this.autoFlip = false,
+    this.autoFlipHeight = 64,
   });
 
   final Widget? child;
@@ -131,6 +133,9 @@ class Floater extends StatefulWidget {
 
   final AxisDirection direction;
   final Offset offset;
+
+  final bool autoFlip;
+  final double autoFlipHeight;
 
   @override
   State<Floater> createState() => _FloaterState();
@@ -201,6 +206,85 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
     ];
   }
 
+  Size getDiretionSize(
+    AxisDirection direction,
+    Size overlaySize,
+    Offset floaterOffset,
+    Offset extra,
+    Size size,
+  ) {
+    floaterOffset = getDirectionOffset(
+      direction,
+      floaterOffset,
+      extra,
+    );
+    return switch (direction) {
+      AxisDirection.down => Size(
+          overlaySize.width,
+          overlaySize.height - floaterOffset.dy - size.height,
+        ),
+      AxisDirection.up => Size(
+          overlaySize.width,
+          floaterOffset.dy,
+        ),
+      AxisDirection.left => Size(
+          floaterOffset.dx,
+          overlaySize.height,
+        ),
+      AxisDirection.right => Size(
+          overlaySize.width - floaterOffset.dx - size.width,
+          overlaySize.height,
+        ),
+    };
+  }
+
+  Offset getDirectionOffset(
+    AxisDirection direction,
+    Offset base,
+    Offset extra,
+  ) {
+    return switch (direction) {
+      AxisDirection.down => base + extra,
+      AxisDirection.right => base + Offset(extra.dy, -extra.dx),
+      AxisDirection.up => base + Offset(-extra.dx, -extra.dy),
+      AxisDirection.left => base + Offset(-extra.dy, extra.dx),
+    };
+  }
+
+  (Alignment, Alignment) getDirectionAnchors(AxisDirection direction) {
+    return switch (direction) {
+      AxisDirection.down => (Alignment.bottomCenter, Alignment.topCenter),
+      AxisDirection.up => (Alignment.topCenter, Alignment.bottomCenter),
+      AxisDirection.left => (Alignment.centerLeft, Alignment.centerRight),
+      AxisDirection.right => (Alignment.centerRight, Alignment.centerLeft),
+    };
+  }
+
+  EdgeInsets getDirectionPadding(AxisDirection direction, EdgeInsets padding) {
+    return switch (direction) {
+      AxisDirection.down => EdgeInsets.only(
+          bottom: padding.bottom,
+          left: padding.left,
+          right: padding.right,
+        ),
+      AxisDirection.up => EdgeInsets.only(
+          top: padding.top,
+          left: padding.left,
+          right: padding.right,
+        ),
+      AxisDirection.left => EdgeInsets.only(
+          left: padding.left,
+          top: padding.top,
+          bottom: padding.bottom,
+        ),
+      AxisDirection.right => EdgeInsets.only(
+          right: padding.right,
+          top: padding.top,
+          bottom: padding.bottom,
+        ),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return OverlayPortal(
@@ -215,16 +299,11 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
               overlay.context.findRenderObject()! as RenderBox;
 
           Size available;
-          Alignment targetAnchor = Alignment.bottomLeft;
-          Alignment followerAnchor = Alignment.topLeft;
+          Alignment targetAnchor;
+          Alignment followerAnchor;
 
           Offset overlayOffset = overlayBox.localToGlobal(Offset.zero);
           Size overlaySize = overlayBox.size;
-
-          bool padTop = false;
-          bool padBottom = false;
-          bool padLeft = false;
-          bool padRight = false;
 
           MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
           EdgeInsets viewPadding = mediaQuery.padding + mediaQuery.viewInsets;
@@ -240,58 +319,46 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
           );
 
           Offset floaterOffset = offset - overlayOffset;
-          floaterOffset += widget.offset;
+
           floaterOffset = Offset(
             max(0, floaterOffset.dx),
             max(0, floaterOffset.dy),
           );
 
-          switch (widget.direction) {
-            case AxisDirection.down:
-              available = Size(
-                max(0, overlaySize.width),
-                max(0, overlaySize.height - floaterOffset.dy - size.height),
-              );
-              targetAnchor = Alignment.bottomCenter;
-              followerAnchor = Alignment.topCenter;
-              padBottom = true;
-              padLeft = true;
-              padRight = true;
-              break;
-            case AxisDirection.up:
-              available = Size(
-                max(0, overlaySize.width),
-                max(0, floaterOffset.dy),
-              );
-              targetAnchor = Alignment.topCenter;
-              followerAnchor = Alignment.bottomCenter;
-              padTop = true;
-              padLeft = true;
-              padRight = true;
-              break;
-            case AxisDirection.left:
-              available = Size(
-                max(0, floaterOffset.dx),
-                max(0, overlaySize.height),
-              );
-              targetAnchor = Alignment.centerLeft;
-              followerAnchor = Alignment.centerRight;
-              padTop = true;
-              padBottom = true;
-              padLeft = true;
-              break;
-            case AxisDirection.right:
-              available = Size(
-                max(0, overlaySize.width - floaterOffset.dx - size.width),
-                max(0, overlaySize.height),
-              );
-              targetAnchor = Alignment.centerRight;
-              followerAnchor = Alignment.centerLeft;
-              padTop = true;
-              padBottom = true;
-              padRight = true;
-              break;
+          EdgeInsets padding = viewPadding;
+
+          AxisDirection direction = widget.direction;
+
+          available = getDiretionSize(
+            direction,
+            overlaySize,
+            floaterOffset,
+            widget.offset,
+            size,
+          );
+
+          if (widget.autoFlip && available.height < widget.autoFlipHeight) {
+            AxisDirection opposite = flipAxisDirection(widget.direction);
+            Size maybeAvailable = getDiretionSize(
+              opposite,
+              overlaySize,
+              floaterOffset,
+              widget.offset,
+              size,
+            );
+            if (maybeAvailable.height > available.height) {
+              direction = opposite;
+              available = maybeAvailable;
+            }
           }
+
+          available = Size(
+            max(0, available.width),
+            max(0, available.height),
+          );
+
+          (targetAnchor, followerAnchor) = getDirectionAnchors(direction);
+          padding = getDirectionPadding(direction, padding);
 
           BoxConstraints constraints = BoxConstraints(
             maxWidth: available.width,
@@ -321,16 +388,15 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
           return CompositedTransformFollower(
             showWhenUnlinked: false,
             link: widget.link.layerLink,
-            offset: widget.offset,
+            offset: getDirectionOffset(
+              direction,
+              Offset.zero,
+              widget.offset,
+            ),
             targetAnchor: targetAnchor,
             followerAnchor: followerAnchor,
             child: Padding(
-              padding: EdgeInsets.only(
-                top: padTop ? viewPadding.top : 0,
-                bottom: padBottom ? viewPadding.bottom : 0,
-                left: padLeft ? viewPadding.left : 0,
-                right: padRight ? viewPadding.right : 0,
-              ),
+              padding: padding,
               child: Align(
                 alignment: followerAnchor,
                 child: ConstrainedBox(
