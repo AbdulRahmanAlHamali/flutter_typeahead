@@ -39,7 +39,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
-    this.keepSuggestionsOnSelect = false,
+    this.hideOnSelect = false,
     this.layoutArchitecture,
     this.loadingBuilder,
     this.minCharsForSuggestions = 0,
@@ -115,7 +115,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   @override
   final bool keepSuggestionsOnLoading;
   @override
-  final bool keepSuggestionsOnSelect;
+  final bool hideOnSelect;
   @override
   final LayoutArchitecture? layoutArchitecture;
   @override

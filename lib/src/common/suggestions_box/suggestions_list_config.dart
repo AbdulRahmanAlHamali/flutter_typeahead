@@ -19,7 +19,7 @@ class SuggestionsListConfig<T> {
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading,
-    this.keepSuggestionsOnSelect,
+    this.hideOnSelect,
     this.layoutArchitecture,
     this.loadingBuilder,
     this.minCharsForSuggestions,
@@ -175,10 +175,10 @@ class SuggestionsListConfig<T> {
   /// {@endtemplate}
   final bool? keepSuggestionsOnLoading;
 
-  /// {@template flutter_typeahead.SuggestionsListConfig.keepSuggestionsOnSelect}
+  /// {@template flutter_typeahead.SuggestionsListConfig.hideOnSelect}
   /// Whether to keep the suggestions visible even after a suggestion has been selected.
   ///
-  /// Note that if this is enabled, the only way
+  /// Note that if this is disabled, the only way
   /// to close the suggestions box is either via the
   /// [SuggestionsController] or when the user closes the software
   /// keyboard with [hideOnUnfocus] set to true.
@@ -186,9 +186,9 @@ class SuggestionsListConfig<T> {
   /// Users with a physical keyboard will be unable to close the
   /// box without additional logic.
   ///
-  /// Defaults to `false`.
+  /// Defaults to `true`.
   /// {@endtemplate}
-  final bool? keepSuggestionsOnSelect;
+  final bool? hideOnSelect;
 
   /// {@template flutter_typeahead.SuggestionsListConfig.layoutArchitecture}
   /// Builder function for customizing the layout of the suggestions list.

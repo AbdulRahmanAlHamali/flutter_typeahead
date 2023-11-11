@@ -27,10 +27,10 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
     this.hideOnEmpty,
     this.hideOnError,
     this.hideOnLoading,
+    this.hideOnSelect,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading,
-    this.keepSuggestionsOnSelect,
     this.layoutArchitecture,
     this.loadingBuilder,
     this.minCharsForSuggestions,
@@ -63,6 +63,8 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
   @override
   final bool? hideOnError;
   @override
+  final bool? hideOnSelect;
+  @override
   final bool? hideOnLoading;
   @override
   final ItemBuilder<T> itemBuilder;
@@ -70,8 +72,6 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
   final IndexedWidgetBuilder? itemSeparatorBuilder;
   @override
   final bool? keepSuggestionsOnLoading;
-  @override
-  final bool? keepSuggestionsOnSelect;
   @override
   final LayoutArchitecture? layoutArchitecture;
   @override
@@ -132,13 +132,13 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
 
   /// Call to select a suggestion.
   ///
-  /// Handles closing the suggestions box if [keepSuggestionsOnSelect] is false.
+  /// Handles closing the suggestions box if [hideOnSelect] is false.
   @protected
   void onSelected(T suggestion) {
     // We call this before closing the suggestions list
     // so that the text field can be updated without reopening the suggestions list.
     onSuggestionSelected?.call(suggestion);
-    if (!(keepSuggestionsOnSelect ?? false)) {
+    if (!(hideOnSelect ?? false)) {
       suggestionsController.close(retainFocus: true);
     } else {
       suggestionsController.focusChild();

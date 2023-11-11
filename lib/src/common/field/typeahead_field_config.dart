@@ -75,11 +75,11 @@ abstract class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsBox.hideOnUnfocus}
   bool get hideOnUnfocus;
 
+  /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnSelect}
+  bool get hideOnSelect;
+
   /// {@macro flutter_typeahead.SuggestionsListConfig.keepSuggestionsOnLoading}
   bool get keepSuggestionsOnLoading;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.keepSuggestionsOnSelect}
-  bool get keepSuggestionsOnSelect;
 
   /// {@macro flutter_typeahead.SuggestionsBox.autoFlipDirection}
   bool get autoFlipDirection;
