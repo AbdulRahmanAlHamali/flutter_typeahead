@@ -3,50 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead_example/options.dart';
 
-mixin SharedSettingsTypeAheadConfig {
-  FieldSettings get settings;
-
-  final String hintText = 'Search demo settings';
-  final BorderRadius borderRadius = BorderRadius.circular(10);
-  void onSuggestionSelected(FieldOption setting) => setting.change();
-  List<FieldOption> suggestionsCallback(String pattern) =>
-      settings.search(pattern);
-
-  Widget itemSeparatorBuilder(BuildContext context, int index) =>
-      settings.dividers.value
-          ? const Divider(height: 1)
-          : const SizedBox.shrink();
-
-  Widget gridLayoutBuilder(
-      Iterable<Widget> items, ScrollController controller) {
-    return GridView.builder(
-      controller: controller,
-      padding: const EdgeInsets.all(8),
-      itemCount: items.length,
-      shrinkWrap: true,
-      primary: false,
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 300,
-        mainAxisExtent: 48,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-      ),
-      itemBuilder: (context, index) => items.toList()[index],
-    );
-  }
-}
-
 class SettingsTypeAhead extends StatelessWidget
     with SharedSettingsTypeAheadConfig {
   SettingsTypeAhead({
     super.key,
-    required this.settings,
     required this.controller,
+    required this.settings,
   });
 
+  final TextEditingController controller;
   @override
   final FieldSettings settings;
-  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +91,13 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
     with SharedSettingsTypeAheadConfig {
   CupertinoSettingsTypeAhead({
     super.key,
-    required this.settings,
     required this.controller,
+    required this.settings,
   });
 
+  final TextEditingController controller;
   @override
   final FieldSettings settings;
-  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +164,39 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
           ),
         ),
       ],
+    );
+  }
+}
+
+mixin SharedSettingsTypeAheadConfig {
+  FieldSettings get settings;
+
+  final String hintText = 'Search demo settings';
+  final BorderRadius borderRadius = BorderRadius.circular(10);
+  void onSuggestionSelected(FieldOption setting) => setting.change();
+  List<FieldOption> suggestionsCallback(String pattern) =>
+      settings.search(pattern);
+
+  Widget itemSeparatorBuilder(BuildContext context, int index) =>
+      settings.dividers.value
+          ? const Divider(height: 1)
+          : const SizedBox.shrink();
+
+  Widget gridLayoutBuilder(
+      Iterable<Widget> items, ScrollController controller) {
+    return GridView.builder(
+      controller: controller,
+      padding: const EdgeInsets.all(8),
+      itemCount: items.length,
+      shrinkWrap: true,
+      primary: false,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 300,
+        mainAxisExtent: 48,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+      ),
+      itemBuilder: (context, index) => items.toList()[index],
     );
   }
 }
