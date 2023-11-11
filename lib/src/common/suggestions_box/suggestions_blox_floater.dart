@@ -25,7 +25,7 @@ class FloaterLink extends ValueNotifier<FloaterInfo> {
   /// Manually trigger an update of the floater.
   ///
   /// This is useful when our automatic resizing fails,
-  /// e.g. due to the keyboard being toggled.
+  /// however, that should not happen.
   void markNeedsBuild() => notifyListeners();
 }
 
