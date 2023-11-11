@@ -78,6 +78,8 @@ class FieldSettings extends ChangeNotifier {
         dividers,
         loadingDelay,
         debounce,
+        hideOnSelect,
+        hideOnUnfocus,
       ];
 
   List<FieldOption> search(String pattern) {
@@ -143,5 +145,19 @@ class FieldSettings extends ChangeNotifier {
     title: 'Debounce',
     value: true,
     icon: Icons.input,
+  );
+
+  final ToggleFieldOption hideOnSelect = ToggleFieldOption(
+    key: 'hideOnSelect',
+    title: 'Hide on Select',
+    value: true,
+    icon: Icons.fingerprint,
+  );
+
+  final ToggleFieldOption hideOnUnfocus = ToggleFieldOption(
+    key: 'hideOnUnfocus',
+    title: 'Hide on Unfocus',
+    value: true,
+    icon: Icons.visibility_off,
   );
 }

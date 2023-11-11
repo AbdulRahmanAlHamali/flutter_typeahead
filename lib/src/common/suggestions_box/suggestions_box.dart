@@ -95,8 +95,7 @@ class _SuggestionsBoxState extends State<SuggestionsBox> {
   void initState() {
     super.initState();
     controller = widget.controller ?? SuggestionsBoxController();
-    resizeSubscription =
-        controller.resizeEvents.listen((_) => link.markNeedsBuild());
+    resizeSubscription = controller.resizeEvents.listen((_) => onResize());
   }
 
   @override
@@ -108,8 +107,7 @@ class _SuggestionsBoxState extends State<SuggestionsBox> {
       }
       controller = widget.controller ?? SuggestionsBoxController();
       resizeSubscription.cancel();
-      resizeSubscription =
-          controller.resizeEvents.listen((_) => link.markNeedsBuild());
+      resizeSubscription = controller.resizeEvents.listen((_) => onResize());
     }
   }
 
@@ -121,6 +119,12 @@ class _SuggestionsBoxState extends State<SuggestionsBox> {
     }
     link.dispose();
     super.dispose();
+  }
+
+  void onResize() {
+    if (controller.isOpen) {
+      link.markNeedsBuild();
+    }
   }
 
   @override
