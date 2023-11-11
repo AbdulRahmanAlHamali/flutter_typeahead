@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_controller.dart';
 
@@ -24,6 +25,7 @@ class _SuggestionsBoxDimensionConnectorState
     with WidgetsBindingObserver {
   /// We do not want to run multiple updates at the same time.
   Timer? timer;
+  EdgeInsets? insets;
 
   @override
   void initState() {
@@ -56,25 +58,24 @@ class _SuggestionsBoxDimensionConnectorState
     OverlayState overlay = Overlay.of(context);
     MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
 
-    EdgeInsets insets = mediaQuery.viewInsets;
-
     timer?.cancel();
     timer = Timer.periodic(pollingInterval, (timer) {
-      if (!context.mounted) {
-        timer.cancel();
-        return;
-      }
-      if (DateTime.now().difference(start) > pollingDuration) {
+      if (!mounted || !overlay.context.mounted) {
         timer.cancel();
         return;
       }
 
       MediaQueryData currentMediaQuery = MediaQuery.of(overlay.context);
-      bool mediaQueryChanged = mediaQuery != currentMediaQuery;
       bool insetsChanged = insets != currentMediaQuery.viewInsets;
 
-      if (mediaQueryChanged || insetsChanged) {
+      if (insetsChanged) {
         widget.controller.resize();
+        mediaQuery = currentMediaQuery;
+        insets = mediaQuery.viewInsets;
+      }
+
+      if (DateTime.now().difference(start) > pollingDuration) {
+        timer.cancel();
       }
     });
   }

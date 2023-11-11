@@ -132,6 +132,8 @@ class ExampleTypeAhead extends StatelessWidget
                       : Text('\$${product.price}'),
                 ),
                 debounceDuration: debounceDuration,
+                keepSuggestionsOnSelect: !settings.hideOnSelect.value,
+                hideOnUnfocus: settings.hideOnUnfocus.value,
                 onSuggestionSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
@@ -296,12 +298,14 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                         )
                       : Text('\$${product.price}'),
                 ),
+                debounceDuration: debounceDuration,
+                keepSuggestionsOnSelect: !settings.hideOnSelect.value,
+                hideOnUnfocus: settings.hideOnUnfocus.value,
                 onSuggestionSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
                 layoutArchitecture:
                     settings.gridLayout.value ? gridLayoutBuilder : null,
-                debounceDuration: debounceDuration,
               ),
               const SizedBox(height: 32),
               Padding(
