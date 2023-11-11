@@ -44,9 +44,6 @@ abstract class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsListConfig.errorBuilder}
   ErrorBuilder? get errorBuilder;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.intercepting}
-  bool get intercepting;
-
   /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
   /// that the TypeAhead widget displays.
   BaseTextFieldConfiguration get textFieldConfiguration;

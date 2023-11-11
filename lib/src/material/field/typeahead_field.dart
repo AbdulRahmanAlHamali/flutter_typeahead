@@ -24,7 +24,6 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
     super.hideOnUnfocus,
     super.hideWithKeyboard,
     super.hideOnSelect,
-    super.intercepting,
     required super.itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
