@@ -136,24 +136,20 @@ class _SuggestionsBoxState extends State<SuggestionsBox> {
 
   @override
   Widget build(BuildContext context) {
-    Offset offset = widget.offset ?? const Offset(0, 5);
-
-    if (widget.direction == AxisDirection.up) {
-      offset = Offset(offset.dx, -offset.dy);
-    }
-
     return Floater(
       link: link,
       direction: widget.direction,
-      offset: offset,
+      offset: widget.offset ?? const Offset(0, 5),
       followHeight: false,
+      autoFlip: widget.autoFlipDirection,
+      autoFlipHeight: widget.autoFlipMinHeight,
       builder: (context) {
         Widget list = widget.suggestionsBuilder(context, controller);
 
         if (widget.constraints != null) {
-          Alignment alignment = Alignment.topLeft;
+          Alignment alignment = Alignment.topCenter;
           if (widget.direction == AxisDirection.up) {
-            alignment = Alignment.bottomLeft;
+            alignment = Alignment.bottomCenter;
           }
           list = Align(
             alignment: alignment,
