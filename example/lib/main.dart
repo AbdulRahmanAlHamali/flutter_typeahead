@@ -431,7 +431,7 @@ mixin SharedExampleTypeAheadConfig {
       shrinkWrap: true,
       primary: false,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 300,
+        maxCrossAxisExtent: 400,
         mainAxisExtent: 58,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
