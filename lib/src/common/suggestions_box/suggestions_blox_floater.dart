@@ -136,14 +136,16 @@ class Floater extends StatefulWidget {
   State<Floater> createState() => _FloaterState();
 }
 
-class _FloaterState extends State<Floater> {
+class _FloaterState extends State<Floater> with WidgetsBindingObserver {
   OverlayPortalController controller = OverlayPortalController();
 
   List<dynamic>? dependencies;
+  EdgeInsets? insets;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     widget.link.addListener(updateOverlay);
     maybeUpdateOverlay();
   }
@@ -157,7 +159,20 @@ class _FloaterState extends State<Floater> {
   @override
   void dispose() {
     widget.link.removeListener(updateOverlay);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    // When the keyboard is toggled, we need to update the floater,
+    // since its constraints might have changed.
+    OverlayState overlay = Overlay.of(context);
+    MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
+    if (insets != mediaQuery.viewInsets) {
+      insets = mediaQuery.viewInsets;
+      updateOverlay();
+    }
   }
 
   void maybeUpdateOverlay() {
