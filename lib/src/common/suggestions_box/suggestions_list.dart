@@ -278,21 +278,19 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
 
   @override
   Widget build(BuildContext context) {
-    bool isEmpty = suggestions?.isEmpty ?? true;
-
     SuggestionsListState<T> state = SuggestionsListState<T>(
       scrollController: _scrollController,
       suggestions: suggestions,
       error: error,
     );
 
+    bool keepSuggestionsOnLoading = widget.keepSuggestionsOnLoading ?? true;
+    bool showLoading = keepSuggestionsOnLoading || suggestions == null;
+
     Widget child;
-    if (isLoading) {
-      bool keepSuggestionsOnLoading = widget.keepSuggestionsOnLoading ?? true;
+    if (isLoading && showLoading) {
       if (widget.hideOnLoading!) {
         child = const SizedBox();
-      } else if (!keepSuggestionsOnLoading) {
-        child = widget.createSuggestionsWidget(context, state);
       } else {
         child = widget.createLoadingWidget(context, state);
       }
@@ -302,7 +300,7 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
       } else {
         child = widget.createErrorWidget(context, state);
       }
-    } else if (isEmpty) {
+    } else if (suggestions?.isEmpty ?? true) {
       if (widget.hideOnEmpty ?? false) {
         child = const SizedBox();
       } else {
