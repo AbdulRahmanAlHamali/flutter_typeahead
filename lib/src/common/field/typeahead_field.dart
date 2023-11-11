@@ -254,11 +254,12 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
     this.hideOnError = false,
     this.hideOnLoading = false,
     this.hideOnUnfocus = true,
+    this.hideWithKeyboard = true,
+    this.hideOnSelect = true,
     this.intercepting = false,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
-    this.hideOnSelect = true,
     this.layoutArchitecture,
     this.loadingBuilder,
     this.minCharsForSuggestions = 0,
@@ -301,6 +302,10 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   @override
   final bool hideOnUnfocus;
   @override
+  final bool hideWithKeyboard;
+  @override
+  final bool hideOnSelect;
+  @override
   final ItemBuilder<T> itemBuilder;
   @override
   final IndexedWidgetBuilder? itemSeparatorBuilder;
@@ -308,8 +313,6 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   final bool intercepting;
   @override
   final bool keepSuggestionsOnLoading;
-  @override
-  final bool hideOnSelect;
   @override
   final LayoutArchitecture? layoutArchitecture;
   @override

@@ -20,6 +20,7 @@ class SuggestionsBox extends StatefulWidget {
     this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
     this.hideOnUnfocus = true,
+    this.hideWithKeyboard = true,
     this.constraints,
     this.offset,
   });
@@ -75,11 +76,18 @@ class SuggestionsBox extends StatefulWidget {
   /// {@template flutter_typeahead.SuggestionsBox.hideOnUnfocus}
   /// Whether the suggestions box should be hidden when the child of the suggestions box loses focus.
   ///
-  /// If disabled, the suggestions box will remain open when the user e.g. closes the keyboard.
+  /// If disabled, the suggestions box will remain open when the user taps outside of the suggestions box.
   ///
   /// Defaults to true.
   /// {@endtemplate}
   final bool hideOnUnfocus;
+
+  /// {@template flutter_typeahead.SuggestionsBox.hideWithKeyboard}
+  /// Whether the suggestions box should be hidden when the keyboard is closed.
+  ///
+  /// Defaults to true.
+  /// {@endtemplate}
+  final bool hideWithKeyboard;
 
   @override
   State<SuggestionsBox> createState() => _SuggestionsBoxState();
@@ -171,7 +179,7 @@ class _SuggestionsBoxState extends State<SuggestionsBox> {
           hideOnUnfocus: widget.hideOnUnfocus,
           child: SuggestionsBoxKeyboardConnector(
             controller: controller,
-            hideOnUnfocus: widget.hideOnUnfocus,
+            hideWithKeyboard: widget.hideWithKeyboard,
             child: SuggestionsBoxTapConnector(
               controller: controller,
               child: widget.child,

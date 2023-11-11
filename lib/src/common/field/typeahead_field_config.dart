@@ -75,6 +75,9 @@ abstract class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsBox.hideOnUnfocus}
   bool get hideOnUnfocus;
 
+  /// {@macro flutter_typeahead.SuggestionsBox.hideWithKeyboard}
+  bool get hideWithKeyboard;
+
   /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnSelect}
   bool get hideOnSelect;
 

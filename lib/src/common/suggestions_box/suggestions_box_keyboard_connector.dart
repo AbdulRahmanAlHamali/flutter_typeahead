@@ -10,12 +10,12 @@ class SuggestionsBoxKeyboardConnector extends StatefulWidget {
     super.key,
     required this.controller,
     required this.child,
-    this.hideOnUnfocus = true,
+    this.hideWithKeyboard = true,
   });
 
   final SuggestionsController controller;
   final Widget child;
-  final bool hideOnUnfocus;
+  final bool hideWithKeyboard;
 
   @override
   State<SuggestionsBoxKeyboardConnector> createState() =>
@@ -41,7 +41,7 @@ class _SuggestionsBoxKeyboardConnectorState
 
   /// hide suggestions box on keyboard closed
   void onKeyboardChanged(bool visible) {
-    if (!visible && widget.hideOnUnfocus) {
+    if (!visible && widget.hideWithKeyboard) {
       widget.controller.close();
     }
   }
