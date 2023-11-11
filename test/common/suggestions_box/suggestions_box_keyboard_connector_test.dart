@@ -28,7 +28,7 @@ void main() {
           home: Material(
             child: SuggestionsBoxKeyboardConnector(
               controller: controller,
-              hideOnUnfocus: true,
+              hideWithKeyboard: true,
               child: child,
             ),
           ),
@@ -53,7 +53,7 @@ void main() {
           home: Material(
             child: SuggestionsBoxKeyboardConnector(
               controller: controller,
-              hideOnUnfocus: false,
+              hideWithKeyboard: false,
               child: child,
             ),
           ),

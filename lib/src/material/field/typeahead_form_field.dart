@@ -30,6 +30,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     super.hideOnError,
     super.hideOnLoading,
     super.hideOnUnfocus,
+    super.hideWithKeyboard,
     super.hideOnSelect,
     super.initialValue,
     super.intercepting,

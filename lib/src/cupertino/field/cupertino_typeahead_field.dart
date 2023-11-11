@@ -24,6 +24,7 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
     super.hideOnError,
     super.hideOnLoading,
     super.hideOnUnfocus,
+    super.hideWithKeyboard,
     super.hideOnSelect,
     super.intercepting,
     required super.itemBuilder,

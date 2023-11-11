@@ -33,6 +33,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
     this.hideOnEmpty = false,
     this.hideOnError = false,
     this.hideOnLoading = false,
+    this.hideWithKeyboard = true,
     this.hideOnUnfocus = true,
     String? initialValue,
     this.intercepting = false,
@@ -107,6 +108,10 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   @override
   final bool hideOnUnfocus;
   @override
+  final bool hideWithKeyboard;
+  @override
+  final bool hideOnSelect;
+  @override
   final ItemBuilder<T> itemBuilder;
   @override
   final IndexedWidgetBuilder? itemSeparatorBuilder;
@@ -114,8 +119,6 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   final bool intercepting;
   @override
   final bool keepSuggestionsOnLoading;
-  @override
-  final bool hideOnSelect;
   @override
   final LayoutArchitecture? layoutArchitecture;
   @override
