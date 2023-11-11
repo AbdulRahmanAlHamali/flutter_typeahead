@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// {@template flutter_typeahead.BaseTypeAheadField}

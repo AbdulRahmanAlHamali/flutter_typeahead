@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/typedef.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
 /// Animates the suggestions list when it is opened or closed.
 class SuggestionsListAnimation extends StatefulWidget {
