@@ -324,7 +324,7 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
   @override
   final ScrollController? scrollController;
   @override
-  final SuggestionsController? suggestionsController;
+  final SuggestionsController<T>? suggestionsController;
   @override
   final SuggestionsCallback<T> suggestionsCallback;
   @override
@@ -389,7 +389,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return SuggestionsBox(
+    return SuggestionsBox<T>(
       controller: widget.suggestionsController,
       direction: widget.direction,
       offset: widget.suggestionsDecoration.offset,

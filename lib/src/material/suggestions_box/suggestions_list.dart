@@ -29,7 +29,7 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
     super.onSuggestionSelected,
     super.scrollController,
     required super.suggestionsController,
-    super.suggestionsCallback,
+    required super.suggestionsCallback,
     super.transitionBuilder,
   });
 
@@ -38,10 +38,7 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
 
   @override
   @protected
-  Widget createLoadingWidget(
-    BuildContext context,
-    SuggestionsListState<T> state,
-  ) {
+  Widget createLoadingWidget(BuildContext context) {
     Widget child;
 
     if (loadingBuilder != null) {
@@ -63,17 +60,15 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
   @protected
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListState<T> state,
+    Object error,
   ) {
     Widget child;
 
     if (errorBuilder != null) {
-      child = errorBuilder!(context, state.error);
+      child = errorBuilder!(context, error);
     } else {
       String message = 'An error has occured';
-      if (state.error != null) {
-        message = 'Error: ${state.error}';
-      }
+      message = 'Error: $error';
       child = Padding(
         padding: const EdgeInsets.all(8),
         child: Text(
@@ -88,10 +83,7 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
 
   @override
   @protected
-  Widget createNoItemsFoundWidget(
-    BuildContext context,
-    SuggestionsListState<T> state,
-  ) {
+  Widget createNoItemsFoundWidget(BuildContext context) {
     Widget child;
 
     if (noItemsFoundBuilder != null) {
@@ -114,22 +106,15 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
   @protected
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListState<T> state,
+    List<T> suggestions,
   ) {
     Widget child;
 
     LayoutArchitecture? layoutArchitecture = this.layoutArchitecture;
     layoutArchitecture ??= createDefaultLayout;
 
-    Iterable<T>? suggestions = state.suggestions;
-    if (suggestions == null) {
-      throw StateError(
-        'suggestions can not be null when building '
-        'suggestions widget',
-      );
-    }
-
     child = layoutArchitecture(
+      context,
       List.generate(
         suggestions.length,
         (index) => _itemBuilder(
@@ -137,7 +122,6 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
           suggestions.elementAt(index),
         ),
       ),
-      state.scrollController,
     );
 
     SuggestionsDecoration? decoration = this.decoration;
@@ -146,7 +130,6 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
         context: context,
         removeTop: true,
         child: Scrollbar(
-          controller: state.scrollController,
           thumbVisibility: decoration.scrollbarThumbAlwaysVisible,
           trackVisibility: decoration.scrollbarTrackAlwaysVisible,
           child: child,
@@ -171,7 +154,6 @@ class SuggestionsList<T> extends BaseSuggestionsList<T> {
   @protected
   Widget createWidgetWrapper(
     BuildContext context,
-    SuggestionsListState<T> state,
     Widget child,
   ) {
     return Material(

@@ -11,7 +11,7 @@ void main() {
     late FocusNode outsideFocusNode;
 
     void onSuggestionsListUnfocus() {
-      if (!controller.suggestionsFocused) {
+      if (!controller.focused) {
         outsideFocusNode.requestFocus();
       }
     }
@@ -20,9 +20,9 @@ void main() {
       controller = SuggestionsController();
       controller.addListener(onSuggestionsListUnfocus);
       focusNodes =
-          List.generate(2, (_) => FocusNode(onKeyEvent: controller.onKeyEvent));
+          List.generate(2, (_) => FocusNode(onKeyEvent: controller.sendKey));
       outsideFocusNode = FocusNode(
-        onKeyEvent: controller.onKeyEvent,
+        onKeyEvent: controller.sendKey,
       );
     });
 
@@ -68,14 +68,14 @@ void main() {
 
       // Focus starts outside the suggestion list
       expect(focusNodes.any((element) => element.hasFocus), isFalse);
-      expect(controller.suggestionsFocused, isFalse);
+      expect(controller.focused, isFalse);
       expect(outsideFocusNode.hasFocus, isTrue);
 
       // Focus moves into the suggestion list
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pump();
       expect(focusNodes.first.hasFocus, isTrue);
-      expect(controller.suggestionsFocused, isTrue);
+      expect(controller.focused, isTrue);
 
       // Focus moves along the suggestion list
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -96,7 +96,7 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
       await tester.pump();
       expect(focusNodes.any((element) => element.hasFocus), isFalse);
-      expect(controller.suggestionsFocused, isFalse);
+      expect(controller.focused, isFalse);
     });
 
     testWidgets(
@@ -134,13 +134,13 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
       await tester.pump();
       expect(focusNodes.first.hasFocus, isTrue);
-      expect(controller.suggestionsFocused, isTrue);
+      expect(controller.focused, isTrue);
 
       // Focus moves out of the suggestion list
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pump();
       expect(focusNodes.any((element) => element.hasFocus), isFalse);
-      expect(controller.suggestionsFocused, isFalse);
+      expect(controller.focused, isFalse);
     });
   });
 }

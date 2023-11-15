@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 void main() {
-  group('SuggestionsBoxController', () {
+  group('SuggestionsController', () {
     late SuggestionsController controller;
 
     setUp(() {
@@ -65,33 +65,33 @@ void main() {
 
     test('sends resize event', () async {
       bool called = false;
-      controller.resizeEvents.listen((_) => called = true);
+      controller.resizes.listen((_) => called = true);
       controller.resize();
       await Future<void>.value();
       expect(called, isTrue);
     });
 
     test('shifts focus to suggestions list', () {
-      controller.focusSuggestions();
-      expect(controller.suggestionsFocused, isTrue);
+      controller.focus();
+      expect(controller.focused, isTrue);
     });
 
     test('shifts focus away from suggestions list', () {
-      controller.focusSuggestions();
-      controller.unfocusSuggestions();
-      expect(controller.suggestionsFocused, isFalse);
+      controller.focus();
+      controller.unfocus();
+      expect(controller.focused, isFalse);
     });
 
     test('shifts focus to suggestions box', () {
       controller.focusChild();
-      expect(controller.suggestionsFocused, isFalse);
+      expect(controller.focused, isFalse);
     });
 
     test('sends up or down arrow key down event', () async {
       FocusNode focusNode = FocusNode();
       bool called = false;
-      controller.keyEvents.listen((_) => called = true);
-      controller.onKeyEvent(
+      controller.keys.listen((_) => called = true);
+      controller.sendKey(
         focusNode,
         const KeyDownEvent(
           physicalKey: PhysicalKeyboardKey.arrowDown,
@@ -106,8 +106,8 @@ void main() {
     test('does not send other key events', () async {
       FocusNode focusNode = FocusNode();
       bool called = false;
-      controller.keyEvents.listen((_) => called = true);
-      controller.onKeyEvent(
+      controller.keys.listen((_) => called = true);
+      controller.sendKey(
         focusNode,
         const KeyDownEvent(
           physicalKey: PhysicalKeyboardKey.arrowLeft,
@@ -117,7 +117,7 @@ void main() {
       );
       await Future<void>.value();
       expect(called, isFalse);
-      controller.onKeyEvent(
+      controller.sendKey(
         focusNode,
         const KeyUpEvent(
           physicalKey: PhysicalKeyboardKey.arrowDown,

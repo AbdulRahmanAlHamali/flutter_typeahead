@@ -86,7 +86,7 @@ class _SuggestionsBoxFocusConnectorState
 
   /// Handles passing key events to the controller.
   KeyEventResult onKeyEvent(FocusNode node, KeyEvent key) {
-    return widget.controller.onKeyEvent(node, key);
+    return widget.controller.sendKey(node, key);
   }
 
   /// Unregisters a focus node with the suggestions box.
@@ -110,7 +110,7 @@ class _SuggestionsBoxFocusConnectorState
   void onFocusChanged() {
     if (widget.focusNode.hasFocus) {
       widget.controller.open();
-    } else if (!widget.controller.suggestionsFocused) {
+    } else if (!widget.controller.focused) {
       if (widget.hideOnUnfocus) {
         widget.controller.close();
       }

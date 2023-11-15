@@ -129,7 +129,7 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
   @override
   final ScrollController? scrollController;
   @override
-  final SuggestionsController? suggestionsController;
+  final SuggestionsController<T>? suggestionsController;
   @override
   final SuggestionsCallback<T> suggestionsCallback;
   @override
