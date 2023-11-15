@@ -6,13 +6,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 ### Added
+- SuggestionsController now notifies and holds suggestions state
+- SuggestionsBox now resizes fully automatically in all situations
 - contextMenuBuilder on TextFieldConfiguration
 - contentInsertionConfiguration on TextFieldConfiguration
 
 ### Changed
-- keepSuggestionsOnSuggestionSelected renamed to hideOnSelect
-- hideSuggestionsOnKeyboardHide renamed to hideOnUnfocus
-- moved verticalOffset into SuggestionsBoxDecoration as offsetY
+- renamed SuggestionsBoxController to SuggestionsController
+- renamed SuggestionsBoxDecoration to SuggestionsDecoration
+- keepSuggestionsOnSuggestionSelected renamed to hideOnSelect and inverted
+- hideSuggestionsOnKeyboardHide renamed to hideWithKeyboard
+- moved verticalOffset into SuggestionsDecoration as offset
+- suggestions box animation now playes on open and close instead of when suggestions change
+- suggestions box now animates size changes
 
 ### Fixed
 - enableSuggestions was not passed to TextField
@@ -20,7 +26,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 - hideKeyboard parameter - use TextfieldConfiguration.enabled instead
-- CupertinoSuggestionsBoxController - use SuggestionsBoxController instead
+- CupertinoSuggestionsBoxController - use SuggestionsController instead
 - intercepting parameter - now always true
 
 ## 4.9.0 - 2023-10-22
