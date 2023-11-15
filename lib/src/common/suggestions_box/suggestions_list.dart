@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decorat
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_animation.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_scroll_injector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_debouncer.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_typing_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
@@ -165,9 +166,6 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
 }
 
 class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
-  late final ScrollController _scrollController =
-      widget.scrollController ?? ScrollController();
-
   bool isQueued = false;
 
   @override
@@ -265,9 +263,8 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
           controller: widget.controller,
           debounceDuration: widget.debounceDuration,
           onChanged: (_) => reload(),
-          child: PrimaryScrollController(
-            controller: _scrollController,
-            automaticallyInheritForPlatforms: TargetPlatform.values.toSet(),
+          child: SuggestionsListScrollInjector(
+            controller: widget.scrollController,
             child: SuggestionsListKeyboardConnector(
               controller: widget.suggestionsController,
               child: SuggestionsListTypingConnector(
