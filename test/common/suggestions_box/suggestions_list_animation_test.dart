@@ -5,10 +5,10 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_an
 
 void main() {
   group('SuggestionsListAnimation', () {
-    late SuggestionsController controller;
+    late SuggestionsController<String> controller;
 
     setUp(() {
-      controller = SuggestionsController();
+      controller = SuggestionsController<String>();
     });
 
     tearDown(() {
@@ -85,6 +85,37 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('child')), findsNothing);
+    });
+
+    testWidgets('uses custom transition builder', (WidgetTester tester) async {
+      controller.open();
+
+      double animationValue = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsListAnimation(
+              controller: controller,
+              animationDuration: const Duration(milliseconds: 1),
+              child: const SizedBox(key: Key('child')),
+              transitionBuilder: (context, animation, child) =>
+                  ValueListenableBuilder(
+                valueListenable: animation,
+                builder: (context, value, _) {
+                  animationValue = animation.value;
+                  return child;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle(const Duration(milliseconds: 1));
+
+      expect(find.byKey(const Key('child')), findsOneWidget);
+      expect(animationValue, equals(1));
     });
   });
 }

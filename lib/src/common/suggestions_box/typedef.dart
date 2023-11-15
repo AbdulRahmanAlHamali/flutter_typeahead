@@ -8,6 +8,11 @@ typedef SuggestionSelectionCallback<T> = void Function(T suggestion);
 typedef ErrorBuilder = Widget Function(BuildContext context, Object? error);
 
 typedef AnimationTransitionBuilder = Widget Function(
-    BuildContext context, Widget child, AnimationController? controller);
+  BuildContext context,
+  Animation<double> animation,
+  Widget child,
+);
 typedef LayoutArchitecture = Widget Function(
-    BuildContext context, List<Widget> items);
+  BuildContext context,
+  List<Widget> items,
+);

@@ -5,14 +5,33 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_control
 
 void main() {
   group('SuggestionsController', () {
-    late SuggestionsController controller;
+    late SuggestionsController<String> controller;
 
     setUp(() {
-      controller = SuggestionsController();
+      controller = SuggestionsController<String>();
     });
 
     tearDown(() {
       controller.dispose();
+    });
+
+    test('sets suggestions', () {
+      expect(controller.suggestions, isNull);
+      controller.suggestions = ['a', 'b', 'c'];
+      expect(controller.suggestions, equals(['a', 'b', 'c']));
+    });
+
+    test('sets loading state', () {
+      expect(controller.isLoading, isFalse);
+      controller.isLoading = true;
+      expect(controller.isLoading, isTrue);
+    });
+
+    test('sets error state', () {
+      expect(controller.hasError, isFalse);
+      controller.error = 'error';
+      expect(controller.hasError, isTrue);
+      expect(controller.error, equals('error'));
     });
 
     test('opens suggestions list', () {
