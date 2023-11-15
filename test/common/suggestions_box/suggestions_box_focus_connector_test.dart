@@ -222,5 +222,41 @@ void main() {
 
       expect(controller.isOpen, isTrue);
     });
+
+    testWidgets('reconnects if new controller is given',
+        (WidgetTester tester) async {
+      final newController = SuggestionsController();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SuggestionsBoxFocusConnector(
+            controller: controller,
+            focusNode: focusNode,
+            child: Focus(
+              focusNode: focusNode,
+              child: Container(),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SuggestionsBoxFocusConnector(
+            controller: newController,
+            focusNode: focusNode,
+            child: Focus(
+              focusNode: focusNode,
+              child: Container(),
+            ),
+          ),
+        ),
+      );
+
+      focusNode.requestFocus();
+      await tester.pump();
+
+      expect(newController.isOpen, isTrue);
+    });
   });
 }

@@ -5,7 +5,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_control
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
 /// Animates the suggestions list when it is opened or closed.
-class SuggestionsListAnimation extends StatefulWidget {
+class SuggestionsListAnimation<T> extends StatefulWidget {
   const SuggestionsListAnimation({
     super.key,
     required this.controller,
@@ -16,7 +16,7 @@ class SuggestionsListAnimation extends StatefulWidget {
     this.animationDuration,
   });
 
-  final SuggestionsController controller;
+  final SuggestionsController<T> controller;
   final Widget child;
   final AnimationTransitionBuilder? transitionBuilder;
   final AxisDirection direction;
@@ -24,11 +24,12 @@ class SuggestionsListAnimation extends StatefulWidget {
   final Duration? animationDuration;
 
   @override
-  State<SuggestionsListAnimation> createState() =>
-      _SuggestionsListAnimationState();
+  State<SuggestionsListAnimation<T>> createState() =>
+      _SuggestionsListAnimationState<T>();
 }
 
-class _SuggestionsListAnimationState extends State<SuggestionsListAnimation>
+class _SuggestionsListAnimationState<T>
+    extends State<SuggestionsListAnimation<T>>
     with SingleTickerProviderStateMixin {
   late final AnimationController animationController;
   late Duration animationDuration;
@@ -54,7 +55,7 @@ class _SuggestionsListAnimationState extends State<SuggestionsListAnimation>
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsListAnimation oldWidget) {
+  void didUpdateWidget(covariant SuggestionsListAnimation<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller.removeListener(onOpenedChanged);
@@ -92,7 +93,8 @@ class _SuggestionsListAnimationState extends State<SuggestionsListAnimation>
     Widget child = widget.child;
 
     if (widget.transitionBuilder != null) {
-      child = widget.transitionBuilder!(context, child, animationController);
+      child =
+          widget.transitionBuilder!(context, animationController.view, child);
     } else {
       child = SizeTransition(
         axisAlignment: -1,

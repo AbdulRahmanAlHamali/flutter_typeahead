@@ -265,15 +265,15 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
           onChanged: (_) => reload(),
           child: SuggestionsListScrollInjector(
             controller: widget.scrollController,
-            child: SuggestionsListKeyboardConnector(
+            child: SuggestionsListKeyboardConnector<T>(
               controller: widget.suggestionsController,
-              child: SuggestionsListTypingConnector(
+              child: SuggestionsListTypingConnector<T>(
                 controller: widget.suggestionsController,
                 textEditingController: widget.controller,
                 child: PointerInterceptor(
                   child: widget.createWidgetWrapper(
                     context,
-                    SuggestionsListAnimation(
+                    SuggestionsListAnimation<T>(
                       controller: widget.suggestionsController,
                       transitionBuilder: widget.transitionBuilder,
                       direction: widget.direction,
