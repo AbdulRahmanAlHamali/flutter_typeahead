@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_typing_connector.dart';
 
 void main() {
-  group('SuggestionsListTextConnector', () {
+  group('SuggestionsListTypingConnector', () {
     late SuggestionsController controller;
     late TextEditingController textEditingController;
 
@@ -27,7 +27,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
-            child: SuggestionsListTextConnector(
+            child: SuggestionsListTypingConnector(
               controller: controller,
               textEditingController: textEditingController,
               child: const SizedBox(),

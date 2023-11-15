@@ -27,7 +27,7 @@ abstract class TypeaheadFieldConfig<T> {
   ScrollController? get scrollController;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.suggestionsBox}
-  SuggestionsController? get suggestionsController;
+  SuggestionsController<T>? get suggestionsController;
 
   /// The decoration of the sheet that contains the suggestions.
   BaseSuggestionsDecoration get suggestionsDecoration;

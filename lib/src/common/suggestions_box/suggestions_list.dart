@@ -6,7 +6,8 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decorat
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_animation.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_debouncer.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_typing_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
@@ -38,7 +39,7 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
     this.onSuggestionSelected,
     this.scrollController,
     required this.suggestionsController,
-    this.suggestionsCallback,
+    required this.suggestionsCallback,
     this.transitionBuilder,
   });
 
@@ -85,9 +86,9 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
   @override
   final ScrollController? scrollController;
   @override
-  final SuggestionsController suggestionsController;
+  final SuggestionsController<T> suggestionsController;
   @override
-  final SuggestionsCallback<T>? suggestionsCallback;
+  final SuggestionsCallback<T> suggestionsCallback;
   @override
   final AnimationTransitionBuilder? transitionBuilder;
 
@@ -97,35 +98,30 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
   @protected
   Widget createLoadingWidget(
     BuildContext context,
-    SuggestionsListState<T> state,
   );
 
   /// Creates a widget to display when an error has occurred.
   @protected
   Widget createErrorWidget(
     BuildContext context,
-    SuggestionsListState<T> state,
+    Object error,
   );
 
   /// Creates a widget to display when no suggestions are available.
   @protected
-  Widget createNoItemsFoundWidget(
-    BuildContext context,
-    SuggestionsListState<T> state,
-  );
+  Widget createNoItemsFoundWidget(BuildContext context);
 
   /// Creates a widget to display the suggestions.
   @protected
   Widget createSuggestionsWidget(
     BuildContext context,
-    SuggestionsListState<T> state,
+    List<T> suggestions,
   );
 
   /// Creates a widget to wrap all the other widgets.
   @protected
   Widget createWidgetWrapper(
     BuildContext context,
-    SuggestionsListState<T> state,
     Widget child,
   ) =>
       child;
@@ -147,17 +143,15 @@ abstract class BaseSuggestionsList<T> extends StatefulWidget
 
   @protected
   Widget createDefaultLayout(
+    BuildContext context,
     Iterable<Widget> items,
-    ScrollController controller,
   ) {
     return ListView.separated(
       padding: EdgeInsets.zero,
-      primary: false,
       shrinkWrap: true,
       keyboardDismissBehavior: hideKeyboardOnDrag
           ? ScrollViewKeyboardDismissBehavior.onDrag
           : ScrollViewKeyboardDismissBehavior.manual,
-      controller: controller,
       reverse: direction == AxisDirection.up ? autoFlipListDirection : false,
       itemCount: items.length,
       itemBuilder: (context, index) => items.elementAt(index),
@@ -174,174 +168,129 @@ class _BaseSuggestionsListState<T> extends State<BaseSuggestionsList<T>> {
   late final ScrollController _scrollController =
       widget.scrollController ?? ScrollController();
 
-  bool isLoading = false;
   bool isQueued = false;
-  String? lastTextValue;
-  Iterable<T>? suggestions;
-  Timer? debounceTimer;
-  Object? error;
 
   @override
   void initState() {
     super.initState();
-
-    lastTextValue = widget.controller.text;
-
     onOpenChange();
     widget.suggestionsController.addListener(onOpenChange);
-
-    widget.controller.addListener(onTextChange);
-  }
-
-  @override
-  void didUpdateWidget(BaseSuggestionsList<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(onTextChange);
-      widget.controller.addListener(onTextChange);
-      onTextChange();
-    }
-  }
-
-  @override
-  void dispose() {
-    debounceTimer?.cancel();
-    widget.controller.removeListener(onTextChange);
-    super.dispose();
   }
 
   void onOpenChange() {
     if (widget.suggestionsController.isOpen) {
-      loadSuggestions();
+      load();
     }
   }
 
-  void onTextChange() {
-    // ignore changes in selection only
-    if (widget.controller.text == lastTextValue) return;
-    lastTextValue = widget.controller.text;
+  /// Loads suggestions if not already loaded.
+  Future<void> load() async {
+    if (widget.suggestionsController.suggestions != null) return;
+    return reload();
+  }
 
-    Duration? debounceDuration = widget.debounceDuration;
-    debounceDuration ??= const Duration(milliseconds: 300);
-
-    debounceTimer?.cancel();
-    if (debounceDuration == Duration.zero) {
-      reloadSuggestions();
-    } else {
-      debounceTimer = Timer(debounceDuration, () async {
-        if (isLoading) {
-          isQueued = true;
-          return;
-        }
-
-        await reloadSuggestions();
-        if (isQueued) {
-          isQueued = false;
-          await reloadSuggestions();
-        }
-      });
+  /// Loads suggestions. Discards any previously loaded suggestions.
+  Future<void> reload() async {
+    if (widget.suggestionsController.isLoading) {
+      isQueued = true;
+      return;
     }
-  }
 
-  Future<void> reloadSuggestions() async {
-    suggestions = null;
-    await loadSuggestions();
-  }
+    widget.suggestionsController.suggestions =
+        widget.suggestionsController.suggestions;
+    widget.suggestionsController.isLoading = true;
+    widget.suggestionsController.error = null;
 
-  Future<void> loadSuggestions() async {
-    if (!mounted) return;
-    if (suggestions != null) return;
+    List<T>? newSuggestions;
+    Object? newError;
 
-    setState(() {
-      isLoading = true;
-      error = null;
-    });
+    bool hasCharacters = widget.minCharsForSuggestions == null ||
+        widget.minCharsForSuggestions! <= widget.controller.text.length;
 
-    try {
-      bool hasCharacters =
-          widget.controller.text.length >= widget.minCharsForSuggestions!;
-      if (hasCharacters) {
-        suggestions = await widget.suggestionsCallback!(widget.controller.text);
-      } else {
-        suggestions = null;
+    if (hasCharacters) {
+      try {
+        newSuggestions =
+            (await widget.suggestionsCallback(widget.controller.text)).toList();
+      } on Exception catch (e) {
+        newError = e;
       }
-    } on Exception catch (e) {
-      error = e;
     }
 
-    if (!mounted) return;
+    if (mounted) {
+      widget.suggestionsController.suggestions = newSuggestions;
+      widget.suggestionsController.error = newError;
+      widget.suggestionsController.isLoading = false;
+    }
 
-    setState(() {
-      isLoading = false;
-    });
+    if (isQueued) {
+      isQueued = false;
+      await reload();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    SuggestionsListState<T> state = SuggestionsListState<T>(
-      scrollController: _scrollController,
-      suggestions: suggestions,
-      error: error,
-    );
+    return ListenableBuilder(
+      listenable: widget.suggestionsController,
+      builder: (context, _) {
+        bool keepSuggestionsOnLoading = widget.keepSuggestionsOnLoading ?? true;
+        List<T>? suggestions = widget.suggestionsController.suggestions;
+        bool showLoading = keepSuggestionsOnLoading || suggestions == null;
 
-    bool keepSuggestionsOnLoading = widget.keepSuggestionsOnLoading ?? true;
-    bool showLoading = keepSuggestionsOnLoading || suggestions == null;
+        Widget child;
+        if (widget.suggestionsController.isLoading && showLoading) {
+          if (widget.hideOnLoading!) {
+            child = const SizedBox();
+          } else {
+            child = widget.createLoadingWidget(context);
+          }
+        } else if (widget.suggestionsController.hasError) {
+          if (widget.hideOnError!) {
+            child = const SizedBox();
+          } else {
+            child = widget.createErrorWidget(
+                context, widget.suggestionsController.error!);
+          }
+        } else if (suggestions?.isEmpty ?? true) {
+          if (widget.hideOnEmpty ?? false) {
+            child = const SizedBox();
+          } else {
+            child = widget.createNoItemsFoundWidget(context);
+          }
+        } else {
+          child = widget.createSuggestionsWidget(context, suggestions!);
+        }
 
-    Widget child;
-    if (isLoading && showLoading) {
-      if (widget.hideOnLoading!) {
-        child = const SizedBox();
-      } else {
-        child = widget.createLoadingWidget(context, state);
-      }
-    } else if (error != null) {
-      if (widget.hideOnError!) {
-        child = const SizedBox();
-      } else {
-        child = widget.createErrorWidget(context, state);
-      }
-    } else if (suggestions?.isEmpty ?? true) {
-      if (widget.hideOnEmpty ?? false) {
-        child = const SizedBox();
-      } else {
-        child = widget.createNoItemsFoundWidget(context, state);
-      }
-    } else {
-      child = widget.createSuggestionsWidget(context, state);
-    }
-
-    return SuggestionsListKeyboardConnector(
-      controller: widget.suggestionsController,
-      child: SuggestionsListTextConnector(
-        controller: widget.suggestionsController,
-        textEditingController: widget.controller,
-        child: PointerInterceptor(
-          child: widget.createWidgetWrapper(
-            context,
-            state,
-            SuggestionsListAnimation(
+        return SuggestionsListTextDebouncer(
+          controller: widget.controller,
+          debounceDuration: widget.debounceDuration,
+          onChanged: (_) => reload(),
+          child: PrimaryScrollController(
+            controller: _scrollController,
+            automaticallyInheritForPlatforms: TargetPlatform.values.toSet(),
+            child: SuggestionsListKeyboardConnector(
               controller: widget.suggestionsController,
-              transitionBuilder: widget.transitionBuilder,
-              direction: widget.direction,
-              animationStart: widget.animationStart,
-              animationDuration: widget.animationDuration,
-              child: child,
+              child: SuggestionsListTypingConnector(
+                controller: widget.suggestionsController,
+                textEditingController: widget.controller,
+                child: PointerInterceptor(
+                  child: widget.createWidgetWrapper(
+                    context,
+                    SuggestionsListAnimation(
+                      controller: widget.suggestionsController,
+                      transitionBuilder: widget.transitionBuilder,
+                      direction: widget.direction,
+                      animationStart: widget.animationStart,
+                      animationDuration: widget.animationDuration,
+                      child: child,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
-}
-
-class SuggestionsListState<T> {
-  SuggestionsListState({
-    required this.scrollController,
-    this.suggestions,
-    this.error,
-  });
-
-  final ScrollController scrollController;
-  final Iterable<T>? suggestions;
-  final Object? error;
 }

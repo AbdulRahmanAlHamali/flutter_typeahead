@@ -423,13 +423,13 @@ mixin SharedExampleTypeAheadConfig {
   }
 
   Widget gridLayoutBuilder(
-      Iterable<Widget> items, ScrollController controller) {
+    BuildContext context,
+    List<Widget> items,
+  ) {
     return GridView.builder(
-      controller: controller,
       padding: const EdgeInsets.all(8),
       itemCount: items.length,
       shrinkWrap: true,
-      primary: false,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 400,
         mainAxisExtent: 58,

@@ -26,7 +26,7 @@ class _SuggestionsListKeyboardConnectorState
     extends State<SuggestionsListKeyboardConnector> {
   late final FocusScopeNode focusNode = FocusScopeNode(
     debugLabel: 'SuggestionsListFocus',
-    onKeyEvent: (node, key) => widget.controller.onKeyEvent(node, key),
+    onKeyEvent: (node, key) => widget.controller.sendKey(node, key),
   );
 
   late StreamSubscription<LogicalKeyboardKey>? keyEventsSubscription;
@@ -37,7 +37,7 @@ class _SuggestionsListKeyboardConnectorState
   void initState() {
     super.initState();
     widget.controller.addListener(onControllerChanged);
-    keyEventsSubscription = widget.controller.keyEvents.listen(onKeyEvent);
+    keyEventsSubscription = widget.controller.keys.listen(onKeyEvent);
     focusNode.addListener(onFocusChanged);
   }
 
@@ -48,7 +48,7 @@ class _SuggestionsListKeyboardConnectorState
       oldWidget.controller.removeListener(onControllerChanged);
       keyEventsSubscription?.cancel();
       widget.controller.addListener(onControllerChanged);
-      keyEventsSubscription = widget.controller.keyEvents.listen(onKeyEvent);
+      keyEventsSubscription = widget.controller.keys.listen(onKeyEvent);
     }
   }
 
@@ -75,9 +75,9 @@ class _SuggestionsListKeyboardConnectorState
   }
 
   /// Handles the state of the controller updating
-  /// the [SuggestionsController.suggestionsFocused] property
+  /// the [SuggestionsController.focused] property
   void onControllerChanged() {
-    bool hasFocus = widget.controller.suggestionsFocused;
+    bool hasFocus = widget.controller.focused;
     if (hasFocus != wasFocused) {
       wasFocused = hasFocus;
       if (hasFocus) {
@@ -112,7 +112,7 @@ class _SuggestionsListKeyboardConnectorState
     if (index <= -1) {
       suggestionIndex = -1;
       if (focusNode.hasFocus) {
-        widget.controller.unfocusSuggestions();
+        widget.controller.unfocus();
       }
     } else {
       List<FocusNode> children = focusNode.children.toList();
@@ -122,7 +122,7 @@ class _SuggestionsListKeyboardConnectorState
       if (!target.hasFocus) {
         target.requestFocus();
       }
-      widget.controller.focusSuggestions();
+      widget.controller.focus();
     }
   }
 

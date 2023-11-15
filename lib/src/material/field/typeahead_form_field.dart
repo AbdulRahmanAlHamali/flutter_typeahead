@@ -61,7 +61,7 @@ class TypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     BaseTypeAheadFormFieldState<T> field,
     covariant TextFieldConfiguration config,
   ) {
-    return TypeAheadField(
+    return TypeAheadField<T>(
       animationDuration: animationDuration,
       animationStart: animationStart,
       autoFlipDirection: autoFlipDirection,

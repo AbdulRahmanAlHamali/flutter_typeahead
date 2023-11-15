@@ -176,7 +176,7 @@ void main() {
         ),
       );
 
-      controller.keyEvents.listen((event) => keyEventCalled = true);
+      controller.keys.listen((event) => keyEventCalled = true);
 
       focusNode.requestFocus();
       await tester.pump();

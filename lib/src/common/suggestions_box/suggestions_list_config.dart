@@ -27,7 +27,7 @@ class SuggestionsListConfig<T> {
     this.onSuggestionSelected,
     this.scrollController,
     required this.suggestionsController,
-    this.suggestionsCallback,
+    required this.suggestionsCallback,
     this.transitionBuilder,
   });
 
@@ -288,7 +288,7 @@ class SuggestionsListConfig<T> {
   /// This can be used to programmatically open and close the suggestions box,
   /// or to trigger a resize after a layout change.
   /// {@endtemplate}
-  final SuggestionsController suggestionsController;
+  final SuggestionsController<T> suggestionsController;
 
   /// {@template flutter_typeahead.SuggestionsListConfig.suggestionsCallback}
   /// Called with the search pattern to get the search suggestions.
@@ -311,7 +311,7 @@ class SuggestionsListConfig<T> {
   /// See also:
   /// * [debounceDuration], which is the duration to wait for changes in the text field before updating suggestions.
   /// {@endtemplate}
-  final SuggestionsCallback<T>? suggestionsCallback;
+  final SuggestionsCallback<T> suggestionsCallback;
 
   /// {@template flutter_typeahead.SuggestionsListConfig.transitionBuilder}
   /// Builder function for animating the suggestions list.

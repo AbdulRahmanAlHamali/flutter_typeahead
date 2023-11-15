@@ -8,7 +8,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_key
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_tap_connector.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
-class SuggestionsBox extends StatefulWidget {
+class SuggestionsBox<T> extends StatefulWidget {
   const SuggestionsBox({
     super.key,
     this.direction = AxisDirection.down,
@@ -26,12 +26,12 @@ class SuggestionsBox extends StatefulWidget {
   });
 
   /// The controller of the suggestions box.
-  final SuggestionsController? controller;
+  final SuggestionsController<T>? controller;
 
   /// The builder for the suggestions list.
   final Widget Function(
     BuildContext context,
-    SuggestionsController controller,
+    SuggestionsController<T> controller,
   ) suggestionsBuilder;
 
   /// The focus node of the child of the suggestions box.
@@ -90,31 +90,31 @@ class SuggestionsBox extends StatefulWidget {
   final bool hideWithKeyboard;
 
   @override
-  State<SuggestionsBox> createState() => _SuggestionsBoxState();
+  State<SuggestionsBox<T>> createState() => _SuggestionsBoxState<T>();
 }
 
-class _SuggestionsBoxState extends State<SuggestionsBox> {
+class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
   final FloaterLink link = FloaterLink();
-  late SuggestionsController controller;
+  late SuggestionsController<T> controller;
   late StreamSubscription<void> resizeSubscription;
 
   @override
   void initState() {
     super.initState();
-    controller = widget.controller ?? SuggestionsController();
-    resizeSubscription = controller.resizeEvents.listen((_) => onResize());
+    controller = widget.controller ?? SuggestionsController<T>();
+    resizeSubscription = controller.resizes.listen((_) => onResize());
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsBox oldWidget) {
+  void didUpdateWidget(covariant SuggestionsBox<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       if (oldWidget.controller == null) {
         controller.dispose();
       }
-      controller = widget.controller ?? SuggestionsController();
+      controller = widget.controller ?? SuggestionsController<T>();
       resizeSubscription.cancel();
-      resizeSubscription = controller.resizeEvents.listen((_) => onResize());
+      resizeSubscription = controller.resizes.listen((_) => onResize());
     }
   }
 

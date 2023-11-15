@@ -182,10 +182,8 @@ mixin SharedSettingsTypeAheadConfig {
           ? const Divider(height: 1)
           : const SizedBox.shrink();
 
-  Widget gridLayoutBuilder(
-      Iterable<Widget> items, ScrollController controller) {
+  Widget gridLayoutBuilder(BuildContext context, List<Widget> items) {
     return GridView.builder(
-      controller: controller,
       padding: const EdgeInsets.all(8),
       itemCount: items.length,
       shrinkWrap: true,
