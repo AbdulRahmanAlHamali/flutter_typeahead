@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 /// Connects the suggestions box to the focus node of the child.
@@ -37,9 +38,6 @@ class _SuggestionsBoxFocusConnectorState<T>
   @override
   void initState() {
     super.initState();
-    widget.focusNode.addListener(onFocusChanged);
-    widget.controller.addListener(onControllerChanged);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       widget.controller.resize();
@@ -47,26 +45,6 @@ class _SuggestionsBoxFocusConnectorState<T>
         widget.controller.open();
       }
     });
-  }
-
-  @override
-  void didUpdateWidget(covariant SuggestionsBoxFocusConnector<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.focusNode != widget.focusNode) {
-      oldWidget.focusNode.removeListener(onFocusChanged);
-      widget.focusNode.addListener(onFocusChanged);
-    }
-    if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(onControllerChanged);
-      widget.controller.addListener(onControllerChanged);
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.focusNode.removeListener(onFocusChanged);
-    widget.controller.removeListener(onControllerChanged);
-    super.dispose();
   }
 
   /// Handles when the state of the suggestions box changes.
@@ -90,5 +68,15 @@ class _SuggestionsBoxFocusConnectorState<T>
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) => ConnectorWidget(
+        value: widget.focusNode,
+        connect: (value) => value.addListener(onFocusChanged),
+        disconnect: (value, key) => value.removeListener(onFocusChanged),
+        child: ConnectorWidget(
+          value: widget.controller,
+          connect: (value) => value.addListener(onControllerChanged),
+          disconnect: (value, key) => value.removeListener(onControllerChanged),
+          child: widget.child,
+        ),
+      );
 }

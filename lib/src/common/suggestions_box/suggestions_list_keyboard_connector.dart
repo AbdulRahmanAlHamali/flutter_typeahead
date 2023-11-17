@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_traversal_connector.dart';
 
@@ -31,34 +32,6 @@ class _SuggestionsListKeyboardConnectorState<T>
   late StreamSubscription<VerticalDirection>? keyEventsSubscription;
   int suggestionIndex = -1;
   bool wasFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(onControllerChanged);
-    keyEventsSubscription = widget.controller.keys.listen(onKeyEvent);
-    focusNode.addListener(onFocusChanged);
-  }
-
-  @override
-  void didUpdateWidget(
-      covariant SuggestionsListKeyboardConnector<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(onControllerChanged);
-      keyEventsSubscription?.cancel();
-      widget.controller.addListener(onControllerChanged);
-      keyEventsSubscription = widget.controller.keys.listen(onKeyEvent);
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.controller.removeListener(onControllerChanged);
-    keyEventsSubscription?.cancel();
-    focusNode.removeListener(onFocusChanged);
-    super.dispose();
-  }
 
   void onFocusChanged() {
     if (focusNode.hasFocus) {
@@ -128,12 +101,27 @@ class _SuggestionsListKeyboardConnectorState<T>
 
   @override
   Widget build(BuildContext context) {
-    return FocusScope(
-      node: focusNode,
-      child: SuggestionsTraversalConnector<T>(
-        controller: widget.controller,
-        focusNode: focusNode,
-        child: widget.child,
+    return ConnectorWidget(
+      value: focusNode,
+      connect: (value) => value.addListener(onFocusChanged),
+      disconnect: (value, key) => value.removeListener(onFocusChanged),
+      child: ConnectorWidget(
+        value: widget.controller,
+        connect: (value) => value.addListener(onControllerChanged),
+        disconnect: (value, key) => value.removeListener(onControllerChanged),
+        child: ConnectorWidget(
+          value: widget.controller.keys,
+          connect: (value) => value.listen(onKeyEvent),
+          disconnect: (value, key) => key?.cancel(),
+          child: FocusScope(
+            node: focusNode,
+            child: SuggestionsTraversalConnector<T>(
+              controller: widget.controller,
+              focusNode: focusNode,
+              child: widget.child,
+            ),
+          ),
+        ),
       ),
     );
   }

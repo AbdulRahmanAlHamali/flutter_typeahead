@@ -117,5 +117,53 @@ void main() {
       expect(find.byKey(const Key('child')), findsOneWidget);
       expect(animationValue, equals(1));
     });
+
+    testWidgets('updates animation duration', (WidgetTester tester) async {
+      double animationValue = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsListAnimation(
+              controller: controller,
+              animationDuration: Duration.zero,
+              child: const SizedBox(),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsListAnimation(
+              controller: controller,
+              animationDuration: const Duration(milliseconds: 2),
+              child: const SizedBox(),
+              transitionBuilder: (context, animation, child) =>
+                  ValueListenableBuilder(
+                valueListenable: animation,
+                builder: (context, value, _) {
+                  animationValue = animation.value;
+                  return child;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      controller.open();
+
+      await tester.pump();
+
+      await tester.pump(const Duration(milliseconds: 1));
+
+      expect(animationValue, equals(0.5));
+
+      await tester.pump(const Duration(milliseconds: 1));
+
+      expect(animationValue, equals(1));
+    });
   });
 }

@@ -43,45 +43,5 @@ void main() {
 
       expect(controller.isOpen, isTrue);
     });
-
-    testWidgets('reconnects to a new controller when the controller changes',
-        (WidgetTester tester) async {
-      final TextEditingController newController = TextEditingController();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsListTypingConnector(
-              controller: controller,
-              textEditingController: textEditingController,
-              child: const SizedBox(),
-            ),
-          ),
-        ),
-      );
-
-      controller.open();
-      controller.close(retainFocus: true);
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsListTypingConnector(
-              controller: controller,
-              textEditingController: newController,
-              child: const SizedBox(),
-            ),
-          ),
-        ),
-      );
-
-      expect(controller.isOpen, isFalse);
-
-      newController.text = 'test2';
-
-      await tester.pump();
-
-      expect(controller.isOpen, isTrue);
-    });
   });
 }

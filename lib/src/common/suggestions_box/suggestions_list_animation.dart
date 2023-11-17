@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
@@ -45,7 +46,6 @@ class _SuggestionsListAnimationState<T>
       vsync: this,
       duration: animationDuration,
     );
-    widget.controller.addListener(onOpenedChanged);
     hidden = !widget.controller.isOpen;
     if (!hidden) {
       animationController.value =
@@ -57,10 +57,6 @@ class _SuggestionsListAnimationState<T>
   @override
   void didUpdateWidget(covariant SuggestionsListAnimation<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(onOpenedChanged);
-      widget.controller.addListener(onOpenedChanged);
-    }
     if (widget.animationDuration != oldWidget.animationDuration) {
       animationDuration = widget.animationDuration ?? defaultAnimationDuration;
       animationController.duration = animationDuration;
@@ -70,7 +66,6 @@ class _SuggestionsListAnimationState<T>
   @override
   void dispose() {
     animationController.dispose();
-    widget.controller.removeListener(onOpenedChanged);
     super.dispose();
   }
 
@@ -119,6 +114,12 @@ class _SuggestionsListAnimationState<T>
       child: child,
     );
 
-    return child;
+    return ConnectorWidget(
+      value: widget.controller,
+      connect: (value) => widget.controller.addListener(onOpenedChanged),
+      disconnect: (value, key) =>
+          widget.controller.removeListener(onOpenedChanged),
+      child: child,
+    );
   }
 }
