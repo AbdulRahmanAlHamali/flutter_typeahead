@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 /// A widget that helps reopening the suggestions list when the text changes.
@@ -25,27 +26,6 @@ class _SuggestionsListTypingConnectorState<T>
     extends State<SuggestionsListTypingConnector<T>> {
   String? previousText;
 
-  @override
-  void initState() {
-    super.initState();
-    widget.textEditingController.addListener(onTextChange);
-  }
-
-  @override
-  void didUpdateWidget(covariant SuggestionsListTypingConnector<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.textEditingController != widget.textEditingController) {
-      oldWidget.textEditingController.removeListener(onTextChange);
-      widget.textEditingController.addListener(onTextChange);
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.textEditingController.removeListener(onTextChange);
-    super.dispose();
-  }
-
   void onTextChange() {
     if (previousText == widget.textEditingController.text) return;
     previousText = widget.textEditingController.text;
@@ -56,5 +36,12 @@ class _SuggestionsListTypingConnectorState<T>
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) {
+    return ConnectorWidget(
+      value: widget.textEditingController,
+      connect: (value) => value.addListener(onTextChange),
+      disconnect: (value, key) => value.removeListener(onTextChange),
+      child: widget.child,
+    );
+  }
 }

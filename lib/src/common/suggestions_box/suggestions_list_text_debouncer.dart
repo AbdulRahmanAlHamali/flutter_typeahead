@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 
 /// A widget that notifies of changes to a [TextEditingController],
 /// but only after a specified duration has passed since the last change.
@@ -41,7 +42,7 @@ class _SuggestionsListTextDebouncerState
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(onChange);
+    // avoid triggering a change when the widget is first built
     lastTextValue = widget.controller.text;
   }
 
@@ -64,25 +65,19 @@ class _SuggestionsListTextDebouncerState
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsListTextDebouncer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller != widget.controller) {
-      debounceTimer?.cancel();
-      oldWidget.controller.removeListener(onChange);
-      widget.controller.addListener(onChange);
-      onChange();
-    }
-  }
-
-  @override
-  void dispose() {
-    debounceTimer?.cancel();
-    widget.controller.removeListener(onChange);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return ConnectorWidget(
+      value: widget.controller,
+      connect: (value) {
+        // if we switch controllers, we call onChange.
+        onChange();
+        value.addListener(onChange);
+      },
+      disconnect: (value, key) {
+        debounceTimer?.cancel();
+        value.removeListener(onChange);
+      },
+      child: widget.child,
+    );
   }
 }
