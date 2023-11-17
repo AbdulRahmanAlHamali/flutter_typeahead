@@ -31,22 +31,26 @@ class SuggestionsTraversalConnector<T> extends StatelessWidget {
     }
   }
 
+  FocusOnKeyEventCallback wrapOnKeyEvent(
+    FocusOnKeyEventCallback? previousOnKeyEvent,
+  ) {
+    return (node, event) {
+      KeyEventResult result = onKeyEvent(node, event);
+      KeyEventResult? otherResult = previousOnKeyEvent?.call(node, event);
+      return switch (otherResult) {
+        null || KeyEventResult.ignored => result,
+        _ => otherResult,
+      };
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return ConnectorWidget(
       value: focusNode,
       connect: (value) {
         FocusOnKeyEventCallback? previousOnKeyEvent = focusNode.onKeyEvent;
-
-        focusNode.onKeyEvent = ((node, event) {
-          KeyEventResult result = onKeyEvent(node, event);
-          KeyEventResult? otherResult = previousOnKeyEvent?.call(node, event);
-          return switch (otherResult) {
-            null || KeyEventResult.ignored => result,
-            _ => otherResult,
-          };
-        });
-
+        focusNode.onKeyEvent = wrapOnKeyEvent(previousOnKeyEvent);
         return previousOnKeyEvent;
       },
       disconnect: (value, previousOnKeyEvent) =>
