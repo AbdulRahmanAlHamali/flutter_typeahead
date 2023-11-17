@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 /// A controller of a SuggestionsBox.
@@ -57,22 +56,12 @@ class SuggestionsController<T> extends ChangeNotifier {
   bool _retainFocus = false;
 
   /// A stream of up and down arrow key occuring on any focus node of the suggestions box.
-  Stream<LogicalKeyboardKey> get keys => _keyEventController.stream;
-  final StreamController<LogicalKeyboardKey> _keyEventController =
-      StreamController<LogicalKeyboardKey>.broadcast();
+  Stream<VerticalDirection> get keys => _keyEventController.stream;
+  final StreamController<VerticalDirection> _keyEventController =
+      StreamController<VerticalDirection>.broadcast();
 
   /// Should be called when a key is pressed on any focus node of the suggestions box.
-  KeyEventResult sendKey(FocusNode node, KeyEvent key) {
-    if (key is! KeyDownEvent) return KeyEventResult.ignored;
-    if ([
-      LogicalKeyboardKey.arrowDown,
-      LogicalKeyboardKey.arrowUp,
-    ].contains(key.logicalKey)) {
-      _keyEventController.add(key.logicalKey);
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
-  }
+  void sendKey(VerticalDirection key) => _keyEventController.add(key);
 
   /// A stream of events that occur when the suggestions box should be resized.
   Stream<void> get resizes => _resizesController.stream;

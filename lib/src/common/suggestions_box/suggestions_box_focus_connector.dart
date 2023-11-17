@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_control
 /// This is a two way connection:
 /// * When the focus of the child changes, the suggestions box is opened or closed.
 /// * When the suggestions box is opened, the focus is moved to the suggestions box.
-class SuggestionsBoxFocusConnector extends StatefulWidget {
+class SuggestionsBoxFocusConnector<T> extends StatefulWidget {
   const SuggestionsBoxFocusConnector({
     super.key,
     required this.controller,
@@ -16,7 +16,7 @@ class SuggestionsBoxFocusConnector extends StatefulWidget {
   });
 
   /// The controller of the suggestions box.
-  final SuggestionsController controller;
+  final SuggestionsController<T> controller;
 
   /// The focus node of the child of the suggestions box.
   final FocusNode focusNode;
@@ -28,19 +28,16 @@ class SuggestionsBoxFocusConnector extends StatefulWidget {
   final bool hideOnUnfocus;
 
   @override
-  State<SuggestionsBoxFocusConnector> createState() =>
-      _SuggestionsBoxFocusConnectorState();
+  State<SuggestionsBoxFocusConnector<T>> createState() =>
+      _SuggestionsBoxFocusConnectorState<T>();
 }
 
-class _SuggestionsBoxFocusConnectorState
-    extends State<SuggestionsBoxFocusConnector> {
-  /// The previous onKeyEvent callback of the focus node.
-  FocusOnKeyEventCallback? previousOnKeyEvent;
-
+class _SuggestionsBoxFocusConnectorState<T>
+    extends State<SuggestionsBoxFocusConnector<T>> {
   @override
   void initState() {
     super.initState();
-    registerFocusNode(widget.focusNode);
+    widget.focusNode.addListener(onFocusChanged);
     widget.controller.addListener(onControllerChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,11 +50,11 @@ class _SuggestionsBoxFocusConnectorState
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsBoxFocusConnector oldWidget) {
+  void didUpdateWidget(covariant SuggestionsBoxFocusConnector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.focusNode != widget.focusNode) {
-      unregisterFocusNode(oldWidget.focusNode);
-      registerFocusNode(widget.focusNode);
+      oldWidget.focusNode.removeListener(onFocusChanged);
+      widget.focusNode.addListener(onFocusChanged);
     }
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller.removeListener(onControllerChanged);
@@ -67,37 +64,12 @@ class _SuggestionsBoxFocusConnectorState
 
   @override
   void dispose() {
-    unregisterFocusNode(widget.focusNode);
+    widget.focusNode.removeListener(onFocusChanged);
     widget.controller.removeListener(onControllerChanged);
     super.dispose();
   }
 
-  /// Registers a focus node with the suggestions box.
-  ///
-  /// This overrides the focus node's onKeyEvent to call the controller's onKeyEvent.
-  void registerFocusNode(FocusNode focusNode) {
-    focusNode.addListener(onFocusChanged);
-    previousOnKeyEvent = focusNode.onKeyEvent;
-    focusNode.onKeyEvent = ((node, event) {
-      final keyEventResult = onKeyEvent(node, event);
-      return previousOnKeyEvent?.call(node, event) ?? keyEventResult;
-    });
-  }
-
-  /// Handles passing key events to the controller.
-  KeyEventResult onKeyEvent(FocusNode node, KeyEvent key) {
-    return widget.controller.sendKey(node, key);
-  }
-
-  /// Unregisters a focus node with the suggestions box.
-  ///
-  /// This restores the focus node's onKeyEvent to the previous value.
-  void unregisterFocusNode(FocusNode focusNode) {
-    focusNode.removeListener(onFocusChanged);
-    focusNode.onKeyEvent = previousOnKeyEvent;
-    previousOnKeyEvent = null;
-  }
-
+  /// Handles when the state of the suggestions box changes.
   void onControllerChanged() {
     if (widget.controller.isOpen) {
       widget.focusNode.requestFocus();

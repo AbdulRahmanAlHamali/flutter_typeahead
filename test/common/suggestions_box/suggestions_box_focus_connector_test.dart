@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
@@ -157,34 +156,6 @@ void main() {
       await tester.pump();
 
       expect(focusNode.hasFocus, isFalse);
-    });
-
-    testWidgets('proxies key events to the controller',
-        (WidgetTester tester) async {
-      bool keyEventCalled = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: SuggestionsBoxFocusConnector(
-            controller: controller,
-            focusNode: focusNode,
-            child: Focus(
-              focusNode: focusNode,
-              child: Container(),
-            ),
-          ),
-        ),
-      );
-
-      controller.keys.listen((event) => keyEventCalled = true);
-
-      focusNode.requestFocus();
-      await tester.pump();
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pump();
-
-      expect(keyEventCalled, isTrue);
     });
 
     testWidgets('reconnects if new focus node is given',

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_keyboard_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_traversal_connector.dart';
 
 void main() {
   group('SuggestionsListKeyboardConnector Tests', () {
@@ -19,11 +20,8 @@ void main() {
     setUp(() {
       controller = SuggestionsController();
       controller.addListener(onSuggestionsListUnfocus);
-      focusNodes =
-          List.generate(2, (_) => FocusNode(onKeyEvent: controller.sendKey));
-      outsideFocusNode = FocusNode(
-        onKeyEvent: controller.sendKey,
-      );
+      focusNodes = List.generate(2, (_) => FocusNode());
+      outsideFocusNode = FocusNode();
     });
 
     tearDown(() {
@@ -51,7 +49,11 @@ void main() {
                     focusNodes.length,
                     (index) => Focus(
                       focusNode: focusNodes[index],
-                      child: const SizedBox(),
+                      child: SuggestionsTraversalConnector(
+                        controller: controller,
+                        focusNode: focusNodes[index],
+                        child: const SizedBox(),
+                      ),
                     ),
                   ),
                 ),
@@ -59,7 +61,11 @@ void main() {
               Focus(
                 focusNode: outsideFocusNode,
                 autofocus: true,
-                child: const SizedBox(),
+                child: SuggestionsTraversalConnector(
+                  controller: controller,
+                  focusNode: outsideFocusNode,
+                  child: const SizedBox(),
+                ),
               ),
             ],
           ),
@@ -115,7 +121,11 @@ void main() {
                     focusNodes.length,
                     (index) => Focus(
                       focusNode: focusNodes[index],
-                      child: const SizedBox(),
+                      child: SuggestionsTraversalConnector(
+                        controller: controller,
+                        focusNode: focusNodes[index],
+                        child: const SizedBox(),
+                      ),
                     ),
                   ),
                 ),
@@ -123,7 +133,11 @@ void main() {
               Focus(
                 focusNode: outsideFocusNode,
                 autofocus: true,
-                child: const SizedBox(),
+                child: SuggestionsTraversalConnector(
+                  controller: controller,
+                  focusNode: outsideFocusNode,
+                  child: const SizedBox(),
+                ),
               ),
             ],
           ),
