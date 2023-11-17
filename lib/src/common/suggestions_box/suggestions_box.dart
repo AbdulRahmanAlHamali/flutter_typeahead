@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_control
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_tap_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_traversal_connector.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
 class SuggestionsBox<T> extends StatefulWidget {
@@ -173,12 +174,16 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
           controller: controller,
           focusNode: widget.focusNode,
           hideOnUnfocus: widget.hideOnUnfocus,
-          child: SuggestionsBoxKeyboardConnector(
+          child: SuggestionsTraversalConnector<T>(
             controller: controller,
-            hideWithKeyboard: widget.hideWithKeyboard,
-            child: SuggestionsBoxTapConnector(
+            focusNode: widget.focusNode,
+            child: SuggestionsBoxKeyboardConnector(
               controller: controller,
-              child: widget.child,
+              hideWithKeyboard: widget.hideWithKeyboard,
+              child: SuggestionsBoxTapConnector(
+                controller: controller,
+                child: widget.child,
+              ),
             ),
           ),
         ),

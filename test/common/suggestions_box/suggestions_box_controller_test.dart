@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
@@ -107,45 +106,11 @@ void main() {
     });
 
     test('sends up or down arrow key down event', () async {
-      FocusNode focusNode = FocusNode();
       bool called = false;
       controller.keys.listen((_) => called = true);
-      controller.sendKey(
-        focusNode,
-        const KeyDownEvent(
-          physicalKey: PhysicalKeyboardKey.arrowDown,
-          logicalKey: LogicalKeyboardKey.arrowDown,
-          timeStamp: Duration.zero,
-        ),
-      );
+      controller.sendKey(VerticalDirection.down);
       await Future<void>.value();
       expect(called, isTrue);
-    });
-
-    test('does not send other key events', () async {
-      FocusNode focusNode = FocusNode();
-      bool called = false;
-      controller.keys.listen((_) => called = true);
-      controller.sendKey(
-        focusNode,
-        const KeyDownEvent(
-          physicalKey: PhysicalKeyboardKey.arrowLeft,
-          logicalKey: LogicalKeyboardKey.arrowLeft,
-          timeStamp: Duration.zero,
-        ),
-      );
-      await Future<void>.value();
-      expect(called, isFalse);
-      controller.sendKey(
-        focusNode,
-        const KeyUpEvent(
-          physicalKey: PhysicalKeyboardKey.arrowDown,
-          logicalKey: LogicalKeyboardKey.arrowDown,
-          timeStamp: Duration.zero,
-        ),
-      );
-      await Future<void>.value();
-      expect(called, isFalse);
     });
   });
 }

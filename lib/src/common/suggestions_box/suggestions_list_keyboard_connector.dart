@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_traversal_connector.dart';
 
 /// Enables keyboard navigation for the suggestions list.
 class SuggestionsListKeyboardConnector<T> extends StatefulWidget {
@@ -26,10 +26,9 @@ class _SuggestionsListKeyboardConnectorState<T>
     extends State<SuggestionsListKeyboardConnector<T>> {
   late final FocusScopeNode focusNode = FocusScopeNode(
     debugLabel: 'SuggestionsListFocus',
-    onKeyEvent: (node, key) => widget.controller.sendKey(node, key),
   );
 
-  late StreamSubscription<LogicalKeyboardKey>? keyEventsSubscription;
+  late StreamSubscription<VerticalDirection>? keyEventsSubscription;
   int suggestionIndex = -1;
   bool wasFocused = false;
 
@@ -89,16 +88,16 @@ class _SuggestionsListKeyboardConnectorState<T>
     }
   }
 
-  void onKeyEvent(LogicalKeyboardKey key) {
-    Map<LogicalKeyboardKey, int> keyMap = {
-      LogicalKeyboardKey.arrowUp: -1,
-      LogicalKeyboardKey.arrowDown: 1,
+  void onKeyEvent(VerticalDirection key) {
+    Map<VerticalDirection, int> keyMap = {
+      VerticalDirection.up: -1,
+      VerticalDirection.down: 1,
     };
 
     if (widget.direction == AxisDirection.up) {
       keyMap = {
-        LogicalKeyboardKey.arrowUp: 1,
-        LogicalKeyboardKey.arrowDown: -1,
+        VerticalDirection.up: 1,
+        VerticalDirection.down: -1,
       };
     }
 
@@ -131,7 +130,11 @@ class _SuggestionsListKeyboardConnectorState<T>
   Widget build(BuildContext context) {
     return FocusScope(
       node: focusNode,
-      child: widget.child,
+      child: SuggestionsTraversalConnector<T>(
+        controller: widget.controller,
+        focusNode: focusNode,
+        child: widget.child,
+      ),
     );
   }
 }
