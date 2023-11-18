@@ -4,8 +4,8 @@ import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.da
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 /// Hides the suggestions box when the keyboard is closed.
-class SuggestionsBoxKeyboardConnector extends StatelessWidget {
-  const SuggestionsBoxKeyboardConnector({
+class SuggestionsFieldKeyboardConnector extends StatelessWidget {
+  const SuggestionsFieldKeyboardConnector({
     super.key,
     required this.controller,
     required this.child,

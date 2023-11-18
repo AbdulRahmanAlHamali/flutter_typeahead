@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_focus_connector.dart';
 
 void main() {
-  group('SuggestionsBoxFocusConnector', () {
+  group('SuggestionsFieldFocusConnector', () {
     late SuggestionsController controller;
     late FocusNode focusNode;
 
@@ -22,7 +22,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsBoxFocusConnector(
+          home: SuggestionsFieldFocusConnector(
             controller: controller,
             focusNode: focusNode,
             child: Focus(
@@ -43,7 +43,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsBoxFocusConnector(
+          home: SuggestionsFieldFocusConnector(
             controller: controller,
             focusNode: focusNode,
             child: Focus(
@@ -77,7 +77,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsBoxFocusConnector(
+          home: SuggestionsFieldFocusConnector(
             controller: controller,
             focusNode: focusNode,
             child: Focus(
@@ -96,7 +96,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsBoxFocusConnector(
+          home: SuggestionsFieldFocusConnector(
             controller: controller,
             focusNode: focusNode,
             hideOnUnfocus: false,
@@ -120,7 +120,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsBoxFocusConnector(
+          home: SuggestionsFieldFocusConnector(
             controller: controller,
             focusNode: focusNode,
             child: Focus(
@@ -141,7 +141,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsBoxFocusConnector(
+          home: SuggestionsFieldFocusConnector(
             controller: controller,
             focusNode: focusNode,
             child: Focus(

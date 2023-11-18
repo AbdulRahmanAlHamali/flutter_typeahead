@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
 import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
@@ -389,7 +389,7 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return SuggestionsBox<T>(
+    return SuggestionsField<T>(
       controller: widget.suggestionsController,
       direction: widget.direction,
       offset: widget.suggestionsDecoration.offset,

@@ -4,8 +4,8 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_control
 /// A widget that helps reopening the suggestions list when the user taps it.
 ///
 /// This happens after a suggestion has been selected.
-class SuggestionsBoxTapConnector extends StatelessWidget {
-  const SuggestionsBoxTapConnector({
+class SuggestionsFieldTapConnector extends StatelessWidget {
+  const SuggestionsFieldTapConnector({
     super.key,
     required this.controller,
     required this.child,

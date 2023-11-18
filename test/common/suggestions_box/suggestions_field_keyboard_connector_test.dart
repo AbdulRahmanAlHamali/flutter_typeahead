@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_keyboard_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 
 void main() {
-  group('SuggestionsBoxKeyboardConnector', () {
+  group('SuggestionsFieldKeyboardConnector', () {
     late SuggestionsController controller;
     late Widget child;
 
@@ -26,7 +26,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
-            child: SuggestionsBoxKeyboardConnector(
+            child: SuggestionsFieldKeyboardConnector(
               controller: controller,
               hideWithKeyboard: true,
               child: child,
@@ -51,7 +51,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
-            child: SuggestionsBoxKeyboardConnector(
+            child: SuggestionsFieldKeyboardConnector(
               controller: controller,
               hideWithKeyboard: false,
               child: child,
