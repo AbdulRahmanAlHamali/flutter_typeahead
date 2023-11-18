@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/floater.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_focus_connector.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_keyboard_connector.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box_tap_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_focus_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_keyboard_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_tap_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_traversal_connector.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
-class SuggestionsBox<T> extends StatefulWidget {
-  const SuggestionsBox({
+class SuggestionsField<T> extends StatefulWidget {
+  const SuggestionsField({
     super.key,
     this.direction = AxisDirection.down,
     required this.controller,
@@ -91,10 +91,10 @@ class SuggestionsBox<T> extends StatefulWidget {
   final bool hideWithKeyboard;
 
   @override
-  State<SuggestionsBox<T>> createState() => _SuggestionsBoxState<T>();
+  State<SuggestionsField<T>> createState() => _SuggestionsFieldState<T>();
 }
 
-class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
+class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
   final FloaterLink link = FloaterLink();
   late SuggestionsController<T> controller;
   late StreamSubscription<void> resizeSubscription;
@@ -107,7 +107,7 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant SuggestionsBox<T> oldWidget) {
+  void didUpdateWidget(covariant SuggestionsField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       if (oldWidget.controller == null) {
@@ -170,17 +170,17 @@ class _SuggestionsBoxState<T> extends State<SuggestionsBox<T>> {
       },
       child: FloaterTarget(
         link: link,
-        child: SuggestionsBoxFocusConnector(
+        child: SuggestionsFieldFocusConnector(
           controller: controller,
           focusNode: widget.focusNode,
           hideOnUnfocus: widget.hideOnUnfocus,
           child: SuggestionsTraversalConnector<T>(
             controller: controller,
             focusNode: widget.focusNode,
-            child: SuggestionsBoxKeyboardConnector(
+            child: SuggestionsFieldKeyboardConnector(
               controller: controller,
               hideWithKeyboard: widget.hideWithKeyboard,
-              child: SuggestionsBoxTapConnector(
+              child: SuggestionsFieldTapConnector(
                 controller: controller,
                 child: widget.child,
               ),
