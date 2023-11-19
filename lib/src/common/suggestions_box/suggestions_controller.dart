@@ -10,6 +10,29 @@ class SuggestionsController<T> extends ChangeNotifier {
   /// This is used to open, close, toggle and resize the suggestions box.
   SuggestionsController();
 
+  static SuggestionsController<T>? maybeOf<T>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<SuggestionsControllerProvider<T>>()
+        ?.notifier;
+  }
+
+  static SuggestionsController<T> of<T>(BuildContext context) {
+    SuggestionsController<T>? controller = maybeOf<T>(context);
+    if (controller == null) {
+      throw FlutterError.fromParts(
+        [
+          ErrorSummary('No SuggestionsController found in the context. '),
+          ErrorDescription(
+            'SuggestionsControllers are only available inside SuggestionsBox widgets.',
+          ),
+          ErrorHint('Are you inside a SuggestionsBox?'),
+          context.describeElement('The context used was')
+        ],
+      );
+    }
+    return controller;
+  }
+
   /// The current suggestions of the suggestions box.
   List<T>? get suggestions =>
       _suggestions == null ? null : List.of(_suggestions!);
@@ -51,9 +74,51 @@ class SuggestionsController<T> extends ChangeNotifier {
   bool get isOpen => _isOpen;
   bool _isOpen = false;
 
+  /// Whether the suggestions box is focused.
+  bool get focused => _focused;
+  bool _focused = false;
+
   /// Whether the child of suggestions box should retain the focus when it is closed.
   bool get retainFocus => _retainFocus;
   bool _retainFocus = false;
+
+  /// The desired direction of the suggestions box.
+  ///
+  /// The suggestions box will try to open in this direction.
+  /// If there is insufficient space, it may open in the opposite direction,
+  /// depending on its configuration.
+  AxisDirection get direction => _direction;
+  set direction(AxisDirection value) {
+    if (_direction == value) return;
+    _direction = value;
+    notifyListeners();
+  }
+
+  AxisDirection _direction = AxisDirection.down;
+
+  /// The effective direction of the suggestions box.
+  /// This may or may not be the same as [direction].
+  ///
+  /// If you wish to change the direction of the suggestions box, use [direction].
+  ///
+  /// This value is typically set by the [SuggestionsField] widget.
+  /// You should not need to set it manually.
+  ///
+  /// This value can be used to determine e.g. the direction of the ScrollView
+  /// inside the suggestions box.
+  AxisDirection get effectiveDirection => _effectiveDirection;
+  set effectiveDirection(AxisDirection value) {
+    if (_effectiveDirection == value) return;
+    _effectiveDirection = value;
+    notifyListeners();
+  }
+
+  AxisDirection _effectiveDirection = AxisDirection.down;
+
+  /// A stream of events that occur when the suggestions box should be resized.
+  Stream<void> get resizes => _resizesController.stream;
+  final StreamController<void> _resizesController =
+      StreamController<void>.broadcast();
 
   /// A stream of up and down arrow key occuring on any focus node of the suggestions box.
   Stream<VerticalDirection> get keys => _keyEventController.stream;
@@ -63,10 +128,15 @@ class SuggestionsController<T> extends ChangeNotifier {
   /// Should be called when a key is pressed on any focus node of the suggestions box.
   void sendKey(VerticalDirection key) => _keyEventController.add(key);
 
-  /// A stream of events that occur when the suggestions box should be resized.
-  Stream<void> get resizes => _resizesController.stream;
-  final StreamController<void> _resizesController =
-      StreamController<void>.broadcast();
+  /// A stream of selected suggestions.
+  Stream<T> get selections => _selectionsController.stream;
+  final StreamController<T> _selectionsController =
+      StreamController<T>.broadcast();
+
+  /// Should be called when a suggestion is selected.
+  ///
+  /// This notifies potential listeners of the selection.
+  void select(T suggestion) => _selectionsController.add(suggestion);
 
   /// Resizes the suggestions box.
   ///
@@ -75,10 +145,6 @@ class SuggestionsController<T> extends ChangeNotifier {
     ChangeNotifier.debugAssertNotDisposed(this);
     _resizesController.add(null);
   }
-
-  /// Whether the suggestions box is focused.
-  bool get focused => _focused;
-  bool _focused = false;
 
   /// Focuses the suggestions box.
   void focus() {
@@ -136,4 +202,13 @@ class SuggestionsController<T> extends ChangeNotifier {
     _resizesController.close();
     super.dispose();
   }
+}
+
+class SuggestionsControllerProvider<T>
+    extends InheritedNotifier<SuggestionsController<T>> {
+  const SuggestionsControllerProvider({
+    super.key,
+    required SuggestionsController<T> controller,
+    required Widget child,
+  }) : super(notifier: controller, child: child);
 }

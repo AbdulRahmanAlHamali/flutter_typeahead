@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
@@ -12,7 +10,6 @@ class SuggestionsListAnimation<T> extends StatefulWidget {
     required this.controller,
     required this.child,
     this.transitionBuilder,
-    this.direction = AxisDirection.down,
     this.animationStart,
     this.animationDuration,
   });
@@ -20,7 +17,6 @@ class SuggestionsListAnimation<T> extends StatefulWidget {
   final SuggestionsController<T> controller;
   final Widget child;
   final AnimationTransitionBuilder? transitionBuilder;
-  final AxisDirection direction;
   final double? animationStart;
   final Duration? animationDuration;
 
@@ -48,8 +44,6 @@ class _SuggestionsListAnimationState<T>
     );
     hidden = !widget.controller.isOpen;
     if (!hidden) {
-      animationController.value =
-          max(widget.animationStart ?? 0, animationController.value);
       animationController.forward();
     }
   }
@@ -73,8 +67,6 @@ class _SuggestionsListAnimationState<T>
   void onOpenedChanged() {
     if (widget.controller.isOpen) {
       setState(() => hidden = false);
-      animationController.value =
-          max(widget.animationStart ?? 0, animationController.value);
       animationController.forward();
     } else {
       animationController.reverse().whenComplete(
@@ -102,7 +94,7 @@ class _SuggestionsListAnimationState<T>
     }
 
     child = AnimatedSize(
-      alignment: widget.direction == AxisDirection.up
+      alignment: widget.controller.effectiveDirection == AxisDirection.up
           ? Alignment.bottomCenter
           : Alignment.topCenter,
       duration: animationDuration,

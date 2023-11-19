@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_form_field.dart';
 import 'package:flutter_typeahead/src/cupertino/field/cupertino_text_field_configuration.dart';
 import 'package:flutter_typeahead/src/cupertino/field/cupertino_typeahead_field.dart';
@@ -14,20 +13,19 @@ import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_sugges
 ///
 /// * [TypeAheadField], A [CupertinoTextField](https://docs.flutter.io/flutter/cupertino/CupertinoTextField-class.html)
 /// that displays a list of suggestions as the user types
-class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
+class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
   /// Creates a [CupertinoTypeAheadFormField]
   CupertinoTypeAheadFormField({
     super.key,
     super.animationDuration,
-    super.animationStart,
     super.autoFlipDirection,
     super.autoFlipListDirection,
     super.autoFlipMinHeight,
-    super.autovalidateMode,
+    super.controller,
     super.debounceDuration,
     super.direction,
-    super.enabled,
     super.errorBuilder,
+    super.focusNode,
     super.hideKeyboardOnDrag,
     super.hideOnEmpty,
     super.hideOnError,
@@ -35,60 +33,63 @@ class CupertinoTypeAheadFormField<T> extends BaseTypeAheadFormField<T> {
     super.hideOnUnfocus,
     super.hideWithKeyboard,
     super.hideOnSelect,
-    super.initialValue,
     required super.itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
-    super.layoutArchitecture,
     super.loadingBuilder,
     super.minCharsForSuggestions,
-    super.noItemsFoundBuilder,
+    super.emptyBuilder,
+    required super.onSelected,
+    super.scrollController,
+    super.suggestionsController,
+    required super.suggestionsCallback,
+    super.transitionBuilder,
+    super.wrapperBuilder,
+    super.constraints,
+    super.offset,
+    super.initialValue,
     super.onReset,
     super.onSaved,
-    required super.onSuggestionSelected,
-    super.suggestionsController,
-    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
-    required super.suggestionsCallback,
-    CupertinoTextFieldConfiguration super.textFieldConfiguration =
-        const CupertinoTextFieldConfiguration(),
-    super.transitionBuilder,
     super.validator,
-  });
+    super.autovalidateMode,
+    super.enabled,
+    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
+    this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
+  }) : super(
+          fieldBuilder: (field) => CupertinoTypeAheadField<T>(
+            animationDuration: animationDuration,
+            autoFlipDirection: autoFlipDirection,
+            autoFlipListDirection: autoFlipListDirection,
+            autoFlipMinHeight: autoFlipMinHeight,
+            debounceDuration: debounceDuration,
+            direction: direction,
+            errorBuilder: errorBuilder,
+            hideKeyboardOnDrag: hideKeyboardOnDrag,
+            hideOnEmpty: hideOnEmpty,
+            hideOnError: hideOnError,
+            hideOnLoading: hideOnLoading,
+            hideOnUnfocus: hideOnUnfocus,
+            hideOnSelect: hideOnSelect,
+            itemBuilder: itemBuilder,
+            itemSeparatorBuilder: itemSeparatorBuilder,
+            keepSuggestionsOnLoading: keepSuggestionsOnLoading,
+            loadingBuilder: loadingBuilder,
+            minCharsForSuggestions: minCharsForSuggestions,
+            emptyBuilder: emptyBuilder,
+            onSelected: onSelected,
+            suggestionsController: suggestionsController,
+            suggestionsDecoration: suggestionsDecoration,
+            suggestionsCallback: suggestionsCallback,
+            textFieldConfiguration: textFieldConfiguration.copyWith(
+              controller: field.controller,
+            ),
+            transitionBuilder: transitionBuilder,
+          ),
+        );
 
-  @override
+  /// {@macro flutter_typeahead.TypeAheadField.suggestionsDecoration}
   final CupertinoSuggestionsDecoration suggestionsDecoration;
 
-  @override
-  Widget buildTextField(BaseTypeAheadFormFieldState<T> field,
-      covariant CupertinoTextFieldConfiguration config) {
-    return CupertinoTypeAheadField(
-      animationDuration: animationDuration,
-      animationStart: animationStart,
-      autoFlipDirection: autoFlipDirection,
-      autoFlipListDirection: autoFlipListDirection,
-      autoFlipMinHeight: autoFlipMinHeight,
-      debounceDuration: debounceDuration,
-      direction: direction,
-      errorBuilder: errorBuilder,
-      hideKeyboardOnDrag: hideKeyboardOnDrag,
-      hideOnEmpty: hideOnEmpty,
-      hideOnError: hideOnError,
-      hideOnLoading: hideOnLoading,
-      hideOnUnfocus: hideOnUnfocus,
-      hideOnSelect: hideOnSelect,
-      itemBuilder: itemBuilder,
-      itemSeparatorBuilder: itemSeparatorBuilder,
-      keepSuggestionsOnLoading: keepSuggestionsOnLoading,
-      layoutArchitecture: layoutArchitecture,
-      loadingBuilder: loadingBuilder,
-      minCharsForSuggestions: minCharsForSuggestions,
-      noItemsFoundBuilder: noItemsFoundBuilder,
-      onSuggestionSelected: onSuggestionSelected,
-      suggestionsController: suggestionsController,
-      suggestionsDecoration: suggestionsDecoration,
-      suggestionsCallback: suggestionsCallback,
-      textFieldConfiguration: config,
-      transitionBuilder: transitionBuilder,
-    );
-  }
+  /// {@macro flutter_typeahead.TypeAheadField.textFieldConfiguration}
+  final CupertinoTextFieldConfiguration textFieldConfiguration;
 }

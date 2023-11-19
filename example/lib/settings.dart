@@ -77,9 +77,8 @@ class SettingsTypeAhead extends StatelessWidget
               }
             },
             itemSeparatorBuilder: itemSeparatorBuilder,
-            layoutArchitecture:
-                settings.gridLayout.value ? gridLayoutBuilder : null,
-            onSuggestionSelected: onSuggestionSelected,
+            // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
+            onSelected: onSuggestionSelected,
             suggestionsCallback: suggestionsCallback,
           ),
         ),
@@ -159,9 +158,8 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
               }
             },
             itemSeparatorBuilder: itemSeparatorBuilder,
-            layoutArchitecture:
-                settings.gridLayout.value ? gridLayoutBuilder : null,
-            onSuggestionSelected: onSuggestionSelected,
+            // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
+            onSelected: onSuggestionSelected,
             suggestionsCallback: suggestionsCallback,
           ),
         ),

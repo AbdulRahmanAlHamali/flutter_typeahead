@@ -1,98 +1,98 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
-import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
 /// Base class to contain all the configuration parameters for the [TypeAheadField].
 ///
 /// This class is used to ensure parameters are consistent between all subclasses.
-abstract class TypeaheadFieldConfig<T> {
-  /// {@macro flutter_typeahead.SuggestionsListConfig.suggestionsCallback}
+abstract interface class TypeaheadFieldConfig<T> {
+  /// {@macro flutter_typeahead.SuggestionsList.textEditingController}
+  TextEditingController? get controller;
+
+  /// {@macro flutter_typeahead.SuggestionsField.focusNode}
+  FocusNode? get focusNode;
+
+  /// {@macro flutter_typeahead.SuggestionsBox.controller}
+  SuggestionsController<T>? get suggestionsController;
+
+  /// {@macro flutter_typeahead.SuggestionsField.onSelected}
+  ValueSetter<T>? get onSelected;
+
+  /// {@macro flutter_typeahead.SuggestionsField.direction}
+  AxisDirection? get direction;
+
+  /// {@macro flutter_typeahead.SuggestionsField.constraints}
+  BoxConstraints? get constraints;
+
+  /// {@macro flutter_typeahead.SuggestionsField.offset}
+  Offset? get offset;
+
+  /// {@macro flutter_typeahead.SuggestionsField.autoFlipDirection}
+  bool get autoFlipDirection;
+
+  /// {@macro flutter_typeahead.SuggestionsField.autoFlipMinHeight}
+  double get autoFlipMinHeight;
+
+  /// {@macro flutter_typeahead.SuggestionsField.hideOnUnfocus}
+  bool get hideOnUnfocus;
+
+  /// {@macro flutter_typeahead.SuggestionsField.hideOnSelect}
+  bool get hideOnSelect;
+
+  /// {@macro flutter_typeahead.SuggestionsField.hideWithKeyboard}
+  bool get hideWithKeyboard;
+
+  /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
+  ScrollController? get scrollController;
+
+  /// {@macro flutter_typeahead.SuggestionsBox.transitionBuilder}
+  AnimationTransitionBuilder? get transitionBuilder;
+
+  /// {@macro flutter_typeahead.SuggestionsBox.animationDuration}
+  Duration? get animationDuration;
+
+  /// {@macro flutter_typeahead.SuggestionsList.suggestionsCallback}
   SuggestionsCallback<T> get suggestionsCallback;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.onSuggestionSelected}
-  SuggestionSelectionCallback<T> get onSuggestionSelected;
+  /// {@macro flutter_typeahead.SuggestionsList.keepSuggestionsOnLoading}
+  bool? get keepSuggestionsOnLoading;
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideKeyboardOnDrag}
+  bool? get hideKeyboardOnDrag;
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideOnLoading}
+  bool? get hideOnLoading;
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideOnError}
+  bool? get hideOnError;
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideOnEmpty}
+  bool? get hideOnEmpty;
+
+  /// {@macro flutter_typeahead.SuggestionsList.loadingBuilder}
+  WidgetBuilder? get loadingBuilder;
+
+  //// {@macro flutter_typeahead.SuggestionsList.errorBuilder}
+  ErrorBuilder? get errorBuilder;
+
+  /// {@macro flutter_typeahead.SuggestionsList.emptyBuilder}
+  WidgetBuilder? get emptyBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.itemBuilder}
   ItemBuilder<T> get itemBuilder;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.itemSeparatorBuilder}
-  IndexedWidgetBuilder? get itemSeparatorBuilder;
+  /// {@macro flutter_typeahead.SuggestionsList.itemSeparatorBuilder}
+  ItemBuilder<int>? get itemSeparatorBuilder;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.layoutArchitecture}
-  LayoutArchitecture? get layoutArchitecture;
+  /// {@macro flutter_typeahead.SuggestionsList.wrapperBuilder}
+  Widget Function(BuildContext context, Widget child)? get wrapperBuilder;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.scrollController}
-  ScrollController? get scrollController;
+  /// {@macro flutter_typeahead.SuggestionsList.autoFlipListDirection}
+  bool? get autoFlipListDirection;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.suggestionsBox}
-  SuggestionsController<T>? get suggestionsController;
+  /// {@macro flutter_typeahead.SuggestionsList.debounce}
+  Duration? get debounceDuration;
 
-  /// The decoration of the sheet that contains the suggestions.
-  BaseSuggestionsDecoration get suggestionsDecoration;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.debounce}
-  Duration get debounceDuration;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.loadingBuilder}
-  WidgetBuilder? get loadingBuilder;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.noItemsFoundBuilder}
-  WidgetBuilder? get noItemsFoundBuilder;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.errorBuilder}
-  ErrorBuilder? get errorBuilder;
-
-  /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
-  /// that the TypeAhead widget displays.
-  BaseTextFieldConfiguration get textFieldConfiguration;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.transitionBuilder}
-  AnimationTransitionBuilder? get transitionBuilder;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.animationDuration}
-  Duration get animationDuration;
-
-  /// {@macro flutter_typeahead.SuggestionsBox.direction}
-  AxisDirection get direction;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.animationStart}
-  double get animationStart;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnLoading}
-  bool get hideOnLoading;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnEmpty}
-  bool get hideOnEmpty;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnError}
-  bool get hideOnError;
-
-  /// {@macro flutter_typeahead.SuggestionsBox.hideOnUnfocus}
-  bool get hideOnUnfocus;
-
-  /// {@macro flutter_typeahead.SuggestionsBox.hideWithKeyboard}
-  bool get hideWithKeyboard;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.hideOnSelect}
-  bool get hideOnSelect;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.keepSuggestionsOnLoading}
-  bool get keepSuggestionsOnLoading;
-
-  /// {@macro flutter_typeahead.SuggestionsBox.autoFlipDirection}
-  bool get autoFlipDirection;
-
-  /// {@macro flutter_typeahead.SuggestionsBox.autoFlipListDirection}
-  bool get autoFlipListDirection;
-
-  /// {@macro flutter_typeahead.SuggestionsBox.autoFlipMinHeight}
-  double get autoFlipMinHeight;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.minCharsForSuggestions}
-  int get minCharsForSuggestions;
-
-  /// {@macro flutter_typeahead.SuggestionsListConfig.hideKeyboardOnDrag}
-  bool get hideKeyboardOnDrag;
+  /// {@macro flutter_typeahead.SuggestionsList.minCharsForSuggestions}
+  int? get minCharsForSuggestions;
 }

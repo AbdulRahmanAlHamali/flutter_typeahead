@@ -124,18 +124,71 @@ class Floater extends StatefulWidget {
     this.autoFlipHeight = 64,
   });
 
+  /// The widget below this widget in the tree.
   final Widget? child;
+
+  /// Builds the content of the floater.
   final WidgetBuilder builder;
+
+  /// The link to the [FloaterTarget] to which the floater should attach.
   final FloaterLink link;
 
+  /// Whether the floater should inherit the width of the target.
   final bool followWidth;
+
+  /// Whether the floater should inherit the height of the target.
   final bool followHeight;
 
+  /// The desired direction of the floater.
+  ///
+  /// The floater will try to open in this direction.
+  /// This also defines how much space the floater has to grow.
   final AxisDirection direction;
+
+  /// The offset of the floater from the target.
+  ///
+  /// This is treated directionally, i.e. the offset is applied
+  /// in the direction of the floater.
+  ///
+  /// For example, if [direction] is [AxisDirection.down],
+  /// the offset is treated as is.
+  /// If [direction] is [AxisDirection.right],
+  /// the offset is applied as if it was [Offset(offset.dy, -offset.dx)].
   final Offset offset;
 
+  /// Whether the floater should automatically flip direction if there's not enough space.
+  ///
+  /// The minimum height of the floater is defined by [autoFlipHeight].
+  /// Defaults to false.
   final bool autoFlip;
+
+  /// The minimum height of the floater before it attempts to flip direction.
   final double autoFlipHeight;
+
+  /// Returns the [FloaterData] of the closest [Floater] ancestor, or null if there is no [Floater] ancestor.
+  static FloaterData? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_FloaterProvider>()?.data;
+
+  /// Returns the [FloaterData] of the closest [Floater] ancestor.
+  static FloaterData of(BuildContext context) {
+    FloaterData? data = maybeOf(context);
+    if (data == null) {
+      throw FlutterError.fromParts(
+        [
+          ErrorSummary(
+            'Floater.of() called with a context '
+            'that does not contain a Floater.',
+          ),
+          ErrorDescription(
+            'No Floater ancestor could be found '
+            'starting from the context that was passed to Floater.of().',
+          ),
+          context.describeElement('The context used was'),
+        ],
+      );
+    }
+    return data;
+  }
 
   @override
   State<Floater> createState() => _FloaterState();
@@ -397,11 +450,30 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
             followerAnchor: followerAnchor,
             child: Padding(
               padding: padding,
-              child: Align(
-                alignment: followerAnchor,
-                child: ConstrainedBox(
-                  constraints: constraints,
-                  child: widget.builder(context),
+              child: MediaQuery.removePadding(
+                context: context,
+                child: MediaQuery.removeViewInsets(
+                  context: context,
+                  child: Align(
+                    alignment: followerAnchor,
+                    child: ConstrainedBox(
+                      constraints: constraints,
+                      child: _FloaterProvider(
+                        data: FloaterData(
+                          size: Size(
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          ),
+                          offset: floaterOffset,
+                          direction: widget.direction,
+                          effectiveDirection: direction,
+                        ),
+                        child: Builder(
+                          builder: widget.builder,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -410,4 +482,56 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
       ),
     );
   }
+}
+
+/// Information about the current state of a [Floater].
+@immutable
+class FloaterData {
+  const FloaterData({
+    required this.size,
+    required this.offset,
+    required this.direction,
+    required this.effectiveDirection,
+  });
+
+  /// The maximum size of the floater.
+  final Size size;
+
+  /// The global offset of the floater.
+  final Offset offset;
+
+  /// The desired direction of the floater.
+  final AxisDirection direction;
+
+  /// The effective direction of the floater.
+  final AxisDirection effectiveDirection;
+
+  @override
+  bool operator ==(Object other) {
+    return other is FloaterData &&
+        other.size == size &&
+        other.offset == offset &&
+        other.direction == direction &&
+        other.effectiveDirection == effectiveDirection;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        size,
+        offset,
+        direction,
+        effectiveDirection,
+      );
+}
+
+class _FloaterProvider extends InheritedWidget {
+  const _FloaterProvider({
+    required this.data,
+    required Widget child,
+  }) : super(child: child);
+
+  final FloaterData data;
+
+  @override
+  bool updateShouldNotify(_FloaterProvider oldWidget) => oldWidget.data != data;
 }

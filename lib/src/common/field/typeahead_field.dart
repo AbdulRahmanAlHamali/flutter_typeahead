@@ -2,12 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
-import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
-/// {@template flutter_typeahead.BaseTypeAheadField}
+/// {@template flutter_typeahead.RawTypeAheadField}
 /// # Flutter TypeAhead
 /// A TypeAhead widget for Flutter, where you can show suggestions to
 /// users as they type
@@ -175,7 +174,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 /// however, override most of them.
 ///
 /// #### Customizing the loader, the error and the "no items found" message
-/// You can use the [loadingBuilder], [errorBuilder] and [noItemsFoundBuilder] to
+/// You can use the [loadingBuilder], [errorBuilder] and [emptyBuilder] to
 /// customize their corresponding widgets. For example, to show a custom error
 /// widget:
 /// ```dart
@@ -238,18 +237,20 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 /// See also:
 /// * [TypeAheadFormField], A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html) implementation of [TypeAheadField] that allows the value to be saved, validated, etc.
 /// {@endtemplate}
-abstract class BaseTypeAheadField<T> extends StatefulWidget
+abstract class RawTypeAheadField<T> extends StatefulWidget
     implements TypeaheadFieldConfig<T> {
-  const BaseTypeAheadField({
+  const RawTypeAheadField({
     super.key,
     this.animationDuration = const Duration(milliseconds: 200),
-    this.animationStart = 0.25,
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
+    required this.builder,
+    this.controller,
     this.debounceDuration = const Duration(milliseconds: 300),
     this.direction = AxisDirection.down,
-    this.errorBuilder,
+    required this.errorBuilder,
+    this.focusNode,
     this.hideKeyboardOnDrag = false,
     this.hideOnEmpty = false,
     this.hideOnError = false,
@@ -260,129 +261,126 @@ abstract class BaseTypeAheadField<T> extends StatefulWidget
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
-    this.layoutArchitecture,
-    this.loadingBuilder,
-    this.minCharsForSuggestions = 0,
-    this.noItemsFoundBuilder,
-    required this.onSuggestionSelected,
+    required this.loadingBuilder,
+    this.minCharsForSuggestions,
+    required this.emptyBuilder,
+    required this.onSelected,
     this.scrollController,
     this.suggestionsController,
     required this.suggestionsCallback,
     this.transitionBuilder,
-  })  : assert(animationStart >= 0 && animationStart <= 1),
-        assert(minCharsForSuggestions >= 0),
-        assert(
-          !hideKeyboardOnDrag || hideKeyboardOnDrag && !hideOnUnfocus,
-        );
+    this.wrapperBuilder,
+    this.constraints,
+    this.offset,
+  });
+
+  /// Builds the text field that will be used to search for the suggestions.
+  final Widget Function(
+    BuildContext context,
+    TextEditingController controller,
+    FocusNode focusNode,
+  ) builder;
 
   @override
-  final Duration animationDuration;
+  final TextEditingController? controller;
   @override
-  final double animationStart;
-  @override
-  final bool autoFlipDirection;
-  @override
-  final bool autoFlipListDirection;
-  @override
-  final double autoFlipMinHeight;
-  @override
-  final Duration debounceDuration;
-  @override
-  final AxisDirection direction;
-  @override
-  final ErrorBuilder? errorBuilder;
-  @override
-  final bool hideKeyboardOnDrag;
-  @override
-  final bool hideOnEmpty;
-  @override
-  final bool hideOnError;
-  @override
-  final bool hideOnLoading;
-  @override
-  final bool hideOnUnfocus;
-  @override
-  final bool hideWithKeyboard;
-  @override
-  final bool hideOnSelect;
-  @override
-  final ItemBuilder<T> itemBuilder;
-  @override
-  final IndexedWidgetBuilder? itemSeparatorBuilder;
-  @override
-  final bool keepSuggestionsOnLoading;
-  @override
-  final LayoutArchitecture? layoutArchitecture;
-  @override
-  final WidgetBuilder? loadingBuilder;
-  @override
-  final int minCharsForSuggestions;
-  @override
-  final WidgetBuilder? noItemsFoundBuilder;
-  @override
-  final SuggestionSelectionCallback<T> onSuggestionSelected;
-  @override
-  final ScrollController? scrollController;
+  final FocusNode? focusNode;
   @override
   final SuggestionsController<T>? suggestionsController;
   @override
-  final SuggestionsCallback<T> suggestionsCallback;
+  final ValueSetter<T>? onSelected;
+  @override
+  final AxisDirection? direction;
+  @override
+  final BoxConstraints? constraints;
+  @override
+  final Offset? offset;
+  @override
+  final bool autoFlipDirection;
+  @override
+  final double autoFlipMinHeight;
+  @override
+  final bool hideOnUnfocus;
+  @override
+  final bool hideOnSelect;
+  @override
+  final bool hideWithKeyboard;
+  @override
+  final ScrollController? scrollController;
   @override
   final AnimationTransitionBuilder? transitionBuilder;
-
-  Widget buildSuggestionsList(
-    BuildContext context,
-    SuggestionsListConfig<T> config,
-  );
-
-  Widget buildTextField(
-    BuildContext context,
-    BaseTextFieldConfiguration config,
-  );
+  @override
+  final Duration? animationDuration;
+  @override
+  final SuggestionsCallback<T> suggestionsCallback;
+  @override
+  final bool? keepSuggestionsOnLoading;
+  @override
+  final bool? hideKeyboardOnDrag;
+  @override
+  final bool? hideOnLoading;
+  @override
+  final bool? hideOnError;
+  @override
+  final bool? hideOnEmpty;
+  @override
+  final WidgetBuilder loadingBuilder;
+  @override
+  final Widget Function(BuildContext context, Object? error) errorBuilder;
+  @override
+  final WidgetBuilder emptyBuilder;
+  @override
+  final ItemBuilder<T> itemBuilder;
+  @override
+  final ItemBuilder<int>? itemSeparatorBuilder;
+  @override
+  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+  @override
+  final bool? autoFlipListDirection;
+  @override
+  final Duration? debounceDuration;
+  @override
+  final int? minCharsForSuggestions;
 
   @override
-  State<BaseTypeAheadField<T>> createState() => _BaseTypeAheadFieldState<T>();
+  State<RawTypeAheadField<T>> createState() => _BaseTypeAheadFieldState<T>();
 }
 
-class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
-  late TextEditingController _textEditingController;
-  late FocusNode _focusNode;
+class _BaseTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
+  late TextEditingController controller;
+  late FocusNode focusNode;
 
   @override
   void initState() {
     super.initState();
-    _textEditingController =
-        widget.textFieldConfiguration.controller ?? TextEditingController();
-    _focusNode = widget.textFieldConfiguration.focusNode ?? FocusNode();
+    controller = widget.controller ?? TextEditingController();
+    focusNode = widget.focusNode ?? FocusNode();
   }
 
   @override
-  void didUpdateWidget(covariant BaseTypeAheadField<T> oldWidget) {
+  void didUpdateWidget(covariant RawTypeAheadField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.textFieldConfiguration.controller !=
-        widget.textFieldConfiguration.controller) {
-      if (oldWidget.textFieldConfiguration.controller == null) {
-        _textEditingController.dispose();
+    if (oldWidget.controller != widget.controller) {
+      if (oldWidget.controller == null) {
+        controller.dispose();
       }
-      _textEditingController =
-          widget.textFieldConfiguration.controller ?? TextEditingController();
+      controller = widget.controller ?? TextEditingController();
     }
-    if (oldWidget.textFieldConfiguration.focusNode !=
-        widget.textFieldConfiguration.focusNode) {
-      if (oldWidget.textFieldConfiguration.focusNode == null) {
-        _focusNode.dispose();
+    if (oldWidget.focusNode != widget.focusNode) {
+      if (oldWidget.focusNode == null) {
+        focusNode.dispose();
       }
-      _focusNode = widget.textFieldConfiguration.focusNode ?? FocusNode();
+      focusNode = widget.focusNode ?? FocusNode();
     }
   }
 
   @override
   void dispose() {
-    if (widget.textFieldConfiguration.controller == null) {
-      _textEditingController.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
     }
-    if (widget.textFieldConfiguration.focusNode == null) {
-      _focusNode.dispose();
+    if (widget.focusNode == null) {
+      focusNode.dispose();
     }
     super.dispose();
   }
@@ -391,49 +389,38 @@ class _BaseTypeAheadFieldState<T> extends State<BaseTypeAheadField<T>> {
   Widget build(BuildContext context) {
     return SuggestionsField<T>(
       controller: widget.suggestionsController,
+      onSelected: widget.onSelected,
+      focusNode: focusNode,
       direction: widget.direction,
-      offset: widget.suggestionsDecoration.offset,
-      focusNode: _focusNode,
       autoFlipDirection: widget.autoFlipDirection,
       autoFlipMinHeight: widget.autoFlipMinHeight,
       hideOnUnfocus: widget.hideOnUnfocus,
-      suggestionsBuilder: (context, suggestionsBoxController) =>
-          widget.buildSuggestionsList(
-        context,
-        SuggestionsListConfig<T>(
-          animationDuration: widget.animationDuration,
-          animationStart: widget.animationStart,
-          autoFlipListDirection: widget.autoFlipListDirection,
-          controller: _textEditingController,
-          debounceDuration: widget.debounceDuration,
-          direction: widget.direction,
-          errorBuilder: widget.errorBuilder,
-          hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
-          hideOnEmpty: widget.hideOnEmpty,
-          hideOnError: widget.hideOnError,
-          hideOnLoading: widget.hideOnLoading,
-          itemBuilder: widget.itemBuilder,
-          itemSeparatorBuilder: widget.itemSeparatorBuilder,
-          keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
-          hideOnSelect: widget.hideOnSelect,
-          layoutArchitecture: widget.layoutArchitecture,
-          loadingBuilder: widget.loadingBuilder,
-          minCharsForSuggestions: widget.minCharsForSuggestions,
-          noItemsFoundBuilder: widget.noItemsFoundBuilder,
-          onSuggestionSelected: widget.onSuggestionSelected,
-          scrollController: widget.scrollController,
-          suggestionsController: suggestionsBoxController,
-          suggestionsCallback: widget.suggestionsCallback,
-          transitionBuilder: widget.transitionBuilder,
-        ),
+      hideOnSelect: widget.hideOnSelect,
+      hideWithKeyboard: widget.hideWithKeyboard,
+      constraints: widget.constraints,
+      offset: widget.offset,
+      scrollController: widget.scrollController,
+      wrapperBuilder: widget.wrapperBuilder,
+      transitionBuilder: widget.transitionBuilder,
+      animationDuration: widget.animationDuration,
+      builder: (context, suggestionsController) => SuggestionsList<T>(
+        controller: suggestionsController,
+        textEditingController: controller,
+        suggestionsCallback: widget.suggestionsCallback,
+        loadingBuilder: widget.loadingBuilder,
+        errorBuilder: widget.errorBuilder,
+        emptyBuilder: widget.emptyBuilder,
+        itemBuilder: widget.itemBuilder,
+        itemSeparatorBuilder: widget.itemSeparatorBuilder,
+        debounceDuration: widget.debounceDuration,
+        minCharsForSuggestions: widget.minCharsForSuggestions,
+        autoFlipListDirection: widget.autoFlipListDirection,
       ),
       child: PointerInterceptor(
-        child: widget.buildTextField(
+        child: widget.builder(
           context,
-          widget.textFieldConfiguration.copyWith(
-            focusNode: _focusNode,
-            controller: _textEditingController,
-          ),
+          controller,
+          focusNode,
         ),
       ),
     );
