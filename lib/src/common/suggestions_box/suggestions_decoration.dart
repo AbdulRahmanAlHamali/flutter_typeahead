@@ -28,11 +28,6 @@ abstract class BaseSuggestionsDecoration {
   /// Same as [Material.color](https://docs.flutter.io/flutter/material/Material/color.html)
   final Color? color;
 
-  /// {@template flutter_typeahead.BaseSuggestionsBoxDecoration.offset}
-  /// The offset of the suggestions box.
-  /// The value is automatically flipped if the suggestions box is flipped.
-  ///
-  /// Defaults to `Offset(0, 5)`.
-  /// {@endtemplate}
+  /// {@macro flutter_typeahead.SuggestionsField.offset}
   final Offset? offset;
 }

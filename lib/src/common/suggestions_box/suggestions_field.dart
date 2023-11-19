@@ -2,57 +2,89 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/floater.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_keyboard_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_select_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field_tap_connector.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_traversal_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
 class SuggestionsField<T> extends StatefulWidget {
   const SuggestionsField({
     super.key,
-    this.direction = AxisDirection.down,
     required this.controller,
-    required this.suggestionsBuilder,
+    required this.builder,
     required this.focusNode,
     required this.child,
+    this.onSelected,
+    this.direction,
     this.autoFlipDirection = false,
-    this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
     this.hideOnUnfocus = true,
+    this.hideOnSelect = true,
     this.hideWithKeyboard = true,
     this.constraints,
     this.offset,
+    this.scrollController,
+    this.wrapperBuilder,
+    this.transitionBuilder,
+    this.animationDuration,
   });
 
-  /// The controller of the suggestions box.
+  /// {@macro flutter_typeahead.SuggestionsBox.controller}
   final SuggestionsController<T>? controller;
 
-  /// The builder for the suggestions list.
+  /// {@macro flutter_typeahead.SuggestionsBox.builder}
   final Widget Function(
     BuildContext context,
     SuggestionsController<T> controller,
-  ) suggestionsBuilder;
+  ) builder;
 
-  /// The focus node of the child of the suggestions box.
+  /// {@template flutter_typeahead.SuggestionsField.focusNode}
+  /// The focus node of the child, usually an [EditableText] widget.
+  ///
+  /// This is used to show and hide the suggestions box.
+  /// {@endtemplate}
   final FocusNode focusNode;
 
-  /// The child of the suggestions box.
+  /// The widget below this widget in the tree.
   final Widget child;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.direction}
-  final AxisDirection direction;
+  /// {@template flutter_typeahead.SuggestionsField.onSelected}
+  /// Called when a suggestion is selected.
+  ///
+  /// If [hideOnSelect] is true, the suggestions box will be closed after this callback is called.
+  ///
+  /// You may also add a callback like this to the [SuggestionsController.selections] stream.
+  /// {@endtemplate}
+  final ValueSetter<T>? onSelected;
 
-  /// {@template flutter_typeahead.SuggestionsBox.constraints}
-  /// The constraints to be applied to the suggestions box
+  /// {@template flutter_typeahead.SuggestionsField.direction}
+  /// The direction in which the suggestions box opens.
+  ///
+  /// Must be either [AxisDirection.down] or [AxisDirection.up].
+  ///
+  /// Defaults to [AxisDirection.down].
+  /// {@endtemplate}
+  final AxisDirection? direction;
+
+  /// {@template flutter_typeahead.SuggestionsField.constraints}
+  /// The constraints to be applied to the suggestions box.
   /// {@endtemplate}
   final BoxConstraints? constraints;
 
-  /// {@macro flutter_typeahead.BaseSuggestionsBoxDecoration.offset}
+  /// {@template flutter_typeahead.SuggestionsField.offset}
+  /// The offset of the suggestions box.
+  /// The value is automatically flipped if the suggestions box is flipped.
+  ///
+  /// Defaults to `Offset(0, 5)`.
+  /// {@endtemplate}
   final Offset? offset;
 
-  /// {@template flutter_typeahead.SuggestionsBox.autoFlipDirection}
+  /// {@template flutter_typeahead.SuggestionsField.autoFlipDirection}
   /// Whether the suggestions box should automatically flip direction if there's not enough space
   /// in the desired direction, but there is enough space in the opposite direction.
   ///
@@ -64,17 +96,14 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@endtemplate}
   final bool autoFlipDirection;
 
-  /// {@macro flutter_typeahead.SuggestionsListConfig.autoFlipListDirection}
-  final bool autoFlipListDirection;
-
-  /// {@template flutter_typeahead.SuggestionsBox.autoFlipMinHeight}
+  /// {@template flutter_typeahead.SuggestionsField.autoFlipMinHeight}
   /// The minimum height the suggesttions box can have before attempting to flip.
   ///
   /// Defaults to 64.
   /// {@endtemplate}
   final double autoFlipMinHeight;
 
-  /// {@template flutter_typeahead.SuggestionsBox.hideOnUnfocus}
+  /// {@template flutter_typeahead.SuggestionsField.hideOnUnfocus}
   /// Whether the suggestions box should be hidden when the child of the suggestions box loses focus.
   ///
   /// If disabled, the suggestions box will remain open when the user taps outside of the suggestions box.
@@ -83,12 +112,38 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@endtemplate}
   final bool hideOnUnfocus;
 
-  /// {@template flutter_typeahead.SuggestionsBox.hideWithKeyboard}
+  /// {@template flutter_typeahead.SuggestionsField.hideOnSelect}
+  /// Whether to keep the suggestions visible even after a suggestion has been selected.
+  ///
+  /// Note that if this is disabled, the only way
+  /// to close the suggestions box is either via the
+  /// [SuggestionsController] or when the user closes the software
+  /// keyboard with [hideOnUnfocus] set to true.
+  ///
+  /// Users with a physical keyboard will be unable to close the
+  /// box without additional logic.
+  ///
+  /// Defaults to `true`.
+  /// {@endtemplate}
+  final bool hideOnSelect;
+
+  /// {@template flutter_typeahead.SuggestionsField.hideWithKeyboard}
   /// Whether the suggestions box should be hidden when the keyboard is closed.
   ///
   /// Defaults to true.
   /// {@endtemplate}
   final bool hideWithKeyboard;
+
+  /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
+  final ScrollController? scrollController;
+
+  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+
+  /// {@macro flutter_typeahead.SuggestionsBox.transitionBuilder}
+  final AnimationTransitionBuilder? transitionBuilder;
+
+  /// {@macro flutter_typeahead.SuggestionsBox.animationDuration}
+  final Duration? animationDuration;
 
   @override
   State<SuggestionsField<T>> createState() => _SuggestionsFieldState<T>();
@@ -103,6 +158,9 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
   void initState() {
     super.initState();
     controller = widget.controller ?? SuggestionsController<T>();
+    if (widget.direction != null) {
+      controller.direction = widget.direction!;
+    }
     resizeSubscription = controller.resizes.listen((_) => onResize());
   }
 
@@ -116,6 +174,9 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
       controller = widget.controller ?? SuggestionsController<T>();
       resizeSubscription.cancel();
       resizeSubscription = controller.resizes.listen((_) => onResize());
+    }
+    if (widget.direction != oldWidget.direction && widget.direction != null) {
+      controller.direction = widget.direction!;
     }
   }
 
@@ -137,52 +198,82 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Floater(
-      link: link,
-      direction: widget.direction,
-      offset: widget.offset ?? const Offset(0, 5),
-      followHeight: false,
-      autoFlip: widget.autoFlipDirection,
-      autoFlipHeight: widget.autoFlipMinHeight,
-      builder: (context) {
-        Widget list = widget.suggestionsBuilder(context, controller);
-
-        if (widget.constraints != null) {
-          Alignment alignment = Alignment.topCenter;
-          if (widget.direction == AxisDirection.up) {
-            alignment = Alignment.bottomCenter;
-          }
-          list = Align(
-            alignment: alignment,
-            child: ConstrainedBox(
-              constraints: widget.constraints!,
-              child: list,
-            ),
-          );
-        }
-
-        list = Semantics(
-          container: true,
-          child: list,
-        );
-
-        return list;
-      },
-      child: FloaterTarget(
+    return SuggestionsControllerProvider<T>(
+      controller: controller,
+      child: Floater(
         link: link,
-        child: SuggestionsFieldFocusConnector(
-          controller: controller,
-          focusNode: widget.focusNode,
-          hideOnUnfocus: widget.hideOnUnfocus,
-          child: SuggestionsTraversalConnector<T>(
+        direction: controller.direction,
+        offset: widget.offset ?? const Offset(0, 5),
+        followHeight: false,
+        autoFlip: widget.autoFlipDirection,
+        autoFlipHeight: widget.autoFlipMinHeight,
+        builder: (context) {
+          FloaterData data = Floater.of(context);
+
+          if (data.effectiveDirection != controller.effectiveDirection) {
+            // It is generally discouraged to add side-effects in build methods.
+            // However, this is a place where we can update the effective direction
+            // of the controller easily. Adding a new Widget seemed like bloat.
+            // The post frame delay is necessary to avoid triggering a build during a build.
+            // For maximum cleanliness, we could use a StatefulWidget
+            // and update the controller in didUpdateWidget. Tread carefully.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              controller.effectiveDirection = data.effectiveDirection;
+            });
+          }
+
+          Widget list = SuggestionsBox(
+            controller: controller,
+            scrollController: widget.scrollController,
+            builder: (context) => widget.builder(context, controller),
+            wrapperBuilder: widget.wrapperBuilder,
+            transitionBuilder: widget.transitionBuilder,
+            animationDuration: widget.animationDuration,
+          );
+
+          if (widget.constraints != null) {
+            Alignment alignment = Alignment.topCenter;
+            if (widget.direction == AxisDirection.up) {
+              alignment = Alignment.bottomCenter;
+            }
+            list = Align(
+              alignment: alignment,
+              child: ConstrainedBox(
+                constraints: widget.constraints!,
+                child: list,
+              ),
+            );
+          }
+
+          list = Semantics(
+            container: true,
+            child: list,
+          );
+
+          return list;
+        },
+        child: FloaterTarget(
+          link: link,
+          child: SuggestionsFieldFocusConnector(
             controller: controller,
             focusNode: widget.focusNode,
-            child: SuggestionsFieldKeyboardConnector(
+            hideOnUnfocus: widget.hideOnUnfocus,
+            child: SuggestionsTraversalConnector<T>(
               controller: controller,
-              hideWithKeyboard: widget.hideWithKeyboard,
-              child: SuggestionsFieldTapConnector(
+              focusNode: widget.focusNode,
+              child: SuggestionsFieldKeyboardConnector(
                 controller: controller,
-                child: widget.child,
+                hideWithKeyboard: widget.hideWithKeyboard,
+                child: SuggestionsFieldTapConnector(
+                  controller: controller,
+                  child: SuggestionsFieldSelectConnector(
+                    controller: controller,
+                    hideOnSelect: widget.hideOnSelect,
+                    onSelected: widget.onSelected,
+                    child: widget.child,
+                  ),
+                ),
               ),
             ),
           ),

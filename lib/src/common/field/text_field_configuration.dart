@@ -30,6 +30,7 @@ abstract class BaseTextFieldConfiguration {
     this.onEditingComplete,
     this.onSubmitted,
     this.onTap,
+    this.onTapOutside,
     this.readOnly = false,
     this.scrollPadding = const EdgeInsets.all(20),
     this.style,
@@ -37,6 +38,7 @@ abstract class BaseTextFieldConfiguration {
     this.textCapitalization = TextCapitalization.none,
     this.textDirection,
     this.textInputAction,
+    this.textAlignVertical,
   });
 
   /// Whether to hide the text being edited (e.g., for passwords).
@@ -49,7 +51,7 @@ abstract class BaseTextFieldConfiguration {
   /// Same as [TextField.autofillHints](https://api.flutter.dev/flutter/material/TextField/autofillHints.html)
   final List<String>? autofillHints;
 
-  /// Whether to hide the text being edited (e.g., for passwords).
+  /// Whether to automatically focus the field on widget creation or not.
   ///
   /// Same as [TextField.autofocus](https://api.flutter.dev/flutter/material/TextField/autofocus.html)
   final bool autofocus;
@@ -187,6 +189,11 @@ abstract class BaseTextFieldConfiguration {
   /// Same as [TextField.onTap](https://api.flutter.dev/flutter/material/TextField/onTap.html)
   final GestureTapCallback? onTap;
 
+  /// Called for each tap that occurs outside of theTextFieldTapRegion group when the text field is focused.
+  ///
+  /// Same as [TextField.onTapOutside](https://api.flutter.dev/flutter/material/TextField/onTapOutside.html)
+  final TapRegionCallback? onTapOutside;
+
   /// Called when the user indicates that they are done editing the text in the
   /// field.
   ///
@@ -212,6 +219,9 @@ abstract class BaseTextFieldConfiguration {
   ///
   /// Same as [TextField.textAlign](https://api.flutter.dev/flutter/material/TextField/textAlign.html)
   final TextAlign textAlign;
+
+  /// Same as [TextField.textAlignVertical](https://api.flutter.dev/flutter/material/TextField/textAlignVertical.html)
+  final TextAlignVertical? textAlignVertical;
 
   /// Configures how the platform keyboard will select an uppercase or lowercase keyboard.
   ///
@@ -255,10 +265,12 @@ abstract class BaseTextFieldConfiguration {
     VoidCallback? onEditingComplete,
     ValueChanged<String>? onSubmitted,
     GestureTapCallback? onTap,
+    TapRegionCallback? onTapOutside,
     bool? readOnly,
     EdgeInsets? scrollPadding,
     TextStyle? style,
     TextAlign? textAlign,
+    TextAlignVertical? textAlignVertical,
     TextCapitalization? textCapitalization,
     TextDirection? textDirection,
     TextInputAction? textInputAction,

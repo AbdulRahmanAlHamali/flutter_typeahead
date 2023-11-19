@@ -33,29 +33,21 @@ class TextFieldConfiguration extends BaseTextFieldConfiguration {
     super.onEditingComplete,
     super.onSubmitted,
     super.onTap,
+    super.onTapOutside,
     super.scrollPadding,
     super.style,
     super.textAlign,
+    super.textAlignVertical,
     super.textCapitalization,
     super.textDirection,
     super.textInputAction,
     this.decoration = const InputDecoration(),
-    this.textAlignVertical,
-    this.onTapOutside,
   });
 
   /// The decoration to show around the text field.
   ///
   /// Same as [TextField.decoration](https://docs.flutter.io/flutter/material/TextField/decoration.html)
   final InputDecoration decoration;
-
-  /// Called for each tap that occurs outside of theTextFieldTapRegion group when the text field is focused.
-  ///
-  /// Same as [TextField.onTapOutside](https://api.flutter.dev/flutter/material/TextField/onTapOutside.html)
-  final TapRegionCallback? onTapOutside;
-
-  /// Same as [TextField.textAlignVertical](https://api.flutter.dev/flutter/material/TextField/textAlignVertical.html)
-  final TextAlignVertical? textAlignVertical;
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties

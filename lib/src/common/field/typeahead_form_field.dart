@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_decoration.dart';
-import 'package:flutter_typeahead/src/common/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 
@@ -14,145 +13,135 @@ import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 ///
 /// * [TypeAheadField], A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
 /// that displays a list of suggestions as the user types
-abstract class BaseTypeAheadFormField<T> extends FormField<String>
+abstract class RawTypeAheadFormField<T> extends FormField<String>
     implements TypeaheadFieldConfig<T> {
-  /// Creates a [TypeAheadFormField].
-  BaseTypeAheadFormField({
+  RawTypeAheadFormField({
     super.key,
     this.animationDuration = const Duration(milliseconds: 200),
-    this.animationStart = 0.25,
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
-    super.autovalidateMode,
+    required this.fieldBuilder,
+    this.controller,
     this.debounceDuration = const Duration(milliseconds: 300),
     this.direction = AxisDirection.down,
-    super.enabled = true,
     this.errorBuilder,
+    this.focusNode,
     this.hideKeyboardOnDrag = false,
     this.hideOnEmpty = false,
     this.hideOnError = false,
     this.hideOnLoading = false,
-    this.hideWithKeyboard = true,
     this.hideOnUnfocus = true,
-    String? initialValue,
+    this.hideWithKeyboard = true,
+    this.hideOnSelect = true,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
-    this.hideOnSelect = true,
-    this.layoutArchitecture,
     this.loadingBuilder,
     this.minCharsForSuggestions = 0,
-    this.noItemsFoundBuilder,
-    this.onReset,
-    super.onSaved,
-    required this.onSuggestionSelected,
+    this.emptyBuilder,
+    this.onSelected,
     this.scrollController,
     this.suggestionsController,
     required this.suggestionsCallback,
-    required this.textFieldConfiguration,
     this.transitionBuilder,
+    this.wrapperBuilder,
+    this.constraints,
+    this.offset,
+    String? initialValue,
+    this.onReset,
+    super.onSaved,
     super.validator,
+    super.autovalidateMode,
+    super.enabled = true,
   })  : assert(
-          initialValue == null || textFieldConfiguration.controller == null,
-          'initialValue and controller cannot both be set.',
+          initialValue == null || controller == null,
+          'Cannot provide both a controller and an initial value.',
         ),
-        assert(minCharsForSuggestions >= 0),
         super(
-          initialValue: textFieldConfiguration.controller != null
-              ? textFieldConfiguration.controller!.text
-              : (initialValue ?? ''),
+          initialValue: controller?.text ?? initialValue ?? '',
           // This is a Stub. The builder is overridden below.
           builder: (_) => throw UnimplementedError(
-            'BaseTypeAheadFormField.builder must be overridden',
+            'RawTypeAheadFormField.builder must be overridden',
           ),
         );
-
-  /// The configuration of the [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
-  /// that the TypeAhead widget displays
-  @override
-  final BaseTextFieldConfiguration textFieldConfiguration;
 
   // Adds a callback for resetting the form field
   final VoidCallback? onReset;
 
-  /// The decoration of the sheet that contains the suggestions.
-  @override
-  BaseSuggestionsDecoration get suggestionsDecoration;
+  final Widget Function(BaseTypeAheadFormFieldState<T> field) fieldBuilder;
 
   @override
-  final Duration animationDuration;
+  final TextEditingController? controller;
   @override
-  final double animationStart;
-  @override
-  final bool autoFlipDirection;
-  @override
-  final bool autoFlipListDirection;
-  @override
-  final double autoFlipMinHeight;
-  @override
-  final Duration debounceDuration;
-  @override
-  final AxisDirection direction;
-  @override
-  final ErrorBuilder? errorBuilder;
-  @override
-  final bool hideKeyboardOnDrag;
-  @override
-  final bool hideOnEmpty;
-  @override
-  final bool hideOnError;
-  @override
-  final bool hideOnLoading;
-  @override
-  final bool hideOnUnfocus;
-  @override
-  final bool hideWithKeyboard;
-  @override
-  final bool hideOnSelect;
-  @override
-  final ItemBuilder<T> itemBuilder;
-  @override
-  final IndexedWidgetBuilder? itemSeparatorBuilder;
-  @override
-  final bool keepSuggestionsOnLoading;
-  @override
-  final LayoutArchitecture? layoutArchitecture;
-  @override
-  final WidgetBuilder? loadingBuilder;
-  @override
-  final int minCharsForSuggestions;
-  @override
-  final WidgetBuilder? noItemsFoundBuilder;
-  @override
-  final SuggestionSelectionCallback<T> onSuggestionSelected;
-  @override
-  final ScrollController? scrollController;
+  final FocusNode? focusNode;
+
   @override
   final SuggestionsController<T>? suggestionsController;
   @override
-  final SuggestionsCallback<T> suggestionsCallback;
+  final ValueSetter<T>? onSelected;
+  @override
+  final AxisDirection? direction;
+  @override
+  final BoxConstraints? constraints;
+  @override
+  final Offset? offset;
+  @override
+  final bool autoFlipDirection;
+  @override
+  final double autoFlipMinHeight;
+  @override
+  final bool hideOnUnfocus;
+  @override
+  final bool hideOnSelect;
+  @override
+  final bool hideWithKeyboard;
+  @override
+  final ScrollController? scrollController;
   @override
   final AnimationTransitionBuilder? transitionBuilder;
-
-  Widget buildTextField(
-    BaseTypeAheadFormFieldState<T> field,
-    BaseTextFieldConfiguration config,
-  );
+  @override
+  final Duration? animationDuration;
+  @override
+  final SuggestionsCallback<T> suggestionsCallback;
+  @override
+  final bool? keepSuggestionsOnLoading;
+  @override
+  final bool? hideKeyboardOnDrag;
+  @override
+  final bool? hideOnLoading;
+  @override
+  final bool? hideOnError;
+  @override
+  final bool? hideOnEmpty;
+  @override
+  final WidgetBuilder? loadingBuilder;
+  @override
+  final ErrorBuilder? errorBuilder;
+  @override
+  final WidgetBuilder? emptyBuilder;
+  @override
+  final ItemBuilder<T> itemBuilder;
+  @override
+  final ItemBuilder<int>? itemSeparatorBuilder;
+  @override
+  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+  @override
+  final bool? autoFlipListDirection;
+  @override
+  final Duration? debounceDuration;
+  @override
+  final int? minCharsForSuggestions;
 
   @override
   FormFieldBuilder<String> get builder => (field) {
-        final BaseTypeAheadFormFieldState<T> state =
-            field as BaseTypeAheadFormFieldState<T>;
-        return buildTextField(
-          state,
-          textFieldConfiguration.copyWith(
-            onChanged: (text) {
-              state.didChange(text);
-              textFieldConfiguration.onChanged?.call(text);
-            },
-            controller: state._effectiveController,
-          ),
+        final state = field as BaseTypeAheadFormFieldState<T>;
+        return ConnectorWidget(
+          value: state.controller,
+          connect: (controller) => controller.addListener(state.onTextChanged),
+          disconnect: (controller, key) =>
+              controller.removeListener(state.onTextChanged),
+          child: fieldBuilder(state),
         );
       };
 
@@ -161,54 +150,35 @@ abstract class BaseTypeAheadFormField<T> extends FormField<String>
 }
 
 class BaseTypeAheadFormFieldState<T> extends FormFieldState<String> {
-  TextEditingController? _controller;
-
-  TextEditingController? get _effectiveController =>
-      widget.textFieldConfiguration.controller ?? _controller;
-
   @override
-  BaseTypeAheadFormField get widget =>
-      super.widget as BaseTypeAheadFormField<dynamic>;
+  RawTypeAheadFormField get widget => super.widget as RawTypeAheadFormField<T>;
+
+  late TextEditingController controller;
 
   @override
   void initState() {
     super.initState();
-    if (widget.textFieldConfiguration.controller == null) {
-      _controller = TextEditingController(text: widget.initialValue);
-    } else {
-      widget.textFieldConfiguration.controller!
-          .addListener(_handleControllerChanged);
-    }
+    controller =
+        widget.controller ?? TextEditingController(text: widget.initialValue);
+    controller.addListener(onTextChanged);
   }
 
   @override
-  void didUpdateWidget(BaseTypeAheadFormField oldWidget) {
+  void didUpdateWidget(covariant RawTypeAheadFormField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.textFieldConfiguration.controller !=
-        oldWidget.textFieldConfiguration.controller) {
-      oldWidget.textFieldConfiguration.controller
-          ?.removeListener(_handleControllerChanged);
-      widget.textFieldConfiguration.controller
-          ?.addListener(_handleControllerChanged);
-
-      if (oldWidget.textFieldConfiguration.controller != null &&
-          widget.textFieldConfiguration.controller == null) {
-        _controller = TextEditingController.fromValue(
-            oldWidget.textFieldConfiguration.controller!.value);
+    if (oldWidget.controller != widget.controller) {
+      if (oldWidget.controller == null) {
+        controller.dispose();
       }
-      if (widget.textFieldConfiguration.controller != null) {
-        setValue(widget.textFieldConfiguration.controller!.text);
-        if (oldWidget.textFieldConfiguration.controller == null) {
-          _controller = null;
-        }
-      }
+      controller = widget.controller ?? TextEditingController();
     }
   }
 
   @override
   void dispose() {
-    widget.textFieldConfiguration.controller
-        ?.removeListener(_handleControllerChanged);
+    if (widget.controller == null) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -216,14 +186,14 @@ class BaseTypeAheadFormFieldState<T> extends FormFieldState<String> {
   void reset() {
     super.reset();
     setState(() {
-      _effectiveController!.text = widget.initialValue!;
+      controller.text = widget.initialValue ?? '';
       if (widget.onReset != null) {
         widget.onReset!();
       }
     });
   }
 
-  void _handleControllerChanged() {
+  void onTextChanged() {
     // Suppress changes that originated from within this class.
     //
     // In the case where a controller has been passed in to this widget, we
@@ -231,8 +201,8 @@ class BaseTypeAheadFormFieldState<T> extends FormFieldState<String> {
     // notifications for changes originating from within this class -- for
     // example, the reset() method. In such cases, the FormField value will
     // already have been set.
-    if (_effectiveController!.text != value) {
-      didChange(_effectiveController!.text);
+    if (controller.text != value) {
+      didChange(controller.text);
     }
   }
 }

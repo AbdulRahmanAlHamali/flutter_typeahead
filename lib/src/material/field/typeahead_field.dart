@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 import 'package:flutter_typeahead/src/material/field/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_list.dart';
 
-/// {@macro flutter_typeahead.BaseTypeAheadField}
-class TypeAheadField<T> extends BaseTypeAheadField<T> {
-  const TypeAheadField({
+/// {@macro flutter_typeahead.RawTypeAheadField}
+class TypeAheadField<T> extends RawTypeAheadField<T> {
+  TypeAheadField({
     super.key,
     super.animationDuration,
-    super.animationStart,
     super.autoFlipDirection,
     super.autoFlipListDirection,
     super.autoFlipMinHeight,
     super.debounceDuration,
     super.direction,
-    super.errorBuilder,
+    ErrorBuilder? errorBuilder,
     super.hideKeyboardOnDrag,
     super.hideOnEmpty,
     super.hideOnError,
@@ -24,98 +23,84 @@ class TypeAheadField<T> extends BaseTypeAheadField<T> {
     super.hideOnUnfocus,
     super.hideWithKeyboard,
     super.hideOnSelect,
-    required super.itemBuilder,
+    required ItemBuilder<T> itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
-    super.layoutArchitecture,
-    super.loadingBuilder,
+    WidgetBuilder? loadingBuilder,
     super.minCharsForSuggestions,
-    super.noItemsFoundBuilder,
-    required super.onSuggestionSelected,
+    WidgetBuilder? emptyBuilder,
+    required super.onSelected,
     super.scrollController,
     super.suggestionsController,
-    this.suggestionsDecoration = const SuggestionsDecoration(),
     required super.suggestionsCallback,
-    this.textFieldConfiguration = const TextFieldConfiguration(),
     super.transitionBuilder,
-  });
+    this.suggestionsDecoration = const SuggestionsDecoration(),
+    this.textFieldConfiguration = const TextFieldConfiguration(),
+  }) : super(
+          controller: textFieldConfiguration.controller,
+          focusNode: textFieldConfiguration.focusNode,
+          constraints: suggestionsDecoration.constraints,
+          offset: suggestionsDecoration.offset,
+          errorBuilder: errorBuilder ?? TypeAheadMaterialDefaults.errorBuilder,
+          loadingBuilder:
+              loadingBuilder ?? TypeAheadMaterialDefaults.loadingBuilder,
+          emptyBuilder: emptyBuilder ?? TypeAheadMaterialDefaults.emptyBuilder,
+          itemBuilder: TypeAheadMaterialDefaults.itemBuilder(itemBuilder),
+          wrapperBuilder:
+              TypeAheadMaterialDefaults.wrapperBuilder(suggestionsDecoration),
+          builder: (context, controller, focusNode) {
+            TextFieldConfiguration config = textFieldConfiguration;
+            return TextField(
+              autocorrect: config.autocorrect,
+              autofillHints: config.autofillHints,
+              autofocus: config.autofocus,
+              contentInsertionConfiguration:
+                  config.contentInsertionConfiguration,
+              contextMenuBuilder: config.contextMenuBuilder,
+              controller: controller,
+              cursorColor: config.cursorColor,
+              cursorRadius: config.cursorRadius,
+              cursorWidth: config.cursorWidth,
+              decoration: config.decoration,
+              enableInteractiveSelection: config.enableInteractiveSelection,
+              enableSuggestions: config.enableSuggestions,
+              enabled: config.enabled,
+              expands: config.expands,
+              focusNode: focusNode,
+              inputFormatters: config.inputFormatters,
+              keyboardAppearance: config.keyboardAppearance,
+              keyboardType: config.keyboardType,
+              maxLength: config.maxLength,
+              maxLengthEnforcement: config.maxLengthEnforcement,
+              maxLines: config.maxLines,
+              minLines: config.minLines,
+              obscureText: config.obscureText,
+              onChanged: config.onChanged,
+              onEditingComplete: config.onEditingComplete,
+              onSubmitted: config.onSubmitted,
+              onTap: config.onTap,
+              onTapOutside: config.onTapOutside,
+              readOnly: config.readOnly,
+              scrollPadding: config.scrollPadding,
+              style: config.style,
+              textAlign: config.textAlign,
+              textAlignVertical: config.textAlignVertical,
+              textCapitalization: config.textCapitalization,
+              textDirection: config.textDirection,
+              textInputAction: config.textInputAction,
+            );
+          },
+        );
 
-  @override
+  /// {@template flutter_typeahead.TypeAheadField.suggestionsDecoration}
+  /// The decoration of the suggestions box.
+  /// {@endtemplate}
   final SuggestionsDecoration suggestionsDecoration;
 
-  @override
+  /// {@template flutter_typeahead.TypeAheadField.textFieldConfiguration}
+  /// The configuration of the text field.
+  ///
+  /// Mirrors the parameters of [TextField].
+  /// {@endtemplate}
   final TextFieldConfiguration textFieldConfiguration;
-
-  @override
-  Widget buildSuggestionsList(
-          BuildContext context, SuggestionsListConfig<T> config) =>
-      SuggestionsList<T>(
-        animationDuration: config.animationDuration,
-        animationStart: config.animationStart,
-        controller: config.controller,
-        debounceDuration: config.debounceDuration,
-        decoration: suggestionsDecoration,
-        direction: config.direction,
-        errorBuilder: config.errorBuilder,
-        hideKeyboardOnDrag: config.hideKeyboardOnDrag,
-        hideOnEmpty: config.hideOnEmpty,
-        hideOnError: config.hideOnError,
-        hideOnLoading: config.hideOnLoading,
-        hideOnSelect: config.hideOnSelect,
-        itemBuilder: config.itemBuilder,
-        itemSeparatorBuilder: config.itemSeparatorBuilder,
-        keepSuggestionsOnLoading: config.keepSuggestionsOnLoading,
-        layoutArchitecture: config.layoutArchitecture,
-        loadingBuilder: config.loadingBuilder,
-        minCharsForSuggestions: config.minCharsForSuggestions,
-        noItemsFoundBuilder: config.noItemsFoundBuilder,
-        onSuggestionSelected: config.onSuggestionSelected,
-        scrollController: config.scrollController,
-        suggestionsController: config.suggestionsController,
-        suggestionsCallback: config.suggestionsCallback,
-        transitionBuilder: config.transitionBuilder,
-      );
-
-  @override
-  Widget buildTextField(
-      BuildContext context, covariant TextFieldConfiguration config) {
-    return TextField(
-      autocorrect: config.autocorrect,
-      autofillHints: config.autofillHints,
-      autofocus: config.autofocus,
-      contentInsertionConfiguration: config.contentInsertionConfiguration,
-      contextMenuBuilder: config.contextMenuBuilder,
-      controller: config.controller,
-      cursorColor: config.cursorColor,
-      cursorRadius: config.cursorRadius,
-      cursorWidth: config.cursorWidth,
-      decoration: config.decoration,
-      enableInteractiveSelection: config.enableInteractiveSelection,
-      enableSuggestions: config.enableSuggestions,
-      enabled: config.enabled,
-      expands: config.expands,
-      focusNode: config.focusNode,
-      inputFormatters: config.inputFormatters,
-      keyboardAppearance: config.keyboardAppearance,
-      keyboardType: config.keyboardType,
-      maxLength: config.maxLength,
-      maxLengthEnforcement: config.maxLengthEnforcement,
-      maxLines: config.maxLines,
-      minLines: config.minLines,
-      obscureText: config.obscureText,
-      onChanged: config.onChanged,
-      onEditingComplete: config.onEditingComplete,
-      onSubmitted: config.onSubmitted,
-      onTap: config.onTap,
-      onTapOutside: config.onTapOutside,
-      readOnly: config.readOnly,
-      scrollPadding: config.scrollPadding,
-      style: config.style,
-      textAlign: config.textAlign,
-      textAlignVertical: config.textAlignVertical,
-      textCapitalization: config.textCapitalization,
-      textDirection: config.textDirection,
-      textInputAction: config.textInputAction,
-    );
-  }
 }

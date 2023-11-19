@@ -2,23 +2,22 @@ import 'dart:core';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_config.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 import 'package:flutter_typeahead/src/cupertino/field/cupertino_text_field_configuration.dart';
 import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/cupertino/suggestions_box/cupertino_suggestions_list.dart';
 
 /// {@macro flutter_typeahead.BaseTypeAheadField}
-class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
-  const CupertinoTypeAheadField({
+class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
+  CupertinoTypeAheadField({
     super.key,
     super.animationDuration,
-    super.animationStart,
     super.autoFlipDirection,
     super.autoFlipListDirection,
     super.autoFlipMinHeight,
     super.debounceDuration,
     super.direction,
-    super.errorBuilder,
+    ErrorBuilder? errorBuilder,
     super.hideKeyboardOnDrag,
     super.hideOnEmpty,
     super.hideOnError,
@@ -26,105 +25,86 @@ class CupertinoTypeAheadField<T> extends BaseTypeAheadField<T> {
     super.hideOnUnfocus,
     super.hideWithKeyboard,
     super.hideOnSelect,
-    required super.itemBuilder,
+    required ItemBuilder<T> itemBuilder,
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
-    super.layoutArchitecture,
-    super.loadingBuilder,
+    WidgetBuilder? loadingBuilder,
     super.minCharsForSuggestions,
-    super.noItemsFoundBuilder,
-    required super.onSuggestionSelected,
+    WidgetBuilder? emptyBuilder,
+    required super.onSelected,
     super.scrollController,
     super.suggestionsController,
-    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
     required super.suggestionsCallback,
-    this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
     super.transitionBuilder,
-  });
+    super.constraints,
+    super.offset,
+    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
+    this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
+  }) : super(
+          controller: textFieldConfiguration.controller,
+          focusNode: textFieldConfiguration.focusNode,
+          errorBuilder: errorBuilder ?? TypeAheadCupertinoDefaults.errorBuilder,
+          loadingBuilder:
+              loadingBuilder ?? TypeAheadCupertinoDefaults.loadingBuilder,
+          emptyBuilder: emptyBuilder ?? TypeAheadCupertinoDefaults.emptyBuilder,
+          itemBuilder: TypeAheadCupertinoDefaults.itemBuilder(itemBuilder),
+          wrapperBuilder:
+              TypeAheadCupertinoDefaults.wrapperBuilder(suggestionsDecoration),
+          builder: (context, controller, focusNode) {
+            CupertinoTextFieldConfiguration config = textFieldConfiguration;
+            return CupertinoTextField(
+              autocorrect: config.autocorrect,
+              autofillHints: config.autofillHints,
+              autofocus: config.autofocus,
+              contentInsertionConfiguration:
+                  config.contentInsertionConfiguration,
+              contextMenuBuilder: config.contextMenuBuilder,
+              controller: controller,
+              clearButtonMode: config.clearButtonMode,
+              cursorColor: config.cursorColor,
+              cursorRadius: config.cursorRadius ?? const Radius.circular(2),
+              cursorWidth: config.cursorWidth,
+              decoration: config.decoration,
+              enableInteractiveSelection: config.enableInteractiveSelection,
+              enableSuggestions: config.enableSuggestions,
+              enabled: config.enabled,
+              expands: config.expands,
+              focusNode: focusNode,
+              inputFormatters: config.inputFormatters,
+              keyboardAppearance: config.keyboardAppearance,
+              keyboardType: config.keyboardType,
+              maxLength: config.maxLength,
+              maxLengthEnforcement: config.maxLengthEnforcement,
+              maxLines: config.maxLines,
+              minLines: config.minLines,
+              obscureText: config.obscureText,
+              onChanged: config.onChanged,
+              onEditingComplete: config.onEditingComplete,
+              onSubmitted: config.onSubmitted,
+              onTap: config.onTap,
+              onTapOutside: config.onTapOutside,
+              readOnly: config.readOnly,
+              scrollPadding: config.scrollPadding,
+              padding: config.padding,
+              placeholder: config.placeholder,
+              placeholderStyle: config.placeholderStyle,
+              prefix: config.prefix,
+              prefixMode: config.prefixMode,
+              suffix: config.suffix,
+              suffixMode: config.suffixMode,
+              style: config.style,
+              textAlign: config.textAlign,
+              textAlignVertical: config.textAlignVertical,
+              textCapitalization: config.textCapitalization,
+              textDirection: config.textDirection,
+              textInputAction: config.textInputAction,
+            );
+          },
+        );
 
-  @override
+  /// {@macro flutter_typeahead.TypeAheadField.suggestionsDecoration}
   final CupertinoSuggestionsDecoration suggestionsDecoration;
 
-  @override
+  /// {@macro flutter_typeahead.TypeAheadField.textFieldConfiguration}
   final CupertinoTextFieldConfiguration textFieldConfiguration;
-
-  @override
-  Widget buildSuggestionsList(
-      BuildContext context, SuggestionsListConfig<T> config) {
-    return CupertinoSuggestionsList<T>(
-      animationDuration: config.animationDuration,
-      animationStart: config.animationStart,
-      autoFlipListDirection: config.autoFlipListDirection,
-      controller: config.controller,
-      debounceDuration: config.debounceDuration,
-      decoration: suggestionsDecoration,
-      direction: config.direction,
-      errorBuilder: config.errorBuilder,
-      hideKeyboardOnDrag: config.hideKeyboardOnDrag,
-      hideOnEmpty: config.hideOnEmpty,
-      hideOnError: config.hideOnError,
-      hideOnLoading: config.hideOnLoading,
-      hideOnSelect: config.hideOnSelect,
-      itemBuilder: config.itemBuilder,
-      itemSeparatorBuilder: config.itemSeparatorBuilder,
-      keepSuggestionsOnLoading: config.keepSuggestionsOnLoading,
-      layoutArchitecture: config.layoutArchitecture,
-      loadingBuilder: config.loadingBuilder,
-      minCharsForSuggestions: config.minCharsForSuggestions,
-      noItemsFoundBuilder: config.noItemsFoundBuilder,
-      onSuggestionSelected: config.onSuggestionSelected,
-      scrollController: config.scrollController,
-      suggestionsController: config.suggestionsController,
-      suggestionsCallback: config.suggestionsCallback,
-      transitionBuilder: config.transitionBuilder,
-    );
-  }
-
-  @override
-  Widget buildTextField(
-    BuildContext context,
-    covariant CupertinoTextFieldConfiguration config,
-  ) {
-    return CupertinoTextField(
-      autocorrect: config.autocorrect,
-      autofocus: config.autofocus,
-      contentInsertionConfiguration: config.contentInsertionConfiguration,
-      contextMenuBuilder: config.contextMenuBuilder,
-      controller: config.controller,
-      clearButtonMode: config.clearButtonMode,
-      cursorColor: config.cursorColor,
-      cursorRadius: config.cursorRadius ?? const Radius.circular(2),
-      cursorWidth: config.cursorWidth,
-      decoration: config.decoration,
-      enableInteractiveSelection: config.enableInteractiveSelection,
-      enabled: config.enabled,
-      enableSuggestions: config.enableSuggestions,
-      focusNode: config.focusNode,
-      inputFormatters: config.inputFormatters,
-      keyboardAppearance: config.keyboardAppearance,
-      keyboardType: config.keyboardType,
-      maxLength: config.maxLength,
-      maxLengthEnforcement: config.maxLengthEnforcement,
-      maxLines: config.maxLines,
-      minLines: config.minLines,
-      obscureText: config.obscureText,
-      onChanged: config.onChanged,
-      onEditingComplete: config.onEditingComplete,
-      onSubmitted: config.onSubmitted,
-      onTap: config.onTap,
-      padding: config.padding,
-      placeholder: config.placeholder,
-      placeholderStyle: config.placeholderStyle,
-      prefix: config.prefix,
-      prefixMode: config.prefixMode,
-      readOnly: config.readOnly,
-      scrollPadding: config.scrollPadding,
-      style: config.style,
-      suffix: config.suffix,
-      suffixMode: config.suffixMode,
-      textAlign: config.textAlign,
-      textCapitalization: config.textCapitalization,
-      textInputAction: config.textInputAction,
-    );
-  }
 }

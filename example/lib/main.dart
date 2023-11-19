@@ -102,11 +102,10 @@ class ExampleTypeAhead extends StatelessWidget
                 debounceDuration: debounceDuration,
                 hideOnSelect: settings.hideOnSelect.value,
                 hideOnUnfocus: settings.hideOnUnfocus.value,
-                onSuggestionSelected: onSuggestionSelected,
+                onSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
-                layoutArchitecture:
-                    settings.gridLayout.value ? gridLayoutBuilder : null,
+                // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
               ),
               Expanded(
                 child: Column(
@@ -267,11 +266,10 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 debounceDuration: debounceDuration,
                 hideOnSelect: settings.hideOnSelect.value,
                 hideOnUnfocus: settings.hideOnUnfocus.value,
-                onSuggestionSelected: onSuggestionSelected,
+                onSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
-                layoutArchitecture:
-                    settings.gridLayout.value ? gridLayoutBuilder : null,
+                // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
               ),
               const SizedBox(height: 32),
               Padding(
