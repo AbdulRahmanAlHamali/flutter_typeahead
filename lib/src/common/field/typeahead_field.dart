@@ -326,7 +326,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget
   @override
   final WidgetBuilder loadingBuilder;
   @override
-  final Widget Function(BuildContext context, Object? error) errorBuilder;
+  final ErrorBuilder errorBuilder;
   @override
   final WidgetBuilder emptyBuilder;
   @override
