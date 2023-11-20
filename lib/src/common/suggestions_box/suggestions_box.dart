@@ -43,6 +43,12 @@ class SuggestionsBox<T> extends StatelessWidget {
   /// {@endtemplate}
   final WidgetBuilder builder;
 
+  /// {@template flutter_typeahead.SuggestionsBox.wrapperBuilder}
+  /// Builder function for wrapping the suggestions box.
+  ///
+  /// This is useful for injecting decorations or proxy widgets around the
+  /// suggestions box.
+  /// {@endtemplate}
   final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
 
   /// {@template flutter_typeahead.SuggestionsBox.transitionBuilder}

@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 ///
 /// This class is used to ensure parameters are consistent between all subclasses.
 abstract interface class TypeaheadFieldConfig<T> {
-  /// {@macro flutter_typeahead.SuggestionsList.textEditingController}
+  /// {@macro flutter_typeahead.SuggestionsSearch.textEditingController}
   TextEditingController? get controller;
 
   /// {@macro flutter_typeahead.SuggestionsField.focusNode}
@@ -51,7 +51,7 @@ abstract interface class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsBox.animationDuration}
   Duration? get animationDuration;
 
-  /// {@macro flutter_typeahead.SuggestionsList.suggestionsCallback}
+  /// {@macro flutter_typeahead.SuggestionsSearch.suggestionsCallback}
   SuggestionsCallback<T> get suggestionsCallback;
 
   /// {@macro flutter_typeahead.SuggestionsList.keepSuggestionsOnLoading}
@@ -90,9 +90,9 @@ abstract interface class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsList.autoFlipListDirection}
   bool? get autoFlipListDirection;
 
-  /// {@macro flutter_typeahead.SuggestionsList.debounce}
+  /// {@macro flutter_typeahead.SuggestionsSearch.debounce}
   Duration? get debounceDuration;
 
-  /// {@macro flutter_typeahead.SuggestionsList.minCharsForSuggestions}
+  /// {@macro flutter_typeahead.SuggestionsSearch.minCharsForSuggestions}
   int? get minCharsForSuggestions;
 }

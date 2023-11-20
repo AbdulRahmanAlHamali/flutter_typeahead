@@ -5,8 +5,8 @@ import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_control
 /// A widget that helps reopening the suggestions list when the text changes.
 ///
 /// This happens after a suggestion has been selected.
-class SuggestionsListTypingConnector<T> extends StatefulWidget {
-  const SuggestionsListTypingConnector({
+class SuggestionsSearchTypingConnector<T> extends StatefulWidget {
+  const SuggestionsSearchTypingConnector({
     super.key,
     required this.controller,
     required this.textEditingController,
@@ -18,12 +18,12 @@ class SuggestionsListTypingConnector<T> extends StatefulWidget {
   final Widget child;
 
   @override
-  State<SuggestionsListTypingConnector<T>> createState() =>
-      _SuggestionsListTypingConnectorState<T>();
+  State<SuggestionsSearchTypingConnector<T>> createState() =>
+      _SuggestionsSearchTypingConnectorState<T>();
 }
 
-class _SuggestionsListTypingConnectorState<T>
-    extends State<SuggestionsListTypingConnector<T>> {
+class _SuggestionsSearchTypingConnectorState<T>
+    extends State<SuggestionsSearchTypingConnector<T>> {
   String? previousText;
 
   void onTextChange() {

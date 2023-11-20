@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list_text_debouncer.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_search_text_debouncer.dart';
 
 void main() {
-  group('SuggestionsListTextDebouncer Tests', () {
+  group('SuggestionsSearchTextDebouncer', () {
     late TextEditingController controller;
     late Duration debounceDuration;
 
@@ -22,7 +22,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsListTextDebouncer(
+          home: SuggestionsSearchTextDebouncer(
             controller: controller,
             onChanged: (value) => lastTextValue = value,
             debounceDuration: debounceDuration,
@@ -45,7 +45,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsListTextDebouncer(
+          home: SuggestionsSearchTextDebouncer(
             controller: controller,
             onChanged: (value) => lastTextValue = value,
             debounceDuration: debounceDuration,
@@ -69,7 +69,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsListTextDebouncer(
+          home: SuggestionsSearchTextDebouncer(
             controller: controller,
             onChanged: (value) => lastTextValue = value,
             debounceDuration: Duration.zero,

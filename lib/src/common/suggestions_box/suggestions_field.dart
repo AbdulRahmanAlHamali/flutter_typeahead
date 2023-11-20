@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/floater.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
@@ -15,10 +14,10 @@ import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 class SuggestionsField<T> extends StatefulWidget {
   const SuggestionsField({
     super.key,
-    required this.controller,
+    this.controller,
     required this.builder,
-    required this.focusNode,
     required this.child,
+    required this.focusNode,
     this.onSelected,
     this.direction,
     this.autoFlipDirection = false,
@@ -37,12 +36,6 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsBox.controller}
   final SuggestionsController<T>? controller;
 
-  /// {@macro flutter_typeahead.SuggestionsBox.builder}
-  final Widget Function(
-    BuildContext context,
-    SuggestionsController<T> controller,
-  ) builder;
-
   /// {@template flutter_typeahead.SuggestionsField.focusNode}
   /// The focus node of the child, usually an [EditableText] widget.
   ///
@@ -50,7 +43,17 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@endtemplate}
   final FocusNode focusNode;
 
-  /// The widget below this widget in the tree.
+  /// {@macro flutter_typeahead.SuggestionsBox.builder}
+  final Widget Function(
+    BuildContext context,
+    SuggestionsController<T> controller,
+  ) builder;
+
+  /// {@template flutter_typeahead.SuggestionsField.fieldBuilder}
+  /// The child of the suggestions field.
+  ///
+  /// This is typically an [EditableText] widget.
+  /// {@endtemplate}
   final Widget child;
 
   /// {@template flutter_typeahead.SuggestionsField.onSelected}
@@ -137,6 +140,7 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
   final ScrollController? scrollController;
 
+  /// {@macro flutter_typeahead.SuggestionsBox.wrapperBuilder}
   final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsBox.transitionBuilder}
@@ -152,7 +156,6 @@ class SuggestionsField<T> extends StatefulWidget {
 class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
   final FloaterLink link = FloaterLink();
   late SuggestionsController<T> controller;
-  late StreamSubscription<void> resizeSubscription;
 
   @override
   void initState() {
@@ -161,7 +164,6 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
     if (widget.direction != null) {
       controller.direction = widget.direction!;
     }
-    resizeSubscription = controller.resizes.listen((_) => onResize());
   }
 
   @override
@@ -172,8 +174,6 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
         controller.dispose();
       }
       controller = widget.controller ?? SuggestionsController<T>();
-      resizeSubscription.cancel();
-      resizeSubscription = controller.resizes.listen((_) => onResize());
     }
     if (widget.direction != oldWidget.direction && widget.direction != null) {
       controller.direction = widget.direction!;
@@ -182,7 +182,6 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
 
   @override
   void dispose() {
-    resizeSubscription.cancel();
     if (widget.controller == null) {
       controller.dispose();
     }
@@ -255,23 +254,28 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
         },
         child: FloaterTarget(
           link: link,
-          child: SuggestionsFieldFocusConnector(
-            controller: controller,
-            focusNode: widget.focusNode,
-            hideOnUnfocus: widget.hideOnUnfocus,
-            child: SuggestionsTraversalConnector<T>(
+          child: ConnectorWidget(
+            value: controller,
+            connect: (value) => value.resizes.listen((_) => onResize()),
+            disconnect: (value, key) => key?.cancel(),
+            child: SuggestionsFieldFocusConnector(
               controller: controller,
               focusNode: widget.focusNode,
-              child: SuggestionsFieldKeyboardConnector(
+              hideOnUnfocus: widget.hideOnUnfocus,
+              child: SuggestionsTraversalConnector<T>(
                 controller: controller,
-                hideWithKeyboard: widget.hideWithKeyboard,
-                child: SuggestionsFieldTapConnector(
+                focusNode: widget.focusNode,
+                child: SuggestionsFieldKeyboardConnector(
                   controller: controller,
-                  child: SuggestionsFieldSelectConnector(
+                  hideWithKeyboard: widget.hideWithKeyboard,
+                  child: SuggestionsFieldTapConnector(
                     controller: controller,
-                    hideOnSelect: widget.hideOnSelect,
-                    onSelected: widget.onSelected,
-                    child: widget.child,
+                    child: SuggestionsFieldSelectConnector(
+                      controller: controller,
+                      hideOnSelect: widget.hideOnSelect,
+                      onSelected: widget.onSelected,
+                      child: widget.child,
+                    ),
                   ),
                 ),
               ),
