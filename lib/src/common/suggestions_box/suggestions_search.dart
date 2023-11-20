@@ -1,0 +1,167 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_search_text_debouncer.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_search_typing_connector.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
+
+class SuggestionsSearch<T> extends StatefulWidget {
+  const SuggestionsSearch({
+    super.key,
+    required this.controller,
+    required this.textEditingController,
+    required this.suggestionsCallback,
+    required this.child,
+    this.minCharsForSuggestions,
+    this.debounceDuration,
+  }) : assert(
+          minCharsForSuggestions == null || minCharsForSuggestions >= 0,
+          'minCharsForSuggestions cannot be negative.',
+        );
+
+  /// {@macro flutter_typeahead.SuggestionsBox.controller}
+  final SuggestionsController<T> controller;
+
+  /// {@template flutter_typeahead.SuggestionsSearch.textEditingController}
+  /// Controller for the text field used for input.
+  ///
+  /// The value of the text field will be used to get suggestions.
+  /// {@endtemplate}
+  final TextEditingController textEditingController;
+
+  /// {@template flutter_typeahead.SuggestionsSearch.suggestionsCallback}
+  /// Called with the search pattern to get the search suggestions.
+  ///
+  /// This callback must not be null. It is be called by the TypeAhead widget
+  /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
+  /// of suggestions either synchronously, or asynchronously (as the result of a
+  /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
+  /// Typically, the list of suggestions should not contain more than 4 or 5
+  /// entries. These entries will then be provided to [itemBuilder] to display
+  /// the suggestions.
+  ///
+  /// Example:
+  /// ```dart
+  /// suggestionsCallback: (pattern) async {
+  ///   return await _getSuggestions(pattern);
+  /// }
+  /// ```
+  ///
+  /// See also:
+  /// * [debounceDuration], which is the duration to wait for changes in the text field before updating suggestions.
+  /// {@endtemplate}
+  final SuggestionsCallback<T> suggestionsCallback;
+
+  /// The widget below this widget in the tree.
+  final Widget child;
+
+  /// {@template flutter_typeahead.SuggestionsSearch.minCharsForSuggestions}
+  /// Minimum number of characters required for showing suggestions.
+  ///
+  /// Defaults to 0.
+  /// {@endtemplate}
+  final int? minCharsForSuggestions;
+
+  /// {@template flutter_typeahead.SuggestionsSearch.debounce}
+  /// Duration to wait for changes in the text field before updating suggestions.
+  ///
+  /// This prevents making unnecessary calls to [suggestionsCallback] while the
+  /// user is still typing.
+  ///
+  /// If you want to update suggestions immediately, set this to Duration.zero.
+  ///
+  /// Defaults to 300 milliseconds.
+  /// {@endtemplate}
+  final Duration? debounceDuration;
+
+  @override
+  State<SuggestionsSearch<T>> createState() => _SuggestionsSearchState<T>();
+}
+
+class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
+  bool isQueued = false;
+  late String search;
+
+  @override
+  void initState() {
+    super.initState();
+    search = widget.textEditingController.text;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      onOpenChange();
+    });
+  }
+
+  void onOpenChange() {
+    if (widget.controller.isOpen) {
+      load();
+    }
+  }
+
+  /// Loads suggestions if not already loaded.
+  Future<void> load() async {
+    if (widget.controller.suggestions != null) return;
+    return reload();
+  }
+
+  /// Loads suggestions. Discards any previously loaded suggestions.
+  Future<void> reload() async {
+    if (!mounted) return;
+
+    if (widget.controller.isLoading) {
+      isQueued = true;
+      return;
+    }
+
+    widget.controller.suggestions = widget.controller.suggestions;
+    widget.controller.isLoading = true;
+    widget.controller.error = null;
+
+    List<T>? newSuggestions;
+    Object? newError;
+
+    bool hasCharacters = widget.minCharsForSuggestions == null ||
+        widget.minCharsForSuggestions! <= search.length;
+
+    if (hasCharacters) {
+      try {
+        newSuggestions = (await widget.suggestionsCallback(search)).toList();
+      } on Exception catch (e) {
+        newError = e;
+      }
+    }
+
+    widget.controller.suggestions = newSuggestions;
+    widget.controller.error = newError;
+    widget.controller.isLoading = false;
+
+    if (!mounted) return;
+
+    if (isQueued) {
+      isQueued = false;
+      await reload();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SuggestionsSearchTypingConnector<T>(
+      controller: widget.controller,
+      textEditingController: widget.textEditingController,
+      child: SuggestionsSearchTextDebouncer(
+        controller: widget.textEditingController,
+        debounceDuration: widget.debounceDuration,
+        onChanged: (value) {
+          search = value;
+          reload();
+        },
+        child: ConnectorWidget(
+          value: widget.controller,
+          connect: (value) => value.addListener(onOpenChange),
+          disconnect: (value, key) => value.removeListener(onOpenChange),
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}

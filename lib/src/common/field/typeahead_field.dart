@@ -3,6 +3,7 @@ import 'package:flutter_typeahead/src/common/field/typeahead_field_config.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_field.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_list.dart';
+import 'package:flutter_typeahead/src/common/suggestions_box/suggestions_search.dart';
 import 'package:flutter_typeahead/src/common/suggestions_box/typedef.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
@@ -343,10 +344,10 @@ abstract class RawTypeAheadField<T> extends StatefulWidget
   final int? minCharsForSuggestions;
 
   @override
-  State<RawTypeAheadField<T>> createState() => _BaseTypeAheadFieldState<T>();
+  State<RawTypeAheadField<T>> createState() => _RawTypeAheadFieldState<T>();
 }
 
-class _BaseTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
+class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
   late TextEditingController controller;
   late FocusNode focusNode;
 
@@ -400,20 +401,23 @@ class _BaseTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
       constraints: widget.constraints,
       offset: widget.offset,
       scrollController: widget.scrollController,
-      wrapperBuilder: widget.wrapperBuilder,
+      wrapperBuilder: (context, child) => SuggestionsSearch<T>(
+        controller: SuggestionsController.of<T>(context),
+        textEditingController: controller,
+        suggestionsCallback: widget.suggestionsCallback,
+        minCharsForSuggestions: widget.minCharsForSuggestions,
+        debounceDuration: widget.debounceDuration,
+        child: widget.wrapperBuilder?.call(context, child) ?? child,
+      ),
       transitionBuilder: widget.transitionBuilder,
       animationDuration: widget.animationDuration,
       builder: (context, suggestionsController) => SuggestionsList<T>(
         controller: suggestionsController,
-        textEditingController: controller,
-        suggestionsCallback: widget.suggestionsCallback,
         loadingBuilder: widget.loadingBuilder,
         errorBuilder: widget.errorBuilder,
         emptyBuilder: widget.emptyBuilder,
         itemBuilder: widget.itemBuilder,
         itemSeparatorBuilder: widget.itemSeparatorBuilder,
-        debounceDuration: widget.debounceDuration,
-        minCharsForSuggestions: widget.minCharsForSuggestions,
         autoFlipListDirection: widget.autoFlipListDirection,
       ),
       child: PointerInterceptor(

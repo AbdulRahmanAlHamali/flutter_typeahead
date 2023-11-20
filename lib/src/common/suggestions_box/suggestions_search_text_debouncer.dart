@@ -5,8 +5,8 @@ import 'package:flutter_typeahead/src/common/suggestions_box/connector_widget.da
 
 /// A widget that notifies of changes to a [TextEditingController],
 /// but only after a specified duration has passed since the last change.
-class SuggestionsListTextDebouncer extends StatefulWidget {
-  const SuggestionsListTextDebouncer({
+class SuggestionsSearchTextDebouncer extends StatefulWidget {
+  const SuggestionsSearchTextDebouncer({
     super.key,
     required this.controller,
     required this.onChanged,
@@ -30,12 +30,12 @@ class SuggestionsListTextDebouncer extends StatefulWidget {
   final Widget child;
 
   @override
-  State<SuggestionsListTextDebouncer> createState() =>
-      _SuggestionsListTextDebouncerState();
+  State<SuggestionsSearchTextDebouncer> createState() =>
+      _SuggestionsSearchTextDebouncerState();
 }
 
-class _SuggestionsListTextDebouncerState
-    extends State<SuggestionsListTextDebouncer> {
+class _SuggestionsSearchTextDebouncerState
+    extends State<SuggestionsSearchTextDebouncer> {
   String? lastTextValue;
   Timer? debounceTimer;
 
