@@ -26,25 +26,17 @@ class SuggestionsSearch<T> extends StatefulWidget {
   /// {@template flutter_typeahead.SuggestionsSearch.textEditingController}
   /// Controller for the text field used for input.
   ///
-  /// The value of the text field will be used to get suggestions.
+  /// The value will be used to get suggestions.
   /// {@endtemplate}
   final TextEditingController textEditingController;
 
   /// {@template flutter_typeahead.SuggestionsSearch.suggestionsCallback}
-  /// Called with the search pattern to get the search suggestions.
-  ///
-  /// This callback must not be null. It is be called by the TypeAhead widget
-  /// and provided with the search pattern. It should return a [List](https://api.dartlang.org/stable/2.0.0/dart-core/List-class.html)
-  /// of suggestions either synchronously, or asynchronously (as the result of a
-  /// [Future](https://api.dartlang.org/stable/dart-async/Future-class.html)).
-  /// Typically, the list of suggestions should not contain more than 4 or 5
-  /// entries. These entries will then be provided to [itemBuilder] to display
-  /// the suggestions.
+  /// Called with the search pattern to get matching suggestions.
   ///
   /// Example:
   /// ```dart
-  /// suggestionsCallback: (pattern) async {
-  ///   return await _getSuggestions(pattern);
+  /// suggestionsCallback: (search) {
+  ///   return Service.of(context).getSuggestions(search);
   /// }
   /// ```
   ///

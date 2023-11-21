@@ -14,19 +14,9 @@ class SuggestionsSearchTextDebouncer extends StatefulWidget {
     required this.child,
   });
 
-  /// The controller whose text to listen to.
   final TextEditingController controller;
-
-  /// Called when the text in the controller's text field changes.
   final ValueSetter<String> onChanged;
-
-  /// The duration to wait after the last change in the controller's text.
-  ///
-  /// Defaults to 300 milliseconds.
-  /// Set to `Duration.zero` to disable debouncing.
   final Duration? debounceDuration;
-
-  /// The widget below this widget in the tree.
   final Widget child;
 
   @override

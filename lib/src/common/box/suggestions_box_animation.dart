@@ -62,7 +62,6 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
     super.dispose();
   }
 
-  /// Handles when the suggestions box is opened or closed via the controller.
   void onOpenedChanged() {
     if (widget.controller.isOpen) {
       setState(() => hidden = false);

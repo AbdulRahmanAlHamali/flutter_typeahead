@@ -16,7 +16,6 @@ class SuggestionsTraversalConnector<T> extends StatelessWidget {
   final FocusNode focusNode;
   final Widget child;
 
-  /// Handles passing key events to the controller.
   KeyEventResult onKeyEvent(FocusNode node, KeyEvent key) {
     if (key is! KeyDownEvent) return KeyEventResult.ignored;
     switch (key.logicalKey) {

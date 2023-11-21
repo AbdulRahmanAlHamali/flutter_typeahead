@@ -17,7 +17,6 @@ class SuggestionsList<T> extends StatefulWidget {
     required this.emptyBuilder,
     required this.itemBuilder,
     this.listBuilder,
-    this.wrapperBuilder,
     this.itemSeparatorBuilder,
     this.autoFlipListDirection,
   });
@@ -37,9 +36,9 @@ class SuggestionsList<T> extends StatefulWidget {
   /// {@template flutter_typeahead.SuggestionsList.hideKeyboardOnDrag}
   /// Whether the keyboard should be hidden when the user scrolls the suggestions list.
   ///
-  /// Cannot be used together with [hideSuggestionsOnKeyboardHide].
+  /// Cannot be used together with [hideWithKeyboard].
   ///
-  /// Defaults to false.
+  /// Defaults to `false`.
   /// {@endtemplate}
   final bool? hideKeyboardOnDrag;
 
@@ -99,14 +98,14 @@ class SuggestionsList<T> extends StatefulWidget {
   /// See also:
   /// * [hideOnError], which is whether the suggestions box should be hidden on error.
   /// {@endtemplate}
-  final Widget Function(BuildContext context, Object? error) errorBuilder;
+  final ErrorBuilder errorBuilder;
 
   /// {@template flutter_typeahead.SuggestionsList.emptyBuilder}
   /// Builds the widget for when the suggestions list is empty.
   ///
   /// Example usage:
   /// ```dart
-  /// noItemsFoundBuilder: (context) => Text('No Items Found!'),
+  /// emptyBuilder: (context) => Text('No Items Found!'),
   /// ```
   /// {@endtemplate}
   final WidgetBuilder emptyBuilder;
@@ -116,12 +115,12 @@ class SuggestionsList<T> extends StatefulWidget {
   ///
   /// Example usage:
   /// ```dart
-  /// itemBuilder: (context, suggestion) {
+  /// itemBuilder: (context, city) {
   ///   return ListTile(
-  ///     title: Text(suggestion.name),
-  ///     subtitle: Text('\$${suggestion.price}')
+  ///     title: Text(city.name),
+  ///     subtitle: Text(city.country),
   ///   );
-  /// }
+  /// },
   /// ```
   /// {@endtemplate}
   final ItemBuilder<T> itemBuilder;
@@ -135,33 +134,33 @@ class SuggestionsList<T> extends StatefulWidget {
   /// ```
   ///
   /// Equivalent to [ListView.separated.separatorBuilder].
+  /// This is only used when [listBuilder] is not specified.
   /// {@endtemplate}
-  final ItemBuilder<int>? itemSeparatorBuilder;
+  final IndexedWidgetBuilder? itemSeparatorBuilder;
 
   /// {@template flutter_typeahead.SuggestionsList.listBuilder}
   /// Optional builder function to customize the suggestions list.
-  /// {@endtemplate}
-  final ListBuilder? listBuilder;
-
-  /// {@template flutter_typeahead.SuggestionsList.wrapperBuilder}
-  /// Optional builder function to wrap the suggestions list.
   ///
   /// Example usage:
   /// ```dart
-  /// wrapperBuilder: (context, child) {
-  ///   return Container(
-  ///     color: Colors.red,
-  ///     child: child,
-  ///   );
-  /// }
+  /// listBuilder: (context, children) => GridView.count(
+  ///   controller: scrollContoller,
+  ///   crossAxisCount: 2,
+  ///   crossAxisSpacing: 8,
+  ///   mainAxisSpacing: 8,
+  ///   shrinkWrap: true,
+  ///   reverse: SuggestionsController.of(context).effectiveDirection ==
+  ///       AxisDirection.up,
+  ///   children: children,
+  /// ),
   /// ```
   /// {@endtemplate}
-  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+  final ListBuilder? listBuilder;
 
   /// {@template flutter_typeahead.SuggestionsList.autoFlipListDirection}
   /// Whether the suggestions list should be reversed if the suggestions box is flipped.
   ///
-  /// Defaults to true.
+  /// Defaults to `true`.
   /// {@endtemplate}
   final bool? autoFlipListDirection;
 

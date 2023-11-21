@@ -133,7 +133,7 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@template flutter_typeahead.SuggestionsField.hideWithKeyboard}
   /// Whether the suggestions box should be hidden when the keyboard is closed.
   ///
-  /// Defaults to true.
+  /// Defaults to `true`.
   /// {@endtemplate}
   final bool hideWithKeyboard;
 

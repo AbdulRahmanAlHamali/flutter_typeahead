@@ -46,6 +46,19 @@ class SuggestionsBox<T> extends StatelessWidget {
   /// {@template flutter_typeahead.SuggestionsBox.decorationBuilder}
   /// Builder function for decorating the suggestions box.
   ///
+  /// Example usage:
+  /// ```dart
+  /// decorationBuilder: (context, child) {
+  ///   return Container(
+  ///     decoration: BoxDecoration(
+  ///       border: Border.all(color: Colors.grey),
+  ///       borderRadius: BorderRadius.circular(5.0),
+  ///     ),
+  ///     child: child,
+  ///   );
+  /// }
+  /// ```
+  ///
   /// This widget is always built, even when the suggestions box is closed.
   /// {@endtemplate}
   final DecorationBuilder? decorationBuilder;
@@ -57,32 +70,30 @@ class SuggestionsBox<T> extends StatelessWidget {
   /// ```dart
   /// transitionBuilder: (context, animation, child) {
   ///   return FadeTransition(
-  ///     child: suggestionsBox,
   ///     opacity: CurvedAnimation(
   ///       parent: animationController,
   ///       curve: Curves.fastOutSlowIn,
   ///     ),
+  ///     child: child,
   ///   );
   /// }
   /// ```
   ///
   /// To disable the animation, simply return `child`
   ///
-  /// Defaults to a [SizeTransition].
+  /// Defaults to a [SizeTransition] and [AnimatedSize] combination.
   ///
   /// See also:
   /// * [animationDuration], which is the duration of the animation.
-  /// * [animationStart], which is the value at which the list of suggestions should start animating.
   /// {@endtemplate}
   final AnimationTransitionBuilder? transitionBuilder;
 
   /// {@template flutter_typeahead.SuggestionsBox.animationDuration}
   /// Duration of the animation for showing and hiding the suggestions box.
   ///
-  /// Defaults to 500 milliseconds.
+  /// Defaults to `500 milliseconds`.
   ///
   /// See also:
-  /// * [animationStart], which is the value at which the list of suggestions should start animating.
   /// * [transitionBuilder], which is the builder function for custom animation transitions.
   /// {@endtemplate}
   final Duration? animationDuration;
