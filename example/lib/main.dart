@@ -453,7 +453,7 @@ mixin SharedExampleTypeAheadConfig {
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
-      reverse: SuggestionsController.of(context).effectiveDirection ==
+      reverse: SuggestionsController.of<Product>(context).effectiveDirection ==
           VerticalDirection.up,
       itemBuilder: (context, index) => items[index],
     );

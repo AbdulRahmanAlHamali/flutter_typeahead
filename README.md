@@ -79,7 +79,7 @@ TypeAheadField(
     crossAxisSpacing: 8,
     mainAxisSpacing: 8,
     shrinkWrap: true,
-    reverse: SuggestionsController.of(context).effectiveDirection ==
+    reverse: SuggestionsController.of<City>(context).effectiveDirection ==
         VerticalDirection.up,
     children: children,
   ),
