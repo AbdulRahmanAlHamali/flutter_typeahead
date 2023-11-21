@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/typeahead/typeahead_field.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
-import 'package:flutter_typeahead/src/material/suggestions_decoration.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/material/material_defaults.dart';
 
 /// {@macro flutter_typeahead.RawTypeAheadField}
@@ -36,22 +35,18 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     super.suggestionsController,
     required super.suggestionsCallback,
     super.transitionBuilder,
-    this.suggestionsDecoration = const SuggestionsDecoration(),
+    DecorationBuilder? decorationBuilder,
+    super.listBuilder,
+    super.constraints,
+    super.offset,
   }) : super(
-          constraints: suggestionsDecoration.constraints,
-          offset: suggestionsDecoration.offset,
           builder: builder ?? TypeAheadMaterialDefaults.builder,
           errorBuilder: errorBuilder ?? TypeAheadMaterialDefaults.errorBuilder,
           loadingBuilder:
               loadingBuilder ?? TypeAheadMaterialDefaults.loadingBuilder,
           emptyBuilder: emptyBuilder ?? TypeAheadMaterialDefaults.emptyBuilder,
           itemBuilder: TypeAheadMaterialDefaults.itemBuilder(itemBuilder),
-          wrapperBuilder:
-              TypeAheadMaterialDefaults.wrapperBuilder(suggestionsDecoration),
+          decorationBuilder:
+              TypeAheadMaterialDefaults.wrapperBuilder(decorationBuilder),
         );
-
-  /// {@template flutter_typeahead.TypeAheadField.suggestionsDecoration}
-  /// The decoration of the suggestions box.
-  /// {@endtemplate}
-  final SuggestionsDecoration suggestionsDecoration;
 }

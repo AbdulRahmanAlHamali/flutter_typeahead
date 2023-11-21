@@ -42,11 +42,6 @@ class SettingsTypeAhead extends StatelessWidget
                 hintText: hintText,
               ),
             ),
-            suggestionsDecoration: SuggestionsDecoration(
-              borderRadius: borderRadius,
-              elevation: 8,
-              color: Theme.of(context).cardColor,
-            ),
             itemBuilder: (context, setting) {
               if (setting is ToggleFieldOption) {
                 IconData? icon = setting.value
@@ -79,7 +74,7 @@ class SettingsTypeAhead extends StatelessWidget
               }
             },
             itemSeparatorBuilder: itemSeparatorBuilder,
-            // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
+            listBuilder: settings.gridLayout.value ? gridLayoutBuilder : null,
             onSelected: onSuggestionSelected,
             suggestionsCallback: suggestionsCallback,
           ),
@@ -128,9 +123,6 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
                         fontStyle: FontStyle.italic,
                       ),
             ),
-            suggestionsDecoration: CupertinoSuggestionsDecoration(
-              borderRadius: borderRadius,
-            ),
             itemBuilder: (context, setting) {
               if (setting is ToggleFieldOption) {
                 return CupertinoListTile(
@@ -162,7 +154,7 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
               }
             },
             itemSeparatorBuilder: itemSeparatorBuilder,
-            // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
+            listBuilder: settings.gridLayout.value ? gridLayoutBuilder : null,
             onSelected: onSuggestionSelected,
             suggestionsCallback: suggestionsCallback,
           ),

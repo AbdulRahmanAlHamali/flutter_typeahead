@@ -1,7 +1,6 @@
 import 'dart:core';
 
 import 'package:flutter_typeahead/src/common/typeahead/typeahead_form_field.dart';
-import 'package:flutter_typeahead/src/cupertino/cupertino_suggestions_decoration.dart';
 import 'package:flutter_typeahead/src/cupertino/cupertino_typeahead_field.dart';
 
 /// {@macro typeahead_field.TypeAheadFormField}
@@ -37,26 +36,28 @@ class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
     super.suggestionsController,
     required super.suggestionsCallback,
     super.transitionBuilder,
-    super.wrapperBuilder,
+    super.decorationBuilder,
+    super.listBuilder,
+    super.constraints,
+    super.offset,
     super.initialValue,
     super.onReset,
     super.onSaved,
     super.validator,
     super.autovalidateMode,
     super.enabled,
-    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
   }) : super(
-          constraints: suggestionsDecoration.constraints,
-          offset: suggestionsDecoration.offset,
           fieldBuilder: (field) => CupertinoTypeAheadField<T>(
             animationDuration: animationDuration,
             autoFlipDirection: autoFlipDirection,
             autoFlipListDirection: autoFlipListDirection,
             autoFlipMinHeight: autoFlipMinHeight,
             builder: builder,
+            controller: controller,
             debounceDuration: debounceDuration,
             direction: direction,
             errorBuilder: errorBuilder,
+            focusNode: focusNode,
             hideKeyboardOnDrag: hideKeyboardOnDrag,
             hideOnEmpty: hideOnEmpty,
             hideOnError: hideOnError,
@@ -71,13 +72,14 @@ class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
             minCharsForSuggestions: minCharsForSuggestions,
             emptyBuilder: emptyBuilder,
             onSelected: onSelected,
+            scrollController: scrollController,
             suggestionsController: suggestionsController,
-            suggestionsDecoration: suggestionsDecoration,
             suggestionsCallback: suggestionsCallback,
             transitionBuilder: transitionBuilder,
+            decorationBuilder: decorationBuilder,
+            listBuilder: listBuilder,
+            constraints: constraints,
+            offset: offset,
           ),
         );
-
-  /// {@macro flutter_typeahead.TypeAheadField.suggestionsDecoration}
-  final CupertinoSuggestionsDecoration suggestionsDecoration;
 }

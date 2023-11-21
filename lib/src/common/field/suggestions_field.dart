@@ -4,7 +4,7 @@ import 'package:flutter_typeahead/src/common/base/floater.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_traversal_connector.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_select_connector.dart';
@@ -28,7 +28,7 @@ class SuggestionsField<T> extends StatefulWidget {
     this.constraints,
     this.offset,
     this.scrollController,
-    this.wrapperBuilder,
+    this.decorationBuilder,
     this.transitionBuilder,
     this.animationDuration,
   });
@@ -140,8 +140,8 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
   final ScrollController? scrollController;
 
-  /// {@macro flutter_typeahead.SuggestionsBox.wrapperBuilder}
-  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+  /// {@macro flutter_typeahead.SuggestionsBox.decorationBuilder}
+  final DecorationBuilder? decorationBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsBox.transitionBuilder}
   final AnimationTransitionBuilder? transitionBuilder;
@@ -226,7 +226,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             controller: controller,
             scrollController: widget.scrollController,
             builder: (context) => widget.builder(context, controller),
-            wrapperBuilder: widget.wrapperBuilder,
+            decorationBuilder: widget.decorationBuilder,
             transitionBuilder: widget.transitionBuilder,
             animationDuration: widget.animationDuration,
           );

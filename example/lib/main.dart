@@ -86,10 +86,11 @@ class ExampleTypeAhead extends StatelessWidget
                     hintText: hintText,
                   ),
                 ),
-                suggestionsDecoration: SuggestionsDecoration(
+                decorationBuilder: (context, child) => Material(
+                  type: MaterialType.card,
+                  elevation: 4,
                   borderRadius: borderRadius,
-                  elevation: 8,
-                  color: Theme.of(context).cardColor,
+                  child: child,
                 ),
                 itemBuilder: (context, product) => ListTile(
                   title: Text(product.name),
@@ -107,7 +108,8 @@ class ExampleTypeAhead extends StatelessWidget
                 onSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
-                // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
+                listBuilder:
+                    settings.gridLayout.value ? gridLayoutBuilder : null,
               ),
               Expanded(
                 child: Column(
@@ -253,8 +255,21 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                             fontStyle: FontStyle.italic,
                           ),
                 ),
-                suggestionsDecoration: CupertinoSuggestionsDecoration(
-                  borderRadius: borderRadius,
+                decorationBuilder: (context, child) => DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: CupertinoTheme.of(context)
+                        .barBackgroundColor
+                        .withOpacity(1),
+                    border: Border.all(
+                      color: CupertinoDynamicColor.resolve(
+                        CupertinoColors.systemGrey4,
+                        context,
+                      ),
+                      width: 1,
+                    ),
+                    borderRadius: borderRadius,
+                  ),
+                  child: child,
                 ),
                 itemBuilder: (context, product) => CupertinoListTile(
                   title: Text(product.name),
@@ -272,7 +287,8 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 onSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
-                // layoutArchitecture: settings.gridLayout.value ? gridLayoutBuilder : null,
+                listBuilder:
+                    settings.gridLayout.value ? gridLayoutBuilder : null,
               ),
               const SizedBox(height: 32),
               Padding(
@@ -437,7 +453,7 @@ mixin SharedExampleTypeAheadConfig {
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
-      itemBuilder: (context, index) => items.toList()[index],
+      itemBuilder: (context, index) => items[index],
     );
   }
 

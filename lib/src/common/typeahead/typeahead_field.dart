@@ -5,7 +5,7 @@ import 'package:flutter_typeahead/src/common/typeahead/typeahead_field_config.da
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_list.dart';
 
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// {@template flutter_typeahead.RawTypeAheadField}
@@ -271,7 +271,8 @@ abstract class RawTypeAheadField<T> extends StatefulWidget
     this.suggestionsController,
     required this.suggestionsCallback,
     this.transitionBuilder,
-    this.wrapperBuilder,
+    this.decorationBuilder,
+    this.listBuilder,
     this.constraints,
     this.offset,
   });
@@ -332,7 +333,9 @@ abstract class RawTypeAheadField<T> extends StatefulWidget
   @override
   final ItemBuilder<int>? itemSeparatorBuilder;
   @override
-  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+  final DecorationBuilder? decorationBuilder;
+  @override
+  final ListBuilder? listBuilder;
   @override
   final bool? autoFlipListDirection;
   @override
@@ -398,13 +401,15 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
       constraints: widget.constraints,
       offset: widget.offset,
       scrollController: widget.scrollController,
-      wrapperBuilder: (context, child) => SuggestionsSearch<T>(
-        controller: SuggestionsController.of<T>(context),
-        textEditingController: controller,
-        suggestionsCallback: widget.suggestionsCallback,
-        minCharsForSuggestions: widget.minCharsForSuggestions,
-        debounceDuration: widget.debounceDuration,
-        child: widget.wrapperBuilder?.call(context, child) ?? child,
+      decorationBuilder: (context, child) => TextFieldTapRegion(
+        child: SuggestionsSearch<T>(
+          controller: SuggestionsController.of<T>(context),
+          textEditingController: controller,
+          suggestionsCallback: widget.suggestionsCallback,
+          minCharsForSuggestions: widget.minCharsForSuggestions,
+          debounceDuration: widget.debounceDuration,
+          child: widget.decorationBuilder?.call(context, child) ?? child,
+        ),
       ),
       transitionBuilder: widget.transitionBuilder,
       animationDuration: widget.animationDuration,
@@ -415,6 +420,7 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
         emptyBuilder: widget.emptyBuilder,
         itemBuilder: widget.itemBuilder,
         itemSeparatorBuilder: widget.itemSeparatorBuilder,
+        listBuilder: widget.listBuilder,
         autoFlipListDirection: widget.autoFlipListDirection,
       ),
       child: PointerInterceptor(
