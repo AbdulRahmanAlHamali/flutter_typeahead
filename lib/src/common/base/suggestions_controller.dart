@@ -87,6 +87,8 @@ class SuggestionsController<T> extends ChangeNotifier {
   /// The suggestions box will try to open in this direction.
   /// If there is insufficient space, it may open in the opposite direction,
   /// depending on its configuration.
+  ///
+  /// See [effectiveDirection] for the actual direction of the suggestions box.
   AxisDirection get direction => _direction;
   set direction(AxisDirection value) {
     if (_direction == value) return;
@@ -116,16 +118,22 @@ class SuggestionsController<T> extends ChangeNotifier {
   AxisDirection _effectiveDirection = AxisDirection.down;
 
   /// A stream of events that occur when the suggestions box should be resized.
+  ///
+  /// For internal use only.
   Stream<void> get resizes => _resizesController.stream;
   final StreamController<void> _resizesController =
       StreamController<void>.broadcast();
 
   /// A stream of up and down arrow key occuring on any focus node of the suggestions box.
+  ///
+  /// For internal use only.
   Stream<VerticalDirection> get keys => _keyEventController.stream;
   final StreamController<VerticalDirection> _keyEventController =
       StreamController<VerticalDirection>.broadcast();
 
   /// Should be called when a key is pressed on any focus node of the suggestions box.
+  ///
+  /// For internal use only.
   void sendKey(VerticalDirection key) => _keyEventController.add(key);
 
   /// A stream of selected suggestions.

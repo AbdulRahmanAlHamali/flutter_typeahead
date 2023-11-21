@@ -47,16 +47,16 @@ TypeAheadField<City>(
       )
     );
   },
-  itemBuilder: (context, value) {
+  itemBuilder: (context, city) {
     return ListTile(
-      title: Text(value.name),
-      subtitle: Text(value.country),
+      title: Text(city.name),
+      subtitle: Text(city.country),
     );
   },
-  onSelected: (value) {
+  onSelected: (city) {
     Navigator.of(context).push<void>(
       MaterialPageRoute(
-        builder: (context) => CityPage(city: value),
+        builder: (context) => CityPage(city: city),
       ),
     );
   },
@@ -79,8 +79,8 @@ TypeAheadField(
     crossAxisSpacing: 8,
     mainAxisSpacing: 8,
     shrinkWrap: true,
-    reverse: SuggestionsController.of(context)
-      .effectiveDirection == AxisDirection.up,
+    reverse: SuggestionsController.of(context).effectiveDirection ==
+        AxisDirection.up,
     children: children,
   ),
 );

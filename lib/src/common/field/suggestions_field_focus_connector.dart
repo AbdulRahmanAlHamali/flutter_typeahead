@@ -16,16 +16,9 @@ class SuggestionsFieldFocusConnector<T> extends StatefulWidget {
     this.hideOnUnfocus = true,
   });
 
-  /// The controller of the suggestions box.
   final SuggestionsController<T> controller;
-
-  /// The focus node of the child of the suggestions box.
   final FocusNode focusNode;
-
-  /// The child of the suggestions box.
   final Widget child;
-
-  /// Whether the suggestions box should be hidden when the focus is lost.
   final bool hideOnUnfocus;
 
   @override
@@ -47,7 +40,6 @@ class _SuggestionsFieldFocusConnectorState<T>
     });
   }
 
-  /// Handles when the state of the suggestions box changes.
   void onControllerChanged() {
     if (widget.controller.isOpen) {
       widget.focusNode.requestFocus();
@@ -56,7 +48,6 @@ class _SuggestionsFieldFocusConnectorState<T>
     }
   }
 
-  /// Handles when the focus of the child of the suggestions box changes.
   void onFocusChanged() {
     if (widget.focusNode.hasFocus) {
       widget.controller.open();

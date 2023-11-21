@@ -354,12 +354,12 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   final ItemBuilder<T> itemBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsList.itemSeparatorBuilder}
-  final ItemBuilder<int>? itemSeparatorBuilder;
+  final IndexedWidgetBuilder? itemSeparatorBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsBox.decorationBuilder}
   final DecorationBuilder? decorationBuilder;
 
-  /// {@template flutter_typeahead.SuggestionsList.listBuilder}
+  /// {@macro flutter_typeahead.SuggestionsList.listBuilder}
   final ListBuilder? listBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsList.autoFlipListDirection}
