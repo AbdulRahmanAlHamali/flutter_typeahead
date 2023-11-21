@@ -84,7 +84,7 @@ class SuggestionsList<T> extends StatefulWidget {
   /// {@endtemplate}
   final WidgetBuilder loadingBuilder;
 
-  //// {@template flutter_typeahead.SuggestionsList.errorBuilder}
+  /// {@template flutter_typeahead.SuggestionsList.errorBuilder}
   /// Builds the widget for when the controller has an error.
   ///
   /// Example usage:
