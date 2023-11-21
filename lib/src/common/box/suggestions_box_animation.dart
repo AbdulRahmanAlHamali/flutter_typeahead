@@ -82,23 +82,21 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
       child =
           widget.transitionBuilder!(context, animationController.view, child);
     } else {
-      child = SizeTransition(
-        axisAlignment: -1,
-        sizeFactor: CurvedAnimation(
-          parent: animationController,
-          curve: Curves.fastOutSlowIn,
+      child = AnimatedSize(
+        alignment: widget.controller.effectiveDirection == AxisDirection.up
+            ? Alignment.bottomCenter
+            : Alignment.topCenter,
+        duration: animationDuration,
+        child: SizeTransition(
+          axisAlignment: -1,
+          sizeFactor: CurvedAnimation(
+            parent: animationController,
+            curve: Curves.fastOutSlowIn,
+          ),
+          child: child,
         ),
-        child: child,
       );
     }
-
-    child = AnimatedSize(
-      alignment: widget.controller.effectiveDirection == AxisDirection.up
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
-      duration: animationDuration,
-      child: child,
-    );
 
     child = Visibility(
       visible: !hidden,
