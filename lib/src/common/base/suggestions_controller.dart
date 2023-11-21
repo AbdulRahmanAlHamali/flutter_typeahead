@@ -74,7 +74,7 @@ class SuggestionsController<T> extends ChangeNotifier {
   bool get isOpen => _isOpen;
   bool _isOpen = false;
 
-  /// Whether the suggestions box is focused.
+  /// The current state of focus of the suggestions box.
   SuggestionsFocusState get focusState => _focusState;
   SuggestionsFocusState _focusState = SuggestionsFocusState.blur;
 
@@ -149,10 +149,9 @@ class SuggestionsController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Unfocuses the suggestions box.
+  /// Unfocuses the suggestions box and its child.
   void unfocus() {
     if (_focusState == SuggestionsFocusState.blur) return;
-    if (_focusState == SuggestionsFocusState.child) return;
     _focusState = SuggestionsFocusState.blur;
     notifyListeners();
   }
