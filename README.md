@@ -226,6 +226,23 @@ It grants access to the following:
 
 When building a widget inside of the suggestions box, you can access the controller via `SuggestionsController.of(context)`.
 
+### Customizing everything
+
+To create your own version of the TypeAhead widget, that is neither Material nor Cupertino, you can use the `RawTypeAheadField` widget.
+
+You must then specify the following parameters:
+
+- builder (to build the `TextField`)
+- loadingBuilder (to build the loading widget)
+- errorBuilder (to build the error widget)
+- emptyBuilder (to build the empty widget)
+- itemBuilder (to build the suggestions)
+
+As well as all the usual parameters, such as `suggestionsCallback`, `onSelected`, etc.
+
+The `decorationBuilder` can be used to inject required wrappers like `Material` or `DefaultTextStyle`.
+For more information, see the source code of the `TypeAheadField` widget.
+
 ## Migrations
 
 ### From 4.x to 5.x
