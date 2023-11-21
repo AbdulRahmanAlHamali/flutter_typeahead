@@ -3,12 +3,12 @@ import 'package:flutter_typeahead/src/common/base/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/base/floater.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/box/suggestions_traversal_connector.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_select_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_tap_connector.dart';
+import 'package:flutter_typeahead/src/common/field/suggestions_field_traversal_connector.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
 class SuggestionsField<T> extends StatefulWidget {
@@ -264,19 +264,19 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             value: controller,
             connect: (value) => value.resizes.listen((_) => onResize()),
             disconnect: (value, key) => key?.cancel(),
-            child: SuggestionsFieldFocusConnector(
+            child: SuggestionsFieldFocusConnector<T>(
               controller: controller,
               focusNode: widget.focusNode,
               hideOnUnfocus: widget.hideOnUnfocus,
-              child: SuggestionsTraversalConnector<T>(
+              child: SuggestionsFieldTraversalConnector<T>(
                 controller: controller,
                 focusNode: widget.focusNode,
-                child: SuggestionsFieldKeyboardConnector(
+                child: SuggestionsFieldKeyboardConnector<T>(
                   controller: controller,
                   hideWithKeyboard: widget.hideWithKeyboard,
-                  child: SuggestionsFieldTapConnector(
+                  child: SuggestionsFieldTapConnector<T>(
                     controller: controller,
-                    child: SuggestionsFieldSelectConnector(
+                    child: SuggestionsFieldSelectConnector<T>(
                       controller: controller,
                       hideOnSelect: widget.hideOnSelect,
                       onSelected: widget.onSelected,

@@ -51,7 +51,7 @@ class _SuggestionsFieldFocusConnectorState<T>
   void onFocusChanged() {
     if (widget.focusNode.hasFocus) {
       widget.controller.open();
-    } else if (!widget.controller.focused) {
+    } else if (widget.controller.focusState != SuggestionsFocusState.box) {
       if (widget.hideOnUnfocus) {
         widget.controller.close();
       }
