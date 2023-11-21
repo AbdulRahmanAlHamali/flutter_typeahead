@@ -29,21 +29,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `onSuggestionsBoxToggle` parameter (replaced with subscriptions to `SuggestionsController`).
 - `ignoreAccessibleNavigation` parameter (no longer required with new `Overlay` code).
 
-## 4.9.0 - 2023-10-22
-### Added
-- "Pull to load more" feature (#519)
-
 ## 4.8.0 - 2023-09-24
 ### Changed
 - General cleanup of the codebase (#523)
 
 ## 4.7.0 - 2023-09-05
 ## Added
-- expands property to TextFieldConfiguration (#512)
-- scrollbarAlwaysVisible argument (#512)
+- `expands` property to TextFieldConfiguration (#512)
+- `scrollbarAlwaysVisible` argument (#512)
 
 ### Fixed
-- ignoreAccessibleNavigation flag to prevent non-selection bug (#512)
+- `ignoreAccessibleNavigation` flag to prevent non-selection bug (#512)
 
 ## 4.6.2 - 2023-06-19
 ### Added
