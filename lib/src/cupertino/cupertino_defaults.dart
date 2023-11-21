@@ -93,4 +93,15 @@ abstract final class TypeAheadCupertinoDefaults {
       );
     };
   }
+
+  static Widget builder(
+    BuildContext context,
+    TextEditingController controller,
+    FocusNode node,
+  ) {
+    return CupertinoTextField(
+      controller: controller,
+      focusNode: node,
+    );
+  }
 }

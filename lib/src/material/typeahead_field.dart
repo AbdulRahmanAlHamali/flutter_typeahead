@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/typeahead/typeahead_field.dart';
 import 'package:flutter_typeahead/src/common/base/typedef.dart';
-import 'package:flutter_typeahead/src/material/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/suggestions_decoration.dart';
-import 'package:flutter_typeahead/src/material/suggestions_list.dart';
+import 'package:flutter_typeahead/src/material/material_defaults.dart';
 
 /// {@macro flutter_typeahead.RawTypeAheadField}
 class TypeAheadField<T> extends RawTypeAheadField<T> {
@@ -13,9 +12,12 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     super.autoFlipDirection,
     super.autoFlipListDirection,
     super.autoFlipMinHeight,
+    TextFieldBuilder? builder,
+    super.controller,
     super.debounceDuration,
     super.direction,
     ErrorBuilder? errorBuilder,
+    super.focusNode,
     super.hideKeyboardOnDrag,
     super.hideOnEmpty,
     super.hideOnError,
@@ -35,12 +37,10 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     required super.suggestionsCallback,
     super.transitionBuilder,
     this.suggestionsDecoration = const SuggestionsDecoration(),
-    this.textFieldConfiguration = const TextFieldConfiguration(),
   }) : super(
-          controller: textFieldConfiguration.controller,
-          focusNode: textFieldConfiguration.focusNode,
           constraints: suggestionsDecoration.constraints,
           offset: suggestionsDecoration.offset,
+          builder: builder ?? TypeAheadMaterialDefaults.builder,
           errorBuilder: errorBuilder ?? TypeAheadMaterialDefaults.errorBuilder,
           loadingBuilder:
               loadingBuilder ?? TypeAheadMaterialDefaults.loadingBuilder,
@@ -48,59 +48,10 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
           itemBuilder: TypeAheadMaterialDefaults.itemBuilder(itemBuilder),
           wrapperBuilder:
               TypeAheadMaterialDefaults.wrapperBuilder(suggestionsDecoration),
-          builder: (context, controller, focusNode) {
-            TextFieldConfiguration config = textFieldConfiguration;
-            return TextField(
-              autocorrect: config.autocorrect,
-              autofillHints: config.autofillHints,
-              autofocus: config.autofocus,
-              contentInsertionConfiguration:
-                  config.contentInsertionConfiguration,
-              contextMenuBuilder: config.contextMenuBuilder,
-              controller: controller,
-              cursorColor: config.cursorColor,
-              cursorRadius: config.cursorRadius,
-              cursorWidth: config.cursorWidth,
-              decoration: config.decoration,
-              enableInteractiveSelection: config.enableInteractiveSelection,
-              enableSuggestions: config.enableSuggestions,
-              enabled: config.enabled,
-              expands: config.expands,
-              focusNode: focusNode,
-              inputFormatters: config.inputFormatters,
-              keyboardAppearance: config.keyboardAppearance,
-              keyboardType: config.keyboardType,
-              maxLength: config.maxLength,
-              maxLengthEnforcement: config.maxLengthEnforcement,
-              maxLines: config.maxLines,
-              minLines: config.minLines,
-              obscureText: config.obscureText,
-              onChanged: config.onChanged,
-              onEditingComplete: config.onEditingComplete,
-              onSubmitted: config.onSubmitted,
-              onTap: config.onTap,
-              onTapOutside: config.onTapOutside,
-              readOnly: config.readOnly,
-              scrollPadding: config.scrollPadding,
-              style: config.style,
-              textAlign: config.textAlign,
-              textAlignVertical: config.textAlignVertical,
-              textCapitalization: config.textCapitalization,
-              textDirection: config.textDirection,
-              textInputAction: config.textInputAction,
-            );
-          },
         );
 
   /// {@template flutter_typeahead.TypeAheadField.suggestionsDecoration}
   /// The decoration of the suggestions box.
   /// {@endtemplate}
   final SuggestionsDecoration suggestionsDecoration;
-
-  /// {@template flutter_typeahead.TypeAheadField.textFieldConfiguration}
-  /// The configuration of the text field.
-  ///
-  /// Mirrors the parameters of [TextField].
-  /// {@endtemplate}
-  final TextFieldConfiguration textFieldConfiguration;
 }

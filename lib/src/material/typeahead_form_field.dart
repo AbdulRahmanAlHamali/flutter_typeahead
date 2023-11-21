@@ -1,5 +1,4 @@
 import 'package:flutter_typeahead/src/common/typeahead/typeahead_form_field.dart';
-import 'package:flutter_typeahead/src/material/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/typeahead_field.dart';
 import 'package:flutter_typeahead/src/material/suggestions_decoration.dart';
 
@@ -12,6 +11,7 @@ class TypeAheadFormField<T> extends RawTypeAheadFormField<T> {
     super.autoFlipDirection,
     super.autoFlipListDirection,
     super.autoFlipMinHeight,
+    super.builder,
     super.controller,
     super.debounceDuration,
     super.direction,
@@ -36,8 +36,6 @@ class TypeAheadFormField<T> extends RawTypeAheadFormField<T> {
     required super.suggestionsCallback,
     super.transitionBuilder,
     super.wrapperBuilder,
-    super.constraints,
-    super.offset,
     super.initialValue,
     super.onReset,
     super.onSaved,
@@ -45,13 +43,15 @@ class TypeAheadFormField<T> extends RawTypeAheadFormField<T> {
     super.autovalidateMode,
     super.enabled,
     this.suggestionsDecoration = const SuggestionsDecoration(),
-    this.textFieldConfiguration = const TextFieldConfiguration(),
   }) : super(
+          constraints: suggestionsDecoration.constraints,
+          offset: suggestionsDecoration.offset,
           fieldBuilder: (field) => TypeAheadField<T>(
             animationDuration: animationDuration,
             autoFlipDirection: autoFlipDirection,
             autoFlipListDirection: autoFlipListDirection,
             autoFlipMinHeight: autoFlipMinHeight,
+            builder: builder,
             debounceDuration: debounceDuration,
             direction: direction,
             errorBuilder: errorBuilder,
@@ -60,6 +60,7 @@ class TypeAheadFormField<T> extends RawTypeAheadFormField<T> {
             hideOnError: hideOnError,
             hideOnLoading: hideOnLoading,
             hideOnUnfocus: hideOnUnfocus,
+            hideWithKeyboard: hideWithKeyboard,
             hideOnSelect: hideOnSelect,
             itemBuilder: itemBuilder,
             itemSeparatorBuilder: itemSeparatorBuilder,
@@ -71,19 +72,10 @@ class TypeAheadFormField<T> extends RawTypeAheadFormField<T> {
             suggestionsController: suggestionsController,
             suggestionsDecoration: suggestionsDecoration,
             suggestionsCallback: suggestionsCallback,
-            textFieldConfiguration: textFieldConfiguration.copyWith(
-              controller: field.controller,
-              decoration: textFieldConfiguration.decoration.copyWith(
-                errorText: field.errorText,
-              ),
-            ),
             transitionBuilder: transitionBuilder,
           ),
         );
 
   /// {@macro flutter_typeahead.TypeAheadField.suggestionsDecoration}
   final SuggestionsDecoration suggestionsDecoration;
-
-  /// {@macro flutter_typeahead.TypeAheadField.textFieldConfiguration}
-  final TextFieldConfiguration textFieldConfiguration;
 }

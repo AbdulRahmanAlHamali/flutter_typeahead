@@ -277,11 +277,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget
   });
 
   /// Builds the text field that will be used to search for the suggestions.
-  final Widget Function(
-    BuildContext context,
-    TextEditingController controller,
-    FocusNode focusNode,
-  ) builder;
+  final TextFieldBuilder builder;
 
   @override
   final TextEditingController? controller;
