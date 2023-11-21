@@ -51,7 +51,7 @@ class SuggestionsSearch<T> extends StatefulWidget {
   /// {@template flutter_typeahead.SuggestionsSearch.minCharsForSuggestions}
   /// Minimum number of characters required for showing suggestions.
   ///
-  /// Defaults to 0.
+  /// Defaults to `0`.
   /// {@endtemplate}
   final int? minCharsForSuggestions;
 
@@ -63,7 +63,7 @@ class SuggestionsSearch<T> extends StatefulWidget {
   ///
   /// If you want to update suggestions immediately, set this to Duration.zero.
   ///
-  /// Defaults to 300 milliseconds.
+  /// Defaults to `300 milliseconds`.
   /// {@endtemplate}
   final Duration? debounceDuration;
 
