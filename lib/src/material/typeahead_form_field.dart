@@ -3,14 +3,7 @@ import 'package:flutter_typeahead/src/material/text_field_configuration.dart';
 import 'package:flutter_typeahead/src/material/typeahead_field.dart';
 import 'package:flutter_typeahead/src/material/suggestions_decoration.dart';
 
-/// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
-/// implementation of [TypeAheadField], that allows the value to be saved,
-/// validated, etc.
-///
-/// See also:
-///
-/// * [TypeAheadField], A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
-/// that displays a list of suggestions as the user types
+/// {@macro typeahead_field.TypeAheadFormField}
 class TypeAheadFormField<T> extends RawTypeAheadFormField<T> {
   /// Creates a [TypeAheadFormField].
   TypeAheadFormField({
