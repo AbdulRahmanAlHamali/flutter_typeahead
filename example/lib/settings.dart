@@ -29,8 +29,10 @@ class SettingsTypeAhead extends StatelessWidget
             hideOnUnfocus: false,
             hideWithKeyboard: false,
             hideOnSelect: false,
-            textFieldConfiguration: TextFieldConfiguration(
+            controller: controller,
+            builder: (context, controller, focusNode) => TextField(
               controller: controller,
+              focusNode: focusNode,
               autofocus: true,
               style: DefaultTextStyle.of(context)
                   .style
@@ -113,8 +115,10 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
             hideOnUnfocus: false,
             hideWithKeyboard: false,
             hideOnSelect: false,
-            textFieldConfiguration: CupertinoTextFieldConfiguration(
+            controller: controller,
+            builder: (context, controller, focusNode) => CupertinoTextField(
               controller: controller,
+              focusNode: focusNode,
               autofocus: true,
               padding: const EdgeInsets.all(12),
               placeholder: hintText,

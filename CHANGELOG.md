@@ -8,8 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - SuggestionsController now notifies and holds suggestions state
 - SuggestionsBox now resizes fully automatically in all situations
-- contextMenuBuilder on TextFieldConfiguration
-- contentInsertionConfiguration on TextFieldConfiguration
+- Builder parameter to directly customize TextField
 
 ### Changed
 - renamed SuggestionsBoxController to SuggestionsController
@@ -20,12 +19,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - suggestions box animation now playes on open and close instead of when suggestions change
 - suggestions box now animates size changes
 
-### Fixed
-- enableSuggestions was not passed to TextField
-- CupertinoTypeAheadField theme brightness
-
 ### Removed
-- hideKeyboard parameter - use TextfieldConfiguration.enabled instead
+- TextFieldConfig. Use the builder parameter instead.
 - CupertinoSuggestionsBoxController - use SuggestionsController instead
 - intercepting parameter - now always true
 

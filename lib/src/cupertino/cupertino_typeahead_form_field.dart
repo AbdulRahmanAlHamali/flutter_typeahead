@@ -1,9 +1,8 @@
 import 'dart:core';
 
 import 'package:flutter_typeahead/src/common/typeahead/typeahead_form_field.dart';
-import 'package:flutter_typeahead/src/cupertino/cupertino_text_field_configuration.dart';
-import 'package:flutter_typeahead/src/cupertino/cupertino_typeahead_field.dart';
 import 'package:flutter_typeahead/src/cupertino/cupertino_suggestions_decoration.dart';
+import 'package:flutter_typeahead/src/cupertino/cupertino_typeahead_field.dart';
 
 /// {@macro typeahead_field.TypeAheadFormField}
 class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
@@ -14,6 +13,7 @@ class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
     super.autoFlipDirection,
     super.autoFlipListDirection,
     super.autoFlipMinHeight,
+    super.builder,
     super.controller,
     super.debounceDuration,
     super.direction,
@@ -38,8 +38,6 @@ class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
     required super.suggestionsCallback,
     super.transitionBuilder,
     super.wrapperBuilder,
-    super.constraints,
-    super.offset,
     super.initialValue,
     super.onReset,
     super.onSaved,
@@ -47,13 +45,15 @@ class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
     super.autovalidateMode,
     super.enabled,
     this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
-    this.textFieldConfiguration = const CupertinoTextFieldConfiguration(),
   }) : super(
+          constraints: suggestionsDecoration.constraints,
+          offset: suggestionsDecoration.offset,
           fieldBuilder: (field) => CupertinoTypeAheadField<T>(
             animationDuration: animationDuration,
             autoFlipDirection: autoFlipDirection,
             autoFlipListDirection: autoFlipListDirection,
             autoFlipMinHeight: autoFlipMinHeight,
+            builder: builder,
             debounceDuration: debounceDuration,
             direction: direction,
             errorBuilder: errorBuilder,
@@ -62,6 +62,7 @@ class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
             hideOnError: hideOnError,
             hideOnLoading: hideOnLoading,
             hideOnUnfocus: hideOnUnfocus,
+            hideWithKeyboard: hideWithKeyboard,
             hideOnSelect: hideOnSelect,
             itemBuilder: itemBuilder,
             itemSeparatorBuilder: itemSeparatorBuilder,
@@ -73,16 +74,10 @@ class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
             suggestionsController: suggestionsController,
             suggestionsDecoration: suggestionsDecoration,
             suggestionsCallback: suggestionsCallback,
-            textFieldConfiguration: textFieldConfiguration.copyWith(
-              controller: field.controller,
-            ),
             transitionBuilder: transitionBuilder,
           ),
         );
 
   /// {@macro flutter_typeahead.TypeAheadField.suggestionsDecoration}
   final CupertinoSuggestionsDecoration suggestionsDecoration;
-
-  /// {@macro flutter_typeahead.TypeAheadField.textFieldConfiguration}
-  final CupertinoTextFieldConfiguration textFieldConfiguration;
 }

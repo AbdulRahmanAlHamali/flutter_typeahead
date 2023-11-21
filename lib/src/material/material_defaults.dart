@@ -78,4 +78,15 @@ abstract final class TypeAheadMaterialDefaults {
       );
     };
   }
+
+  static Widget builder(
+    BuildContext context,
+    TextEditingController controller,
+    FocusNode node,
+  ) {
+    return TextField(
+      controller: controller,
+      focusNode: node,
+    );
+  }
 }

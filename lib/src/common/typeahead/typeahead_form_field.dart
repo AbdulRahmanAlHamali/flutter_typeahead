@@ -22,6 +22,7 @@ abstract class RawTypeAheadFormField<T> extends FormField<String>
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 64,
+    TextFieldBuilder? builder,
     required this.fieldBuilder,
     this.controller,
     this.debounceDuration = const Duration(milliseconds: 300),
@@ -59,6 +60,7 @@ abstract class RawTypeAheadFormField<T> extends FormField<String>
           initialValue == null || controller == null,
           'Cannot provide both a controller and an initial value.',
         ),
+        textFieldBuilder = builder,
         super(
           initialValue: controller?.text ?? initialValue ?? '',
           // This is a Stub. The builder is overridden below.
@@ -72,6 +74,9 @@ abstract class RawTypeAheadFormField<T> extends FormField<String>
 
   /// A builder for the inner field. This is typically a [TypeAheadField].
   final Widget Function(BaseTypeAheadFormFieldState<T> field) fieldBuilder;
+
+  /// A builder for the inner text field. This is typically a [TextField].
+  final TextFieldBuilder? textFieldBuilder;
 
   @override
   final TextEditingController? controller;

@@ -73,8 +73,10 @@ class ExampleTypeAhead extends StatelessWidget
             children: maybeReversed([
               TypeAheadFormField<Product>(
                 direction: settings.direction.value,
-                textFieldConfiguration: TextFieldConfiguration(
+                controller: controller,
+                builder: (context, controller, focusNode) => TextField(
                   controller: controller,
+                  focusNode: focusNode,
                   autofocus: true,
                   style: DefaultTextStyle.of(context)
                       .style
@@ -239,8 +241,9 @@ class CupertinoExampleTypeAhead extends StatelessWidget
             children: maybeReversed([
               CupertinoTypeAheadFormField<Product>(
                 direction: settings.direction.value,
-                textFieldConfiguration: CupertinoTextFieldConfiguration(
+                builder: (context, controller, focusNode) => CupertinoTextField(
                   controller: controller,
+                  focusNode: focusNode,
                   autofocus: true,
                   padding: const EdgeInsets.all(12),
                   placeholder: hintText,
@@ -400,7 +403,7 @@ mixin SharedExampleTypeAheadConfig {
 
   Future<List<Product>> suggestionsCallback(String pattern) async =>
       Future<List<Product>>.delayed(
-        Duration(seconds: settings.loadingDelay.value ? 1 : 0),
+        Duration(milliseconds: settings.loadingDelay.value ? 300 : 0),
         () => allProducts.where((product) {
           final nameLower = product.name.toLowerCase().split(' ').join('');
           final patternLower = pattern.toLowerCase().split(' ').join('');

@@ -6,7 +6,11 @@ typedef SuggestionsCallback<T> = FutureOr<List<T>> Function(String pattern);
 typedef ItemBuilder<T> = Widget Function(BuildContext context, T value);
 typedef SuggestionSelectionCallback<T> = void Function(T suggestion);
 typedef ErrorBuilder = Widget Function(BuildContext context, Object? error);
-
+typedef TextFieldBuilder = Widget Function(
+  BuildContext context,
+  TextEditingController controller,
+  FocusNode focusNode,
+);
 typedef AnimationTransitionBuilder = Widget Function(
   BuildContext context,
   Animation<double> animation,
