@@ -112,5 +112,58 @@ void main() {
       await Future<void>.value();
       expect(called, isTrue);
     });
+
+    test('sets direction', () {
+      controller.direction = AxisDirection.up;
+      expect(controller.direction, equals(AxisDirection.up));
+    });
+
+    test('sets effective direction', () {
+      controller.effectiveDirection = AxisDirection.up;
+      expect(controller.effectiveDirection, equals(AxisDirection.up));
+    });
+
+    testWidgets('can be found in context', (WidgetTester tester) async {
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        SuggestionsControllerProvider<String>(
+          controller: controller,
+          child: Container(key: key),
+        ),
+      );
+      expect(
+        SuggestionsController.of<String>(key.currentContext!),
+        equals(controller),
+      );
+    });
+
+    testWidgets('throws if not found in context', (WidgetTester tester) async {
+      await tester.pumpWidget(Container());
+      expect(
+        () => SuggestionsController.of<String>(
+          tester.element(
+            find.byType(Container),
+          ),
+        ),
+        throwsFlutterError,
+      );
+    });
+
+    testWidgets('can maybe be found in context', (WidgetTester tester) async {
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        Container(
+          key: key,
+          child: SuggestionsControllerProvider<String>(
+            controller: controller,
+            child: Container(),
+          ),
+        ),
+      );
+      expect(
+        SuggestionsController.maybeOf<String>(key.currentContext!),
+        equals(null),
+      );
+    });
   });
 }
