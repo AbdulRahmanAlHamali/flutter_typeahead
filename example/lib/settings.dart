@@ -18,7 +18,7 @@ class SettingsTypeAhead extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: settings.direction.value == AxisDirection.up
+      mainAxisAlignment: settings.direction.value == VerticalDirection.up
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
       children: [
@@ -99,7 +99,7 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: settings.direction.value == AxisDirection.up
+      mainAxisAlignment: settings.direction.value == VerticalDirection.up
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
       children: [
@@ -190,6 +190,8 @@ mixin SharedSettingsTypeAheadConfig {
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
+      reverse: SuggestionsController.of(context).effectiveDirection ==
+          VerticalDirection.up,
       itemBuilder: (context, index) => items.toList()[index],
     );
   }

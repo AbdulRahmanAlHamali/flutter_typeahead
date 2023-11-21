@@ -23,7 +23,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     required this.builder,
     this.controller,
     this.debounceDuration = const Duration(milliseconds: 300),
-    this.direction = AxisDirection.down,
+    this.direction = VerticalDirection.down,
     required this.errorBuilder,
     this.focusNode,
     this.hideKeyboardOnDrag = false,
@@ -66,7 +66,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   final ValueSetter<T>? onSelected;
 
   /// {@macro flutter_typeahead.SuggestionsField.direction}
-  final AxisDirection? direction;
+  final VerticalDirection? direction;
 
   /// {@macro flutter_typeahead.SuggestionsField.constraints}
   final BoxConstraints? constraints;

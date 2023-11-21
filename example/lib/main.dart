@@ -433,7 +433,7 @@ mixin SharedExampleTypeAheadConfig {
           : const SizedBox.shrink();
 
   List<Widget> maybeReversed(List<Widget> children) {
-    if (settings.direction.value == AxisDirection.up) {
+    if (settings.direction.value == VerticalDirection.up) {
       return children.reversed.toList();
     }
     return children;
@@ -454,7 +454,7 @@ mixin SharedExampleTypeAheadConfig {
         mainAxisSpacing: 8,
       ),
       reverse: SuggestionsController.of(context).effectiveDirection ==
-          AxisDirection.up,
+          VerticalDirection.up,
       itemBuilder: (context, index) => items[index],
     );
   }

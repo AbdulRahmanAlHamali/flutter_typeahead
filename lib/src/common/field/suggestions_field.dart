@@ -68,11 +68,9 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@template flutter_typeahead.SuggestionsField.direction}
   /// The direction in which the suggestions box opens.
   ///
-  /// Must be either [AxisDirection.down] or [AxisDirection.up].
-  ///
-  /// Defaults to [AxisDirection.down].
+  /// Defaults to [VerticalDirection.down].
   /// {@endtemplate}
-  final AxisDirection? direction;
+  final VerticalDirection? direction;
 
   /// {@template flutter_typeahead.SuggestionsField.constraints}
   /// The constraints to be applied to the suggestions box.
@@ -201,7 +199,10 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
       controller: controller,
       child: Floater(
         link: link,
-        direction: controller.direction,
+        direction: switch (controller.direction) {
+          VerticalDirection.up => AxisDirection.up,
+          VerticalDirection.down => AxisDirection.down,
+        },
         offset: widget.offset ?? const Offset(0, 5),
         followHeight: false,
         autoFlip: widget.autoFlipDirection,
@@ -209,7 +210,12 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
         builder: (context) {
           FloaterData data = Floater.of(context);
 
-          if (data.effectiveDirection != controller.effectiveDirection) {
+          VerticalDirection newEffectiveDirection =
+              switch (data.effectiveDirection) {
+            AxisDirection.up => VerticalDirection.up,
+            _ => VerticalDirection.down,
+          };
+          if (newEffectiveDirection != controller.effectiveDirection) {
             // It is generally discouraged to add side-effects in build methods.
             // However, this is a place where we can update the effective direction
             // of the controller easily. Adding a new Widget seemed like bloat.
@@ -218,7 +224,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             // and update the controller in didUpdateWidget. Tread carefully.
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
-              controller.effectiveDirection = data.effectiveDirection;
+              controller.effectiveDirection = newEffectiveDirection;
             });
           }
 
@@ -233,7 +239,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
 
           if (widget.constraints != null) {
             Alignment alignment = Alignment.topCenter;
-            if (widget.direction == AxisDirection.up) {
+            if (widget.direction == VerticalDirection.up) {
               alignment = Alignment.bottomCenter;
             }
             list = Align(
