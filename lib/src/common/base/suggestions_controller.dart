@@ -89,14 +89,14 @@ class SuggestionsController<T> extends ChangeNotifier {
   /// depending on its configuration.
   ///
   /// See [effectiveDirection] for the actual direction of the suggestions box.
-  AxisDirection get direction => _direction;
-  set direction(AxisDirection value) {
+  VerticalDirection get direction => _direction;
+  set direction(VerticalDirection value) {
     if (_direction == value) return;
     _direction = value;
     notifyListeners();
   }
 
-  AxisDirection _direction = AxisDirection.down;
+  VerticalDirection _direction = VerticalDirection.down;
 
   /// The effective direction of the suggestions box.
   /// This may or may not be the same as [direction].
@@ -108,14 +108,14 @@ class SuggestionsController<T> extends ChangeNotifier {
   ///
   /// This value can be used to determine e.g. the direction of the ScrollView
   /// inside the suggestions box.
-  AxisDirection get effectiveDirection => _effectiveDirection;
-  set effectiveDirection(AxisDirection value) {
+  VerticalDirection get effectiveDirection => _effectiveDirection;
+  set effectiveDirection(VerticalDirection value) {
     if (_effectiveDirection == value) return;
     _effectiveDirection = value;
     notifyListeners();
   }
 
-  AxisDirection _effectiveDirection = AxisDirection.down;
+  VerticalDirection _effectiveDirection = VerticalDirection.down;
 
   /// A stream of events that occur when the suggestions box should be resized.
   ///

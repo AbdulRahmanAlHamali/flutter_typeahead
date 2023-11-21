@@ -10,12 +10,10 @@ class SuggestionsBoxKeyboardConnector<T> extends StatefulWidget {
   const SuggestionsBoxKeyboardConnector({
     super.key,
     required this.controller,
-    this.direction = AxisDirection.down,
     required this.child,
   });
 
   final SuggestionsController<T> controller;
-  final AxisDirection direction;
   final Widget child;
 
   @override
@@ -67,7 +65,7 @@ class _SuggestionsBoxKeyboardConnectorState<T>
       VerticalDirection.down: 1,
     };
 
-    if (widget.direction == AxisDirection.up) {
+    if (widget.controller.effectiveDirection == VerticalDirection.up) {
       keyMap = {
         VerticalDirection.up: 1,
         VerticalDirection.down: -1,

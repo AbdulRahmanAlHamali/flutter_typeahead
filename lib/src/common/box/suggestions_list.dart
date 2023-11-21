@@ -213,7 +213,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
           keyboardDismissBehavior: (widget.hideKeyboardOnDrag ?? false)
               ? ScrollViewKeyboardDismissBehavior.onDrag
               : ScrollViewKeyboardDismissBehavior.manual,
-          reverse: widget.controller.effectiveDirection == AxisDirection.up
+          reverse: widget.controller.effectiveDirection == VerticalDirection.up
               ? (widget.autoFlipListDirection ?? true)
               : false,
           itemCount: suggestions.length,

@@ -82,7 +82,7 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
           widget.transitionBuilder!(context, animationController.view, child);
     } else {
       child = AnimatedSize(
-        alignment: widget.controller.effectiveDirection == AxisDirection.up
+        alignment: widget.controller.effectiveDirection == VerticalDirection.up
             ? Alignment.bottomCenter
             : Alignment.topCenter,
         duration: animationDuration,

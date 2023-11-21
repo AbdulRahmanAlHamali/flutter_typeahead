@@ -108,14 +108,14 @@ class FieldSettings extends ChangeNotifier {
     iconFalse: Icons.light_mode,
   );
 
-  final ChoiceFieldOption<AxisDirection> direction = ChoiceFieldOption(
+  final ChoiceFieldOption<VerticalDirection> direction = ChoiceFieldOption(
     key: 'direction',
     title: 'Direction',
-    value: AxisDirection.down,
+    value: VerticalDirection.down,
     icon: Icons.swap_vert,
     choices: [
-      AxisDirection.up,
-      AxisDirection.down,
+      VerticalDirection.up,
+      VerticalDirection.down,
     ],
   );
 

@@ -43,7 +43,6 @@ void main() {
             children: [
               SuggestionsBoxKeyboardConnector(
                 controller: controller,
-                direction: AxisDirection.down,
                 child: Column(
                   children: List.generate(
                     focusNodes.length,
@@ -105,9 +104,10 @@ void main() {
       expect(controller.focused, isFalse);
     });
 
-    testWidgets(
-        'Focus moves in the opposite direction when AxisDirection is up',
+    testWidgets('Focus moves in the opposite direction when box is up',
         (WidgetTester tester) async {
+      controller.effectiveDirection = VerticalDirection.up;
+
       await tester.pumpWidget(
         MaterialApp(
           home: Column(
@@ -115,7 +115,6 @@ void main() {
             children: [
               SuggestionsBoxKeyboardConnector(
                 controller: controller,
-                direction: AxisDirection.up,
                 child: Column(
                   children: List.generate(
                     focusNodes.length,

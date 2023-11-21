@@ -80,7 +80,7 @@ TypeAheadField(
     mainAxisSpacing: 8,
     shrinkWrap: true,
     reverse: SuggestionsController.of(context).effectiveDirection ==
-        AxisDirection.up,
+        VerticalDirection.up,
     children: children,
   ),
 );
@@ -205,7 +205,7 @@ configured using the  `debounceDuration` parameter.
 
 ### Customizing the direction
 
-By default, the list grows towards the bottom. However, you can use the `direction` to specify either `AxisDirection.down` or `AxisDirection.up`.
+By default, the list grows towards the bottom. However, you can use the `direction` to specify either `VerticalDirection.down` or `VerticalDirection.up`.
 
 The suggestions list will automatically reverse in case it is flipped.
 To turn off this behavior, set `autoFlipDirection` to `false`.

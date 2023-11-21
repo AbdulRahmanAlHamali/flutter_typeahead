@@ -114,13 +114,13 @@ void main() {
     });
 
     test('sets direction', () {
-      controller.direction = AxisDirection.up;
-      expect(controller.direction, equals(AxisDirection.up));
+      controller.direction = VerticalDirection.up;
+      expect(controller.direction, equals(VerticalDirection.up));
     });
 
     test('sets effective direction', () {
-      controller.effectiveDirection = AxisDirection.up;
-      expect(controller.effectiveDirection, equals(AxisDirection.up));
+      controller.effectiveDirection = VerticalDirection.up;
+      expect(controller.effectiveDirection, equals(VerticalDirection.up));
     });
 
     testWidgets('can be found in context', (WidgetTester tester) async {
