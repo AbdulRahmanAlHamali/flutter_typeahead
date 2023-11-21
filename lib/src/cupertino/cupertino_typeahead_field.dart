@@ -3,7 +3,12 @@ import 'package:flutter_typeahead/src/common/field/typeahead_field.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/cupertino/cupertino_defaults.dart';
 
-/// {@macro flutter_typeahead.RawTypeAheadField}
+/// {@template flutter_typeahead.TypeAheadField}
+/// A widget that shows suggestions above a text field while the user is typing.
+///
+/// This is the Cupertino version of the widget.
+/// builder, itemBuilder, loadingBuilder, emptyBuilder, errorBuilder and decorationBuilder will default to Cupertino.
+/// {@endtemplate}
 class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
   CupertinoTypeAheadField({
     super.key,
