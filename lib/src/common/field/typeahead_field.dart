@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field.dart';
 import 'package:flutter_typeahead/src/common/search/suggestions_search.dart';
-import 'package:flutter_typeahead/src/common/typeahead/typeahead_field_config.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_list.dart';
 
@@ -239,8 +238,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 /// See also:
 /// * [TypeAheadFormField], A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html) implementation of [TypeAheadField] that allows the value to be saved, validated, etc.
 /// {@endtemplate}
-abstract class RawTypeAheadField<T> extends StatefulWidget
-    implements TypeaheadFieldConfig<T> {
+abstract class RawTypeAheadField<T> extends StatefulWidget {
   const RawTypeAheadField({
     super.key,
     this.animationDuration = const Duration(milliseconds: 200),
@@ -280,67 +278,97 @@ abstract class RawTypeAheadField<T> extends StatefulWidget
   /// Builds the text field that will be used to search for the suggestions.
   final TextFieldBuilder builder;
 
-  @override
+  /// {@macro flutter_typeahead.SuggestionsSearch.textEditingController}
   final TextEditingController? controller;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.focusNode}
   final FocusNode? focusNode;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsBox.controller}
   final SuggestionsController<T>? suggestionsController;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.onSelected}
   final ValueSetter<T>? onSelected;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.direction}
   final AxisDirection? direction;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.constraints}
   final BoxConstraints? constraints;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.offset}
   final Offset? offset;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.autoFlipDirection}
   final bool autoFlipDirection;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.autoFlipMinHeight}
   final double autoFlipMinHeight;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.hideOnUnfocus}
   final bool hideOnUnfocus;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.hideOnSelect}
   final bool hideOnSelect;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsField.hideWithKeyboard}
   final bool hideWithKeyboard;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
   final ScrollController? scrollController;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsBox.transitionBuilder}
   final AnimationTransitionBuilder? transitionBuilder;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsBox.animationDuration}
   final Duration? animationDuration;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsSearch.suggestionsCallback}
   final SuggestionsCallback<T> suggestionsCallback;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.keepSuggestionsOnLoading}
   final bool? keepSuggestionsOnLoading;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideKeyboardOnDrag}
   final bool? hideKeyboardOnDrag;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideOnLoading}
   final bool? hideOnLoading;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideOnError}
   final bool? hideOnError;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.hideOnEmpty}
   final bool? hideOnEmpty;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.loadingBuilder}
   final WidgetBuilder loadingBuilder;
-  @override
+
+  //// {@macro flutter_typeahead.SuggestionsList.errorBuilder}
   final ErrorBuilder errorBuilder;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.emptyBuilder}
   final WidgetBuilder emptyBuilder;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsListConfig.itemBuilder}
   final ItemBuilder<T> itemBuilder;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.itemSeparatorBuilder}
   final ItemBuilder<int>? itemSeparatorBuilder;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsBox.decorationBuilder}
   final DecorationBuilder? decorationBuilder;
-  @override
+
+  /// {@template flutter_typeahead.SuggestionsList.listBuilder}
   final ListBuilder? listBuilder;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsList.autoFlipListDirection}
   final bool? autoFlipListDirection;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsSearch.debounce}
   final Duration? debounceDuration;
-  @override
+
+  /// {@macro flutter_typeahead.SuggestionsSearch.minCharsForSuggestions}
   final int? minCharsForSuggestions;
 
   @override
