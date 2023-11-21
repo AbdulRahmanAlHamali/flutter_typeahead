@@ -24,7 +24,7 @@ class SettingsTypeAhead extends StatelessWidget
       children: [
         Padding(
           padding: const EdgeInsets.all(32),
-          child: TypeAheadFormField<FieldOption>(
+          child: TypeAheadField<FieldOption>(
             direction: settings.direction.value,
             hideOnUnfocus: false,
             hideWithKeyboard: false,
@@ -105,7 +105,7 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
       children: [
         Padding(
           padding: const EdgeInsets.all(32),
-          child: CupertinoTypeAheadFormField<FieldOption>(
+          child: CupertinoTypeAheadField<FieldOption>(
             direction: settings.direction.value,
             hideOnUnfocus: false,
             hideWithKeyboard: false,

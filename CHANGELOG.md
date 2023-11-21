@@ -25,6 +25,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `SuggestionsBoxDecoration`, replaced by `decorationBuilder`.
 - `TextFieldConfiguration`, replaced by custom `TextField` builder.
 - `CupertinoSuggestionsBoxController` in favor of `SuggestionsController`.
+- `TypeAheadFormFiled`, replaced by custom `TextField` builder.
 - `intercepting` parameter (now always true).
 - `onSuggestionsBoxToggle` parameter (replaced with subscriptions to `SuggestionsController`).
 - `ignoreAccessibleNavigation` parameter (no longer required with new `Overlay` code).
