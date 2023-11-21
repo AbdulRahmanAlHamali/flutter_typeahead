@@ -4,6 +4,7 @@ import 'package:flutter_typeahead/src/common/base/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/typedef.dart';
 
+/// {@template typeahead_field.TypeAheadFormField}
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 /// implementation of [TypeAheadField], that allows the value to be saved,
 /// validated, etc.
@@ -12,6 +13,7 @@ import 'package:flutter_typeahead/src/common/base/typedef.dart';
 ///
 /// * [TypeAheadField], A [TextField](https://docs.flutter.io/flutter/material/TextField-class.html)
 /// that displays a list of suggestions as the user types
+/// {@endtemplate}
 abstract class RawTypeAheadFormField<T> extends FormField<String>
     implements TypeaheadFieldConfig<T> {
   RawTypeAheadFormField({
@@ -68,7 +70,7 @@ abstract class RawTypeAheadFormField<T> extends FormField<String>
   // Adds a callback for resetting the form field
   final VoidCallback? onReset;
 
-  /// A builder for the inner field. This is typically a TypeAheadField.
+  /// A builder for the inner field. This is typically a [TypeAheadField].
   final Widget Function(BaseTypeAheadFormFieldState<T> field) fieldBuilder;
 
   @override

@@ -5,14 +5,7 @@ import 'package:flutter_typeahead/src/cupertino/cupertino_text_field_configurati
 import 'package:flutter_typeahead/src/cupertino/cupertino_typeahead_field.dart';
 import 'package:flutter_typeahead/src/cupertino/cupertino_suggestions_decoration.dart';
 
-/// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
-/// implementation of [TypeAheadField], that allows the value to be saved,
-/// validated, etc.
-///
-/// See also:
-///
-/// * [TypeAheadField], A [CupertinoTextField](https://docs.flutter.io/flutter/cupertino/CupertinoTextField-class.html)
-/// that displays a list of suggestions as the user types
+/// {@macro typeahead_field.TypeAheadFormField}
 class CupertinoTypeAheadFormField<T> extends RawTypeAheadFormField<T> {
   /// Creates a [CupertinoTypeAheadFormField]
   CupertinoTypeAheadFormField({
