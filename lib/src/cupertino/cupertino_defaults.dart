@@ -75,6 +75,7 @@ abstract final class TypeAheadCupertinoDefaults {
     };
   }
 
+  /// The default decoration builder used by a CupertinoTypeAheadField.
   static Widget decorationBuilder(
     BuildContext context,
     Widget child,
@@ -95,7 +96,7 @@ abstract final class TypeAheadCupertinoDefaults {
     );
   }
 
-  /// The default text field builder used by a TypeAheadField.
+  /// The default text field builder used by a CupertinoTypeAheadField.
   static Widget builder(
     BuildContext context,
     TextEditingController controller,

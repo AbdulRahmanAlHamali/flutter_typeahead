@@ -69,6 +69,7 @@ abstract final class TypeAheadMaterialDefaults {
     };
   }
 
+  /// The default decoration builder used by a TypeAheadField.
   static Widget decorationBuilder(
     BuildContext context,
     Widget child,
