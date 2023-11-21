@@ -91,26 +91,18 @@ void main() {
 
     test('shifts focus to suggestions list', () {
       controller.focus();
-      expect(controller.focused, isTrue);
+      expect(controller.focusState, equals(SuggestionsFocusState.box));
     });
 
     test('shifts focus away from suggestions list', () {
       controller.focus();
       controller.unfocus();
-      expect(controller.focused, isFalse);
+      expect(controller.focusState, equals(SuggestionsFocusState.blur));
     });
 
     test('shifts focus to suggestions box', () {
       controller.focusChild();
-      expect(controller.focused, isFalse);
-    });
-
-    test('sends up or down arrow key down event', () async {
-      bool called = false;
-      controller.keys.listen((_) => called = true);
-      controller.sendKey(VerticalDirection.down);
-      await Future<void>.value();
-      expect(called, isTrue);
+      expect(controller.focusState, equals(SuggestionsFocusState.child));
     });
 
     test('sets direction', () {
