@@ -149,7 +149,7 @@ class SuggestionsList<T> extends StatefulWidget {
   ///   crossAxisSpacing: 8,
   ///   mainAxisSpacing: 8,
   ///   shrinkWrap: true,
-  ///   reverse: SuggestionsController.of(context).effectiveDirection ==
+  ///   reverse: SuggestionsController.of<City>(context).effectiveDirection ==
   ///       AxisDirection.up,
   ///   children: children,
   /// ),
