@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_animation.dart';
-import 'package:flutter_typeahead/src/common/box/suggestions_box_traversal_connector.dart';
+import 'package:flutter_typeahead/src/common/box/suggestions_box_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_scroll_injector.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
@@ -109,7 +109,7 @@ class SuggestionsBox<T> extends StatelessWidget {
           context,
           SuggestionsBoxScrollInjector(
             controller: scrollController,
-            child: SuggestionsBoxTraversalConnector<T>(
+            child: SuggestionsBoxFocusConnector<T>(
               controller: controller,
               child: PointerInterceptor(
                 child: SuggestionsBoxAnimation<T>(

@@ -62,6 +62,7 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                 brightness: settings.darkMode.value
                     ? Brightness.dark
                     : Brightness.light,
+                useMaterial3: true,
               ),
               scrollBehavior:
                   const MaterialScrollBehavior().copyWith(dragDevices: {
@@ -82,7 +83,8 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                         if (DefaultTabController.of(context).index == 0) {
                           return TextButton.icon(
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.onSurface,
                             ),
                             icon: const Icon(Icons.arrow_forward),
                             onPressed: () =>
@@ -92,7 +94,8 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                         } else {
                           return TextButton.icon(
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.onSurface,
                             ),
                             icon: const Icon(Icons.arrow_back),
                             onPressed: () =>

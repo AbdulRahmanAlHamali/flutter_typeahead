@@ -53,7 +53,9 @@ class SettingsTypeAhead extends StatelessWidget
                     title: Text(setting.title),
                     secondary: icon != null ? Icon(icon) : null,
                     value: setting.value,
-                    onChanged: (_) {},
+                    onChanged: (_) =>
+                        SuggestionsController.of<FieldOption>(context)
+                            .select(setting),
                   ),
                 );
               } else if (setting is ChoiceFieldOption) {
@@ -135,7 +137,9 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
                   title: Text(setting.title),
                   trailing: CupertinoCheckbox(
                     value: setting.value,
-                    onChanged: (_) => setting.change(),
+                    onChanged: (_) =>
+                        SuggestionsController.of<FieldOption>(context)
+                            .select(setting),
                   ),
                 );
               } else if (setting is ChoiceFieldOption) {

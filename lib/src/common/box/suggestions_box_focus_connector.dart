@@ -5,8 +5,8 @@ import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 
 /// Enables navigating to the text field from the suggestions box using
 /// the keyboard.
-class SuggestionsBoxTraversalConnector<T> extends StatefulWidget {
-  const SuggestionsBoxTraversalConnector({
+class SuggestionsBoxFocusConnector<T> extends StatefulWidget {
+  const SuggestionsBoxFocusConnector({
     super.key,
     required this.controller,
     required this.child,
@@ -16,12 +16,12 @@ class SuggestionsBoxTraversalConnector<T> extends StatefulWidget {
   final Widget child;
 
   @override
-  State<SuggestionsBoxTraversalConnector<T>> createState() =>
-      _SuggestionsBoxTraversalConnectorState<T>();
+  State<SuggestionsBoxFocusConnector<T>> createState() =>
+      _SuggestionsBoxFocusConnectorState<T>();
 }
 
-class _SuggestionsBoxTraversalConnectorState<T>
-    extends State<SuggestionsBoxTraversalConnector<T>> {
+class _SuggestionsBoxFocusConnectorState<T>
+    extends State<SuggestionsBoxFocusConnector<T>> {
   late final FocusScopeNode focusNode = FocusScopeNode(
     debugLabel: 'SuggestionsBoxFocusScope',
     onKeyEvent: onKey,
@@ -69,7 +69,11 @@ class _SuggestionsBoxTraversalConnectorState<T>
 
   void onNodeFocus() {
     if (focusNode.hasFocus) {
-      widget.controller.focus();
+      if (focusNode.focusedChild == null) {
+        widget.controller.unfocus();
+      } else {
+        widget.controller.focus();
+      }
     } else if (widget.controller.focusState == SuggestionsFocusState.box) {
       widget.controller.unfocus();
     }
@@ -78,13 +82,13 @@ class _SuggestionsBoxTraversalConnectorState<T>
   @override
   Widget build(BuildContext context) {
     return ConnectorWidget(
-      value: widget.controller,
-      connect: (value) => value.addListener(onControllerFocus),
-      disconnect: (value, key) => value.removeListener(onControllerFocus),
+      value: focusNode,
+      connect: (value) => value.addListener(onNodeFocus),
+      disconnect: (value, key) => value.removeListener(onNodeFocus),
       child: ConnectorWidget(
-        value: focusNode,
-        connect: (value) => value.addListener(onNodeFocus),
-        disconnect: (value, key) => value.removeListener(onNodeFocus),
+        value: widget.controller,
+        connect: (value) => value.addListener(onControllerFocus),
+        disconnect: (value, key) => value.removeListener(onControllerFocus),
         child: FocusScope(
           node: focusNode,
           child: widget.child,
