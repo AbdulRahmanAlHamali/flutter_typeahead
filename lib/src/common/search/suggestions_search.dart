@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/base/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/search/suggestions_search_text_debouncer.dart';
 import 'package:flutter_typeahead/src/common/search/suggestions_search_typing_connector.dart';
 

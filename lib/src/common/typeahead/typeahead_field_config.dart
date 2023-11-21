@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 
 /// Base class to contain all the configuration parameters for the [TypeAheadField].
 ///
@@ -84,8 +84,11 @@ abstract interface class TypeaheadFieldConfig<T> {
   /// {@macro flutter_typeahead.SuggestionsList.itemSeparatorBuilder}
   ItemBuilder<int>? get itemSeparatorBuilder;
 
-  /// {@macro flutter_typeahead.SuggestionsList.wrapperBuilder}
-  Widget Function(BuildContext context, Widget child)? get wrapperBuilder;
+  /// {@macro flutter_typeahead.SuggestionsBox.decorationBuilder}
+  DecorationBuilder? get decorationBuilder;
+
+  /// {@template flutter_typeahead.SuggestionsList.listBuilder}
+  ListBuilder? get listBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsList.autoFlipListDirection}
   bool? get autoFlipListDirection;

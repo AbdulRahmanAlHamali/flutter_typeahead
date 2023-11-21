@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
-import 'package:flutter_typeahead/src/cupertino/cupertino_suggestions_decoration.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 
 abstract final class TypeAheadCupertinoDefaults {
   /// The default loading builder used by a CupertinoTypeAheadField.
@@ -52,14 +51,12 @@ abstract final class TypeAheadCupertinoDefaults {
     ItemBuilder<T> builder,
   ) {
     return (context, item) {
-      return TextFieldTapRegion(
-        child: FocusableActionDetector(
-          mouseCursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            child: builder(context, item),
-            onTap: () => SuggestionsController.of<T>(context).select(item),
-          ),
+      return FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          child: builder(context, item),
+          onTap: () => SuggestionsController.of<T>(context).select(item),
         ),
       );
     };
@@ -68,32 +65,37 @@ abstract final class TypeAheadCupertinoDefaults {
   /// A Wrapper around the suggestions box of a CupertinoTypeAheadField.
   /// Adds various Cupertino specific decorations.
   static ItemBuilder<Widget> wrapperBuilder(
-    CupertinoSuggestionsDecoration decoration,
+    DecorationBuilder? builder,
   ) {
     return (context, child) {
-      Color? color = decoration.color;
-      color ??= CupertinoTheme.of(context).barBackgroundColor.withOpacity(1);
-
-      BoxBorder? border = decoration.border;
-      border ??= Border.all(
-        color: CupertinoColors.separator.resolveFrom(context),
-        width: 1,
-      );
-
       return DefaultTextStyle(
         style: CupertinoTheme.of(context).textTheme.textStyle,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: color,
-            border: border,
-            borderRadius: decoration.borderRadius,
-          ),
-          child: child,
-        ),
+        child: (builder ?? decorationBuilder)(context, child),
       );
     };
   }
 
+  static Widget decorationBuilder(
+    BuildContext context,
+    Widget child,
+  ) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: CupertinoTheme.of(context).barBackgroundColor.withOpacity(1),
+        border: Border.all(
+          color: CupertinoDynamicColor.resolve(
+            CupertinoColors.systemGrey4,
+            context,
+          ),
+          width: 1,
+        ),
+        borderRadius: const BorderRadius.all(Radius.circular(6)),
+      ),
+      child: child,
+    );
+  }
+
+  /// The default text field builder used by a TypeAheadField.
   static Widget builder(
     BuildContext context,
     TextEditingController controller,

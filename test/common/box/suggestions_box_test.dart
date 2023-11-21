@@ -41,7 +41,7 @@ void main() {
             child: SuggestionsBox(
               controller: controller,
               builder: (context) => const SizedBox(),
-              wrapperBuilder: (context, child) => Container(
+              decorationBuilder: (context, child) => Container(
                 key: const Key('wrapper'),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.red),

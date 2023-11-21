@@ -1,12 +1,9 @@
-import 'dart:core';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/src/common/typeahead/typeahead_field.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/cupertino/cupertino_defaults.dart';
-import 'package:flutter_typeahead/src/cupertino/cupertino_suggestions_decoration.dart';
 
-/// {@macro flutter_typeahead.BaseTypeAheadField}
+/// {@macro flutter_typeahead.RawTypeAheadField}
 class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
   CupertinoTypeAheadField({
     super.key,
@@ -38,20 +35,18 @@ class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
     super.suggestionsController,
     required super.suggestionsCallback,
     super.transitionBuilder,
-    this.suggestionsDecoration = const CupertinoSuggestionsDecoration(),
+    DecorationBuilder? decorationBuilder,
+    super.listBuilder,
+    super.constraints,
+    super.offset,
   }) : super(
-          constraints: suggestionsDecoration.constraints,
-          offset: suggestionsDecoration.offset,
           builder: builder ?? TypeAheadCupertinoDefaults.builder,
           errorBuilder: errorBuilder ?? TypeAheadCupertinoDefaults.errorBuilder,
           loadingBuilder:
               loadingBuilder ?? TypeAheadCupertinoDefaults.loadingBuilder,
           emptyBuilder: emptyBuilder ?? TypeAheadCupertinoDefaults.emptyBuilder,
           itemBuilder: TypeAheadCupertinoDefaults.itemBuilder(itemBuilder),
-          wrapperBuilder:
-              TypeAheadCupertinoDefaults.wrapperBuilder(suggestionsDecoration),
+          decorationBuilder:
+              TypeAheadCupertinoDefaults.wrapperBuilder(decorationBuilder),
         );
-
-  /// {@macro flutter_typeahead.TypeAheadField.suggestionsDecoration}
-  final CupertinoSuggestionsDecoration suggestionsDecoration;
 }

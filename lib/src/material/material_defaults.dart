@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
-import 'package:flutter_typeahead/src/material/suggestions_decoration.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 
 abstract final class TypeAheadMaterialDefaults {
   /// The default loading builder used by a TypeAheadField.
@@ -49,12 +48,10 @@ abstract final class TypeAheadMaterialDefaults {
     ItemBuilder<T> builder,
   ) {
     return (context, item) {
-      return TextFieldTapRegion(
-        child: InkWell(
-          focusColor: Theme.of(context).hoverColor,
-          onTap: () => SuggestionsController.of<T>(context).select(item),
-          child: builder(context, item),
-        ),
+      return InkWell(
+        focusColor: Theme.of(context).hoverColor,
+        onTap: () => SuggestionsController.of<T>(context).select(item),
+        child: builder(context, item),
       );
     };
   }
@@ -62,23 +59,29 @@ abstract final class TypeAheadMaterialDefaults {
   /// A Wrapper around the suggestions box of a TypeAheadField.
   /// Adds various Material specific decorations.
   static ItemBuilder<Widget> wrapperBuilder(
-    SuggestionsDecoration decoration,
+    DecorationBuilder? builder,
   ) {
     return (context, child) {
-      return TextFieldTapRegion(
-        child: Material(
-          elevation: decoration.elevation,
-          color: decoration.color,
-          shape: decoration.shape,
-          borderRadius: decoration.borderRadius,
-          shadowColor: decoration.shadowColor,
-          clipBehavior: decoration.clipBehavior,
-          child: child,
-        ),
+      return Material(
+        type: MaterialType.transparency,
+        child: (builder ?? decorationBuilder)(context, child),
       );
     };
   }
 
+  static Widget decorationBuilder(
+    BuildContext context,
+    Widget child,
+  ) {
+    return Material(
+      type: MaterialType.card,
+      elevation: 4,
+      borderRadius: BorderRadius.circular(8),
+      child: child,
+    );
+  }
+
+  /// The default text field builder used by a TypeAheadField.
   static Widget builder(
     BuildContext context,
     TextEditingController controller,

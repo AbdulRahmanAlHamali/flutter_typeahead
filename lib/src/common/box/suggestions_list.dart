@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 
 /// A widget that shows a list of suggestions based on user input.
 class SuggestionsList<T> extends StatefulWidget {
@@ -16,6 +16,7 @@ class SuggestionsList<T> extends StatefulWidget {
     required this.errorBuilder,
     required this.emptyBuilder,
     required this.itemBuilder,
+    this.listBuilder,
     this.wrapperBuilder,
     this.itemSeparatorBuilder,
     this.autoFlipListDirection,
@@ -137,6 +138,11 @@ class SuggestionsList<T> extends StatefulWidget {
   /// {@endtemplate}
   final ItemBuilder<int>? itemSeparatorBuilder;
 
+  /// {@template flutter_typeahead.SuggestionsList.listBuilder}
+  /// Optional builder function to customize the suggestions list.
+  /// {@endtemplate}
+  final ListBuilder? listBuilder;
+
   /// {@template flutter_typeahead.SuggestionsList.wrapperBuilder}
   /// Optional builder function to wrap the suggestions list.
   ///
@@ -185,6 +191,15 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
         } else if (isEmpty) {
           if (widget.hideOnEmpty ?? false) return const SizedBox();
           return widget.emptyBuilder(context);
+        }
+
+        if (widget.listBuilder != null) {
+          return widget.listBuilder!(
+            context,
+            suggestions
+                .map((suggestion) => widget.itemBuilder(context, suggestion))
+                .toList(),
+          );
         }
 
         return ListView.separated(

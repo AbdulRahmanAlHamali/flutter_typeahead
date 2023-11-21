@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_animation.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_scroll_injector.dart';
@@ -15,7 +15,7 @@ class SuggestionsBox<T> extends StatelessWidget {
     required this.controller,
     this.scrollController,
     required this.builder,
-    this.wrapperBuilder,
+    this.decorationBuilder,
     this.transitionBuilder,
     this.animationDuration,
   });
@@ -43,13 +43,12 @@ class SuggestionsBox<T> extends StatelessWidget {
   /// {@endtemplate}
   final WidgetBuilder builder;
 
-  /// {@template flutter_typeahead.SuggestionsBox.wrapperBuilder}
-  /// Builder function for wrapping the suggestions box.
+  /// {@template flutter_typeahead.SuggestionsBox.decorationBuilder}
+  /// Builder function for decorating the suggestions box.
   ///
-  /// This is useful for injecting decorations or proxy widgets around the
-  /// suggestions box.
+  /// This widget is always built, even when the suggestions box is closed.
   /// {@endtemplate}
-  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+  final DecorationBuilder? decorationBuilder;
 
   /// {@template flutter_typeahead.SuggestionsBox.transitionBuilder}
   /// Builder function for animating the suggestions box.
@@ -90,7 +89,7 @@ class SuggestionsBox<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ItemBuilder<Widget> wrapper = wrapperBuilder ?? (_, child) => child;
+    ItemBuilder<Widget> wrapper = decorationBuilder ?? (_, child) => child;
 
     return SuggestionsControllerProvider<T>(
       controller: controller,

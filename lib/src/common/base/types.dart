@@ -11,12 +11,16 @@ typedef TextFieldBuilder = Widget Function(
   TextEditingController controller,
   FocusNode focusNode,
 );
+typedef DecorationBuilder = Widget Function(
+  BuildContext context,
+  Widget child,
+);
 typedef AnimationTransitionBuilder = Widget Function(
   BuildContext context,
   Animation<double> animation,
   Widget child,
 );
-typedef LayoutArchitecture = Widget Function(
+typedef ListBuilder = Widget Function(
   BuildContext context,
   List<Widget> items,
 );

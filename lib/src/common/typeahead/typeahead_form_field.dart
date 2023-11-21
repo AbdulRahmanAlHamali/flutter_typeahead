@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/typeahead/typeahead_field_config.dart';
 import 'package:flutter_typeahead/src/common/base/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/base/typedef.dart';
+import 'package:flutter_typeahead/src/common/base/types.dart';
 
 /// {@template typeahead_field.TypeAheadFormField}
 /// A [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
@@ -47,7 +47,8 @@ abstract class RawTypeAheadFormField<T> extends FormField<String>
     this.suggestionsController,
     required this.suggestionsCallback,
     this.transitionBuilder,
-    this.wrapperBuilder,
+    this.decorationBuilder,
+    this.listBuilder,
     this.constraints,
     this.offset,
     String? initialValue,
@@ -132,7 +133,9 @@ abstract class RawTypeAheadFormField<T> extends FormField<String>
   @override
   final ItemBuilder<int>? itemSeparatorBuilder;
   @override
-  final Widget Function(BuildContext context, Widget child)? wrapperBuilder;
+  final DecorationBuilder? decorationBuilder;
+  @override
+  final ListBuilder? listBuilder;
   @override
   final bool? autoFlipListDirection;
   @override
