@@ -71,7 +71,7 @@ class ExampleTypeAhead extends StatelessWidget
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: maybeReversed([
-              TypeAheadFormField<Product>(
+              TypeAheadField<Product>(
                 direction: settings.direction.value,
                 controller: controller,
                 builder: (context, controller, focusNode) => TextField(
@@ -241,7 +241,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: maybeReversed([
-              CupertinoTypeAheadFormField<Product>(
+              CupertinoTypeAheadField<Product>(
                 direction: settings.direction.value,
                 builder: (context, controller, focusNode) => CupertinoTextField(
                   controller: controller,

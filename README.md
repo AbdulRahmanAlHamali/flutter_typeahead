@@ -18,9 +18,9 @@ users as they type
 - Comes in both Material and Cupertino widget flavors
 - Exposes all state through a controller for more customization
 
-For installation, head over to the [installation instructions](https://pub.dartlang.org/packages/flutter_typeahead/install).
+For installation, see [installation instructions](https://pub.dartlang.org/packages/flutter_typeahead/install).
 
-## Usage examples
+## Usage
 
 You can import the package with:
 
@@ -34,56 +34,36 @@ All parameters identical, the only changes are the visual defaults.
 ### Basic
 
 ```dart
-TypeAheadField(
-  textFieldConfiguration: TextFieldConfiguration(
-    autofocus: true,
-    style: DefaultTextStyle.of(context).style.copyWith(
-      fontStyle: FontStyle.italic
-    ),
-    decoration: InputDecoration(
-      border: OutlineInputBorder()
-    )
-  ),
-  suggestionsCallback: (pattern) =>
-      BackendService.getSuggestions(pattern),
-  itemBuilder: (context, suggestion) {
-    return ListTile(
-      leading: Icon(Icons.shopping_cart),
-      title: Text(suggestion['name']),
-      subtitle: Text('\$${suggestion['price']}'),
+TypeAheadField<City>(
+  suggestionsCallback: (search) => CityService.of(context).find(search),
+  builder: (context, controller, focusNode) {
+    return TextField(
+      controller: controller,
+      focusNode: focusNode,
+      autofocus: true,
+      decoration: InputDecoration(
+        border: OutlineInputBorder()
+        labelText: 'City'
+      )
     );
   },
-  onSuggestionSelected: (suggestion) {
-    Navigator.of(context).push<void>(MaterialPageRoute(
-      builder: (context) => ProductPage(product: suggestion)
-    ));
+  itemBuilder: (context, value) {
+    return ListTile(
+      title: Text(value.name),
+      subtitle: Text(value.country),
+    );
+  },
+  onSelected: (value) {
+    Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (context) => CityPage(city: value),
+      ),
+    );
   },
 )
 ```
 
-### Form
-
-TypeAhead also supports hooking into the inbuilt `Form`.
-To do so, switch to the Form variant: `TypeAheadFormField`.
-
-```dart
-Form(
-  child: TypeAheadFormField(
-    suggestionsCallback: CitiesService.of(context).searchFor,
-    itemBuilder: (context, value) => ListTile(
-      title: Text(value.name),
-    ),
-    onSelected: (suggestion) => showCity(suggestions),
-    // Form field options:
-    onSaved: (value) => this._selectedCity = value,
-    validator: (value) => value.isEmpty ? 'Please select a city' : null,
-    autovalidateMode: AutovalidateMode.onUserInteraction,
-    enabled: true,
-  ),
-)
-```
-
-### Layout
+### Customizing the layout
 
 By default, TypeAhead uses a `ListView` to render the items created by `itemBuilder`.  
 You may specify a custom layout via the `listBuilder` property.
@@ -93,14 +73,15 @@ For example, to use a `GridView`:
 ```dart
 TypeAheadField(
   // ...
-  listBuilder: (context, items) => GridView.count(
+  listBuilder: (context, children) => GridView.count(
     controller: scrollContoller,
     crossAxisCount: 2,
     crossAxisSpacing: 8,
     mainAxisSpacing: 8,
     shrinkWrap: true,
-    reverse: SuggestionsController.of(context).effectiveDirection == AxisDirection.up,
-    children: items, // items is a list of Widgets
+    reverse: SuggestionsController.of(context)
+      .effectiveDirection == AxisDirection.up,
+    children: children,
   ),
 );
 ```
@@ -108,15 +89,12 @@ TypeAheadField(
 Note: To inherit the correct `ScrollController`, please do not set `primary` to `false`.
 The suggestions box will automatically provide an ambient `PrimaryScrollController`.
 
-## Customization
-
-TypeAhead widgets consist of a TextField and a SuggestionsBox.
-Both are highly customizable.
-
 ### Customizing the TextField
 
 The `TypeAheadField` will use a simple default `TextField` builder, if none is provided.
 To customize your `TextField`, you can use the `builder` property.
+
+You may also use a `TextFormField` or any other widget that connects to a `TextEditingController` and `FocusNode`.
 
 ```dart
 TypeAheadField(
@@ -162,7 +140,7 @@ TypeAheadField(
 );
 ```
 
-#### Customizing the loading, error and empty message
+### Customizing the loading, error and empty message
 
 You can use the `loadingBuilder`, `errorBuilder` and `emptyBuilder` to
 customize their corresponding widgets.
@@ -182,7 +160,7 @@ By default, the suggestions box will maintain the old suggestions while new
 suggestions are being retrieved. To show a circular progress indicator
 during retrieval instead, set `keepSuggestionsOnLoading` to false.
 
-#### Hiding the suggestions box
+### Hiding the suggestions box
 
 You may want to hide the suggestions box when it is in certain states.
 You can do so with the following parameters:
@@ -194,7 +172,7 @@ You can do so with the following parameters:
 - `hideOnUnfocus`: Hide the suggestions box when the `TextField` loses focus. `True` by default.
 - `hideWithKeyboard`: Hide the suggestions box when the keyboard is hidden. `True` by default.
 
-#### Customizing the animation
+### Customizing the animation
 
 Animation duration can be customized using the `animationDuration` parameter.
 You may also specify a custom animation using the `transitionBuilder` parameter.
@@ -202,33 +180,37 @@ You may also specify a custom animation using the `transitionBuilder` parameter.
 For example:
 
 ```dart
-transitionBuilder: (context, animation, child) =>
-  FadeTransition(
-    child: child,
-    opacity: CurvedAnimation(
-      parent: animation,
-      curve: Curves.fastOutSlowIn
+TypeAheadField(
+  // ...
+  transitionBuilder: (context, animation, child) {
+    return FadeTransition(
+      opacity: CurvedAnimation(
+        parent: animation,
+        curve: Curves.fastOutSlowIn
+      ),
+      child: child,
     ),
-  )
+  },
+);
 ```
 
 To disable animatons, return the `child` directly.
 
-#### Customizing the debounce duration
+### Customizing the debounce duration
 
 The suggestions box does not fire for each character the user types. Instead,
 we wait until the user is idle for a duration of time, and then call the
 `suggestionsCallback`. The duration defaults to ` 300 milliseconds``, but can be
 configured using the  `debounceDuration` parameter.
 
-#### Customizing the direction
+### Customizing the direction
 
 By default, the list grows towards the bottom. However, you can use the `direction` to specify either `AxisDirection.down` or `AxisDirection.up`.
 
 The suggestions list will automatically reverse in case it is flipped.
 To turn off this behavior, set `autoFlipDirection` to `false`.
 
-#### Controlling the suggestions box
+### Controlling the suggestions box
 
 You may manually control many aspects of the suggestions box by using the `SuggestionsController` class.
 
@@ -260,6 +242,7 @@ Additionally, various changes have been made to the API surface to make the pack
 - `SuggestionsController` now holds the full state of the suggestions box, meaning suggestions, loading and error state. It will also send notifications when state changes occur.
 - `SuggestionsController` now offers streams for when a suggestion is selected.
 - `SuggestionsBox` should now automatically resize in all situations. Manual resize calls are no longer required.
+- `TypeAheadFormField` has been removed. You can use the `builder` property to build your own `TextFormField`.
 - Various parameters have been renamed to be shorter and more concise. Notable changes include:
   - `suggestionsBoxController` -> `suggestionsController`
   - `layoutArchitecture` -> `listBuilder`
@@ -280,7 +263,7 @@ Flutter now also features the inbuilt Autocomplete widget, which has similar beh
 
 ## For more information
 
-Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/)
+Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/).
 
 ## Team:
 
@@ -293,6 +276,4 @@ Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typ
 This project is the result of the collective effort of contributors who participated effectively by submitting pull requests, reporting issues, and answering questions.
 Thank you for your proactiveness, and we hope `flutter_typeahead` made your lifes at least a little easier!
 
-## How you can help
-
-[Contribution Guidelines](CONTRIBUTING.md)
+If you would like to contribute, please read the [Contribution Guidelines](CONTRIBUTING.md).
