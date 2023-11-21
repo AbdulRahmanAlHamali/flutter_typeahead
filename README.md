@@ -12,23 +12,13 @@ users as they type
 ## Features
 
 - Shows suggestions in an overlay that floats on top of other widgets
-- Allows you to specify what the suggestions will look like through a
-  builder function
-- Allows you to specify what happens when the user taps a suggestion
-- Accepts all the parameters that traditional TextFields accept, like
-  decoration, custom TextEditingController, text styling, etc.
-- Provides two versions, a normal version and a [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
+- Allows customizing all aspects: suggestions, loading, errors, empty, animation, decoration, layout, etc.
+- Provides an integration with [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
   version that accepts validation, submitting, etc.
-- Provides high customizable; you can customize the suggestion box decoration,
-  the loading bar, the animation, the debounce duration, etc.
+- Comes in both Material and Cupertino widget flavors
+- Exposes all state through a controller for more customization
 
-## Installation
-
-See the [installation instructions on pub](https://pub.dartlang.org/packages/flutter_typeahead/install).
-
-Note: As for Typeahead 3.x this package is based on Dart 2.12 (null-safety). You may also want to explore the new built in Flutter 2 widgets that have similar behavior.
-
-Note: As of Typeahead 5.x this package is based on Dart 3.0 (null-safety enforced). To use this package, please upgrade your Flutter SDK.
+For installation, head over to the [installation instructions](https://pub.dartlang.org/packages/flutter_typeahead/install).
 
 ## Usage examples
 
@@ -303,9 +293,42 @@ Manual control of the suggestions box can be achieved by creating an instance of
 passing it to the `suggestionsController` property. This will allow you to manually open, close, toggle, or
 resize the suggestions box.
 
+## Migrations
+
+### From 4.x to 5.x
+
+Since version 5.x, the package is based on Dart 3 (null-safety enforced). To use this package, please upgrade your Flutter SDK.
+
+Additionally, various changes have been made to the API surface to make the package more flexible and customizable. The following changes have been made:
+
+- `SuggestionsBoxDecoration` has been removed. You can now directly wrap the `SuggestionsBox` with any widget you wish via the `decorationBuilder` property.
+- `TextFieldConfiguration` has been removed. You can now directly build your own custom `TextField` via the `builder` property.
+  Note that you must use the provided `controller` and `focusNode` properties, as they are required for the suggestions box to function.
+- `SuggestionsBoxController` has been renamed to `SuggestionsController`.
+- `CupertinoSuggestionsBoxController` has been merged into `SuggestionsController`.
+- `SuggestionsController` now holds the full state of the suggestions box, meaning suggestions, loading and error state. It will also send notifications when state changes occur.
+- `SuggestionsController` now offers streams for when a suggestion is selected.
+- Various parameters have been renamed to be shorter and more concise. Notable changes include:
+  - `suggestionsBoxController` -> `suggestionsController`
+  - `layoutArchitecture` -> `listBuilder`
+  - `noItemsFoundBuilder`-> `emptyBuilder`
+  - `onSuggestionSelected` -> `onSelected`
+  - `suggestionsBoxVerticalOffset` -> `offset` (now also includes horizontal offset)
+  - `hideSuggestionsOnKeyboardHide` -> `hideWithKeyboard`
+  - `keepSuggestionsOnSuggestionSelected` -> `hideOnSelect` (inverted)
+- Some parameters have been removed:
+  - `intercepting`: This is now always true, since it doesnt interfere on mobile platforms and generally has no downsides.
+  - `onSuggestionsBoxToggle`: You can subscribe to the `SuggestionsController` to get notified when the suggestions box is toggled.
+  - `ignoreAccessibleNavigation`: The new `Overlay` code no longer requires to act differently when accessibility is enabled.
+
+### From 2.x to 3.x
+
+Since version 3.x, the package is based on Dart 2.12 (null-safety).
+Flutter now also features the inbuilt Autocomplete widget, which has similar behavior to this package.
+
 ## For more information
 
-Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/latest/)
+Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/)
 
 ## Team:
 

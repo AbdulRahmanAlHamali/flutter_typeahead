@@ -4,25 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
 ### Added
-- SuggestionsController now notifies and holds suggestions state
-- SuggestionsBox now resizes fully automatically in all situations
-- Builder parameter to directly customize TextField
+- `decorationBuilder` property for customizing `SuggestionsBox` decoration.
+- Custom `TextField` builder via the `builder` property, replacing `TextFieldConfiguration`.
+- Suggestions state (items, loading, error) in `SuggestionsController`.
+- Streams in `SuggestionsController` for notification of selected suggestions.
 
 ### Changed
-- renamed SuggestionsBoxController to SuggestionsController
-- renamed SuggestionsBoxDecoration to SuggestionsDecoration
-- keepSuggestionsOnSuggestionSelected renamed to hideOnSelect and inverted
-- hideSuggestionsOnKeyboardHide renamed to hideWithKeyboard
-- moved verticalOffset into SuggestionsDecoration as offset
-- suggestions box animation now playes on open and close instead of when suggestions change
-- suggestions box now animates size changes
+- Renamed `SuggestionsBoxController` to `SuggestionsController`.
+- Renamed `suggestionsBoxController` to `suggestionsController`.
+- Renamed `layoutArchitecture` to `listBuilder`.
+- Renamed `noItemsFoundBuilder` to `emptyBuilder`.
+- Renamed `onSuggestionSelected` to `onSelected`.
+- Renamed `suggestionsBoxVerticalOffset` to `offset`, now including horizontal offset.
+- Renamed `hideSuggestionsOnKeyboardHide` to `hideWithKeyboard`.
+- Renamed `keepSuggestionsOnSuggestionSelected` to `hideOnSelect` and inverted its functionality.
 
 ### Removed
-- TextFieldConfig. Use the builder parameter instead.
-- CupertinoSuggestionsBoxController - use SuggestionsController instead
-- intercepting parameter - now always true
+- `SuggestionsBoxDecoration`, replaced by `decorationBuilder`.
+- `TextFieldConfiguration`, replaced by custom `TextField` builder.
+- `CupertinoSuggestionsBoxController` in favor of `SuggestionsController`.
+- `intercepting` parameter (now always true).
+- `onSuggestionsBoxToggle` parameter (replaced with subscriptions to `SuggestionsController`).
+- `ignoreAccessibleNavigation` parameter (no longer required with new `Overlay` code).
 
 ## 4.9.0 - 2023-10-22
 ### Added
