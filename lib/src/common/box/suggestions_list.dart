@@ -7,7 +7,6 @@ class SuggestionsList<T> extends StatefulWidget {
   const SuggestionsList({
     super.key,
     required this.controller,
-    this.keepSuggestionsOnLoading,
     this.hideKeyboardOnDrag,
     this.hideOnLoading,
     this.hideOnError,
@@ -16,6 +15,7 @@ class SuggestionsList<T> extends StatefulWidget {
     required this.errorBuilder,
     required this.emptyBuilder,
     required this.itemBuilder,
+    this.retainOnLoading,
     this.listBuilder,
     this.itemSeparatorBuilder,
   });
@@ -23,14 +23,14 @@ class SuggestionsList<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsBox.controller}
   final SuggestionsController<T> controller;
 
-  /// {@template flutter_typeahead.SuggestionsList.keepSuggestionsOnLoading}
-  /// Whether to keep the previous suggestions visible even during loading.
+  /// {@template flutter_typeahead.SuggestionsList.retainOnLoading}
+  /// Whether to retain the previous suggestions while loading new suggestions.
   ///
   /// If enabled, [loadingBuilder] will be ignored.
   ///
   /// Defaults to `true`.
   /// {@endtemplate}
-  final bool? keepSuggestionsOnLoading;
+  final bool? retainOnLoading;
 
   /// {@template flutter_typeahead.SuggestionsList.hideKeyboardOnDrag}
   /// Whether the keyboard should be hidden when the user scrolls the suggestions list.
@@ -167,11 +167,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
       listenable: widget.controller,
       builder: (context, _) {
         List<T>? suggestions = widget.controller.suggestions;
+        bool retainOnLoading = widget.retainOnLoading ?? true;
 
-        bool isLoading = widget.controller.isLoading &&
-            (widget.keepSuggestionsOnLoading ?? true);
         bool isError = widget.controller.hasError;
         bool isEmpty = suggestions == null || suggestions.isEmpty;
+        bool isLoading =
+            widget.controller.isLoading && (isEmpty || !retainOnLoading);
 
         if (isLoading) {
           if (widget.hideOnLoading ?? false) return const SizedBox();

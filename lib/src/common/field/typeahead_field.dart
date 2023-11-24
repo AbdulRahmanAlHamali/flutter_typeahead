@@ -34,7 +34,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     this.hideOnSelect = true,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
-    this.keepSuggestionsOnLoading = true,
+    this.retainOnLoading = true,
     required this.loadingBuilder,
     required this.emptyBuilder,
     required this.onSelected,
@@ -99,8 +99,8 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsSearch.suggestionsCallback}
   final SuggestionsCallback<T> suggestionsCallback;
 
-  /// {@macro flutter_typeahead.SuggestionsList.keepSuggestionsOnLoading}
-  final bool? keepSuggestionsOnLoading;
+  /// {@macro flutter_typeahead.SuggestionsList.retainOnLoading}
+  final bool? retainOnLoading;
 
   /// {@macro flutter_typeahead.SuggestionsList.hideKeyboardOnDrag}
   final bool? hideKeyboardOnDrag;
@@ -212,6 +212,11 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
         loadingBuilder: widget.loadingBuilder,
         errorBuilder: widget.errorBuilder,
         emptyBuilder: widget.emptyBuilder,
+        hideOnLoading: widget.hideOnLoading,
+        hideOnError: widget.hideOnError,
+        hideOnEmpty: widget.hideOnEmpty,
+        retainOnLoading: widget.retainOnLoading,
+        hideKeyboardOnDrag: widget.hideKeyboardOnDrag,
         itemBuilder: widget.itemBuilder,
         itemSeparatorBuilder: widget.itemSeparatorBuilder,
         listBuilder: widget.listBuilder,

@@ -77,6 +77,7 @@ class FieldSettings extends ChangeNotifier {
         gridLayout,
         dividers,
         loadingDelay,
+        retainOnLoading,
         debounce,
         hideOnSelect,
         hideOnUnfocus,
@@ -138,6 +139,13 @@ class FieldSettings extends ChangeNotifier {
     title: 'Loading Delay',
     value: true,
     icon: Icons.timer,
+  );
+
+  final ToggleFieldOption retainOnLoading = ToggleFieldOption(
+    key: 'retainOnLoading',
+    title: 'Retain on Loading',
+    value: true,
+    icon: Icons.cached,
   );
 
   final ToggleFieldOption debounce = ToggleFieldOption(
