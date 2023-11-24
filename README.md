@@ -272,6 +272,8 @@ Additionally, various changes have been made to the API surface to make the pack
   - `intercepting`: This is now always true, since it doesnt interfere on mobile platforms and generally has no downsides.
   - `onSuggestionsBoxToggle`: You can subscribe to the `SuggestionsController` to get notified when the suggestions box is toggled.
   - `ignoreAccessibleNavigation`: The new `Overlay` code no longer requires to act differently when accessibility is enabled.
+  - `animationStart`: You can use the animation in the builder and map it to customise this.
+  - `autoFlipListDirection`: This is now always true. You can use the list builder to disable this behavior.
 
 ### From 2.x to 3.x
 
