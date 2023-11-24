@@ -124,7 +124,7 @@ class ExampleTypeAhead extends StatelessWidget
                               style: Theme.of(context).textTheme.titleLarge),
                           const Spacer(),
                           Text(
-                            'Total: \$${products.total.toStringAsFixed(2)}',
+                            'Total: \$${products.total}',
                             style: Theme.of(context).textTheme.titleMedium,
                           )
                         ],
@@ -151,7 +151,7 @@ class ExampleTypeAhead extends StatelessWidget
                                             .titleMedium,
                                       ),
                                       Text(
-                                        ', \$${entry.key.price * entry.value}',
+                                        ', \$${(entry.key.price * entry.value).toStringAsFixed(2)}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium,
@@ -304,7 +304,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                             .copyWith(fontSize: 24)),
                     const Spacer(),
                     Text(
-                      'Total: \$${products.total.toStringAsFixed(2)}',
+                      'Total: \$${products.total}',
                       style: CupertinoTheme.of(context)
                           .textTheme
                           .textStyle
