@@ -121,7 +121,7 @@ class Floater extends StatefulWidget {
     this.direction = AxisDirection.down,
     this.offset = Offset.zero,
     this.autoFlip = false,
-    this.autoFlipHeight = 64,
+    this.autoFlipHeight = 100,
   });
 
   /// The widget below this widget in the tree.

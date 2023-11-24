@@ -19,7 +19,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 200),
     this.autoFlipDirection = false,
     this.autoFlipListDirection = true,
-    this.autoFlipMinHeight = 64,
+    this.autoFlipMinHeight = 144,
     required this.builder,
     this.controller,
     this.debounceDuration = const Duration(milliseconds: 300),
