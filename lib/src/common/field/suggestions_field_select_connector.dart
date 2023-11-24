@@ -23,7 +23,7 @@ class SuggestionsFieldSelectConnector<T> extends StatelessWidget {
     if (hideOnSelect ?? true) {
       controller.close(retainFocus: true);
     } else {
-      controller.focusChild();
+      controller.focusField();
     }
   }
 

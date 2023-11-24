@@ -20,7 +20,7 @@ void main() {
     });
 
     testWidgets(
-        'focuses the controller when arrow down key is pressed and effective direction is down',
+        'sets focus to box when direction down and arrow down key is pressed',
         (WidgetTester tester) async {
       controller.open();
 
@@ -47,7 +47,7 @@ void main() {
     });
 
     testWidgets(
-        'focuses the controller when arrow up key is pressed and effective direction is up',
+        'sets focus to box when direction up and arrow up key is pressed',
         (WidgetTester tester) async {
       controller.open();
       controller.effectiveDirection = VerticalDirection.up;
@@ -74,7 +74,7 @@ void main() {
       expect(controller.focusState, SuggestionsFocusState.box);
     });
 
-    testWidgets('calls the previous onKeyEvent if ignored by inner callback',
+    testWidgets('proxies focus node key events when ignored by key handler',
         (WidgetTester tester) async {
       controller.open();
       bool previousOnKeyEventCalled = false;
@@ -105,7 +105,7 @@ void main() {
       expect(previousOnKeyEventCalled, true);
     });
 
-    testWidgets('calls onfocus on controller when node loses focus',
+    testWidgets('sets focus to blur when focus node is unfocused',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -123,7 +123,7 @@ void main() {
         ),
       );
 
-      expect(controller.focusState, SuggestionsFocusState.child);
+      expect(controller.focusState, SuggestionsFocusState.field);
 
       focusNode.unfocus();
       await tester.pump();
@@ -131,7 +131,8 @@ void main() {
       expect(controller.focusState, SuggestionsFocusState.blur);
     });
 
-    testWidgets('focuses when controller focuses', (WidgetTester tester) async {
+    testWidgets('focuses node when focus is child',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -157,13 +158,13 @@ void main() {
 
       expect(focusNode.hasFocus, false);
 
-      controller.focusChild();
+      controller.focusField();
       await tester.pump();
 
       expect(focusNode.hasFocus, true);
     });
 
-    testWidgets('unfocuses when controller unfocuses child', (tester) async {
+    testWidgets('unfocuses node when focus is blur', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(

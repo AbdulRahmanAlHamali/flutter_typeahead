@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-/// A controller of a SuggestionsBox.
-/// This is used to open, close, toggle and resize the suggestions box.
+/// A controller of a SuggestionsField and its SuggestionsBox.
+/// This allows access to the state of suggestions (items, loading, error),
+/// the state of the suggestions box (open, direction, focus) and
+/// the ability to open, close, toggle and resize the suggestions box.
 class SuggestionsController<T> extends ChangeNotifier {
   /// A controller of a SuggestionsBox.
   /// This is used to open, close, toggle and resize the suggestions box.
@@ -74,11 +76,11 @@ class SuggestionsController<T> extends ChangeNotifier {
   bool get isOpen => _isOpen;
   bool _isOpen = false;
 
-  /// The current state of focus of the suggestions box.
+  /// The current state of focus of the suggestions box and field.
   SuggestionsFocusState get focusState => _focusState;
   SuggestionsFocusState _focusState = SuggestionsFocusState.blur;
 
-  /// Whether the child of suggestions box should retain the focus when it is closed.
+  /// Whether the suggestions field should retain the focus when its box is closed.
   bool get retainFocus => _retainFocus;
   bool _retainFocus = false;
 
@@ -143,23 +145,23 @@ class SuggestionsController<T> extends ChangeNotifier {
   }
 
   /// Focuses the suggestions box.
-  void focus() {
+  void focusBox() {
     if (_focusState == SuggestionsFocusState.box) return;
     _focusState = SuggestionsFocusState.box;
     notifyListeners();
   }
 
-  /// Unfocuses the suggestions box and its child.
-  void unfocus() {
-    if (_focusState == SuggestionsFocusState.blur) return;
-    _focusState = SuggestionsFocusState.blur;
+  /// Focuses the suggestions field.
+  void focusField() {
+    if (_focusState == SuggestionsFocusState.field) return;
+    _focusState = SuggestionsFocusState.field;
     notifyListeners();
   }
 
-  /// Focuses the child of the suggestions box.
-  void focusChild() {
-    if (_focusState == SuggestionsFocusState.child) return;
-    _focusState = SuggestionsFocusState.child;
+  /// Unfocuses the suggestions box and its field.
+  void unfocus() {
+    if (_focusState == SuggestionsFocusState.blur) return;
+    _focusState = SuggestionsFocusState.blur;
     notifyListeners();
   }
 
@@ -207,12 +209,12 @@ class SuggestionsControllerProvider<T>
 }
 
 enum SuggestionsFocusState {
-  /// Neither the suggestions box nor its child is focused.
+  /// Neither the suggestions box nor field are focused.
   blur,
 
   /// The suggestions box is focused.
   box,
 
-  /// The child of the suggestions box is focused.
-  child,
+  /// The suggestions field is focused.
+  field,
 }
