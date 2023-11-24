@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 typedef ProductController = ValueNotifier<Map<Product, int>>;
@@ -39,6 +40,123 @@ class Product {
 
   @override
   int get hashCode => Object.hash(name, description, price);
+}
+
+class ProductList extends StatelessWidget {
+  const ProductList({
+    super.key,
+    required this.products,
+  });
+
+  final ProductController products;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: products.value.entries.map(
+        (entry) {
+          return ListTile(
+            title: Text(entry.key.name),
+            subtitle: entry.key.description != null
+                ? Text(entry.key.description!)
+                : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'x${entry.value}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  ', \$${(entry.key.price * entry.value).toStringAsFixed(2)}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                IconButton(
+                  tooltip: 'Remove',
+                  icon: const Icon(Icons.remove_circle_outline),
+                  onPressed: () {
+                    products.value = Map.of(products.value)
+                      ..update(
+                        entry.key,
+                        (value) => value - 1,
+                        ifAbsent: () => 0,
+                      );
+                    if ((products.value[entry.key] ?? 0) <= 0) {
+                      products.value = Map.of(products.value)
+                        ..remove(entry.key);
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      ).toList(),
+    );
+  }
+}
+
+class CupertinoProductList extends StatelessWidget {
+  const CupertinoProductList({
+    super.key,
+    required this.products,
+  });
+
+  final ProductController products;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: products.value.entries.map(
+        (entry) {
+          return CupertinoListTile(
+            title: Text(entry.key.name),
+            subtitle: entry.key.description != null
+                ? Text(entry.key.description!)
+                : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'x${entry.value}',
+                  style: CupertinoTheme.of(context)
+                      .textTheme
+                      .textStyle
+                      .copyWith(fontSize: 18),
+                ),
+                Text(
+                  ', \$${entry.key.price * entry.value}',
+                  style: CupertinoTheme.of(context)
+                      .textTheme
+                      .textStyle
+                      .copyWith(fontSize: 18),
+                ),
+                CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    products.value = Map.of(products.value)
+                      ..update(
+                        entry.key,
+                        (value) => value - 1,
+                        ifAbsent: () => 0,
+                      );
+                    if ((products.value[entry.key] ?? 0) <= 0) {
+                      products.value = Map.of(products.value)
+                        ..remove(entry.key);
+                    }
+                  },
+                  child: const Icon(
+                    CupertinoIcons.minus_circled,
+                    size: 24,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ).toList(),
+    );
+  }
 }
 
 const List<Product> allProducts = [
