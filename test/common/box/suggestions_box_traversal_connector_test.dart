@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
-import 'package:flutter_typeahead/src/common/box/suggestions_box_focus_connector.dart';
+import 'package:flutter_typeahead/src/common/box/suggestions_box_traversal_connector.dart';
 
 void main() {
-  group('SuggestionsBoxFocusConnector', () {
+  group('SuggestionsBoxTraversalConnector', () {
     late SuggestionsController controller;
 
     setUp(() {
@@ -15,73 +16,60 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('sets controller box focus state on focus',
+    testWidgets('sets field focus when arrow up pressed and direction is down',
         (WidgetTester tester) async {
-      FocusNode node = FocusNode();
-
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
-            child: SuggestionsBoxFocusConnector(
+            child: SuggestionsBoxTraversalConnector(
               controller: controller,
-              child: Focus(
-                focusNode: node,
-                child: const SizedBox(),
+              child: const Focus(
+                autofocus: true,
+                child: SizedBox(),
               ),
             ),
           ),
         ),
       );
 
-      expect(controller.focusState, SuggestionsFocusState.blur);
-      node.requestFocus();
-
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
       await tester.pump();
-      expect(controller.focusState, SuggestionsFocusState.box);
+
+      expect(controller.focusState, SuggestionsFocusState.field);
     });
 
-    testWidgets('sets controller blur focus state on unfocus',
+    testWidgets('sets field focus when arrow down pressed and direction is up',
         (WidgetTester tester) async {
-      controller.focusBox();
-      FocusNode node = FocusNode();
-      FocusNode otherNode = FocusNode();
+      controller.effectiveDirection = VerticalDirection.up;
 
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
-            child: Column(
-              children: [
-                SuggestionsBoxFocusConnector(
-                  controller: controller,
-                  child: Focus(
-                    focusNode: node,
-                    child: const SizedBox(),
-                  ),
-                ),
-                Focus(
-                  focusNode: otherNode,
-                  child: const SizedBox(),
-                ),
-              ],
+            child: SuggestionsBoxTraversalConnector(
+              controller: controller,
+              child: const Focus(
+                autofocus: true,
+                child: SizedBox(),
+              ),
             ),
           ),
         ),
       );
 
-      otherNode.requestFocus();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pump();
 
-      expect(controller.focusState, SuggestionsFocusState.blur);
+      expect(controller.focusState, SuggestionsFocusState.field);
     });
 
-    testWidgets('focuses node when controller focus box is called',
+    testWidgets('focuses first child node when focused',
         (WidgetTester tester) async {
       FocusNode node = FocusNode();
 
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
-            child: SuggestionsBoxFocusConnector(
+            child: SuggestionsBoxTraversalConnector(
               controller: controller,
               child: Focus(
                 focusNode: node,
@@ -97,14 +85,14 @@ void main() {
       expect(node.hasFocus, isTrue);
     });
 
-    testWidgets('unfocuses node when controller unfocus is called',
+    testWidgets('unfocuses node if no child is focused',
         (WidgetTester tester) async {
       FocusNode node = FocusNode();
 
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
-            child: SuggestionsBoxFocusConnector(
+            child: SuggestionsBoxTraversalConnector(
               controller: controller,
               child: Focus(
                 focusNode: node,
@@ -116,9 +104,10 @@ void main() {
         ),
       );
 
-      controller.unfocus();
+      node.unfocus();
       await tester.pump();
-      expect(node.hasFocus, isFalse);
+
+      expect(controller.focusState, SuggestionsFocusState.blur);
     });
   });
 }
