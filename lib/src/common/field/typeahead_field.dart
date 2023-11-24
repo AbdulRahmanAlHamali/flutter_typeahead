@@ -37,7 +37,6 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     this.itemSeparatorBuilder,
     this.keepSuggestionsOnLoading = true,
     required this.loadingBuilder,
-    this.minCharsForSuggestions,
     required this.emptyBuilder,
     required this.onSelected,
     this.scrollController,
@@ -143,9 +142,6 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsSearch.debounce}
   final Duration? debounceDuration;
 
-  /// {@macro flutter_typeahead.SuggestionsSearch.minCharsForSuggestions}
-  final int? minCharsForSuggestions;
-
   @override
   State<RawTypeAheadField<T>> createState() => _RawTypeAheadFieldState<T>();
 }
@@ -209,7 +205,6 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
           controller: SuggestionsController.of<T>(context),
           textEditingController: controller,
           suggestionsCallback: widget.suggestionsCallback,
-          minCharsForSuggestions: widget.minCharsForSuggestions,
           debounceDuration: widget.debounceDuration,
           child: widget.decorationBuilder?.call(context, child) ?? child,
         ),

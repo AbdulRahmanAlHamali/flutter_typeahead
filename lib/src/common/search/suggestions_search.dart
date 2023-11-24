@@ -14,12 +14,8 @@ class SuggestionsSearch<T> extends StatefulWidget {
     required this.textEditingController,
     required this.suggestionsCallback,
     required this.child,
-    this.minCharsForSuggestions,
     this.debounceDuration,
-  }) : assert(
-          minCharsForSuggestions == null || minCharsForSuggestions >= 0,
-          'minCharsForSuggestions cannot be negative.',
-        );
+  });
 
   /// {@macro flutter_typeahead.SuggestionsBox.controller}
   final SuggestionsController<T> controller;
@@ -48,13 +44,6 @@ class SuggestionsSearch<T> extends StatefulWidget {
 
   /// The widget below this widget in the tree.
   final Widget child;
-
-  /// {@template flutter_typeahead.SuggestionsSearch.minCharsForSuggestions}
-  /// Minimum number of characters required for showing suggestions.
-  ///
-  /// Defaults to `0`.
-  /// {@endtemplate}
-  final int? minCharsForSuggestions;
 
   /// {@template flutter_typeahead.SuggestionsSearch.debounce}
   /// Duration to wait for changes in the text field before updating suggestions.
@@ -120,15 +109,10 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
     List<T>? newSuggestions;
     Object? newError;
 
-    bool hasCharacters = widget.minCharsForSuggestions == null ||
-        widget.minCharsForSuggestions! <= search.length;
-
-    if (hasCharacters) {
-      try {
-        newSuggestions = (await widget.suggestionsCallback(search)).toList();
-      } on Exception catch (e) {
-        newError = e;
-      }
+    try {
+      newSuggestions = (await widget.suggestionsCallback(search)).toList();
+    } on Exception catch (e) {
+      newError = e;
     }
 
     widget.controller.suggestions = newSuggestions;

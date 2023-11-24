@@ -33,7 +33,6 @@ class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
     super.itemSeparatorBuilder,
     super.keepSuggestionsOnLoading,
     WidgetBuilder? loadingBuilder,
-    super.minCharsForSuggestions,
     WidgetBuilder? emptyBuilder,
     required super.onSelected,
     super.scrollController,

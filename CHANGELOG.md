@@ -28,6 +28,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `intercepting` parameter (now always true).
 - `onSuggestionsBoxToggle` parameter (replaced with subscriptions to `SuggestionsController`).
 - `ignoreAccessibleNavigation` parameter (no longer required with new `Overlay` code).
+- `animationStart` parameter (use animation mapping).
+- `minCharsForSuggestions` parameter (implement in client code).
 
 ## 4.8.0 - 2023-09-24
 ### Changed
