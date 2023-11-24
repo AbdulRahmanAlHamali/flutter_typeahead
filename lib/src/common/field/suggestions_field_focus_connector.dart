@@ -48,12 +48,12 @@ class _SuggestionsFieldFocusConnectorState<T>
     if (!widget.controller.isOpen) return KeyEventResult.ignored;
     if (key.logicalKey == LogicalKeyboardKey.arrowDown) {
       if (widget.controller.effectiveDirection == VerticalDirection.down) {
-        widget.controller.focus();
+        widget.controller.focusBox();
         return KeyEventResult.handled;
       }
     } else if (key.logicalKey == LogicalKeyboardKey.arrowUp) {
       if (widget.controller.effectiveDirection == VerticalDirection.up) {
-        widget.controller.focus();
+        widget.controller.focusBox();
         return KeyEventResult.handled;
       }
     }
@@ -87,7 +87,7 @@ class _SuggestionsFieldFocusConnectorState<T>
       case SuggestionsFocusState.box:
         widget.controller.open();
         break;
-      case SuggestionsFocusState.child:
+      case SuggestionsFocusState.field:
         widget.controller.open();
         if (!widget.focusNode.hasFocus) {
           widget.focusNode.requestFocus();
@@ -108,8 +108,8 @@ class _SuggestionsFieldFocusConnectorState<T>
 
   void onNodeFocus() {
     if (widget.focusNode.hasFocus) {
-      widget.controller.focusChild();
-    } else if (widget.controller.focusState == SuggestionsFocusState.child) {
+      widget.controller.focusField();
+    } else if (widget.controller.focusState == SuggestionsFocusState.field) {
       widget.controller.unfocus();
     }
   }

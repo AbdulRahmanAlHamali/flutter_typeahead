@@ -90,19 +90,19 @@ void main() {
     });
 
     test('shifts focus to suggestions list', () {
-      controller.focus();
+      controller.focusBox();
       expect(controller.focusState, equals(SuggestionsFocusState.box));
     });
 
     test('shifts focus away from suggestions list', () {
-      controller.focus();
+      controller.focusBox();
       controller.unfocus();
       expect(controller.focusState, equals(SuggestionsFocusState.blur));
     });
 
     test('shifts focus to suggestions box', () {
-      controller.focusChild();
-      expect(controller.focusState, equals(SuggestionsFocusState.child));
+      controller.focusField();
+      expect(controller.focusState, equals(SuggestionsFocusState.field));
     });
 
     test('sets direction', () {

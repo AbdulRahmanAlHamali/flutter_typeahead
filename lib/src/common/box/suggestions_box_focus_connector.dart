@@ -27,20 +27,29 @@ class _SuggestionsBoxFocusConnectorState<T>
     onKeyEvent: onKey,
   );
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      onControllerFocus();
+    });
+  }
+
   KeyEventResult onKey(FocusNode node, KeyEvent key) {
     if (key is! KeyDownEvent) return KeyEventResult.ignored;
     if (widget.controller.effectiveDirection == VerticalDirection.down &&
         key.logicalKey == LogicalKeyboardKey.arrowUp) {
       bool canMove = node.focusInDirection(TraversalDirection.up);
       if (!canMove) {
-        widget.controller.focusChild();
+        widget.controller.focusField();
         return KeyEventResult.handled;
       }
     } else if (widget.controller.effectiveDirection == VerticalDirection.up &&
         key.logicalKey == LogicalKeyboardKey.arrowDown) {
       bool canMove = node.focusInDirection(TraversalDirection.down);
       if (!canMove) {
-        widget.controller.focusChild();
+        widget.controller.focusField();
         return KeyEventResult.handled;
       }
     }
@@ -49,7 +58,7 @@ class _SuggestionsBoxFocusConnectorState<T>
 
   void onControllerFocus() {
     switch (widget.controller.focusState) {
-      case SuggestionsFocusState.child:
+      case SuggestionsFocusState.field:
         break;
       case SuggestionsFocusState.blur:
         if (focusNode.hasFocus) {
@@ -72,7 +81,7 @@ class _SuggestionsBoxFocusConnectorState<T>
       if (focusNode.focusedChild == null) {
         widget.controller.unfocus();
       } else {
-        widget.controller.focus();
+        widget.controller.focusBox();
       }
     } else if (widget.controller.focusState == SuggestionsFocusState.box) {
       widget.controller.unfocus();
