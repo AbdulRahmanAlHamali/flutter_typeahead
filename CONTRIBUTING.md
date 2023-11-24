@@ -1,36 +1,42 @@
-# Contributing to TypeAheadField
+# Contributing
 
-## Create a new issue
+## Issues
 
-The easiest way to get involved is to create a [new issue](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/issues/new) when you spot a bug, if the documentation is incomplete or out of date, or if you identify an implementation problem.
+If you have spotted a bug, found inconsistent documentation, or have a feature request, please create a [new issue](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/issues/new).
 
-## Modifying Code
+Even if you would like to submit a PR, please create an issue first so that we can discuss the problem or feature.
 
-If you plan to submit a PR please do the following:
+## Contributing Code
 
-- Fork the repository
-- Create a feature branch from the **master** branch!
-- Following the coding guidelines below
-- Submit the PR against the **master** branch.
-- Update both Material and Cupertino code if applicable
+If you'd like to add a feature or fix a bug, we're happy to accept pull requests!
 
-## General coding guidelines
+Before starting to work on a PR, please make sure you have created a comprehensive issue. Additionally, please check existing documentation and code to make sure that your feature or bug is not already addressed.
 
-If you'd like to add a feature or fix a bug, we're more than happy to accept pull requests! We only ask a few things:
+We wish to avoid making the package too complicated.
+Flutter offers many ways of configuring Widgets downstream through context, so please consider whether your feature can be implemented in a way that does not require changes to the package (e.g. through a Theme or other InheritedWidget).
 
-- Ensure your code contains no analyzer errors, e.g.
-  - Code is strong-mode compliant
-  - Code is free of lint errors
-- Format your code with `dartfmt`
-- Write helpful documentation
-- Write new tests that cover your code base changes
-- Make sure all current tests pass
-- If you would like to make a bigger / fundamental change to the codebase, please file a lightweight example PR / issue.
-- Commit messages should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+We also prefer builders or callbacks over configuration objects. Objects which do not need to be strictly managed, should be created by the user and passed in (e.g TextFields, TextEditingControllers, etc).
 
-## Before Publishing
+Lastly, we try to follow general standards, so we do not wish to add very specific features or non-standard behavior for internally used widgets.
 
-If you are about to publish the package to pub.dev, please make sure that you have done the following:
+## Style
+
+For new code, please ensure:
+
+- code is formatted with `dartfmt`
+- code has no linter warnings or errors
+- code is well documented
+- code is well tested (preferably at 100% coverage)
+- all existing tests pass
+- examples are updated if necessary
+- changes work for both Material and Cupertino
+- changes are added to the CHANGELOG.md file in Keep a Changelog format
+  (You can use [cider](https://pub.dev/packages/cider) to help with this)
+- commit messages follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+## Publishing
+
+If you are about to publish the package to `pub.dev`, please make sure that you have done the following:
 
 ### Update the changelog.
 
@@ -38,12 +44,12 @@ This is easiest with [cider](https://pub.dev/packages/cider), which follows
 the [Keep a Changelog format](https://keepachangelog.com/en/1.0.0/):
 
 ```bash
-cider log <type> <message>
+cider log <type> '<message>'
 ```
 
 Where `<type>` is one of `added`, `changed`, `deprecated`, `removed`, `fixed`, `security`, and `<message>` is a short description of the change.
 
-### Update the version.
+### Update the version
 
 This is easiest with [cider](https://pub.dev/packages/cider) which follows [Semantic Versioning](https://semver.org/):
 
@@ -59,7 +65,9 @@ As a reminder:
 - minor: backwards-compatible new features
 - major: backwards-incompatible changes
 
-### Finalize the changelog:
+### Finalize the changelog
+
+Update the changelog to change from Unreleased to the new version:
 
 ```bash
 cider release
