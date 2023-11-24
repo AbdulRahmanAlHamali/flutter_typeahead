@@ -6,14 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 ### Added
-- `decorationBuilder` property for customizing `SuggestionsBox` decoration.
 - Custom `TextField` builder via the `builder` property, replacing `TextFieldConfiguration`.
+- `decorationBuilder` property for customizing `SuggestionsBox` decoration.
 - Suggestions state (items, loading, error) in `SuggestionsController`.
 - Streams in `SuggestionsController` for notification of selected suggestions.
 
 ### Changed
 - Renamed `SuggestionsBoxController` to `SuggestionsController`.
-- Renamed `suggestionsBoxController` to `suggestionsController`.
 - Renamed `layoutArchitecture` to `listBuilder`.
 - Renamed `noItemsFoundBuilder` to `emptyBuilder`.
 - Renamed `onSuggestionSelected` to `onSelected`.
