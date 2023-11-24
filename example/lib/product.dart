@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 typedef ProductController = ValueNotifier<Map<Product, int>>;
 
 extension SumTotal on ProductController {
-  double get total => value.entries.fold<double>(
-        0,
-        (total, entry) => total + entry.key.price * entry.value,
-      );
+  double get total {
+    double result = value.entries.fold<double>(
+      0,
+      (total, entry) => total + entry.key.price * entry.value,
+    );
+    return (result * 100).round() / 100;
+  }
 }
 
 @immutable

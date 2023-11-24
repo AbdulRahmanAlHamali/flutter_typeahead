@@ -18,8 +18,7 @@ class CheckoutDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-              'Would you like to check out for \$${products.total.toStringAsFixed(2)}?'),
+          Text('Would you like to check out for \$${products.total}?'),
           Text(
             'This will clear your shopping cart.',
             style: Theme.of(context).textTheme.bodySmall,
@@ -59,8 +58,7 @@ class CupertinoCheckoutDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-              'Would you like to check out for \$${products.total.toStringAsFixed(2)}?'),
+          Text('Would you like to check out for \$${products.total}?'),
           Text(
             'This will clear your shopping cart.',
             style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
