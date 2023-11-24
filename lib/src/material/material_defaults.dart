@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 
+/// A set of Material specific default builders used by a TypeAheadField.
 abstract final class TypeAheadMaterialDefaults {
   /// The default loading builder used by a TypeAheadField.
   /// Displays a centered [CircularProgressIndicator].

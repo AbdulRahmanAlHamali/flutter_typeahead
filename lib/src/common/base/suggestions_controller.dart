@@ -4,20 +4,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// A controller of a SuggestionsField and its SuggestionsBox.
+///
 /// This allows access to the state of suggestions (items, loading, error),
 /// the state of the suggestions box (open, direction, focus) and
-/// the ability to open, close, toggle and resize the suggestions box.
+/// the ability to open and close the suggestions box.
 class SuggestionsController<T> extends ChangeNotifier {
   /// A controller of a SuggestionsBox.
   /// This is used to open, close, toggle and resize the suggestions box.
   SuggestionsController();
 
+  /// Returns the SuggestionsController of the closest ancestor SuggestionsBox or null if none exists.
   static SuggestionsController<T>? maybeOf<T>(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<SuggestionsControllerProvider<T>>()
         ?.notifier;
   }
 
+  /// Returns the SuggestionsController of the closest ancestor SuggestionsBox.
   static SuggestionsController<T> of<T>(BuildContext context) {
     SuggestionsController<T>? controller = maybeOf<T>(context);
     if (controller == null) {
@@ -199,6 +202,7 @@ class SuggestionsController<T> extends ChangeNotifier {
   }
 }
 
+/// Injects a SuggestionsController into the widget tree.
 class SuggestionsControllerProvider<T>
     extends InheritedNotifier<SuggestionsController<T>> {
   const SuggestionsControllerProvider({
@@ -208,6 +212,7 @@ class SuggestionsControllerProvider<T>
   }) : super(notifier: controller, child: child);
 }
 
+/// The state of focus of the suggestions box and field.
 enum SuggestionsFocusState {
   /// Neither the suggestions box nor field are focused.
   blur,
