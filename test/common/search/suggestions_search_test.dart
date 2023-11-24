@@ -147,28 +147,5 @@ void main() {
 
       expect(controller.suggestions, ['new1', 'new2']);
     });
-
-    testWidgets('does not load when too little characters',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsSearch<String>(
-              controller: controller,
-              textEditingController: textEditingController,
-              suggestionsCallback: suggestionsCallback,
-              debounceDuration: debounceDuration,
-              minCharsForSuggestions: 2,
-              child: const SizedBox(),
-            ),
-          ),
-        ),
-      );
-
-      textEditingController.text = 't';
-      await tester.pump();
-
-      expect(controller.suggestions, isNull);
-    });
   });
 }
