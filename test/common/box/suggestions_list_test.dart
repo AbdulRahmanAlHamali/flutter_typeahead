@@ -131,7 +131,6 @@ void main() {
               loadingBuilder: loadingBuilder,
               errorBuilder: errorBuilder,
               emptyBuilder: emptyBuilder,
-              autoFlipListDirection: true,
             ),
           ),
         ),
