@@ -19,6 +19,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Renamed `suggestionsBoxVerticalOffset` to `offset`, now including horizontal offset.
 - Renamed `hideSuggestionsOnKeyboardHide` to `hideWithKeyboard`.
 - Renamed `keepSuggestionsOnSuggestionSelected` to `hideOnSelect` and inverted its functionality.
+- Renamed `keepSuggestionsOnLoading` to `retainOnLoading`.
 
 ### Removed
 - `SuggestionsBoxDecoration`, replaced by `decorationBuilder`.

@@ -30,7 +30,7 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     super.hideOnSelect,
     required ItemBuilder<T> itemBuilder,
     super.itemSeparatorBuilder,
-    super.keepSuggestionsOnLoading,
+    super.retainOnLoading,
     WidgetBuilder? loadingBuilder,
     WidgetBuilder? emptyBuilder,
     required super.onSelected,
