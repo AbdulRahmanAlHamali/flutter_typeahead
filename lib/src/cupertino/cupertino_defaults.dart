@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 
+/// A set of Cupertino specific default builders used by a CupertinoTypeAheadField.
 abstract final class TypeAheadCupertinoDefaults {
   /// The default loading builder used by a CupertinoTypeAheadField.
   /// Displays a centered [CupertinoActivityIndicator].
