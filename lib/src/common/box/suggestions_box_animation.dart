@@ -10,14 +10,12 @@ class SuggestionsBoxAnimation<T> extends StatefulWidget {
     required this.controller,
     required this.child,
     this.transitionBuilder,
-    this.animationStart,
     this.animationDuration,
   });
 
   final SuggestionsController<T> controller;
   final Widget child;
   final AnimationTransitionBuilder? transitionBuilder;
-  final double? animationStart;
   final Duration? animationDuration;
 
   @override
