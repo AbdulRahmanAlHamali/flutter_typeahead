@@ -1,11 +1,10 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_focus_connector.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  group('SuggestionsFieldTraversalConnector', () {
+  group('SuggestionsFieldFocusConnector', () {
     late SuggestionsController controller;
     late FocusNode focusNode;
 
@@ -17,92 +16,6 @@ void main() {
     tearDown(() {
       controller.dispose();
       focusNode.dispose();
-    });
-
-    testWidgets(
-        'sets focus to box when direction down and arrow down key is pressed',
-        (WidgetTester tester) async {
-      controller.open();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldFocusConnector(
-              controller: controller,
-              focusNode: focusNode,
-              child: Focus(
-                autofocus: true,
-                focusNode: focusNode,
-                child: const SizedBox(),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pump();
-
-      expect(controller.focusState, SuggestionsFocusState.box);
-    });
-
-    testWidgets(
-        'sets focus to box when direction up and arrow up key is pressed',
-        (WidgetTester tester) async {
-      controller.open();
-      controller.effectiveDirection = VerticalDirection.up;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldFocusConnector(
-              controller: controller,
-              focusNode: focusNode,
-              child: Focus(
-                autofocus: true,
-                focusNode: focusNode,
-                child: const SizedBox(),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
-      await tester.pump();
-
-      expect(controller.focusState, SuggestionsFocusState.box);
-    });
-
-    testWidgets('proxies focus node key events when ignored by key handler',
-        (WidgetTester tester) async {
-      controller.open();
-      bool previousOnKeyEventCalled = false;
-      focusNode.onKeyEvent = (node, event) {
-        previousOnKeyEventCalled = true;
-        return KeyEventResult.ignored;
-      };
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldFocusConnector(
-              controller: controller,
-              focusNode: focusNode,
-              child: Focus(
-                autofocus: true,
-                focusNode: focusNode,
-                child: const SizedBox(),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pump();
-
-      expect(previousOnKeyEventCalled, true);
     });
 
     testWidgets('sets focus to blur when focus node is unfocused',
@@ -240,7 +153,7 @@ void main() {
       expect(controller.isOpen, isFalse);
     });
 
-    testWidgets('opens the suggestions list if node was already focused',
+    testWidgets('opens the suggestions box if node was already focused',
         (WidgetTester tester) async {
       focusNode.requestFocus();
 
@@ -270,7 +183,7 @@ void main() {
     });
 
     testWidgets(
-        'does not close suggestions list when focus is lost and hideOnUnfocus is false',
+        'does not close suggestions box when focus is lost and hideOnUnfocus is false',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -294,8 +207,7 @@ void main() {
       expect(controller.isOpen, isTrue);
     });
 
-    testWidgets('focuses the node if the suggestions box is open',
-        (WidgetTester tester) async {
+    testWidgets('focuses node when box is opened', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: SuggestionsFieldFocusConnector(
@@ -315,7 +227,7 @@ void main() {
       expect(focusNode.hasFocus, isTrue);
     });
 
-    testWidgets('unfocuses the node if the suggestions box is closed',
+    testWidgets('unfocuses node when suggestions box is closed',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -335,6 +247,28 @@ void main() {
       await tester.pump();
 
       expect(focusNode.hasFocus, isFalse);
+    });
+
+    testWidgets('opens suggestions box when focus is box',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SuggestionsFieldFocusConnector(
+            controller: controller,
+            focusNode: focusNode,
+            child: Focus(
+              autofocus: true,
+              focusNode: focusNode,
+              child: Container(),
+            ),
+          ),
+        ),
+      );
+
+      controller.focusBox();
+      await tester.pump();
+
+      expect(controller.isOpen, isTrue);
     });
   });
 }

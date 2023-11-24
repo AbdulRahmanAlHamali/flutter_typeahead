@@ -1,11 +1,9 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/src/common/base/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 
-/// Connects a focus node to the opening and closing of the suggestions box.
-/// Enables navigating to the suggestions box from the text field using
-/// the keyboard.
+/// Connects the focus of the suggestions field to the controller state.
+/// Controls whether the box is open or closed.
 class SuggestionsFieldFocusConnector<T> extends StatefulWidget {
   const SuggestionsFieldFocusConnector({
     super.key,
@@ -41,35 +39,6 @@ class _SuggestionsFieldFocusConnectorState<T>
         widget.controller.open();
       }
     });
-  }
-
-  KeyEventResult onKeyEvent(FocusNode node, KeyEvent key) {
-    if (key is! KeyDownEvent) return KeyEventResult.ignored;
-    if (!widget.controller.isOpen) return KeyEventResult.ignored;
-    if (key.logicalKey == LogicalKeyboardKey.arrowDown) {
-      if (widget.controller.effectiveDirection == VerticalDirection.down) {
-        widget.controller.focusBox();
-        return KeyEventResult.handled;
-      }
-    } else if (key.logicalKey == LogicalKeyboardKey.arrowUp) {
-      if (widget.controller.effectiveDirection == VerticalDirection.up) {
-        widget.controller.focusBox();
-        return KeyEventResult.handled;
-      }
-    }
-    return KeyEventResult.ignored;
-  }
-
-  FocusOnKeyEventCallback wrapOnKeyEvent(
-    FocusOnKeyEventCallback? previousOnKeyEvent,
-  ) {
-    return (node, event) {
-      KeyEventResult result = onKeyEvent(node, event);
-      if (result == KeyEventResult.ignored && previousOnKeyEvent != null) {
-        return previousOnKeyEvent(node, event);
-      }
-      return result;
-    };
   }
 
   void onControllerFocus() {
@@ -118,30 +87,19 @@ class _SuggestionsFieldFocusConnectorState<T>
   Widget build(BuildContext context) {
     return ConnectorWidget(
       value: widget.focusNode,
-      connect: (value) {
-        FocusOnKeyEventCallback? previousOnKeyEvent =
-            widget.focusNode.onKeyEvent;
-        widget.focusNode.onKeyEvent = wrapOnKeyEvent(previousOnKeyEvent);
-        return previousOnKeyEvent;
-      },
-      disconnect: (value, previousOnKeyEvent) =>
-          widget.focusNode.onKeyEvent = previousOnKeyEvent,
+      connect: (value) => value.addListener(onNodeFocus),
+      disconnect: (value, key) => value.removeListener(onNodeFocus),
       child: ConnectorWidget(
-        value: widget.focusNode,
-        connect: (value) => value.addListener(onNodeFocus),
-        disconnect: (value, key) => value.removeListener(onNodeFocus),
-        child: ConnectorWidget(
-          value: widget.controller,
-          connect: (value) {
-            value.addListener(onControllerFocus);
-            value.addListener(onControllerOpen);
-          },
-          disconnect: (value, key) {
-            value.removeListener(onControllerFocus);
-            value.removeListener(onControllerOpen);
-          },
-          child: widget.child,
-        ),
+        value: widget.controller,
+        connect: (value) {
+          value.addListener(onControllerFocus);
+          value.addListener(onControllerOpen);
+        },
+        disconnect: (value, key) {
+          value.removeListener(onControllerFocus);
+          value.removeListener(onControllerOpen);
+        },
+        child: widget.child,
       ),
     );
   }
