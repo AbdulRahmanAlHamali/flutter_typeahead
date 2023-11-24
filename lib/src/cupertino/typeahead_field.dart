@@ -14,7 +14,6 @@ class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
     super.key,
     super.animationDuration,
     super.autoFlipDirection,
-    super.autoFlipListDirection,
     super.autoFlipMinHeight,
     TextFieldBuilder? builder,
     super.controller,

@@ -18,7 +18,6 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     super.key,
     this.animationDuration = const Duration(milliseconds: 200),
     this.autoFlipDirection = false,
-    this.autoFlipListDirection = true,
     this.autoFlipMinHeight = 144,
     required this.builder,
     this.controller,
@@ -136,9 +135,6 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsList.listBuilder}
   final ListBuilder? listBuilder;
 
-  /// {@macro flutter_typeahead.SuggestionsList.autoFlipListDirection}
-  final bool? autoFlipListDirection;
-
   /// {@macro flutter_typeahead.SuggestionsSearch.debounce}
   final Duration? debounceDuration;
 
@@ -219,7 +215,6 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
         itemBuilder: widget.itemBuilder,
         itemSeparatorBuilder: widget.itemSeparatorBuilder,
         listBuilder: widget.listBuilder,
-        autoFlipListDirection: widget.autoFlipListDirection,
       ),
       child: PointerInterceptor(
         child: widget.builder(
