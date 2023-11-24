@@ -18,7 +18,6 @@ class SuggestionsList<T> extends StatefulWidget {
     required this.itemBuilder,
     this.listBuilder,
     this.itemSeparatorBuilder,
-    this.autoFlipListDirection,
   });
 
   /// {@macro flutter_typeahead.SuggestionsBox.controller}
@@ -157,13 +156,6 @@ class SuggestionsList<T> extends StatefulWidget {
   /// {@endtemplate}
   final ListBuilder? listBuilder;
 
-  /// {@template flutter_typeahead.SuggestionsList.autoFlipListDirection}
-  /// Whether the suggestions list should be reversed if the suggestions box is flipped.
-  ///
-  /// Defaults to `true`.
-  /// {@endtemplate}
-  final bool? autoFlipListDirection;
-
   @override
   State<SuggestionsList<T>> createState() => _SuggestionsListState<T>();
 }
@@ -213,9 +205,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
           keyboardDismissBehavior: (widget.hideKeyboardOnDrag ?? false)
               ? ScrollViewKeyboardDismissBehavior.onDrag
               : ScrollViewKeyboardDismissBehavior.manual,
-          reverse: widget.controller.effectiveDirection == VerticalDirection.up
-              ? (widget.autoFlipListDirection ?? true)
-              : false,
+          reverse: widget.controller.effectiveDirection == VerticalDirection.up,
           itemCount: suggestions.length,
           itemBuilder: (context, index) =>
               widget.itemBuilder(context, suggestions[index]),

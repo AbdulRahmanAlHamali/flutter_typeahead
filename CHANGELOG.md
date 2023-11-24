@@ -30,6 +30,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `ignoreAccessibleNavigation` parameter (no longer required with new `Overlay` code).
 - `animationStart` parameter (use animation mapping).
 - `minCharsForSuggestions` parameter (implement in client code).
+- `autoFlipListDirection` parameter (use `listBuilder`).
 
 ## 4.8.0 - 2023-09-24
 ### Changed
