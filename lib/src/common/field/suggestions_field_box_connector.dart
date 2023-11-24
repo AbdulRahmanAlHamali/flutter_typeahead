@@ -3,8 +3,8 @@ import 'package:flutter_typeahead/src/common/base/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 
 /// Controls whether the box is open or closed based on the field focus state.
-class SuggestionsFieldOpenConnector<T> extends StatefulWidget {
-  const SuggestionsFieldOpenConnector({
+class SuggestionsFieldBoxConnector<T> extends StatefulWidget {
+  const SuggestionsFieldBoxConnector({
     super.key,
     required this.controller,
     required this.child,
@@ -16,12 +16,12 @@ class SuggestionsFieldOpenConnector<T> extends StatefulWidget {
   final bool hideOnUnfocus;
 
   @override
-  State<SuggestionsFieldOpenConnector<T>> createState() =>
-      _SuggestionsFieldOpenConnectorState<T>();
+  State<SuggestionsFieldBoxConnector<T>> createState() =>
+      _SuggestionsFieldBoxConnectorState<T>();
 }
 
-class _SuggestionsFieldOpenConnectorState<T>
-    extends State<SuggestionsFieldOpenConnector<T>> {
+class _SuggestionsFieldBoxConnectorState<T>
+    extends State<SuggestionsFieldBoxConnector<T>> {
   late SuggestionsFocusState lastFocusState;
   late bool wasOpen;
 

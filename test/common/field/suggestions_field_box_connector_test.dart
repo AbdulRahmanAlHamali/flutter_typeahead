@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/src/common/field/suggestions_field_open_connector.dart';
+import 'package:flutter_typeahead/src/common/field/suggestions_field_box_connector.dart';
 
 void main() {
-  group('SuggestionsFieldOpenConnector', () {
+  group('SuggestionsFieldBoxConnector', () {
     late SuggestionsController controller;
 
     setUp(() {
@@ -19,7 +19,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsFieldOpenConnector(
+          home: SuggestionsFieldBoxConnector(
             controller: controller,
             child: const SizedBox(),
           ),
@@ -36,7 +36,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsFieldOpenConnector(
+          home: SuggestionsFieldBoxConnector(
             controller: controller,
             child: const SizedBox(),
           ),
@@ -57,7 +57,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsFieldOpenConnector(
+          home: SuggestionsFieldBoxConnector(
             controller: controller,
             child: const SizedBox(),
           ),
@@ -72,7 +72,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsFieldOpenConnector(
+          home: SuggestionsFieldBoxConnector(
             controller: controller,
             hideOnUnfocus: false,
             child: const SizedBox(),
@@ -92,7 +92,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsFieldOpenConnector(
+          home: SuggestionsFieldBoxConnector(
             controller: controller,
             child: const SizedBox(),
           ),
@@ -109,7 +109,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsFieldOpenConnector(
+          home: SuggestionsFieldBoxConnector(
             controller: controller,
             child: const SizedBox(),
           ),
@@ -126,7 +126,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: SuggestionsFieldOpenConnector(
+          home: SuggestionsFieldBoxConnector(
             controller: controller,
             child: const SizedBox(),
           ),

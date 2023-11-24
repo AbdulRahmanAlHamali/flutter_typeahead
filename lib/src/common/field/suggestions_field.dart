@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_keyboard_connector.dart';
-import 'package:flutter_typeahead/src/common/field/suggestions_field_open_connector.dart';
+import 'package:flutter_typeahead/src/common/field/suggestions_field_box_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_select_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_tap_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_traversal_connector.dart';
@@ -271,7 +271,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
               child: SuggestionsFieldTraversalConnector<T>(
                 controller: controller,
                 focusNode: widget.focusNode,
-                child: SuggestionsFieldOpenConnector<T>(
+                child: SuggestionsFieldBoxConnector<T>(
                   controller: controller,
                   hideOnUnfocus: widget.hideOnUnfocus,
                   child: SuggestionsFieldKeyboardConnector<T>(
