@@ -74,19 +74,25 @@ class SuggestionsSearch<T> extends StatefulWidget {
 class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
   bool isQueued = false;
   late String search;
+  late bool wasOpen;
 
   @override
   void initState() {
     super.initState();
     search = widget.textEditingController.text;
+    wasOpen = widget.controller.isOpen;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      onOpenChange();
+      if (wasOpen) {
+        load();
+      }
     });
   }
 
   void onOpenChange() {
-    if (widget.controller.isOpen) {
+    if (wasOpen == widget.controller.isOpen) return;
+    wasOpen = widget.controller.isOpen;
+    if (wasOpen) {
       load();
     }
   }
