@@ -243,6 +243,7 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
 
   void updateOverlay() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       setState(() {});
       controller.show();
     });
