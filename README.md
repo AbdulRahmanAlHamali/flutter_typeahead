@@ -268,6 +268,7 @@ Additionally, various changes have been made to the API surface to make the pack
   - `suggestionsBoxVerticalOffset` -> `offset` (now also includes horizontal offset)
   - `hideSuggestionsOnKeyboardHide` -> `hideWithKeyboard`
   - `keepSuggestionsOnSuggestionSelected` -> `hideOnSelect` (inverted)
+  - `keepSuggestionsOnLoading`-> `retainOnLoading`
 - Some parameters have been removed:
   - `intercepting`: This is now always true, since it doesnt interfere on mobile platforms and generally has no downsides.
   - `onSuggestionsBoxToggle`: You can subscribe to the `SuggestionsController` to get notified when the suggestions box is toggled.
@@ -275,6 +276,7 @@ Additionally, various changes have been made to the API surface to make the pack
   - `minCharsForSuggestions`: You can return an empty list from `suggestionsCallback` instead.
   - `animationStart`: You can use the animation in the builder and map it to customise this.
   - `autoFlipListDirection`: This is now always true. You can use the list builder to disable this behavior.
+  - `getImmediateSuggestions`: You can use the `debounceDuration` to achieve the same effect.
 
 ### From 2.x to 3.x
 
