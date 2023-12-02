@@ -139,8 +139,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Warnings related to Flutter 3.0 (#95)
 
 ## 3.2.7 - 2022-05-15
-### Reverted
-- Previous fix for Flutter 3.0 warnings (#95)
+### Changed
+- Reverted previous fix for Flutter 3.0 warnings (#95)
 
 ## 3.2.6 - 2022-05-15
 ### Fixed
@@ -214,12 +214,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - Null-safety pre-release (#90)
 
-## 2.0.0 - 2021-01-11
-### Breaking Changes
-- Changed Types for some calls
+## 2.1.0-nullsafety.0 - 2021-01-21
+### Changed
+- Opt into null-safety
 
+## 2.0.0 - 2021-01-11
 ### Changed
 - Re-applied changes from 1.9.2
+- Types for some calls
 
 ## 1.9.3 - 2021-01-10
 ### Changed
@@ -259,16 +261,24 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Updated `flutter_Keyboard_visibility` dependency to ^3.0.0
 
 ## 1.8.4 - 2020-06-30
+### Added
+- suggestions box clip parameter
+
 ### Fixed
-- Merged 3 PRs addressing various bug fixes
+- Erratic suggestions callback behaviour
+- Exception with cut/paste
 
 ## 1.8.3 - 2020-06-11
 ### Fixed
 - Addressed keyboard visibility issues (contribution from @alphamikle)
 
+## 1.8.2 - 2020-04-12
+### Fixed
+- Various issues
+
 ## 1.8.1 - 2020-04-08
 ### Fixed
-- Various bug fixes
+- Various issues
 
 ## 1.8.0 - 2020-01-23
 ### Added
@@ -280,11 +290,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Switched from List to Iterable for flexibility
 
 ### Fixed
-- Various bug fixes
+- Various issues
 
 ## 1.7.0 - 2019-10-16
-Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
-
 ### Added
 - `enableInteractiveSelection` property
 
@@ -307,7 +315,7 @@ Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
 - Updated example project
 
 ### Fixed
-- Various bug fixes
+- Various issues
 
 ## 1.5.0 - 2019-04-25
 ### Added
@@ -334,7 +342,7 @@ Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
 - Optimizations
 
 ### Fixed
-- Various bug fixes
+- Various issues
 
 ## 1.2.0 - 2019-03-05
 ### Added
@@ -383,6 +391,10 @@ Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
 ### Fixed
 - Types <T> now work properly
 
+## 0.7.0 - 2019-02-07
+### Added
+- Added properties `hideOnLoading`, `hideOnEmpty`, and `hideOnError` to hide the suggestions box
+
 ## 0.6.0 - 2019-01-23
 ### Added
 - Property `direction` for controlling the growth direction of suggestions
@@ -396,7 +408,7 @@ Contributions from MisterJimson, davidmartos96, pparadox11, diegoveloper
 
 ## 0.5.1 - 2019-01-10
 ### Fixed
-- Various bug fixes
+- Various issues
 
 ## 0.5.0 - 2019-01-05
 ### Added
