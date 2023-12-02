@@ -11,12 +11,9 @@ users as they type
 
 ## Features
 
-- Shows suggestions in an overlay that floats on top of other widgets
-- Allows customizing all aspects: suggestions, loading, errors, empty, animation, decoration, layout, etc.
-- Provides an integration with [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
-  version that accepts validation, submitting, etc.
+- Shows suggestions in an floating box with the same width as your TextField
+- Allows controlling all aspects: suggestions, loading, errors, empty, animation, decoration, layout, etc.
 - Comes in both Material and Cupertino widget flavors
-- Exposes all state through a controller for more customization
 
 For installation, see [installation instructions](https://pub.dartlang.org/packages/flutter_typeahead/install).
 
@@ -232,11 +229,11 @@ To create your own version of the TypeAhead widget, that is neither Material nor
 
 You must then specify the following parameters:
 
-- builder (to build the `TextField`)
-- loadingBuilder (to build the loading widget)
-- errorBuilder (to build the error widget)
-- emptyBuilder (to build the empty widget)
-- itemBuilder (to build the suggestions)
+- `builder` (to build the `TextField`)
+- `loadingBuilder` (to build the loading widget)
+- `errorBuilder` (to build the error widget)
+- `emptyBuilder` (to build the empty widget)
+- `itemBuilder` (to build the suggestions)
 
 As well as all the usual parameters, such as `suggestionsCallback`, `onSelected`, etc.
 
@@ -287,13 +284,13 @@ Flutter now also features the inbuilt Autocomplete widget, which has similar beh
 
 Visit the [API Documentation](https://pub.dartlang.org/documentation/flutter_typeahead/).
 
-## Team:
+## Team
 
-| [<img src="https://avatars.githubusercontent.com/u/16646600?v=3" width="100px;"/>](https://github.com/AbdulRahmanAlHamali) | [<img src="https://avatars.githubusercontent.com/u/2034925?v=3" width="100px;"/>](https://github.com/sjmcdowall) | [<img src="https://avatars.githubusercontent.com/u/5499214?v=3" width="100px;"/>](https://github.com/KaYBlitZ) |
-| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| AbdulRahman AlHamali                                                                                                       | S McDowall                                                                                                       | Kenneth Liang                                                                                                  |
+| [<img src="https://avatars.githubusercontent.com/u/16646600?v=3" width="100px;"/>](https://github.com/AbdulRahmanAlHamali) | [<img src="https://avatars.githubusercontent.com/u/2034925?v=3" width="100px;"/>](https://github.com/sjmcdowall) | [<img src="https://avatars.githubusercontent.com/u/5499214?v=3" width="100px;"/>](https://github.com/KaYBlitZ) | [<img src="https://avatars.githubusercontent.com/u/11785085?v=3" width="100px;"/>](https://github.com/clragon) |
+| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| AbdulRahman AlHamali                                                                                                       | S McDowall                                                                                                       | Kenneth Liang                                                                                                  | clragon                                                                                                        |
 
-## Shout out to the contributors!
+## Thank you
 
 This project is the result of the collective effort of contributors who participated effectively by submitting pull requests, reporting issues, and answering questions.
 Thank you for your proactiveness, and we hope `flutter_typeahead` made your lifes at least a little easier!
