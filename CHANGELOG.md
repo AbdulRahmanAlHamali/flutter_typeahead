@@ -42,7 +42,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - General cleanup of the codebase (#523)
 
 ## 4.7.0 - 2023-09-05
-## Added
+### Added
 - `expands` property to TextFieldConfiguration (#512)
 - `scrollbarAlwaysVisible` argument (#512)
 
