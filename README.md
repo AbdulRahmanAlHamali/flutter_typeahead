@@ -39,8 +39,8 @@ TypeAheadField<City>(
       focusNode: focusNode,
       autofocus: true,
       decoration: InputDecoration(
-        border: OutlineInputBorder()
-        labelText: 'City'
+        border: OutlineInputBorder(),
+        labelText: 'City',
       )
     );
   },
