@@ -19,7 +19,7 @@ body:
   attributes:
     value: |
       Before filling the form fields, please ensure that you have 
-      searched for [existing issues](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/issues)
+      searched for [existing issues](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/issues).
 
 - type: textarea
   attributes:
