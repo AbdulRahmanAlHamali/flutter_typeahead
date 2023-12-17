@@ -21,3 +21,8 @@ jobs:
 
       - name: Run tests
         run: flutter test
+
+      - name: Upload to coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
