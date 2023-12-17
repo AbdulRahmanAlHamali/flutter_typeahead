@@ -1,0 +1,29 @@
+name: No Response
+
+on:
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: '30 * * * *'
+
+permissions:
+  issues: write
+
+jobs:
+  noResponse:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'flutter/flutter' }}
+    steps:
+      # very specific functioning fork
+      - uses: godofredoc/no-response@0ce2dc0e63e1c7d2b87752ceed091f6d32c9df09
+        with:
+          token: ${{ github.token }}
+          closeComment: >
+            Without additional information, we are unfortunately not sure how to
+            resolve this issue. We are therefore reluctantly going to close this
+            bug for now.
+
+            If you encounter this problem please file a new issue.  
+            Thanks for your contribution.
+          daysUntilClose: 21
+          responseRequiredLabel: "waiting for response"
