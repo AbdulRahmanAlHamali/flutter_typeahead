@@ -1,0 +1,116 @@
+name: Bug Report  
+description: You found a bug in the package, causing it to not work as expected.
+title: "[Bug] "  
+labels: ["bug"]  
+
+body:  
+- type: markdown  
+  attributes:  
+    value: |  
+      Thank you for filing a bug report for the flutter_typeahead package! 
+
+      If you are looking for support, please use alternative channels such as
+      - [StackOverflow](https://stackoverflow.com/questions/tagged/flutter)
+      - [Flutter Discord](https://discord.gg/rflutterdev)
+
+      which can respond much faster and are better suited for helping with usage questions.
+
+- type: markdown
+  attributes:
+    value: |
+      Before filling the form fields, please ensure that you have 
+      searched for [existing issues](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/issues)
+
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+    description: Please tell us exactly how to reproduce the problem you are running into.
+    placeholder: |
+      1. ...
+      2. ...
+      3. ...
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Expected results
+    description: Please tell us what is expected to happen.
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Actual results
+    description: Please tell us what is actually happening.
+  validations:
+    required: true
+
+- type: input  
+  id: version  
+  attributes:  
+    label: Package Version  
+    description: |
+      Please specify which package version you are using.  
+      The exact version can be found in the `pubspec.lock` file.
+    placeholder: ex. 5.0.0
+  validations:  
+    required: true
+
+- type: dropdown  
+  id: platform  
+  attributes:  
+    label: Platform  
+    description: Please tell us which OS you ran into this issue on.  
+    options: [Android, iOS, Windows, Linux, macOS, Web]  
+    multiple: true  
+  validations:  
+    required: true
+
+- type: textarea
+  attributes:
+    label: Code sample
+    description: |
+      Please create a [minimal reproducible sample](https://stackoverflow.com/help/minimal-reproducible-example) that shows the problem
+      and attach it below between the lines with the backticks.
+
+      Without this we will unlikely be able to progress on the issue.
+
+      Note: Please do not upload screenshots of text. Instead, use code blocks
+      or the above mentioned ways to upload your code sample.
+    value: |
+      <details open><summary>Code sample</summary>
+      ```dart
+      [Paste your code here]
+      ```
+      </details>
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Logs
+    description: |
+      If the package has caused an exception to be thrown, 
+      please include the exception message and full stack trace between the lines
+      with the backticks below.
+
+      Note: Please do not upload screenshots of text. Instead, use code blocks
+      or the above mentioned ways to upload logs.
+    value: |
+      <details open><summary>Logs</summary>
+      ```console
+      [Paste your logs here]
+      ```
+      </details>
+
+- type: textarea
+  attributes:
+    label: Screenshots or Video
+    description: |
+      Upload any screenshots or video of the bug if applicable.
+    value: |
+      <details open>
+      <summary>Screenshots / Video demonstration</summary>
+      [Upload media here]
+      </details>
