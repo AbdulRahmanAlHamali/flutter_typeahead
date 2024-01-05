@@ -1,55 +1,55 @@
 name: Feature request
 description: Suggest a new idea for the package.
-title: "[Feature] "  
-labels: ["enhancement"]  
-body:  
-- type: markdown  
-  attributes:  
-    value: |  
-      Thank you for filing a feature request for the flutter_typeahead package! 
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for filing a feature request for the flutter_typeahead package! 
 
-      If you are looking for support, please use alternative channels such as
-      - [StackOverflow](https://stackoverflow.com/questions/tagged/flutter)
-      - [Flutter Discord](https://discord.gg/rflutterdev)
+        If you are looking for support, please use alternative channels such as
+        - [StackOverflow](https://stackoverflow.com/questions/tagged/flutter)
+        - [Flutter Discord](https://discord.gg/rflutterdev)
 
-      which can respond much faster and are better suited for helping with usage questions.
+        which can respond much faster and are better suited for helping with usage questions.
 
-- type: markdown
-  attributes:
-    value: |
-      Before filling the form fields, please ensure that you have 
-      searched for [existing issues](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/issues).
+  - type: markdown
+    attributes:
+      value: |
+        Before filling the form fields, please ensure that you have 
+        searched for [existing issues](https://github.com/AbdulRahmanAlHamali/flutter_typeahead/issues).
 
-- type: textarea
-  attributes:
-    label: Use case
-    description: |
-      Please tell us the problem you are running into that led to you wanting
-      a new feature.
+  - type: textarea
+    attributes:
+      label: Use case
+      description: |
+        Please tell us the problem you are running into that led to you wanting
+        a new feature.
 
-      Is your feature request related to a problem? Please give a clear and
-      concise description of what the problem is.
+        Is your feature request related to a problem? Please give a clear and
+        concise description of what the problem is.
 
-      Describe the alternative solutions you've considered. 
-      Can this feature be added from the outside, without needing to change the
-      package itself?
-  validations:
-    required: true
+        Describe the alternative solutions you've considered. 
+        Can this feature be added from the outside, without needing to change the
+        package itself?
+    validations:
+      required: true
 
-- type: textarea
-  attributes:
-    label: Proposal
-    description: |
-      Briefly but precisely describe what you would like the flutter_typeahead
-      package to be able to do.
+  - type: textarea
+    attributes:
+      label: Proposal
+      description: |
+        Briefly but precisely describe what you would like the flutter_typeahead
+        package to be able to do.
 
-      Consider attaching something showing what you are imagining:
-       * images
-       * videos
-       * code samples
+        Consider attaching something showing what you are imagining:
+         * images
+         * videos
+         * code samples
 
-      Does this have to be provided by the package directly, or can it be provided
-      by your code? If so, maybe consider implementing the feature in your own
-      code, or in a separate package.
-  validations:
-    required: true
+        Does this have to be provided by the package directly, or can it be provided
+        by your code? If so, maybe consider implementing the feature in your own
+        code, or in a separate package.
+    validations:
+      required: true
