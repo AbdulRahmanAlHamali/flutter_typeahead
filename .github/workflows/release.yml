@@ -57,7 +57,7 @@ jobs:
 
       - name: Get version changelog
         run: |
-          echo "CHANGELOG=$(cider describe ${{ env.VERSION }} --only-body)" >> $GITHUB_ENV
+          echo "$(cider describe ${{ env.VERSION }} --only-body)" > changes
 
       - name: Create release
         uses: softprops/action-gh-release@v1
@@ -65,4 +65,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.VERSION }}
-          body: ${{ env.CHANGELOG }}
+          body_path: changes
