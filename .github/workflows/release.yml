@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to bump"
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+env:
+  VERSION_BUMP: ${{ github.event.inputs.version }}
+
+jobs:
+  release:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup actions
+        uses: actions/checkout@v3
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+
+      - name: Setup cider
+        run: dart pub global activate cider
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Bump and release version
+        run: |
+          cider bump ${{ env.VERSION_BUMP }}
+          cider release
+
+      - name: Get new version
+        run: echo "VERSION=$(cider version)" >> $GITHUB_ENV
+
+      - name: Commit version increase
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: increase version"
+          default_author: github_actions
+          add: |
+            pubspec.yaml
+            CHANGELOG.md
+
+      - name: Get version changelog
+        run: |
+          echo "CHANGELOG=$(cider describe ${{ env.VERSION }} --only-body)" >> $GITHUB_ENV
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          body: ${{ env.CHANGELOG }}
