@@ -37,6 +37,8 @@ class SuggestionsSearch<T> extends StatefulWidget {
   /// }
   /// ```
   ///
+  /// If this returns null, the suggestions box will be invisible.
+  ///
   /// See also:
   /// * [debounceDuration], which is the duration to wait for changes in the text field before updating suggestions.
   /// {@endtemplate}
