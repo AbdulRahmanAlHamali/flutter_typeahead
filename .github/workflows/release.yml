@@ -61,8 +61,7 @@ jobs:
 
       - name: Create release
         uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOY_KEY }}
         with:
+          token: ${{ secrets.DEPLOY_KEY }}
           tag_name: ${{ env.VERSION }}
           body_path: changes
