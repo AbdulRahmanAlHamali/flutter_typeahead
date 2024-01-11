@@ -171,8 +171,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
 
         bool isError = widget.controller.hasError;
         bool isEmpty = suggestions?.isEmpty ?? false;
-        bool isLoading =
-            widget.controller.isLoading && (isEmpty || !retainOnLoading);
+        bool isLoading = widget.controller.isLoading &&
+            (suggestions == null || isEmpty || !retainOnLoading);
 
         if (isLoading) {
           if (widget.hideOnLoading ?? false) return const SizedBox();
