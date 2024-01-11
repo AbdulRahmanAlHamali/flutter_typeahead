@@ -1,4 +1,4 @@
-name: Publish to pub.dev
+name: Publish
 
 on:
   push:
@@ -9,4 +9,17 @@ jobs:
   publish:
     permissions:
       id-token: write
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    runs-on: ubuntu-latest
+    # we'd prefer the reusable workflow, but
+    # but it is broken for flutter packages: https://github.com/dart-lang/setup-dart/issues/68
+    # uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@b64355ae6ca0b5d484f0106a033dd1388965d06d
+      - uses: subosito/flutter-action@v2
+      - name: Install dependencies
+        run: dart pub get
+      - name: Publish - dry run
+        run: dart pub publish --dry-run
+      - name: Publish to pub.dev
+        run: dart pub publish -f
