@@ -118,13 +118,13 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   final WidgetBuilder loadingBuilder;
 
   //// {@macro flutter_typeahead.SuggestionsList.errorBuilder}
-  final ErrorBuilder errorBuilder;
+  final SuggestionsErrorBuilder errorBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsList.emptyBuilder}
   final WidgetBuilder emptyBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsListConfig.itemBuilder}
-  final ItemBuilder<T> itemBuilder;
+  final SuggestionsItemBuilder<T> itemBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsList.itemSeparatorBuilder}
   final IndexedWidgetBuilder? itemSeparatorBuilder;

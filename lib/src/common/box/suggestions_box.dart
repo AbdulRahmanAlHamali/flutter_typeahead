@@ -101,7 +101,8 @@ class SuggestionsBox<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ItemBuilder<Widget> wrapper = decorationBuilder ?? (_, child) => child;
+    SuggestionsItemBuilder<Widget> wrapper =
+        decorationBuilder ?? (_, child) => child;
 
     return SuggestionsControllerProvider<T>(
       controller: controller,

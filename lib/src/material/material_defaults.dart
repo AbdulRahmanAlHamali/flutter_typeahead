@@ -45,8 +45,8 @@ abstract final class TypeAheadMaterialDefaults {
 
   /// A Wrapper around the item builder of a TypeAheadField.
   /// Provides the functionality to select an item on tap.
-  static ItemBuilder<T> itemBuilder<T>(
-    ItemBuilder<T> builder,
+  static SuggestionsItemBuilder<T> itemBuilder<T>(
+    SuggestionsItemBuilder<T> builder,
   ) {
     return (context, item) {
       return InkWell(
@@ -59,7 +59,7 @@ abstract final class TypeAheadMaterialDefaults {
 
   /// A Wrapper around the suggestions box of a TypeAheadField.
   /// Adds various Material specific decorations.
-  static ItemBuilder<Widget> wrapperBuilder(
+  static SuggestionsItemBuilder<Widget> wrapperBuilder(
     DecorationBuilder? builder,
   ) {
     return (context, child) {

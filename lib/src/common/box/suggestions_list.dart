@@ -97,7 +97,7 @@ class SuggestionsList<T> extends StatefulWidget {
   /// See also:
   /// * [hideOnError], which is whether the suggestions box should be hidden on error.
   /// {@endtemplate}
-  final ErrorBuilder errorBuilder;
+  final SuggestionsErrorBuilder errorBuilder;
 
   /// {@template flutter_typeahead.SuggestionsList.emptyBuilder}
   /// Builds the widget for when the suggestions list is empty.
@@ -122,7 +122,7 @@ class SuggestionsList<T> extends StatefulWidget {
   /// },
   /// ```
   /// {@endtemplate}
-  final ItemBuilder<T> itemBuilder;
+  final SuggestionsItemBuilder<T> itemBuilder;
 
   /// {@template flutter_typeahead.SuggestionsList.itemSeparatorBuilder}
   /// Optional builder function to add separators between suggestions.

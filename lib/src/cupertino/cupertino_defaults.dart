@@ -48,8 +48,8 @@ abstract final class TypeAheadCupertinoDefaults {
 
   /// A Wrapper around the item builder of a CupertinoTypeAheadField.
   /// Provides the functionality to select an item on tap.
-  static ItemBuilder<T> itemBuilder<T>(
-    ItemBuilder<T> builder,
+  static SuggestionsItemBuilder<T> itemBuilder<T>(
+    SuggestionsItemBuilder<T> builder,
   ) {
     return (context, item) {
       return FocusableActionDetector(
@@ -65,7 +65,7 @@ abstract final class TypeAheadCupertinoDefaults {
 
   /// A Wrapper around the suggestions box of a CupertinoTypeAheadField.
   /// Adds various Cupertino specific decorations.
-  static ItemBuilder<Widget> wrapperBuilder(
+  static SuggestionsItemBuilder<Widget> wrapperBuilder(
     DecorationBuilder? builder,
   ) {
     return (context, child) {

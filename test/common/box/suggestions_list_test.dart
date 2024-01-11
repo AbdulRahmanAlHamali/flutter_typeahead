@@ -8,9 +8,9 @@ void main() {
   group('SuggestionsList', () {
     late SuggestionsController<String> controller;
     late List<String> suggestions;
-    late ItemBuilder<String> itemBuilder;
+    late SuggestionsItemBuilder<String> itemBuilder;
     late WidgetBuilder loadingBuilder;
-    late ErrorBuilder errorBuilder;
+    late SuggestionsErrorBuilder errorBuilder;
     late WidgetBuilder emptyBuilder;
 
     setUp(() {

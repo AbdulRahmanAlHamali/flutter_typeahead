@@ -6,13 +6,19 @@ import 'package:flutter/widgets.dart';
 typedef SuggestionsCallback<T> = FutureOr<List<T>?> Function(String search);
 
 /// Builds a widget for a suggestion in the suggestions box.
-typedef ItemBuilder<T> = Widget Function(BuildContext context, T value);
+typedef SuggestionsItemBuilder<T> = Widget Function(
+  BuildContext context,
+  T value,
+);
 
 /// Called when a suggestion is selected.
 typedef SuggestionSelectionCallback<T> = void Function(T suggestion);
 
 /// Builds a widget for the error in the suggestions box.
-typedef ErrorBuilder = Widget Function(BuildContext context, Object error);
+typedef SuggestionsErrorBuilder = Widget Function(
+  BuildContext context,
+  Object error,
+);
 
 /// Builds the text field of the suggestions field.
 ///
