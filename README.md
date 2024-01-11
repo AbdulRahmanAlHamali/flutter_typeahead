@@ -7,7 +7,7 @@
 A TypeAhead (autocomplete) widget for Flutter, where you can show suggestions to
 users as they type
 
-<img src="./flutter_typeahead.gif" width="400" height="auto" alt="Flutter TypeAhead Demo" />
+<img src="https://raw.githubusercontent.com/AbdulRahmanAlHamali/flutter_typeahead/master/flutter_typeahead.gif" width="400" height="auto" alt="Flutter TypeAhead Demo" />
 
 ## Features
 
