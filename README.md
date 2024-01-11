@@ -169,6 +169,8 @@ You can do so with the following parameters:
 - `hideOnUnfocus`: Hide the suggestions box when the `TextField` loses focus. `True` by default.
 - `hideWithKeyboard`: Hide the suggestions box when the keyboard is hidden. `True` by default.
 
+You can also very generally hide the suggestions box by returning `null` from the `suggestionsCallback`.
+
 ### Customizing the animation
 
 Animation duration can be customized using the `animationDuration` parameter.
