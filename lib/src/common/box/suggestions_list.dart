@@ -170,7 +170,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
         bool retainOnLoading = widget.retainOnLoading ?? true;
 
         bool isError = widget.controller.hasError;
-        bool isEmpty = suggestions == null || suggestions.isEmpty;
+        bool isEmpty = suggestions?.isEmpty ?? false;
         bool isLoading =
             widget.controller.isLoading && (isEmpty || !retainOnLoading);
 
@@ -183,6 +183,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
         } else if (isEmpty) {
           if (widget.hideOnEmpty ?? false) return const SizedBox();
           return widget.emptyBuilder(context);
+        } else if (suggestions == null) {
+          return const SizedBox();
         }
 
         if (widget.listBuilder != null) {

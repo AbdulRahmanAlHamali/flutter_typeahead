@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 /// Called to retrieve the suggestions for [search].
-typedef SuggestionsCallback<T> = FutureOr<List<T>> Function(String search);
+typedef SuggestionsCallback<T> = FutureOr<List<T>?> Function(String search);
 
 /// Builds a widget for a suggestion in the suggestions box.
 typedef ItemBuilder<T> = Widget Function(BuildContext context, T value);

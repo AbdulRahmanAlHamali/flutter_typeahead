@@ -110,7 +110,7 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
     Object? newError;
 
     try {
-      newSuggestions = (await widget.suggestionsCallback(search)).toList();
+      newSuggestions = (await widget.suggestionsCallback(search))?.toList();
     } on Exception catch (e) {
       newError = e;
     }
