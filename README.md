@@ -170,6 +170,7 @@ You can do so with the following parameters:
 - `hideWithKeyboard`: Hide the suggestions box when the keyboard is hidden. `True` by default.
 
 You can also very generally hide the suggestions box by returning `null` from the `suggestionsCallback`.
+This is different from returning an empty list, which will show the empty widget.
 
 ### Customizing the animation
 
