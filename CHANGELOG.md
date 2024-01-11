@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- Returning null from `suggestionsCallback` hides the box
+
 ## 5.0.2 - 2024-01-11
 ### Changed
 - Upgraded flutter\_keyboard\_visibility: ^5.4.1 to ^6.0.0
@@ -18,32 +22,32 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 5.0.0 - 2023-11-25
 ### Added
-- Custom `TextField` builder via the `builder` property, replacing `TextFieldConfiguration`.
-- `decorationBuilder` property for customizing `SuggestionsBox` decoration.
-- Suggestions state (items, loading, error) in `SuggestionsController`.
-- Streams in `SuggestionsController` for notification of selected suggestions.
+- Custom `TextField` builder via the `builder` property, replacing `TextFieldConfiguration`
+- `decorationBuilder` property for customizing `SuggestionsBox` decoration
+- Suggestions state (items, loading, error) in `SuggestionsController`
+- Streams in `SuggestionsController` for notification of selected suggestions
 
 ### Changed
-- Renamed `SuggestionsBoxController` to `SuggestionsController`.
-- Renamed `layoutArchitecture` to `listBuilder`.
-- Renamed `noItemsFoundBuilder` to `emptyBuilder`.
-- Renamed `onSuggestionSelected` to `onSelected`.
-- Renamed `suggestionsBoxVerticalOffset` to `offset`, now including horizontal offset.
-- Renamed `hideSuggestionsOnKeyboardHide` to `hideWithKeyboard`.
-- Renamed `keepSuggestionsOnSuggestionSelected` to `hideOnSelect` and inverted its functionality.
-- Renamed `keepSuggestionsOnLoading` to `retainOnLoading`.
+- Renamed `SuggestionsBoxController` to `SuggestionsController`
+- Renamed `layoutArchitecture` to `listBuilder`
+- Renamed `noItemsFoundBuilder` to `emptyBuilder`
+- Renamed `onSuggestionSelected` to `onSelected`
+- Renamed `suggestionsBoxVerticalOffset` to `offset`, now including horizontal offset
+- Renamed `hideSuggestionsOnKeyboardHide` to `hideWithKeyboard`
+- Renamed `keepSuggestionsOnSuggestionSelected` to `hideOnSelect` and inverted its functionality
+- Renamed `keepSuggestionsOnLoading` to `retainOnLoading`
 
 ### Removed
-- `SuggestionsBoxDecoration`, replaced by `decorationBuilder`.
-- `TextFieldConfiguration`, replaced by custom `TextField` builder.
-- `CupertinoSuggestionsBoxController` in favor of `SuggestionsController`.
-- `TypeAheadFormFiled`, replaced by custom `TextField` builder.
-- `intercepting` parameter (now always true).
-- `onSuggestionsBoxToggle` parameter (replaced with subscriptions to `SuggestionsController`).
-- `ignoreAccessibleNavigation` parameter (no longer required with new `Overlay` code).
-- `animationStart` parameter (use animation mapping).
-- `minCharsForSuggestions` parameter (implement in client code).
-- `autoFlipListDirection` parameter (use `listBuilder`).
+- `SuggestionsBoxDecoration`, replaced by `decorationBuilder`
+- `TextFieldConfiguration`, replaced by custom `TextField` builder
+- `CupertinoSuggestionsBoxController` in favor of `SuggestionsController`
+- `TypeAheadFormFiled`, replaced by custom `TextField` builder
+- `intercepting` parameter (now always true)
+- `onSuggestionsBoxToggle` parameter (replaced with subscriptions to `SuggestionsController`)
+- `ignoreAccessibleNavigation` parameter (no longer required with new `Overlay` code)
+- `animationStart` parameter (use animation mapping)
+- `minCharsForSuggestions` parameter (implement in client code)
+- `autoFlipListDirection` parameter (use `listBuilder`)
 
 ## 4.8.0 - 2023-09-24
 ### Changed
