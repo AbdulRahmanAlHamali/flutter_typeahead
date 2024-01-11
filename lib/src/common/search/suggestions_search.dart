@@ -115,11 +115,11 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
       newError = e;
     }
 
+    if (!mounted) return;
+
     widget.controller.suggestions = newSuggestions;
     widget.controller.error = newError;
     widget.controller.isLoading = false;
-
-    if (!mounted) return;
 
     if (isQueued) {
       isQueued = false;
