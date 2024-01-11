@@ -6,8 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 ### Changed
-- Upgraded flutter_keyboard_visibility: ^5.4.1 to ^6.0.0
-- Upgraded pointer_interceptor: ^0.9.3+6 to ^0.10.0
+- Upgraded flutter\_keyboard\_visibility: ^5.4.1 to ^6.0.0
+- Upgraded pointer\_interceptor: ^0.9.3+6 to ^0.10.0
+
+### Fixed
+- dispose error in suggestions search
 
 ## 5.0.1 - 2023-11-27
 ### Fixed
@@ -385,6 +388,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Bug in `maxHeight` property
 
+## 0.7.0 - 2019-02-07
+### Added
+- Added properties `hideOnLoading`, `hideOnEmpty`, and `hideOnError` to hide the suggestions box
+
 ## 1.0.1 - 2019-02-06
 ### Added
 - Properties `hideOnLoading`, `hideOnEmpty`, `hideOnError` to control visibility of suggestions box
@@ -395,10 +402,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 - Types <T> now work properly
-
-## 0.7.0 - 2019-02-07
-### Added
-- Added properties `hideOnLoading`, `hideOnEmpty`, and `hideOnError` to hide the suggestions box
 
 ## 0.6.0 - 2019-01-23
 ### Added
