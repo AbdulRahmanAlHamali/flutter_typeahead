@@ -23,6 +23,7 @@ class SuggestionsField<T> extends StatefulWidget {
     this.direction,
     this.autoFlipDirection = false,
     this.autoFlipMinHeight = 64,
+    this.showOnFocus = true,
     this.hideOnUnfocus = true,
     this.hideOnSelect = true,
     this.hideWithKeyboard = true,
@@ -104,6 +105,15 @@ class SuggestionsField<T> extends StatefulWidget {
   /// Defaults to 64.
   /// {@endtemplate}
   final double autoFlipMinHeight;
+
+  /// {@template flutter_typeahead.SuggestionsField.showOnFocus}
+  /// Whether the suggestions box should be shown when the child of the suggestions box gains focus.
+  ///
+  /// If disabled, the suggestions box will remain closed when the user taps on the child of the suggestions box.
+  ///
+  /// Defaults to true.
+  /// {@endtemplate}
+  final bool showOnFocus;
 
   /// {@template flutter_typeahead.SuggestionsField.hideOnUnfocus}
   /// Whether the suggestions box should be hidden when the child of the suggestions box loses focus.
@@ -273,6 +283,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
                 focusNode: widget.focusNode,
                 child: SuggestionsFieldBoxConnector<T>(
                   controller: controller,
+                  showOnFocus: widget.showOnFocus,
                   hideOnUnfocus: widget.hideOnUnfocus,
                   child: SuggestionsFieldKeyboardConnector<T>(
                     controller: controller,

@@ -7,6 +7,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## Unreleased
 ### Added
 - Returning null from `suggestionsCallback` hides the box
+- `showOnFocus` parameter for `TypeAheadField` to allow not showing the box on focus
+- `gainFocus` paramater for `SuggestionsController.open` to allow opening the box without focusing
 
 ## 5.0.2 - 2024-01-11
 ### Changed

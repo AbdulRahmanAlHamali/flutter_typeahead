@@ -105,6 +105,24 @@ void main() {
       expect(controller.focusState, SuggestionsFocusState.field);
     });
 
+    testWidgets(
+        'does not focus field when box is opened and gainFocus is false',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SuggestionsFieldBoxConnector(
+            controller: controller,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      controller.open(gainFocus: false);
+      await tester.pump();
+
+      expect(controller.focusState, SuggestionsFocusState.blur);
+    });
+
     testWidgets('unfocuses field when suggestions box is closed',
         (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -120,6 +138,26 @@ void main() {
       await tester.pump();
 
       expect(controller.focusState, SuggestionsFocusState.blur);
+    });
+
+    testWidgets(
+        'does not unfocus field when suggestions box is closed and retainFocus is true',
+        (WidgetTester tester) async {
+      controller.open();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SuggestionsFieldBoxConnector(
+            controller: controller,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      controller.close(retainFocus: true);
+      await tester.pump();
+
+      expect(controller.isOpen, isFalse);
+      expect(controller.focusState, SuggestionsFocusState.field);
     });
 
     testWidgets('opens suggestions box when focus is box',

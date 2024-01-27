@@ -87,6 +87,10 @@ class SuggestionsController<T> extends ChangeNotifier {
   bool get retainFocus => _retainFocus;
   bool _retainFocus = false;
 
+  /// Whether the suggestions box should gain the focus when it is opened.
+  bool get gainFocus => _gainFocus;
+  bool _gainFocus = true;
+
   /// The desired direction of the suggestions box.
   ///
   /// The suggestions box will try to open in this direction.
@@ -169,10 +173,10 @@ class SuggestionsController<T> extends ChangeNotifier {
   }
 
   /// Opens the suggestions box.
-  void open() {
+  void open({bool gainFocus = true}) {
     if (isOpen) return;
     _isOpen = true;
-    _retainFocus = false;
+    _gainFocus = gainFocus;
     notifyListeners();
     resize();
   }

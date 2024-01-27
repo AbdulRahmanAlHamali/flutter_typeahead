@@ -8,11 +8,13 @@ class SuggestionsFieldBoxConnector<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.child,
+    this.showOnFocus = true,
     this.hideOnUnfocus = true,
   });
 
   final SuggestionsController<T> controller;
   final Widget child;
+  final bool showOnFocus;
   final bool hideOnUnfocus;
 
   @override
@@ -22,35 +24,37 @@ class SuggestionsFieldBoxConnector<T> extends StatefulWidget {
 
 class _SuggestionsFieldBoxConnectorState<T>
     extends State<SuggestionsFieldBoxConnector<T>> {
-  late SuggestionsFocusState lastFocusState;
+  late bool wasFocused;
   late bool wasOpen;
 
   @override
   void initState() {
     super.initState();
     wasOpen = widget.controller.isOpen;
-    lastFocusState = widget.controller.focusState;
+    wasFocused = widget.controller.focusState != SuggestionsFocusState.blur;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (lastFocusState != SuggestionsFocusState.blur) {
+      if (wasFocused && widget.showOnFocus) {
         widget.controller.open();
+      }
+      if (wasOpen && widget.controller.gainFocus) {
+        widget.controller.focusField();
       }
     });
   }
 
   void onControllerFocus() {
-    if (lastFocusState == widget.controller.focusState) return;
-    lastFocusState = widget.controller.focusState;
-    switch (lastFocusState) {
-      case SuggestionsFocusState.blur:
-        if (widget.hideOnUnfocus) {
-          widget.controller.close();
-        }
-        break;
-      case SuggestionsFocusState.box:
-      case SuggestionsFocusState.field:
+    bool isFocused = widget.controller.focusState != SuggestionsFocusState.blur;
+    if (wasFocused == isFocused) return;
+    wasFocused = isFocused;
+    if (isFocused) {
+      if (widget.showOnFocus) {
         widget.controller.open();
-        break;
+      }
+    } else {
+      if (widget.hideOnUnfocus) {
+        widget.controller.close();
+      }
     }
   }
 
@@ -58,9 +62,15 @@ class _SuggestionsFieldBoxConnectorState<T>
     if (wasOpen == widget.controller.isOpen) return;
     wasOpen = widget.controller.isOpen;
     if (wasOpen) {
-      widget.controller.focusField();
-    } else if (!widget.controller.retainFocus) {
-      widget.controller.unfocus();
+      if (widget.controller.gainFocus) {
+        widget.controller.focusField();
+      }
+    } else {
+      if (widget.controller.retainFocus) {
+        widget.controller.focusField();
+      } else {
+        widget.controller.unfocus();
+      }
     }
   }
 

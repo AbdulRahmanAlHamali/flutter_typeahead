@@ -29,6 +29,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     this.hideOnEmpty = false,
     this.hideOnError = false,
     this.hideOnLoading = false,
+    this.showOnFocus = true,
     this.hideOnUnfocus = true,
     this.hideWithKeyboard = true,
     this.hideOnSelect = true,
@@ -77,6 +78,9 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
 
   /// {@macro flutter_typeahead.SuggestionsField.autoFlipMinHeight}
   final double autoFlipMinHeight;
+
+  /// {@macro flutter_typeahead.SuggestionsField.showOnFocus}
+  final bool showOnFocus;
 
   /// {@macro flutter_typeahead.SuggestionsField.hideOnUnfocus}
   final bool hideOnUnfocus;
@@ -190,6 +194,7 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
       direction: widget.direction,
       autoFlipDirection: widget.autoFlipDirection,
       autoFlipMinHeight: widget.autoFlipMinHeight,
+      showOnFocus: widget.showOnFocus,
       hideOnUnfocus: widget.hideOnUnfocus,
       hideOnSelect: widget.hideOnSelect,
       hideWithKeyboard: widget.hideWithKeyboard,

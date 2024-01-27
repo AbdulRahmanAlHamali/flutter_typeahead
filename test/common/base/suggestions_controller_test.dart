@@ -57,19 +57,17 @@ void main() {
       expect(controller.isOpen, isFalse);
     });
 
+    test('opens suggestion list while not gaining focus', () {
+      controller.open(gainFocus: false);
+      expect(controller.isOpen, isTrue);
+      expect(controller.gainFocus, isFalse);
+    });
+
     test('closes suggestions list while retaining box focus', () {
       controller.open();
       controller.close(retainFocus: true);
       expect(controller.isOpen, isFalse);
       expect(controller.retainFocus, isTrue);
-    });
-
-    test('opens suggestions list and resets retain focus', () {
-      controller.open();
-      controller.close(retainFocus: true);
-      controller.open();
-      expect(controller.isOpen, isTrue);
-      expect(controller.retainFocus, isFalse);
     });
 
     test('dispose closes suggestions list', () async {
@@ -141,7 +139,7 @@ void main() {
       );
     });
 
-    testWidgets('can maybe be found in context', (WidgetTester tester) async {
+    testWidgets('may be found in context', (WidgetTester tester) async {
       final key = GlobalKey();
       await tester.pumpWidget(
         Container(

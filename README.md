@@ -226,6 +226,23 @@ It grants access to the following:
 
 When building a widget inside of the suggestions box, you can access the controller via `SuggestionsController.of(context)`.
 
+### Controlling the focus
+
+Focus plays an important role in the suggestions box. It is used to determine when to show and hide the suggestions box.
+However, in certain situations you may want to control the suggestions box independently of the focus.
+
+Options to do so are as follows:
+
+On the `TypeAheadField`:
+
+- `showOnFocus` (default: `true`): Show the suggestions box when the `TextField` gains focus.
+- `hideOnUnfocus` (default: `true`): Hide the suggestions box when the `TextField` loses focus.
+
+On the `SuggestionsController`:
+
+- `open(gainFocus: false)`: Show the suggestions box without focusing it.
+- `close(retainFocus: true)`: Hide the suggestions box without unfocusing it.
+
 ### Customizing everything
 
 To create your own version of the TypeAhead widget, that is neither Material nor Cupertino, you can use the `RawTypeAheadField` widget.
