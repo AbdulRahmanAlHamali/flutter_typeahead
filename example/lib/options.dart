@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 abstract class FieldOption<T> extends ValueNotifier<T> {
   FieldOption({
@@ -104,7 +105,8 @@ class FieldSettings extends ChangeNotifier {
   final ToggleFieldOption darkMode = ToggleFieldOption(
     key: 'darkMode',
     title: 'Dark Mode',
-    value: false,
+    value: SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark,
     icon: Icons.dark_mode,
     iconFalse: Icons.light_mode,
   );
