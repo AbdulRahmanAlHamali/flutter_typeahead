@@ -93,8 +93,7 @@ void main() {
       expect(find.byKey(const Key('empty')), findsOneWidget);
     });
 
-    testWidgets('shows list of suggestions when suggestions list is not empty',
-        (WidgetTester tester) async {
+    testWidgets('shows list of suggestions', (WidgetTester tester) async {
       controller.suggestions = suggestions;
 
       await tester.pumpWidget(
@@ -114,6 +113,32 @@ void main() {
       expect(find.byKey(const Key('test1')), findsOneWidget);
       expect(find.byKey(const Key('test2')), findsOneWidget);
       expect(find.byKey(const Key('test3')), findsOneWidget);
+    });
+
+    testWidgets('shows nothing when suggestions list is null',
+        (WidgetTester tester) async {
+      controller.suggestions = null;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsList(
+              controller: controller,
+              itemBuilder: itemBuilder,
+              loadingBuilder: loadingBuilder,
+              errorBuilder: errorBuilder,
+              emptyBuilder: emptyBuilder,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('loading')), findsNothing);
+      expect(find.byKey(const Key('error')), findsNothing);
+      expect(find.byKey(const Key('empty')), findsNothing);
+      expect(find.byKey(const Key('test1')), findsNothing);
+      expect(find.byKey(const Key('test2')), findsNothing);
+      expect(find.byKey(const Key('test3')), findsNothing);
     });
 
     testWidgets(
