@@ -20,7 +20,12 @@ class SuggestionsFieldTapConnector<T> extends StatelessWidget {
       child: Listener(
         behavior: HitTestBehavior.deferToChild,
         onPointerDown: (event) {
-          if (!controller.isOpen && controller.retainFocus) {
+          // We only reopen the suggestions box,
+          // if it was closed while retaining focus.
+          // This is usually the case when a suggestion was selected.
+          // Otherwise, we want to respect [showOnFocus] by staying closed
+          // so that developers can control when the suggestions box opens.
+          if (controller.retainFocus) {
             controller.open();
           }
         },

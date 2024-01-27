@@ -225,5 +225,8 @@ enum SuggestionsFocusState {
   box,
 
   /// The suggestions field is focused.
-  field,
+  field;
+
+  /// Whether the suggestions box or field is focused.
+  bool get hasFocus => this != SuggestionsFocusState.blur;
 }

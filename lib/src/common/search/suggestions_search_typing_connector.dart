@@ -30,7 +30,12 @@ class _SuggestionsSearchTypingConnectorState<T>
     if (previousText == widget.textEditingController.text) return;
     previousText = widget.textEditingController.text;
 
-    if (!widget.controller.isOpen && widget.controller.retainFocus) {
+    // We only reopen the suggestions box,
+    // if it was closed while retaining focus.
+    // This is usually the case when a suggestion was selected.
+    // Otherwise, we want to respect [showOnFocus] by staying closed
+    // so that developers can control when the suggestions box opens.
+    if (widget.controller.retainFocus) {
       widget.controller.open();
     }
   }

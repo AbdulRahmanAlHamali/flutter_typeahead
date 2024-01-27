@@ -31,7 +31,7 @@ class _SuggestionsFieldBoxConnectorState<T>
   void initState() {
     super.initState();
     wasOpen = widget.controller.isOpen;
-    wasFocused = widget.controller.focusState != SuggestionsFocusState.blur;
+    wasFocused = widget.controller.focusState.hasFocus;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (wasFocused && widget.showOnFocus) {
@@ -44,7 +44,7 @@ class _SuggestionsFieldBoxConnectorState<T>
   }
 
   void onControllerFocus() {
-    bool isFocused = widget.controller.focusState != SuggestionsFocusState.blur;
+    bool isFocused = widget.controller.focusState.hasFocus;
     if (wasFocused == isFocused) return;
     wasFocused = isFocused;
     if (isFocused) {
