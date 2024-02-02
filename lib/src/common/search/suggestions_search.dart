@@ -67,26 +67,38 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
   bool isQueued = false;
   late String search;
   late bool wasOpen;
+  late bool hadSuggestions;
 
   @override
   void initState() {
     super.initState();
     search = widget.textEditingController.text;
     wasOpen = widget.controller.isOpen;
+    hadSuggestions = widget.controller.suggestions != null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (wasOpen) {
-        load();
-      }
+      if (wasOpen) load();
     });
   }
 
+  void onChange() {
+    if (!mounted) return;
+    onOpenChange();
+    onSuggestionsChange();
+  }
+
   void onOpenChange() {
-    if (wasOpen == widget.controller.isOpen) return;
-    wasOpen = widget.controller.isOpen;
-    if (wasOpen) {
-      load();
-    }
+    bool isOpen = widget.controller.isOpen;
+    if (wasOpen == isOpen) return;
+    wasOpen = isOpen;
+    if (isOpen) load();
+  }
+
+  void onSuggestionsChange() {
+    bool hasSuggestions = widget.controller.suggestions != null;
+    if (hadSuggestions == hasSuggestions) return;
+    hadSuggestions = hasSuggestions;
+    if (!hasSuggestions) load();
   }
 
   /// Loads suggestions if not already loaded.
@@ -143,8 +155,8 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
         },
         child: ConnectorWidget(
           value: widget.controller,
-          connect: (value) => value.addListener(onOpenChange),
-          disconnect: (value, key) => value.removeListener(onOpenChange),
+          connect: (value) => value.addListener(onChange),
+          disconnect: (value, key) => value.removeListener(onChange),
           child: widget.child,
         ),
       ),

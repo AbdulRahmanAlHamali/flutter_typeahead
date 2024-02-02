@@ -260,6 +260,36 @@ As well as all the usual parameters, such as `suggestionsCallback`, `onSelected`
 The `decorationBuilder` can be used to inject required wrappers like `Material` or `DefaultTextStyle`.
 For more information, see the source code of the `TypeAheadField` widget.
 
+## FAQ
+
+### My suggestions arent changing when I type
+
+You have most likely forgotten to pass the controller and focus node to the `TextField` in the `builder` property.
+This is required for the suggestions box to function. Here is an example:
+
+```dart
+TypeAheadField(
+  // ...
+  controller: myTextEditingController, // your custom controller, or null
+  builder: (context, controller, focusNode) {
+    return TextField(
+      controller: controller, // note how the controller is passed
+      focusNode: focusNode,
+      // ...
+    );
+  },
+);
+```
+
+### My suggestions are not updating when I click on the TextField
+
+The TypeAhead field caches the suggestions to avoid unnecessary calls to the `suggestionsCallback`.
+If you want to force the suggestions to update, you can use the `SuggestionsController` to force a refresh.
+
+```dart
+mySuggestionsController.refresh();
+```
+
 ## Migrations
 
 ### From 4.x to 5.x

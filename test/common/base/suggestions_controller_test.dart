@@ -20,6 +20,13 @@ void main() {
       expect(controller.suggestions, equals(['a', 'b', 'c']));
     });
 
+    test('refreshes the suggestions', () {
+      expect(controller.suggestions, isNull);
+      controller.suggestions = ['a', 'b', 'c'];
+      controller.refresh();
+      expect(controller.suggestions, null);
+    });
+
     test('sets loading state', () {
       expect(controller.isLoading, isFalse);
       controller.isLoading = true;

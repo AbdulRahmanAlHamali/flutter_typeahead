@@ -52,6 +52,9 @@ class SuggestionsController<T> extends ChangeNotifier {
 
   List<T>? _suggestions;
 
+  /// Resets the suggestions so that they are requested again.
+  void refresh() => suggestions = null;
+
   /// Whether the suggestions box is loading.
   bool get isLoading => _isLoading;
   set isLoading(bool value) {

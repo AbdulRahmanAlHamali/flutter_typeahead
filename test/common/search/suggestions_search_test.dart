@@ -100,6 +100,34 @@ void main() {
       expect(controller.suggestions, ['new1', 'new2']);
     });
 
+    testWidgets('reloads entries when suggestions are set to null',
+        (WidgetTester tester) async {
+      int count = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsSearch<String>(
+              controller: controller,
+              textEditingController: textEditingController,
+              suggestionsCallback: (pattern) async {
+                count++;
+                return [count.toString()];
+              },
+              debounceDuration: debounceDuration,
+              child: const SizedBox(),
+            ),
+          ),
+        ),
+      );
+
+      expect(controller.suggestions, ['1']);
+
+      controller.refresh();
+      await tester.pump();
+
+      expect(controller.suggestions, ['2']);
+    });
+
     testWidgets('loads when controller opens', (WidgetTester tester) async {
       controller.close();
 
