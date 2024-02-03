@@ -20,11 +20,15 @@ void main() {
       expect(controller.suggestions, equals(['a', 'b', 'c']));
     });
 
-    test('refreshes the suggestions', () {
+    test('refreshes the suggestions', () async {
       expect(controller.suggestions, isNull);
       controller.suggestions = ['a', 'b', 'c'];
+      bool called = false;
+      controller.$refreshes.listen((_) => called = true);
       controller.refresh();
+      await Future<void>.value();
       expect(controller.suggestions, null);
+      expect(called, isTrue);
     });
 
     test('sets loading state', () {
@@ -88,7 +92,7 @@ void main() {
 
     test('sends resize event', () async {
       bool called = false;
-      controller.resizes.listen((_) => called = true);
+      controller.$resizes.listen((_) => called = true);
       controller.resize();
       await Future<void>.value();
       expect(called, isTrue);

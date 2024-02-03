@@ -52,8 +52,19 @@ class SuggestionsController<T> extends ChangeNotifier {
 
   List<T>? _suggestions;
 
+  /// A stream of events that occur when the suggestions list should be refreshed.
+  ///
+  /// For internal use only.
+  Stream<void> get $refreshes => _refreshesController.stream;
+  final StreamController<void> _refreshesController =
+      StreamController<void>.broadcast();
+
   /// Resets the suggestions so that they are requested again.
-  void refresh() => suggestions = null;
+  void refresh() {
+    ChangeNotifier.debugAssertNotDisposed(this);
+    _suggestions = null;
+    _refreshesController.add(null);
+  }
 
   /// Whether the suggestions box is loading.
   bool get isLoading => _isLoading;
@@ -132,9 +143,17 @@ class SuggestionsController<T> extends ChangeNotifier {
   /// A stream of events that occur when the suggestions box should be resized.
   ///
   /// For internal use only.
-  Stream<void> get resizes => _resizesController.stream;
+  Stream<void> get $resizes => _resizesController.stream;
   final StreamController<void> _resizesController =
       StreamController<void>.broadcast();
+
+  /// Resizes the suggestions box.
+  ///
+  /// You usually don't need to call this method manually.
+  void resize() {
+    ChangeNotifier.debugAssertNotDisposed(this);
+    _resizesController.add(null);
+  }
 
   /// A stream of selected suggestions.
   Stream<T> get selections => _selectionsController.stream;
@@ -145,14 +164,6 @@ class SuggestionsController<T> extends ChangeNotifier {
   ///
   /// This notifies potential listeners of the selection.
   void select(T suggestion) => _selectionsController.add(suggestion);
-
-  /// Resizes the suggestions box.
-  ///
-  /// You usually don't need to call this method manually.
-  void resize() {
-    ChangeNotifier.debugAssertNotDisposed(this);
-    _resizesController.add(null);
-  }
 
   /// Focuses the suggestions box.
   void focusBox() {
@@ -204,7 +215,9 @@ class SuggestionsController<T> extends ChangeNotifier {
   @override
   void dispose() {
     close();
+    _refreshesController.close();
     _resizesController.close();
+    _selectionsController.close();
     super.dispose();
   }
 }

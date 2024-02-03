@@ -154,6 +154,8 @@ void main() {
     });
 
     testWidgets('loads when queued up', (WidgetTester tester) async {
+      controller.open();
+
       await tester.pumpWidget(
         MaterialApp(
           home: Material(

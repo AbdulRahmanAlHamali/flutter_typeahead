@@ -8,6 +8,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - force refreshing suggestions with `SuggestionsController.refresh`
 
+### Fixed
+- suggestionsCallback getting called even when closed
+
 ## 5.1.0 - 2024-01-27
 ### Added
 - Returning null from `suggestionsCallback` hides the box

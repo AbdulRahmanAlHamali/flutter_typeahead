@@ -273,7 +273,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
           link: link,
           child: ConnectorWidget(
             value: controller,
-            connect: (value) => value.resizes.listen((_) => onResize()),
+            connect: (value) => value.$resizes.listen((_) => onResize()),
             disconnect: (value, key) => key?.cancel(),
             child: SuggestionsFieldFocusConnector<T>(
               controller: controller,
