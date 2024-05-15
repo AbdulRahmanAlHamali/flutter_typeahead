@@ -29,6 +29,7 @@ class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
     super.hideOnUnfocus,
     super.hideWithKeyboard,
     super.hideOnSelect,
+    BorderRadius itemBorderRadius = BorderRadius.zero,
     required SuggestionsItemBuilder<T> itemBuilder,
     super.itemSeparatorBuilder,
     super.retainOnLoading,
@@ -49,7 +50,8 @@ class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
           loadingBuilder:
               loadingBuilder ?? TypeAheadCupertinoDefaults.loadingBuilder,
           emptyBuilder: emptyBuilder ?? TypeAheadCupertinoDefaults.emptyBuilder,
-          itemBuilder: TypeAheadCupertinoDefaults.itemBuilder(itemBuilder),
+          itemBuilder: TypeAheadCupertinoDefaults.itemBuilder(
+              itemBuilder, itemBorderRadius),
           decorationBuilder:
               TypeAheadCupertinoDefaults.wrapperBuilder(decorationBuilder),
         );

@@ -42,6 +42,7 @@ class SettingsTypeAhead extends StatelessWidget
                 hintText: hintText,
               ),
             ),
+            itemBorderRadius: BorderRadius.circular(8),
             itemBuilder: (context, setting) {
               if (setting is ToggleFieldOption) {
                 IconData? icon = setting.value
@@ -125,6 +126,7 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
                         fontStyle: FontStyle.italic,
                       ),
             ),
+            itemBorderRadius: BorderRadius.circular(8),
             itemBuilder: (context, setting) {
               if (setting is ToggleFieldOption) {
                 return CupertinoListTile(

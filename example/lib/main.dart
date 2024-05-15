@@ -92,6 +92,7 @@ class ExampleTypeAhead extends StatelessWidget
                   borderRadius: borderRadius,
                   child: child,
                 ),
+                itemBorderRadius: BorderRadius.circular(8),
                 itemBuilder: (context, product) => ListTile(
                   title: Text(product.name),
                   subtitle: product.description != null
@@ -224,6 +225,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                   ),
                   child: child,
                 ),
+                itemBorderRadius: BorderRadius.circular(8),
                 itemBuilder: (context, product) => CupertinoListTile(
                   title: Text(product.name),
                   subtitle: product.description != null

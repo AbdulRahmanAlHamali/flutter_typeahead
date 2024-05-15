@@ -29,6 +29,7 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     super.hideOnUnfocus,
     super.hideWithKeyboard,
     super.hideOnSelect,
+    BorderRadius itemBorderRadius = BorderRadius.zero,
     required SuggestionsItemBuilder<T> itemBuilder,
     super.itemSeparatorBuilder,
     super.retainOnLoading,
@@ -49,7 +50,8 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
           loadingBuilder:
               loadingBuilder ?? TypeAheadMaterialDefaults.loadingBuilder,
           emptyBuilder: emptyBuilder ?? TypeAheadMaterialDefaults.emptyBuilder,
-          itemBuilder: TypeAheadMaterialDefaults.itemBuilder(itemBuilder),
+          itemBuilder: TypeAheadMaterialDefaults.itemBuilder(
+              itemBuilder, itemBorderRadius),
           decorationBuilder:
               TypeAheadMaterialDefaults.wrapperBuilder(decorationBuilder),
         );

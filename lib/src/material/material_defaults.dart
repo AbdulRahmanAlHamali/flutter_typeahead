@@ -47,12 +47,14 @@ abstract final class TypeAheadMaterialDefaults {
   /// Provides the functionality to select an item on tap.
   static SuggestionsItemBuilder<T> itemBuilder<T>(
     SuggestionsItemBuilder<T> builder,
+    BorderRadius itemBorderRadius,
   ) {
     return (context, item) {
       return InkWell(
+        borderRadius: itemBorderRadius,
         focusColor: Theme.of(context).hoverColor,
         onTap: () => SuggestionsController.of<T>(context).select(item),
-        child: builder(context, item),
+        child: IgnorePointer(child: builder(context, item)),
       );
     };
   }

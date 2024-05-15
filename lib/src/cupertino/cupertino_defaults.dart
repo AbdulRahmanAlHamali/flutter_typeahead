@@ -50,14 +50,18 @@ abstract final class TypeAheadCupertinoDefaults {
   /// Provides the functionality to select an item on tap.
   static SuggestionsItemBuilder<T> itemBuilder<T>(
     SuggestionsItemBuilder<T> builder,
+    BorderRadius itemBorderRadius,
   ) {
     return (context, item) {
-      return FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: builder(context, item),
-          onTap: () => SuggestionsController.of<T>(context).select(item),
+      return ClipRRect(
+        borderRadius: itemBorderRadius,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: IgnorePointer(child: builder(context, item)),
+            onTap: () => SuggestionsController.of<T>(context).select(item),
+          ),
         ),
       );
     };

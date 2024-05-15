@@ -44,6 +44,7 @@ TypeAheadField<City>(
       )
     );
   },
+  itemBorderRadius: BorderRadius.circular(8),
   itemBuilder: (context, city) {
     return ListTile(
       title: Text(city.name),
@@ -256,6 +257,8 @@ You must then specify the following parameters:
 - `itemBuilder` (to build the suggestions)
 
 As well as all the usual parameters, such as `suggestionsCallback`, `onSelected`, etc.
+
+If you want to set border radius to the suggestion items, doing it inside `itemBuilder` probably won't work. Use `itemBorderRadius` parameter instead.
 
 The `decorationBuilder` can be used to inject required wrappers like `Material` or `DefaultTextStyle`.
 For more information, see the source code of the `TypeAheadField` widget.
