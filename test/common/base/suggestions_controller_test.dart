@@ -44,6 +44,32 @@ void main() {
       expect(controller.error, equals('error'));
     });
 
+    test('sets highlighted index', () {
+      controller.suggestions = ['a', 'b', 'c'];
+      expect(controller.highlighted, isNull);
+      controller.highlighted = 1;
+      expect(controller.highlighted, equals(1));
+      controller.highlightNext();
+      expect(controller.highlighted, equals(2));
+      controller.highlightPrevious();
+      expect(controller.highlighted, equals(1));
+      controller.unhighlight();
+      expect(controller.highlighted, isNull);
+    });
+
+    test('sets highlighted suggestion', () {
+      controller.suggestions = ['a', 'b', 'c'];
+      expect(controller.highlightedSuggestion, isNull);
+      controller.highlightedSuggestion = 'b';
+      expect(controller.highlightedSuggestion, equals('b'));
+      controller.highlightNext();
+      expect(controller.highlightedSuggestion, equals('c'));
+      controller.highlightPrevious();
+      expect(controller.highlightedSuggestion, equals('b'));
+      controller.highlightedSuggestion = null;
+      expect(controller.highlightedSuggestion, isNull);
+    });
+
     test('opens suggestions list', () {
       bool wasOpened = false;
       controller.addListener(() => wasOpened = controller.isOpen);

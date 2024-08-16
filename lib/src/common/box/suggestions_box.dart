@@ -4,7 +4,6 @@ import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_animation.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/box/suggestions_box_scroll_injector.dart';
-import 'package:flutter_typeahead/src/common/box/suggestions_box_traversal_connector.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 /// A widget that contains suggestions based on user input.
@@ -110,18 +109,15 @@ class SuggestionsBox<T> extends StatelessWidget {
         controller: scrollController,
         child: SuggestionsBoxFocusConnector<T>(
           controller: controller,
-          child: SuggestionsBoxTraversalConnector<T>(
-            controller: controller,
-            child: PointerInterceptor(
-              child: Builder(
-                builder: (context) => wrapper(
-                  context,
-                  SuggestionsBoxAnimation<T>(
-                    controller: controller,
-                    transitionBuilder: transitionBuilder,
-                    animationDuration: animationDuration,
-                    child: builder(context),
-                  ),
+          child: PointerInterceptor(
+            child: Builder(
+              builder: (context) => wrapper(
+                context,
+                SuggestionsBoxAnimation<T>(
+                  controller: controller,
+                  transitionBuilder: transitionBuilder,
+                  animationDuration: animationDuration,
+                  child: builder(context),
                 ),
               ),
             ),

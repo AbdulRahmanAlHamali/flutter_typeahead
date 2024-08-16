@@ -5,11 +5,11 @@ import 'package:flutter_typeahead/src/common/box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_focus_connector.dart';
+import 'package:flutter_typeahead/src/common/field/suggestions_field_highlight_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_box_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_select_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_tap_connector.dart';
-import 'package:flutter_typeahead/src/common/field/suggestions_field_traversal_connector.dart';
 
 /// A widget that displays a list of suggestions above or below another widget.
 class SuggestionsField<T> extends StatefulWidget {
@@ -278,9 +278,8 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             child: SuggestionsFieldFocusConnector<T>(
               controller: controller,
               focusNode: widget.focusNode,
-              child: SuggestionsFieldTraversalConnector<T>(
+              child: SuggestionsFieldHighlightConnector<T>(
                 controller: controller,
-                focusNode: widget.focusNode,
                 child: SuggestionsFieldBoxConnector<T>(
                   controller: controller,
                   showOnFocus: widget.showOnFocus,

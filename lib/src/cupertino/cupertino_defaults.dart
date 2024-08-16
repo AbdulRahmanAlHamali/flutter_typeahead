@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 
@@ -52,13 +53,34 @@ abstract final class TypeAheadCupertinoDefaults {
     SuggestionsItemBuilder<T> builder,
   ) {
     return (context, item) {
-      return FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: builder(context, item),
-          onTap: () => SuggestionsController.of<T>(context).select(item),
-        ),
+      final controller = SuggestionsController.of<T>(context);
+      return ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
+          final bool highlighted = controller.highlightedSuggestion == item;
+          if (highlighted) {
+            // scroll to the highlighted item
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              Scrollable.ensureVisible(context, alignment: 0.5);
+            }, debugLabel: 'TypeAheadField.CupertinoDefaults.itemBuilder');
+          }
+          return Container(
+            decoration: BoxDecoration(
+              color: highlighted
+                  ? CupertinoColors.systemGrey4.withOpacity(0.5)
+                  : null,
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+            ),
+            child: FocusableActionDetector(
+              mouseCursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                child: builder(context, item),
+                onTap: () => SuggestionsController.of<T>(context).select(item),
+              ),
+            ),
+          );
+        },
       );
     };
   }

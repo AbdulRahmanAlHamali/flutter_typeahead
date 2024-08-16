@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -51,6 +52,56 @@ class SuggestionsController<T> extends ChangeNotifier {
   }
 
   List<T>? _suggestions;
+
+  /// The index of the highlighted suggestion in the suggestions box.
+  int? get highlighted => _highlighted;
+  set highlighted(int? value) {
+    if (_highlighted == value) return;
+    _highlighted = value;
+    notifyListeners();
+  }
+
+  int? _highlighted;
+
+  /// Removes the highlight from the suggestions box.
+  void unhighlight() => highlighted = null;
+
+  /// Highlights the previous suggestion in the suggestions box.
+  void highlightPrevious() {
+    if (highlighted == null) return;
+    if (highlighted! <= 0) {
+      highlighted = null;
+    } else {
+      int max = suggestions == null ? 0 : suggestions!.length - 1;
+      highlighted = min(highlighted! - 1, max);
+    }
+  }
+
+  /// Highlights the next suggestion in the suggestions box.
+  void highlightNext() {
+    if (highlighted == null) {
+      highlighted = 0;
+    } else {
+      int max = suggestions == null ? 0 : suggestions!.length - 1;
+      highlighted = min(highlighted! + 1, max);
+    }
+  }
+
+  /// The highlighted suggestion in the suggestions box.
+  ///
+  /// This is the suggestion at the index of [highlighted].
+  T? get highlightedSuggestion {
+    if (highlighted == null) return null;
+    return suggestions?.elementAtOrNull(highlighted!);
+  }
+
+  set highlightedSuggestion(T? value) {
+    if (value == null) {
+      highlighted = null;
+    } else {
+      highlighted = suggestions?.indexOf(value);
+    }
+  }
 
   /// A stream of events that occur when the suggestions list should be refreshed.
   ///
