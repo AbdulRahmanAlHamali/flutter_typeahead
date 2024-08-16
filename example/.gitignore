@@ -44,10 +44,11 @@ app.*.map.json
 /android/app/release
 
 
-# Platform folders 
+# Platform dependent files
 /web/
 /windows/
 /macos/
 /linux/
 /android/
 /ios/
+.metadata
