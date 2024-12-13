@@ -68,10 +68,12 @@ class SettingsTypeAhead extends StatelessWidget
                   ),
                 );
               } else {
-                return ListTile(
-                  key: ValueKey(setting.value),
-                  leading: Icon(setting.icon),
-                  title: Text(setting.title),
+                return IgnorePointer(
+                  child: ListTile(
+                    key: ValueKey(setting.value),
+                    leading: Icon(setting.icon),
+                    title: Text(setting.title),
+                  ),
                 );
               }
             },
