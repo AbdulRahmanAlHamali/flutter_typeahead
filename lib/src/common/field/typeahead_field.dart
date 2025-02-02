@@ -33,6 +33,8 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     this.hideOnUnfocus = true,
     this.hideWithKeyboard = true,
     this.hideOnSelect = true,
+    this.expandSuggestionsBox = false,
+    this.suggestionsBoxPadding,
     required this.itemBuilder,
     this.itemSeparatorBuilder,
     this.retainOnLoading = true,
@@ -73,6 +75,9 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   /// {@macro flutter_typeahead.SuggestionsField.offset}
   final Offset? offset;
 
+  /// {@macro flutter_typeahead.SuggestionsField.padding}
+  final EdgeInsets? suggestionsBoxPadding;
+
   /// {@macro flutter_typeahead.SuggestionsField.autoFlipDirection}
   final bool autoFlipDirection;
 
@@ -90,6 +95,9 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
 
   /// {@macro flutter_typeahead.SuggestionsField.hideWithKeyboard}
   final bool hideWithKeyboard;
+
+  /// {@macro flutter_typeahead.SuggestionsField.expand}
+  final bool expandSuggestionsBox;
 
   /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
   final ScrollController? scrollController;
@@ -198,6 +206,8 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
       hideOnUnfocus: widget.hideOnUnfocus,
       hideOnSelect: widget.hideOnSelect,
       hideWithKeyboard: widget.hideWithKeyboard,
+      expandSuggestionsBox: widget.expandSuggestionsBox,
+      suggestionsBoxPadding: widget.suggestionsBoxPadding,
       constraints: widget.constraints,
       offset: widget.offset,
       scrollController: widget.scrollController,

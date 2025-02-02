@@ -118,6 +118,7 @@ class Floater extends StatefulWidget {
     required this.link,
     this.followWidth = true,
     this.followHeight = true,
+    this.suggestionsBoxPadding = EdgeInsets.zero,
     this.direction = AxisDirection.down,
     this.offset = Offset.zero,
     this.autoFlip = false,
@@ -138,6 +139,9 @@ class Floater extends StatefulWidget {
 
   /// Whether the floater should inherit the height of the target.
   final bool followHeight;
+
+  /// The padding of the floater from the target.
+  final EdgeInsets suggestionsBoxPadding;
 
   /// The desired direction of the floater.
   ///
@@ -307,8 +311,8 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
 
   (Alignment, Alignment) getDirectionAnchors(AxisDirection direction) {
     return switch (direction) {
-      AxisDirection.down => (Alignment.bottomCenter, Alignment.topCenter),
-      AxisDirection.up => (Alignment.topCenter, Alignment.bottomCenter),
+      AxisDirection.down => (Alignment.bottomLeft, Alignment.topLeft),
+      AxisDirection.up => (Alignment.topLeft, Alignment.bottomLeft),
       AxisDirection.left => (Alignment.centerLeft, Alignment.centerRight),
       AxisDirection.right => (Alignment.centerRight, Alignment.centerLeft),
     };
@@ -379,6 +383,10 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
             max(0, floaterOffset.dy),
           );
 
+          Offset baseOffset = widget.followWidth
+              ? Offset.zero
+              : Offset(-floaterOffset.dx, 0);
+
           EdgeInsets padding = viewPadding;
 
           AxisDirection direction = widget.direction;
@@ -431,6 +439,7 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
               ),
             );
           }
+
           if (widget.followHeight) {
             constraints = constraints.enforce(
               BoxConstraints(
@@ -444,13 +453,13 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
             link: widget.link.layerLink,
             offset: getDirectionOffset(
               direction,
-              Offset.zero,
+              baseOffset,
               widget.offset,
             ),
             targetAnchor: targetAnchor,
             followerAnchor: followerAnchor,
             child: Padding(
-              padding: padding,
+              padding: padding + widget.suggestionsBoxPadding,
               child: MediaQuery.removePadding(
                 context: context,
                 child: MediaQuery.removeViewInsets(

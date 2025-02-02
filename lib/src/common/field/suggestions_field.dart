@@ -27,6 +27,8 @@ class SuggestionsField<T> extends StatefulWidget {
     this.hideOnUnfocus = true,
     this.hideOnSelect = true,
     this.hideWithKeyboard = true,
+    this.expandSuggestionsBox = false,
+    this.suggestionsBoxPadding,
     this.constraints,
     this.offset,
     this.scrollController,
@@ -87,6 +89,13 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@endtemplate}
   final Offset? offset;
 
+  /// {@template flutter_typeahead.SuggestionsField.padding}
+  /// The padding of the suggestions box.
+  ///
+  /// Defaults to [EdgeInsets.zero].
+  /// {@endtemplate}
+  final EdgeInsets? suggestionsBoxPadding;
+
   /// {@template flutter_typeahead.SuggestionsField.autoFlipDirection}
   /// Whether the suggestions box should automatically flip direction if there's not enough space
   /// in the desired direction, but there is enough space in the opposite direction.
@@ -145,6 +154,13 @@ class SuggestionsField<T> extends StatefulWidget {
   /// Defaults to `true`.
   /// {@endtemplate}
   final bool hideWithKeyboard;
+
+  /// {@template flutter_typeahead.SuggestionsField.expand}
+  /// Whether the floater should inherit the width of the target.
+  ///
+  /// Defaults to `false`.
+  /// {@endtemplate}
+  final bool expandSuggestionsBox;
 
   /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
   final ScrollController? scrollController;
@@ -215,6 +231,8 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
           VerticalDirection.down => AxisDirection.down,
         },
         offset: widget.offset ?? const Offset(0, 5),
+        suggestionsBoxPadding: widget.suggestionsBoxPadding ?? EdgeInsets.zero,
+        followWidth: !widget.expandSuggestionsBox,
         followHeight: false,
         autoFlip: widget.autoFlipDirection,
         autoFlipHeight: widget.autoFlipMinHeight,

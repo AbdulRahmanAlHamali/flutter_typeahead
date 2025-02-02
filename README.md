@@ -134,6 +134,8 @@ TypeAheadField(
   },
   offset: Offset(0, 12),
   constraints: BoxConstraints(maxHeight: 500),
+  expandSuggestionsBox: true,
+  suggestionsBoxPadding: const EdgeInsets.symmetric(horizontal: 16),
 );
 ```
 
