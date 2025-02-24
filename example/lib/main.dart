@@ -20,21 +20,24 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialCupertinoFrame(
-      exampleBuilder: (context, controller, products, settings) =>
+      exampleBuilder: (context, controller, products, suggestions, settings) =>
           ExampleTypeAhead(
         controller: controller,
         products: products,
         settings: settings,
+        suggestions: suggestions,
       ),
       settingsBuilder: (context, controller, settings) => SettingsTypeAhead(
         controller: controller,
         settings: settings,
       ),
-      cupertinoExampleBuilder: (context, controller, products, settings) =>
-          CupertinoExampleTypeAhead(
+      cupertinoExampleBuilder:
+          (context, controller, products, suggestions, settings) =>
+              CupertinoExampleTypeAhead(
         controller: controller,
         products: products,
         settings: settings,
+        suggestions: suggestions,
       ),
       cupertinoSettingsBuilder: (context, controller, settings) =>
           CupertinoSettingsTypeAhead(
@@ -52,6 +55,7 @@ class ExampleTypeAhead extends StatelessWidget
     required this.controller,
     required this.products,
     required this.settings,
+    required this.suggestions,
   });
 
   @override
@@ -60,6 +64,8 @@ class ExampleTypeAhead extends StatelessWidget
   final ProductController products;
   @override
   final FieldSettings settings;
+
+  final SuggestionsController<Product> suggestions;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +80,7 @@ class ExampleTypeAhead extends StatelessWidget
               TypeAheadField<Product>(
                 direction: settings.direction.value,
                 controller: controller,
+                suggestionsController: suggestions,
                 builder: (context, controller, focusNode) => TextField(
                   controller: controller,
                   focusNode: focusNode,
@@ -112,6 +119,7 @@ class ExampleTypeAhead extends StatelessWidget
                 itemSeparatorBuilder: itemSeparatorBuilder,
                 listBuilder:
                     settings.gridLayout.value ? gridLayoutBuilder : null,
+                constrainWidth: settings.constrainWidth.value,
               ),
               Expanded(
                 child: Column(
@@ -175,6 +183,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
     required this.controller,
     required this.products,
     required this.settings,
+    required this.suggestions,
   });
 
   @override
@@ -183,6 +192,8 @@ class CupertinoExampleTypeAhead extends StatelessWidget
   final ProductController products;
   @override
   final FieldSettings settings;
+
+  final SuggestionsController<Product> suggestions;
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +207,8 @@ class CupertinoExampleTypeAhead extends StatelessWidget
             children: maybeReversed([
               CupertinoTypeAheadField<Product>(
                 direction: settings.direction.value,
+                controller: controller,
+                suggestionsController: suggestions,
                 builder: (context, controller, focusNode) => CupertinoTextField(
                   controller: controller,
                   focusNode: focusNode,
@@ -212,7 +225,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                   decoration: BoxDecoration(
                     color: CupertinoTheme.of(context)
                         .barBackgroundColor
-                        .withOpacity(1),
+                        .withAlpha(255),
                     border: Border.all(
                       color: CupertinoDynamicColor.resolve(
                         CupertinoColors.systemGrey4,
@@ -244,6 +257,7 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 itemSeparatorBuilder: itemSeparatorBuilder,
                 listBuilder:
                     settings.gridLayout.value ? gridLayoutBuilder : null,
+                constrainWidth: settings.constrainWidth.value,
               ),
               const SizedBox(height: 32),
               Padding(

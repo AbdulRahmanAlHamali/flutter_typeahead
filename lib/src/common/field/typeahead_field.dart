@@ -46,6 +46,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
     this.decorationBuilder,
     this.listBuilder,
     this.constraints,
+    this.constrainWidth = true,
     this.offset,
   });
 
@@ -69,6 +70,9 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
 
   /// {@macro flutter_typeahead.SuggestionsField.constraints}
   final BoxConstraints? constraints;
+
+  /// {@macro flutter_typeahead.SuggestionsField.constrainWidth}
+  final bool constrainWidth;
 
   /// {@macro flutter_typeahead.SuggestionsField.offset}
   final Offset? offset;
@@ -199,6 +203,7 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
       hideOnSelect: widget.hideOnSelect,
       hideWithKeyboard: widget.hideWithKeyboard,
       constraints: widget.constraints,
+      constrainWidth: widget.constrainWidth,
       offset: widget.offset,
       scrollController: widget.scrollController,
       decorationBuilder: (context, child) => TextFieldTapRegion(

@@ -77,6 +77,7 @@ class FieldSettings extends ChangeNotifier {
         direction,
         gridLayout,
         dividers,
+        constrainWidth,
         loadingDelay,
         retainOnLoading,
         debounce,
@@ -134,6 +135,13 @@ class FieldSettings extends ChangeNotifier {
     title: 'Dividers',
     value: true,
     icon: Icons.border_clear,
+  );
+
+  final ToggleFieldOption constrainWidth = ToggleFieldOption(
+    key: 'constrained',
+    title: 'Constrain Width',
+    value: true,
+    icon: Icons.filter_frames,
   );
 
   final ToggleFieldOption loadingDelay = ToggleFieldOption(

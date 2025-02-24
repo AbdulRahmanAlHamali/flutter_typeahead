@@ -105,7 +105,7 @@ abstract final class TypeAheadCupertinoDefaults {
   ) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: CupertinoTheme.of(context).barBackgroundColor.withOpacity(1),
+        color: CupertinoTheme.of(context).barBackgroundColor.withAlpha(255),
         border: Border.all(
           color: CupertinoDynamicColor.resolve(
             CupertinoColors.systemGrey4,

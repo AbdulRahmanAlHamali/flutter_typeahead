@@ -42,6 +42,7 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     DecorationBuilder? decorationBuilder,
     super.listBuilder,
     super.constraints,
+    super.constrainWidth,
     super.offset,
   }) : super(
           builder: builder ?? TypeAheadMaterialDefaults.builder,

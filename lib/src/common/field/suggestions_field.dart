@@ -28,6 +28,7 @@ class SuggestionsField<T> extends StatefulWidget {
     this.hideOnSelect = true,
     this.hideWithKeyboard = true,
     this.constraints,
+    this.constrainWidth = true,
     this.offset,
     this.scrollController,
     this.decorationBuilder,
@@ -79,8 +80,16 @@ class SuggestionsField<T> extends StatefulWidget {
   /// {@endtemplate}
   final BoxConstraints? constraints;
 
+  /// {@template flutter_typeahead.SuggestionsField.constrainWidth}
+  /// Whether the suggestions box should be constrained to the width of the child.
+  ///
+  /// Defaults to true.
+  /// {@endtemplate}
+  final bool constrainWidth;
+
   /// {@template flutter_typeahead.SuggestionsField.offset}
   /// The offset of the suggestions box.
+  /// The x value of this property will be applied symmetrically.
   /// The value is automatically flipped if the suggestions box is flipped.
   ///
   /// Defaults to `Offset(0, 5)`.
@@ -100,7 +109,7 @@ class SuggestionsField<T> extends StatefulWidget {
   final bool autoFlipDirection;
 
   /// {@template flutter_typeahead.SuggestionsField.autoFlipMinHeight}
-  /// The minimum height the suggesttions box can have before attempting to flip.
+  /// The minimum height the suggestions box can have before attempting to flip.
   ///
   /// Defaults to 64.
   /// {@endtemplate}
@@ -214,8 +223,16 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
           VerticalDirection.up => AxisDirection.up,
           VerticalDirection.down => AxisDirection.down,
         },
-        offset: widget.offset ?? const Offset(0, 5),
-        followHeight: false,
+        padding: EdgeInsets.only(
+          top: widget.offset?.dy ?? 5,
+          left: widget.offset?.dx ?? 0,
+          right: widget.offset?.dx ?? 0,
+        ),
+        anchor: FloaterAnchor.only(
+          left: widget.constrainWidth,
+          right: widget.constrainWidth,
+          bottom: false,
+        ),
         autoFlip: widget.autoFlipDirection,
         autoFlipHeight: widget.autoFlipMinHeight,
         builder: (context) {

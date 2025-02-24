@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_typeahead_example/options.dart';
 import 'package:flutter_typeahead_example/product.dart';
 
@@ -17,6 +18,7 @@ class MaterialCupertinoFrame extends StatefulWidget {
     BuildContext context,
     TextEditingController controller,
     ValueNotifier<Map<Product, int>> products,
+    SuggestionsController<Product> suggestions,
     FieldSettings settings,
   ) exampleBuilder;
 
@@ -30,6 +32,7 @@ class MaterialCupertinoFrame extends StatefulWidget {
     BuildContext context,
     TextEditingController controller,
     ValueNotifier<Map<Product, int>> products,
+    SuggestionsController<Product> suggestions,
     FieldSettings settings,
   ) cupertinoExampleBuilder;
 
@@ -47,6 +50,8 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
   final TextEditingController settingsController = TextEditingController();
   final TextEditingController exampleController = TextEditingController();
   final ProductController products = ValueNotifier<Map<Product, int>>({});
+  final SuggestionsController<Product> suggestions =
+      SuggestionsController<Product>();
   final FieldSettings settings = FieldSettings();
 
   @override
@@ -115,6 +120,7 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                         context,
                         exampleController,
                         products,
+                        suggestions,
                         settings,
                       ),
                       widget.settingsBuilder(
@@ -122,7 +128,18 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                         settingsController,
                         settings,
                       ),
-                    ],
+                    ]
+                        .map(
+                          (e) => Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: 800,
+                              ),
+                              child: e,
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
@@ -176,6 +193,7 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                             context,
                             exampleController,
                             products,
+                            suggestions,
                             settings,
                           ),
                           widget.cupertinoSettingsBuilder(
@@ -183,7 +201,18 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                             settingsController,
                             settings,
                           ),
-                        ],
+                        ]
+                            .map(
+                              (e) => Center(
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 800,
+                                  ),
+                                  child: e,
+                                ),
+                              ),
+                            )
+                            .toList(),
                       ),
                     ),
                   ),
