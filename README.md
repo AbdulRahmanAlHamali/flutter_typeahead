@@ -186,7 +186,7 @@ TypeAheadField(
     return FadeTransition(
       opacity: CurvedAnimation(
         parent: animation,
-        curve: Curves.fastOutSlowIn
+        curve: Curves.fastOutSlowIn,
       ),
       child: child,
     ),
