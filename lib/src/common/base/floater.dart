@@ -414,99 +414,43 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
     );
   }
 
-  Size getDirectionSize(
+  /// Returns the target and follower anchors for the given direction.
+  ///
+  /// Because it should be possible for the floater to overlap the target,
+  /// when negative padding is used, both anchors are at the start of the main axis.
+  /// Because it should be possible to shift the floater in the cross axis,
+  /// both anchors are at the center of the cross axis.
+  (Alignment, Alignment) getDirectionAnchors(
     AxisDirection direction,
-    Size space,
-    Offset offset,
-    Size size,
-    FloaterAnchor anchor,
   ) =>
       switch (direction) {
-        AxisDirection.down => Size(
-            space.width,
-            switch ((anchor.top, anchor.bottom)) {
-              (true, true) => size.height,
-              (true, false) => space.height - offset.dy.abs(),
-              (false, true) => size.height * 2,
-              (false, false) => space.height - offset.dy.abs(),
-            }),
-        AxisDirection.up => Size(
-            space.width,
-            switch ((anchor.top, anchor.bottom)) {
-              (true, true) => size.height,
-              (true, false) => offset.dy + size.height,
-              (false, true) => size.height * 2,
-              (false, false) => offset.dy + size.height,
-            }),
-        AxisDirection.left => Size(
-            switch ((anchor.top, anchor.bottom)) {
-              (true, true) => min(size.width, offset.dx),
-              (true, false) => offset.dx,
-              (false, true) => min(size.width * 2, offset.dx + size.width),
-              (false, false) => offset.dx + size.width,
-            },
-            space.height,
-          ),
-        AxisDirection.right => Size(
-            switch ((anchor.top, anchor.bottom)) {
-              (true, true) => min(size.width, space.width - offset.dx),
-              (true, false) => space.width - offset.dx,
-              (false, true) =>
-                min(size.width * 2, space.width - offset.dx + size.width),
-              (false, false) => space.width - offset.dx + size.width,
-            },
-            space.height,
-          ),
+        AxisDirection.down => (Alignment.topCenter, Alignment.topCenter),
+        AxisDirection.up => (Alignment.bottomCenter, Alignment.bottomCenter),
+        AxisDirection.left => (Alignment.centerRight, Alignment.centerRight),
+        AxisDirection.right => (Alignment.centerLeft, Alignment.centerLeft),
       };
 
-  EdgeInsets getDirectionInsets(
-    AxisDirection direction,
-    Size space,
-    Offset offset,
-    Size size,
-    FloaterAnchor anchor,
-  ) =>
-      switch (direction) {
-        AxisDirection.down => EdgeInsets.only(
-            top: (anchor.top ? size.height : 0) + offset.dy,
-            left: anchor.left ? offset.dx : 0,
-            right: anchor.right ? space.width - offset.dx - size.width : 0,
-          ),
-        AxisDirection.up => EdgeInsets.only(
-            bottom: (anchor.top ? size.height : 0) +
-                space.height -
-                offset.dy -
-                size.height,
-            left: anchor.left ? offset.dx : 0,
-            right: anchor.right ? space.width - offset.dx - size.width : 0,
-          ),
-        AxisDirection.left => EdgeInsets.only(
-            right: (anchor.top ? size.width : 0) +
-                space.width -
-                offset.dx -
-                size.width,
-            top: anchor.left ? offset.dy : 0,
-            bottom: anchor.right ? space.height - offset.dy - size.height : 0,
-          ),
-        AxisDirection.right => EdgeInsets.only(
-            left: (anchor.top ? size.width : 0) + offset.dx,
-            top: anchor.left ? offset.dy : 0,
-            bottom: anchor.right ? space.height - offset.dy - size.height : 0,
-          ),
-      }
-          .positive();
-
-  EdgeInsets getDirectionPadding(
+  /// Applies directionality to padding.
+  /// "Down" is the assumed default direction, and "left" is rotated clockwise.
+  /// "Up" and "right" are mirrored versions of "down" and "left". They are not rotated.
+  /// This is because this seems like a more natural output for a user,
+  /// even though the principle behind it does not appear obvious.
+  EdgeInsets mapPaddingDirection(
     AxisDirection direction,
     EdgeInsets padding,
   ) =>
       switch (direction) {
-        AxisDirection.down => padding,
+        AxisDirection.down => EdgeInsets.only(
+            top: padding.top,
+            bottom: padding.bottom,
+            left: padding.left,
+            right: padding.right,
+          ),
         AxisDirection.up => EdgeInsets.only(
             top: padding.bottom,
             bottom: padding.top,
-            left: padding.left,
             right: padding.right,
+            left: padding.left,
           ),
         AxisDirection.left => EdgeInsets.only(
             top: padding.left,
@@ -522,41 +466,60 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
           ),
       };
 
-  (Alignment, Alignment) getDirectionAnchors(
-    AxisDirection direction,
-  ) =>
-      switch (direction) {
-        AxisDirection.down => (Alignment.topCenter, Alignment.topCenter),
-        AxisDirection.up => (Alignment.bottomCenter, Alignment.bottomCenter),
-        AxisDirection.left => (Alignment.centerRight, Alignment.centerRight),
-        AxisDirection.right => (Alignment.centerLeft, Alignment.centerLeft),
-      };
-
-  Offset getDirectionOffset(
+  /// Calculates the padding needed to position the floater.
+  ///
+  /// In the main axis, the padding is the intrinsic extent of the target plus the input padding.
+  /// If the input padding is negative, it can overlap the target, but never more than the target's main axis extent.
+  /// The end padding of the main axis is ignored, as it cannot be enforced through padding.
+  ///
+  /// In the cross axis, the padding is the absolute input padding.
+  /// Negative padding is ignored, as it cannot be enforced through padding.
+  EdgeInsets getPositionPadding(
     AxisDirection direction,
     Size space,
     Offset offset,
     Size size,
-    FloaterAnchor anchor,
+    EdgeInsets padding,
+  ) =>
+      mapPaddingDirection(
+        direction,
+        padding + EdgeInsets.only(top: size.height),
+      ).positive();
+
+  /// Calculates the constraints for the floater based on the given direction.
+  ///
+  /// In the main axis, this is the vacant space left in the given direction,
+  /// when subtracting the target size, its offset, and the input padding.
+  ///
+  /// In the cross axis, this is the cross axis extent of the target,
+  /// minus the input padding.
+  BoxConstraints getPositionConstraints(
+    AxisDirection direction,
+    Size space,
+    Offset offset,
+    Size size,
+    EdgeInsets padding,
   ) =>
       switch (direction) {
-        AxisDirection.down => Offset(
-            ((space.width - offset.dx - size.width) - offset.dx) / 2,
-            -offset.dy,
+        AxisDirection.down => BoxConstraints(
+            maxWidth: size.width - padding.horizontal,
+            maxHeight:
+                space.height - offset.dy - size.height - padding.vertical,
           ),
-        AxisDirection.up => Offset(
-            ((space.width - offset.dx - size.width) - offset.dx) / 2,
-            space.height - offset.dy - size.height,
+        AxisDirection.up => BoxConstraints(
+            maxWidth: size.width - padding.horizontal,
+            maxHeight: offset.dy - padding.vertical,
           ),
-        AxisDirection.left => Offset(
-            offset.dx,
-            ((space.height - offset.dy - size.height) - offset.dy) / 2,
+        AxisDirection.left => BoxConstraints(
+            maxWidth: offset.dx - padding.horizontal,
+            maxHeight: size.height - padding.vertical,
           ),
-        AxisDirection.right => Offset(
-            -offset.dx,
-            ((space.height - offset.dy - size.height) - offset.dy) / 2,
+        AxisDirection.right => BoxConstraints(
+            maxWidth: space.width - offset.dx - size.width - padding.horizontal,
+            maxHeight: size.height - padding.vertical,
           ),
-      };
+      }
+          .normalize();
 
   @override
   Widget build(BuildContext context) {
@@ -571,83 +534,67 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
           final (size: space, offset: overlayOffset, :viewPadding) =
               getOverlayConstraints(Overlay.of(context));
 
-          Offset offset = linkOffset - overlayOffset;
+          final offset = linkOffset - overlayOffset;
           AxisDirection direction = widget.direction;
 
-          Size area = getDirectionSize(
+          final rawPadding = widget.padding;
+
+          final padding = getPositionPadding(
             direction,
             space,
             offset,
             size,
-            widget.anchor,
+            rawPadding,
           );
 
-          EdgeInsets insets;
+          final inputPadding = mapPaddingDirection(
+            widget.direction,
+            rawPadding,
+          );
 
-          if (widget.autoFlip && area.height < widget.autoFlipHeight) {
-            AxisDirection opposite = flipAxisDirection(widget.direction);
-            Size maybeArea = getDirectionSize(
+          BoxConstraints constraints = getPositionConstraints(
+            direction,
+            space,
+            offset,
+            size,
+            inputPadding,
+          );
+
+          if (widget.autoFlip &&
+              constraints.maxHeight < widget.autoFlipHeight) {
+            final opposite = flipAxisDirection(widget.direction);
+            final oppositeConstraints = getPositionConstraints(
               opposite,
               space,
               offset,
               size,
-              widget.anchor,
+              inputPadding,
             );
 
-            if (maybeArea.height > size.height) {
+            if (oppositeConstraints.maxHeight > constraints.maxHeight) {
               direction = opposite;
-              area = maybeArea;
+              constraints = oppositeConstraints;
             }
-
-            insets = getDirectionInsets(
-              direction,
-              space,
-              offset,
-              size,
-              widget.anchor,
-            );
-          } else {
-            insets = getDirectionInsets(
-              direction,
-              space,
-              offset,
-              size,
-              widget.anchor,
-            );
           }
 
-          area = Size(
-            max(0, area.width),
-            max(0, area.height),
-          );
+          if (size.height + offset.dy < 0) {
+            // For reasons unclear to us, the floater cannot exceed the size of the space,
+            // despite being able to be offset outside of it.
+            // This means, its not possible to have an "infinite" floater that continously expands,
+            // as the user scrolls the target out of view.
+            // To avoid weird behavior, we collapse the floater to zero size in this case.
+            // This is also the behavior that would occur if the widget was unmounted by a
+            // scrollview, as showWhenUnlinked is false.
+            constraints = BoxConstraints.tight(Size.zero);
+          }
 
           final (targetAnchor, followerAnchor) = getDirectionAnchors(direction);
-          // viewPadding = getDirectionPadding(direction, viewPadding);
-
-          final padding = (insets +
-                  getDirectionPadding(
-                    direction,
-                    widget.padding,
-                  ))
-              .positive();
-
-          BoxConstraints constraints = BoxConstraints(
-            maxWidth: area.width,
-            maxHeight: area.height,
-          );
 
           return CompositedTransformFollower(
             showWhenUnlinked: false,
             link: widget.link.layerLink,
             targetAnchor: targetAnchor,
             followerAnchor: followerAnchor,
-            offset: getDirectionOffset(
-              direction,
-              space,
-              offset,
-              size,
-              widget.anchor,
-            ),
             child: Padding(
               padding: padding,
               child: MediaQuery.removePadding(
@@ -658,8 +605,8 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
                     constraints: constraints,
                     child: _FloaterProvider(
                       data: FloaterData(
-                        size: area,
-                        offset: offset,
+                        size: constraints.biggest,
+                        offset: offset + Offset(padding.left, padding.top),
                         direction: widget.direction,
                         effectiveDirection: direction,
                       ),
