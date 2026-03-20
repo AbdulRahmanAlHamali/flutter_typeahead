@@ -284,7 +284,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             child: list,
           );
 
-          return list;
+          return ExcludeFocus(child: list);
         },
         child: FloaterTarget(
           link: link,
