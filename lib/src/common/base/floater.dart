@@ -243,6 +243,7 @@ class Floater extends StatefulWidget {
     this.padding = EdgeInsets.zero,
     this.autoFlip = false,
     this.autoFlipHeight = 100,
+    this.visible = true,
   });
 
   /// The widget below this widget in the tree.
@@ -284,6 +285,11 @@ class Floater extends StatefulWidget {
 
   /// The minimum height of the floater before it attempts to flip direction.
   final double autoFlipHeight;
+
+  /// Whether the floater overlay is visible.
+  ///
+  /// When false, the overlay is hidden and position updates are skipped.
+  final bool visible;
 
   /// Returns the [FloaterData] of the closest [Floater] ancestor, or null if there is no [Floater] ancestor.
   static FloaterData? maybeOf(BuildContext context) =>
@@ -327,6 +333,18 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
   }
 
   @override
+  void didUpdateWidget(covariant Floater oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.link != widget.link) {
+      oldWidget.link.removeListener(updateOverlay);
+      widget.link.addListener(updateOverlay);
+    }
+    if (widget.visible && !oldWidget.visible) {
+      updateOverlay();
+    }
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     maybeUpdateOverlay();
@@ -353,6 +371,7 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
   }
 
   void updateOverlay() {
+    if (!widget.visible) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       setState(() {});

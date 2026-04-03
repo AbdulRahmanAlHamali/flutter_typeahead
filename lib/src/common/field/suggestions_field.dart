@@ -209,12 +209,15 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
   Widget build(BuildContext context) {
     return SuggestionsControllerProvider<T>(
       controller: controller,
-      child: Floater(
-        link: link,
-        direction: switch (controller.direction) {
-          VerticalDirection.up => AxisDirection.up,
-          VerticalDirection.down => AxisDirection.down,
-        },
+      child: ListenableBuilder(
+        listenable: controller,
+        builder: (context, child) => Floater(
+          link: link,
+          visible: controller.isOpen,
+          direction: switch (controller.direction) {
+            VerticalDirection.up => AxisDirection.up,
+            VerticalDirection.down => AxisDirection.down,
+          },
         padding: EdgeInsets.only(
           top: widget.offset?.dy ?? 5,
           left: widget.offset?.dx ?? 0,
@@ -310,6 +313,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
