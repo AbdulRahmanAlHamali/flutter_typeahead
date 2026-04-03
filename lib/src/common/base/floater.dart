@@ -389,24 +389,22 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
 
   ({Size size, Offset offset, EdgeInsets viewPadding}) getOverlayConstraints(
       OverlayState overlay) {
-    final RenderBox overlayBox =
-        overlay.context.findRenderObject()! as RenderBox;
+    final RenderBox? overlayBox =
+        overlay.context.findRenderObject() as RenderBox?;
+
+    if (overlayBox == null || !overlayBox.hasSize) {
+      return (
+        size: Size.zero,
+        offset: Offset.zero,
+        viewPadding: EdgeInsets.zero,
+      );
+    }
 
     Offset overlayOffset = overlayBox.localToGlobal(Offset.zero);
     Size overlaySize = overlayBox.size;
 
     MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
     EdgeInsets viewPadding = mediaQuery.padding + mediaQuery.viewInsets;
-
-    overlayOffset = Offset(
-      overlayOffset.dx,
-      overlayOffset.dy,
-    );
-
-    overlaySize = Size(
-      overlaySize.width,
-      overlaySize.height,
-    );
 
     return (
       size: overlaySize,
