@@ -18,7 +18,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  pointer_interceptor: ^0.10.0
 
 dev_dependencies:
   flutter_test:
