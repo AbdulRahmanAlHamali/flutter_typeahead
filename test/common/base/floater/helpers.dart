@@ -15,6 +15,7 @@ Future<FloaterData?> pumpFloater(
   FloaterAnchor anchor = const FloaterAnchor.only(bottom: false),
   EdgeInsets padding = EdgeInsets.zero,
   EdgeInsets viewPadding = EdgeInsets.zero,
+  EdgeInsets viewInsets = EdgeInsets.zero,
   double targetLeft = defaultCell,
   double targetTop = defaultCell,
   double targetWidth = defaultCell,
@@ -29,7 +30,7 @@ Future<FloaterData?> pumpFloater(
     Directionality(
       textDirection: TextDirection.ltr,
       child: MediaQuery(
-        data: MediaQueryData(padding: viewPadding),
+        data: MediaQueryData(padding: viewPadding, viewInsets: viewInsets),
         child: Overlay(
           initialEntries: [
             OverlayEntry(

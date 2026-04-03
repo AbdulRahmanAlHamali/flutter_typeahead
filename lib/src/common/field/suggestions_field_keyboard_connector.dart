@@ -1,10 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_typeahead/src/common/base/connector_widget.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 
 /// Hides the suggestions box when the keyboard is closed.
-class SuggestionsFieldKeyboardConnector<T> extends StatelessWidget {
+class SuggestionsFieldKeyboardConnector<T> extends StatefulWidget {
   const SuggestionsFieldKeyboardConnector({
     super.key,
     required this.controller,
@@ -17,17 +15,43 @@ class SuggestionsFieldKeyboardConnector<T> extends StatelessWidget {
   final bool hideWithKeyboard;
 
   @override
-  Widget build(BuildContext context) {
-    return ConnectorWidget(
-      // [KeyboardVisibilityController] is a singleton.
-      value: KeyboardVisibilityController(),
-      connect: (value) => value.onChange.listen((visible) {
-        if (!visible && hideWithKeyboard) {
-          controller.close();
-        }
-      }),
-      disconnect: (value, key) => key?.cancel(),
-      child: child,
+  State<SuggestionsFieldKeyboardConnector<T>> createState() =>
+      _SuggestionsFieldKeyboardConnectorState<T>();
+}
+
+class _SuggestionsFieldKeyboardConnectorState<T>
+    extends State<SuggestionsFieldKeyboardConnector<T>>
+    with WidgetsBindingObserver {
+  bool _wasKeyboardVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _wasKeyboardVisible =
+        WidgetsBinding.instance.platformDispatcher.views.any(
+      (view) => view.viewInsets.bottom > 0,
     );
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final isKeyboardVisible =
+        WidgetsBinding.instance.platformDispatcher.views.any(
+      (view) => view.viewInsets.bottom > 0,
+    );
+    if (_wasKeyboardVisible && !isKeyboardVisible && widget.hideWithKeyboard) {
+      widget.controller.close();
+    }
+    _wasKeyboardVisible = isKeyboardVisible;
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

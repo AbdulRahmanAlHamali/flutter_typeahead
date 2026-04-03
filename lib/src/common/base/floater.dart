@@ -316,9 +316,7 @@ class Floater extends StatefulWidget {
 
 class _FloaterState extends State<Floater> with WidgetsBindingObserver {
   OverlayPortalController controller = OverlayPortalController();
-
   List<Object?>? dependencies;
-  EdgeInsets? insets;
 
   @override
   void initState() {
@@ -343,14 +341,7 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
 
   @override
   void didChangeMetrics() {
-    // When the keyboard is toggled, we need to update the floater,
-    // since its constraints might have changed.
-    OverlayState overlay = Overlay.of(context);
-    MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
-    if (insets != mediaQuery.viewInsets) {
-      insets = mediaQuery.viewInsets;
-      updateOverlay();
-    }
+    updateOverlay();
   }
 
   void maybeUpdateOverlay() {
@@ -386,7 +377,7 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
     Size overlaySize = overlayBox.size;
 
     MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
-    EdgeInsets viewPadding = mediaQuery.padding;
+    EdgeInsets viewPadding = mediaQuery.padding + mediaQuery.viewInsets;
 
     overlayOffset = Offset(
       overlayOffset.dx,

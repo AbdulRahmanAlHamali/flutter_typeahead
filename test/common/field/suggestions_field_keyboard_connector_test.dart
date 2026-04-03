@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_keyboard_connector.dart';
 
@@ -20,7 +19,8 @@ void main() {
 
     testWidgets('closes suggestions box when keyboard is hidden',
         (WidgetTester tester) async {
-      KeyboardVisibilityTesting.setVisibilityForTesting(true);
+      tester.view.viewInsets =
+          const FakeViewPadding(bottom: 300);
       controller.open();
 
       await tester.pumpWidget(
@@ -35,17 +35,20 @@ void main() {
         ),
       );
 
-      KeyboardVisibilityTesting.setVisibilityForTesting(false);
-
+      tester.view.viewInsets = FakeViewPadding.zero;
+      // Trigger didChangeMetrics by pumping after inset change.
       await tester.pump();
 
       expect(controller.isOpen, isFalse);
+
+      tester.view.resetViewInsets();
     });
 
     testWidgets(
         'does not close suggestions box when keyboard is hidden and hideOnUnfocus is false',
         (WidgetTester tester) async {
-      KeyboardVisibilityTesting.setVisibilityForTesting(true);
+      tester.view.viewInsets =
+          const FakeViewPadding(bottom: 300);
       controller.open();
 
       await tester.pumpWidget(
@@ -60,11 +63,12 @@ void main() {
         ),
       );
 
-      KeyboardVisibilityTesting.setVisibilityForTesting(false);
-
+      tester.view.viewInsets = FakeViewPadding.zero;
       await tester.pump();
 
       expect(controller.isOpen, isTrue);
+
+      tester.view.resetViewInsets();
     });
   });
 }

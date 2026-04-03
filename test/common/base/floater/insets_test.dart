@@ -7,12 +7,13 @@ import 'helpers.dart';
 // Same 900x900 grid with 300x300 cells as the position test.
 // Target at (300,300) size 300x300.
 //
-// View padding represents system UI areas (status bar, keyboard, etc.)
+// View padding represents system UI areas (status bar, notch, nav bar)
 // that shrink the available space before the floater rect is computed.
+// View insets represent completely obscured areas (keyboard).
 
 const _default = FloaterAnchor.only(bottom: false);
 
-// Each row: (description, direction, anchor, viewPadding, padding, expectedOffset, expectedSize)
+// Each row: (description, direction, anchor, viewPadding, viewInsets, padding, expectedOffset, expectedSize)
 //
 // Base cases without view padding for reference:
 //   down default → BC: offset=(300,600), size=(300,300)
@@ -24,14 +25,16 @@ final _cases = <(
   FloaterAnchor,
   EdgeInsets,
   EdgeInsets,
+  EdgeInsets,
   Offset,
   Size
 )>[
-  // Keyboard (bottom inset) shrinks downward floater
+  // Keyboard (viewInsets) shrinks downward floater
   (
     'keyboard shrinks down floater',
     AxisDirection.down,
     _default,
+    EdgeInsets.zero,
     const EdgeInsets.only(bottom: 100),
     EdgeInsets.zero,
     const Offset(300, 600),
@@ -43,18 +46,20 @@ final _cases = <(
     'keyboard does not affect up floater',
     AxisDirection.up,
     _default,
+    EdgeInsets.zero,
     const EdgeInsets.only(bottom: 100),
     EdgeInsets.zero,
     const Offset(300, 0),
     const Size(300, 300)
   ),
 
-  // Status bar (top inset) shrinks upward floater
+  // Status bar (top padding) shrinks upward floater
   (
     'status bar shrinks up floater',
     AxisDirection.up,
     _default,
     const EdgeInsets.only(top: 50),
+    EdgeInsets.zero,
     EdgeInsets.zero,
     const Offset(300, 50),
     const Size(300, 250)
@@ -67,6 +72,7 @@ final _cases = <(
     _default,
     const EdgeInsets.only(top: 50),
     EdgeInsets.zero,
+    EdgeInsets.zero,
     const Offset(300, 600),
     const Size(300, 300)
   ),
@@ -77,6 +83,7 @@ final _cases = <(
     AxisDirection.down,
     const FloaterAnchor.only(bottom: false, left: false, right: false),
     const EdgeInsets.only(left: 50),
+    EdgeInsets.zero,
     EdgeInsets.zero,
     const Offset(50, 600),
     const Size(850, 300)
@@ -89,15 +96,17 @@ final _cases = <(
     _default,
     const EdgeInsets.only(right: 80),
     EdgeInsets.zero,
+    EdgeInsets.zero,
     const Offset(600, 300),
     const Size(220, 300)
   ),
 
-  // View padding + floater padding stack
+  // View insets + floater padding stack
   (
     'keyboard + padding.top stack on down floater',
     AxisDirection.down,
     _default,
+    EdgeInsets.zero,
     const EdgeInsets.only(bottom: 100),
     const EdgeInsets.only(top: 10),
     const Offset(300, 610),
@@ -111,6 +120,7 @@ void main() {
         direction,
         anchor,
         viewPadding,
+        viewInsets,
         padding,
         expectedOffset,
         expectedSize
@@ -128,6 +138,7 @@ void main() {
         direction: direction,
         anchor: anchor,
         viewPadding: viewPadding,
+        viewInsets: viewInsets,
         padding: padding,
       );
 
