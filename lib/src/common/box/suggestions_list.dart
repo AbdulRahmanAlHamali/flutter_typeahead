@@ -35,8 +35,6 @@ class SuggestionsList<T> extends StatefulWidget {
   /// {@template flutter_typeahead.SuggestionsList.hideKeyboardOnDrag}
   /// Whether the keyboard should be hidden when the user scrolls the suggestions list.
   ///
-  /// Cannot be used together with [hideWithKeyboard].
-  ///
   /// Defaults to `false`.
   /// {@endtemplate}
   final bool? hideKeyboardOnDrag;

@@ -28,7 +28,6 @@ class SettingsTypeAhead extends StatelessWidget
           child: TypeAheadField<FieldOption>(
             direction: settings.direction.value,
             hideOnUnfocus: false,
-            hideWithKeyboard: false,
             hideOnSelect: false,
             controller: controller,
             builder: (context, controller, focusNode) => TextField(
@@ -121,7 +120,6 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
           child: CupertinoTypeAheadField<FieldOption>(
             direction: settings.direction.value,
             hideOnUnfocus: false,
-            hideWithKeyboard: false,
             hideOnSelect: false,
             controller: controller,
             builder: (context, controller, focusNode) => CupertinoTextField(

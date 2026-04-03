@@ -6,7 +6,6 @@ import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 import 'package:flutter_typeahead/src/common/base/types.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_focus_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_highlight_connector.dart';
-import 'package:flutter_typeahead/src/common/field/suggestions_field_keyboard_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_box_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_select_connector.dart';
 import 'package:flutter_typeahead/src/common/field/suggestions_field_tap_connector.dart';
@@ -27,7 +26,6 @@ class SuggestionsField<T> extends StatefulWidget {
     this.showOnFocus = true,
     this.hideOnUnfocus = true,
     this.hideOnSelect = true,
-    this.hideWithKeyboard = true,
     this.constraints,
     this.constrainWidth = true,
     this.offset,
@@ -148,13 +146,6 @@ class SuggestionsField<T> extends StatefulWidget {
   /// Defaults to `true`.
   /// {@endtemplate}
   final bool hideOnSelect;
-
-  /// {@template flutter_typeahead.SuggestionsField.hideWithKeyboard}
-  /// Whether the suggestions box should be hidden when the keyboard is closed.
-  ///
-  /// Defaults to `true`.
-  /// {@endtemplate}
-  final bool hideWithKeyboard;
 
   /// {@macro flutter_typeahead.SuggestionsBox.scrollController}
   final ScrollController? scrollController;
@@ -304,17 +295,13 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
                     controller: controller,
                     showOnFocus: widget.showOnFocus,
                     hideOnUnfocus: widget.hideOnUnfocus,
-                    child: SuggestionsFieldKeyboardConnector<T>(
+                    child: SuggestionsFieldTapConnector<T>(
                       controller: controller,
-                      hideWithKeyboard: widget.hideWithKeyboard,
-                      child: SuggestionsFieldTapConnector<T>(
+                      child: SuggestionsFieldSelectConnector<T>(
                         controller: controller,
-                        child: SuggestionsFieldSelectConnector<T>(
-                          controller: controller,
-                          hideOnSelect: widget.hideOnSelect,
-                          onSelected: widget.onSelected,
-                          child: widget.child,
-                        ),
+                        hideOnSelect: widget.hideOnSelect,
+                        onSelected: widget.onSelected,
+                        child: widget.child,
                       ),
                     ),
                   ),

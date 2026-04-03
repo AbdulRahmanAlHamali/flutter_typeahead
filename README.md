@@ -167,7 +167,6 @@ You can do so with the following parameters:
 - `hideOnError`: Hide the suggestions box when there is an error retrieving suggestions. This ignores the `errorBuilder`.
 - `hideOnSelect`: Hide the suggestions box when a suggestion is selected. `True` by default.
 - `hideOnUnfocus`: Hide the suggestions box when the `TextField` loses focus. `True` by default.
-- `hideWithKeyboard`: Hide the suggestions box when the keyboard is hidden. `True` by default.
 
 You can also very generally hide the suggestions box by returning `null` from the `suggestionsCallback`.
 This is different from returning an empty list, which will show the empty widget.
@@ -353,6 +352,9 @@ Additionally, various changes have been made to the API surface to make the pack
   - `onSuggestionSelected` -> `onSelected`
   - `suggestionsBoxVerticalOffset` -> `offset` (now also includes horizontal offset)
   - `hideSuggestionsOnKeyboardHide` -> `hideWithKeyboard`
+    Note: In v4, `hideSuggestionsOnKeyboardHide` also controlled whether the box closed on focus loss.
+    In v5, this is now two separate flags. If you were using `hideSuggestionsOnKeyboardHide: false`,
+    you will also need to set `hideOnUnfocus: false` to get the same behavior.
   - `keepSuggestionsOnSuggestionSelected` -> `hideOnSelect` (inverted)
   - `keepSuggestionsOnLoading`-> `retainOnLoading`
 - Some parameters have been removed:
