@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_typeahead_example/debug.dart';
 import 'package:flutter_typeahead_example/options.dart';
 
 class SettingsTypeAhead extends StatelessWidget
@@ -40,6 +41,12 @@ class SettingsTypeAhead extends StatelessWidget
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 hintText: hintText,
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.bug_report),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const DebugScreen()),
+                  ),
+                ),
               ),
             ),
             itemBuilder: (context, setting) {

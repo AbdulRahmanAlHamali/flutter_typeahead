@@ -116,30 +116,33 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                   onTap: () => primaryFocus?.unfocus(),
                   child: TabBarView(
                     children: [
-                      widget.exampleBuilder(
-                        context,
-                        exampleController,
-                        products,
-                        suggestions,
-                        settings,
-                      ),
-                      widget.settingsBuilder(
-                        context,
-                        settingsController,
-                        settings,
-                      ),
-                    ]
-                        .map(
-                          (e) => Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                maxWidth: 800,
-                              ),
-                              child: e,
+                      _OverlayTab(
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 800),
+                            child: widget.exampleBuilder(
+                              context,
+                              exampleController,
+                              products,
+                              suggestions,
+                              settings,
                             ),
                           ),
-                        )
-                        .toList(),
+                        ),
+                      ),
+                      _OverlayTab(
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 800),
+                            child: widget.settingsBuilder(
+                              context,
+                              settingsController,
+                              settings,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -189,30 +192,23 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                       onTap: () => primaryFocus?.unfocus(),
                       child: TabBarView(
                         children: [
-                          widget.cupertinoExampleBuilder(
-                            context,
-                            exampleController,
-                            products,
-                            suggestions,
-                            settings,
+                          _OverlayTab(
+                            child: widget.cupertinoExampleBuilder(
+                              context,
+                              exampleController,
+                              products,
+                              suggestions,
+                              settings,
+                            ),
                           ),
-                          widget.cupertinoSettingsBuilder(
-                            context,
-                            settingsController,
-                            settings,
+                          _OverlayTab(
+                            child: widget.cupertinoSettingsBuilder(
+                              context,
+                              settingsController,
+                              settings,
+                            ),
                           ),
-                        ]
-                            .map(
-                              (e) => Center(
-                                child: ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 800,
-                                  ),
-                                  child: e,
-                                ),
-                              ),
-                            )
-                            .toList(),
+                        ],
                       ),
                     ),
                   ),
@@ -223,5 +219,45 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
         },
       ),
     );
+  }
+}
+
+class _OverlayTab extends StatefulWidget {
+  const _OverlayTab({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_OverlayTab> createState() => _OverlayTabState();
+}
+
+class _OverlayTabState extends State<_OverlayTab> {
+  late final OverlayEntry _entry;
+
+  @override
+  void initState() {
+    super.initState();
+    _entry = OverlayEntry(builder: _build);
+  }
+
+  @override
+  void didUpdateWidget(covariant _OverlayTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _entry.markNeedsBuild();
+  }
+
+  @override
+  void dispose() {
+    _entry.dispose();
+    super.dispose();
+  }
+
+  Widget _build(BuildContext context) {
+    return widget.child;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Overlay(initialEntries: [_entry]);
   }
 }

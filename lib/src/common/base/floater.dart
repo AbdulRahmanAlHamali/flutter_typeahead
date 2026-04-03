@@ -229,15 +229,6 @@ class FloaterAnchor {
   }
 }
 
-extension EdgeInsetsPositive on EdgeInsets {
-  EdgeInsets positive() => EdgeInsets.only(
-        top: max(0, top),
-        bottom: max(0, bottom),
-        left: max(0, left),
-        right: max(0, right),
-      );
-}
-
 /// A widget that can float next to a [FloaterTarget], inheriting its size.
 ///
 /// Floaters use the surrounding [Overlay] to position themselves.
@@ -414,31 +405,131 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
     );
   }
 
-  /// Returns the target and follower anchors for the given direction.
+  /// Computes the floater's bounding rectangle in screen coordinates.
   ///
-  /// Because it should be possible for the floater to overlap the target,
-  /// when negative padding is used, both anchors are at the start of the main axis.
-  /// Because it should be possible to shift the floater in the cross axis,
-  /// both anchors are at the center of the cross axis.
-  (Alignment, Alignment) getDirectionAnchors(
+  /// The anchor booleans are direction-relative:
+  ///   top = main axis start (near target)
+  ///   bottom = main axis end (far from target)
+  ///   left = cross axis start
+  ///   right = cross axis end
+  ///
+  /// Main axis states:
+  ///   T,F → home side only (standard)
+  ///   T,T → target overlap
+  ///   F,F → expand through target (target + home)
+  ///   F,T → shifted to opposite side (opposite + target)
+  ///
+  /// Cross axis states:
+  ///   T,T → target extent only
+  ///   T,F → extend toward cross end
+  ///   F,T → extend toward cross start
+  ///   F,F → full cross extent
+  Rect getFloaterRect(
     AxisDirection direction,
-  ) =>
-      switch (direction) {
-        AxisDirection.down => (Alignment.topCenter, Alignment.topCenter),
-        AxisDirection.up => (Alignment.bottomCenter, Alignment.bottomCenter),
-        AxisDirection.left => (Alignment.centerRight, Alignment.centerRight),
-        AxisDirection.right => (Alignment.centerLeft, Alignment.centerLeft),
-      };
+    Size space,
+    Offset offset,
+    Size size,
+    FloaterAnchor anchor,
+  ) {
+    final targetRect = offset & size;
 
-  /// Applies directionality to padding.
-  /// "Down" is the assumed default direction, and "left" is rotated clockwise.
-  /// "Up" and "right" are mirrored versions of "down" and "left". They are not rotated.
-  /// This is because this seems like a more natural output for a user,
-  /// even though the principle behind it does not appear obvious.
-  EdgeInsets mapPaddingDirection(
+    // Main axis: determine the vertical (or horizontal) span
+    final (double mainStart, double mainEnd) = _mainAxisSpan(
+      direction,
+      space,
+      targetRect,
+      anchor.top,
+      anchor.bottom,
+    );
+
+    // Cross axis: determine the horizontal (or vertical) span
+    final (double crossStart, double crossEnd) = _crossAxisSpan(
+      direction,
+      space,
+      targetRect,
+      anchor.left,
+      anchor.right,
+    );
+
+    final bool mainIsVertical =
+        direction == AxisDirection.down || direction == AxisDirection.up;
+
+    if (mainIsVertical) {
+      return Rect.fromLTRB(crossStart, mainStart, crossEnd, mainEnd);
+    } else {
+      return Rect.fromLTRB(mainStart, crossStart, mainEnd, crossEnd);
+    }
+  }
+
+  /// Computes the main-axis span (start, end) in screen coordinates.
+  (double, double) _mainAxisSpan(
     AxisDirection direction,
-    EdgeInsets padding,
-  ) =>
+    Size space,
+    Rect target,
+    bool anchorTop,
+    bool anchorBottom,
+  ) {
+    // "home" = the region on the opening side of the target
+    // "opposite" = the region on the far side from the opening direction
+    // "target" = the target's own extent
+
+    final bool mainIsVertical =
+        direction == AxisDirection.down || direction == AxisDirection.up;
+
+    final double spaceEnd = mainIsVertical ? space.height : space.width;
+    final double targetStart = mainIsVertical ? target.top : target.left;
+    final double targetEnd = mainIsVertical ? target.bottom : target.right;
+
+    // home and opposite depend on which way we're opening
+    final bool opensPositive =
+        direction == AxisDirection.down || direction == AxisDirection.right;
+
+    final double homeStart = opensPositive ? targetEnd : 0;
+    final double homeEnd = opensPositive ? spaceEnd : targetStart;
+    final double oppositeStart = opensPositive ? 0 : targetEnd;
+    final double oppositeEnd = opensPositive ? targetStart : spaceEnd;
+
+    if (anchorTop && !anchorBottom) {
+      // Standard: home side only
+      return (homeStart, homeEnd);
+    } else if (anchorTop && anchorBottom) {
+      // Overlap target
+      return (targetStart, targetEnd);
+    } else if (!anchorTop && !anchorBottom) {
+      // Expand through target (target + home)
+      return (min(targetStart, homeStart), max(targetEnd, homeEnd));
+    } else {
+      // Shifted opposite (opposite + target)
+      return (min(oppositeStart, targetStart), max(oppositeEnd, targetEnd));
+    }
+  }
+
+  /// Computes the cross-axis span (start, end) in screen coordinates.
+  (double, double) _crossAxisSpan(
+    AxisDirection direction,
+    Size space,
+    Rect target,
+    bool anchorLeft,
+    bool anchorRight,
+  ) {
+    final bool mainIsVertical =
+        direction == AxisDirection.down || direction == AxisDirection.up;
+
+    final double spaceEnd = mainIsVertical ? space.width : space.height;
+    final double targetStart = mainIsVertical ? target.left : target.top;
+    final double targetEnd = mainIsVertical ? target.right : target.bottom;
+
+    final double start = anchorLeft ? targetStart : 0;
+    final double end = anchorRight ? targetEnd : spaceEnd;
+
+    return (start, end);
+  }
+
+  /// Maps direction-relative padding to screen-coordinate EdgeInsets.
+  ///
+  /// Direction-relative: top=main start, bottom=main end, left=cross start, right=cross end.
+  /// Screen coordinates: top/bottom/left/right are absolute.
+  EdgeInsets mapPaddingToScreen(AxisDirection direction, EdgeInsets padding) =>
       switch (direction) {
         AxisDirection.down => EdgeInsets.only(
             top: padding.top,
@@ -447,79 +538,34 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
             right: padding.right,
           ),
         AxisDirection.up => EdgeInsets.only(
-            top: padding.bottom,
             bottom: padding.top,
-            right: padding.right,
+            top: padding.bottom,
             left: padding.left,
+            right: padding.right,
           ),
         AxisDirection.left => EdgeInsets.only(
-            top: padding.left,
-            bottom: padding.right,
             right: padding.top,
             left: padding.bottom,
-          ),
-        AxisDirection.right => EdgeInsets.only(
             top: padding.left,
             bottom: padding.right,
-            right: padding.bottom,
+          ),
+        AxisDirection.right => EdgeInsets.only(
             left: padding.top,
+            right: padding.bottom,
+            top: padding.left,
+            bottom: padding.right,
           ),
       };
 
-  /// Calculates the padding needed to position the floater.
-  ///
-  /// In the main axis, the padding is the intrinsic extent of the target plus the input padding.
-  /// If the input padding is negative, it can overlap the target, but never more than the target's main axis extent.
-  /// The end padding of the main axis is ignored, as it cannot be enforced through padding.
-  ///
-  /// In the cross axis, the padding is the absolute input padding.
-  /// Negative padding is ignored, as it cannot be enforced through padding.
-  EdgeInsets getPositionPadding(
-    AxisDirection direction,
-    Size space,
-    Offset offset,
-    Size size,
-    EdgeInsets padding,
-  ) =>
-      mapPaddingDirection(
-        direction,
-        padding + EdgeInsets.only(top: size.height),
-      ).positive();
-
-  /// Calculates the constraints for the floater based on the given direction.
-  ///
-  /// In the main axis, this is the vacant space left in the given direction,
-  /// when subtracting the target size, its offset, and the input padding.
-  ///
-  /// In the cross axis, this is the cross axis extent of the target,
-  /// minus the input padding.
-  BoxConstraints getPositionConstraints(
-    AxisDirection direction,
-    Size space,
-    Offset offset,
-    Size size,
-    EdgeInsets padding,
-  ) =>
-      switch (direction) {
-        AxisDirection.down => BoxConstraints(
-            maxWidth: size.width - padding.horizontal,
-            maxHeight:
-                space.height - offset.dy - size.height - padding.vertical,
-          ),
-        AxisDirection.up => BoxConstraints(
-            maxWidth: size.width - padding.horizontal,
-            maxHeight: offset.dy - padding.vertical,
-          ),
-        AxisDirection.left => BoxConstraints(
-            maxWidth: offset.dx - padding.horizontal,
-            maxHeight: size.height - padding.vertical,
-          ),
-        AxisDirection.right => BoxConstraints(
-            maxWidth: space.width - offset.dx - size.width - padding.horizontal,
-            maxHeight: size.height - padding.vertical,
-          ),
-      }
-          .normalize();
+  /// Shrinks a rect by the given insets, clamping to zero size.
+  Rect deflateRect(Rect rect, EdgeInsets insets) {
+    return Rect.fromLTRB(
+      rect.left + insets.left,
+      rect.top + insets.top,
+      max(rect.left + insets.left, rect.right - insets.right),
+      max(rect.top + insets.top, rect.bottom - insets.bottom),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -530,83 +576,107 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
         builder: (context) {
           final (size: size, offset: linkOffset) = widget.link.value;
 
-          // TODO: use viewPadding
-          final (size: space, offset: overlayOffset, :viewPadding) =
+          final (size: overlaySize, offset: overlayOffset, :viewPadding) =
               getOverlayConstraints(Overlay.of(context));
 
           final offset = linkOffset - overlayOffset;
+
+          if (offset.dx.isNaN || offset.dy.isNaN) {
+            return const SizedBox.shrink();
+          }
+
+          final space = Size(
+            max(0, overlaySize.width - viewPadding.horizontal),
+            max(0, overlaySize.height - viewPadding.vertical),
+          );
+          final spaceOffset = Offset(
+            offset.dx - viewPadding.left,
+            offset.dy - viewPadding.top,
+          );
+
           AxisDirection direction = widget.direction;
 
-          final rawPadding = widget.padding;
-
-          final padding = getPositionPadding(
+          Rect floaterRect = getFloaterRect(
             direction,
             space,
-            offset,
+            spaceOffset,
             size,
-            rawPadding,
+            widget.anchor,
           );
 
-          final inputPadding = mapPaddingDirection(
-            widget.direction,
-            rawPadding,
-          );
+          floaterRect =
+              floaterRect.shift(Offset(viewPadding.left, viewPadding.top));
 
-          BoxConstraints constraints = getPositionConstraints(
-            direction,
-            space,
-            offset,
-            size,
-            inputPadding,
-          );
+          final screenPadding = mapPaddingToScreen(direction, widget.padding);
+          floaterRect = deflateRect(floaterRect, screenPadding);
 
-          if (widget.autoFlip &&
-              constraints.maxHeight < widget.autoFlipHeight) {
-            final opposite = flipAxisDirection(widget.direction);
-            final oppositeConstraints = getPositionConstraints(
-              opposite,
-              space,
-              offset,
-              size,
-              inputPadding,
-            );
+          if (widget.autoFlip) {
+            final mainSize =
+                direction == AxisDirection.down || direction == AxisDirection.up
+                    ? floaterRect.height
+                    : floaterRect.width;
 
-            if (oppositeConstraints.maxHeight > constraints.maxHeight) {
-              direction = opposite;
-              constraints = oppositeConstraints;
+            if (mainSize < widget.autoFlipHeight) {
+              final opposite = flipAxisDirection(widget.direction);
+              var flippedRect = getFloaterRect(
+                opposite,
+                space,
+                spaceOffset,
+                size,
+                widget.anchor,
+              );
+              flippedRect =
+                  flippedRect.shift(Offset(viewPadding.left, viewPadding.top));
+              flippedRect = deflateRect(
+                  flippedRect, mapPaddingToScreen(opposite, widget.padding));
+
+              final flippedMainSize =
+                  opposite == AxisDirection.down || opposite == AxisDirection.up
+                      ? flippedRect.height
+                      : flippedRect.width;
+
+              if (flippedMainSize > mainSize) {
+                direction = opposite;
+                floaterRect = flippedRect;
+              }
             }
           }
 
-          if (size.height + offset.dy < 0) {
-            // For reasons unclear to us, the floater cannot exceed the size of the space,
-            // despite being able to be offset outside of it.
-            // This means, its not possible to have an "infinite" floater that continously expands,
-            // as the user scrolls the target out of view.
-            // To avoid weird behavior, we collapse the floater to zero size in this case.
-            // This is also the behavior that would occur if the widget was unmounted by a
-            // scrollview, as showWhenUnlinked is false.
-            constraints = BoxConstraints.tight(Size.zero);
-          }
+          final floaterSize = floaterRect.size;
+          final floaterOffset = floaterRect.topLeft - offset;
 
-          final (targetAnchor, followerAnchor) = getDirectionAnchors(direction);
+          final overlayWidth = overlaySize.width;
+          final overlayHeight = overlaySize.height;
 
           return CompositedTransformFollower(
             showWhenUnlinked: false,
             link: widget.link.layerLink,
-            targetAnchor: targetAnchor,
-            followerAnchor: followerAnchor,
+            targetAnchor: Alignment.topLeft,
+            followerAnchor: Alignment.topLeft,
+            offset: floaterOffset,
             child: Padding(
-              padding: padding,
+              padding: EdgeInsets.only(
+                right: max(0, overlayWidth - floaterSize.width),
+                bottom: max(0, overlayHeight - floaterSize.height),
+              ),
               child: MediaQuery.removePadding(
                 context: context,
                 child: Align(
-                  alignment: followerAnchor,
+                  alignment: switch (direction) {
+                    AxisDirection.down => Alignment.topLeft,
+                    AxisDirection.up => Alignment.bottomLeft,
+                    AxisDirection.left => Alignment.topRight,
+                    AxisDirection.right => Alignment.topLeft,
+                  },
                   child: ConstrainedBox(
-                    constraints: constraints,
+                    constraints: BoxConstraints(
+                      maxWidth: floaterSize.width,
+                      maxHeight: floaterSize.height,
+                    ),
                     child: _FloaterProvider(
                       data: FloaterData(
-                        size: constraints.biggest,
-                        offset: offset + Offset(padding.left, padding.top),
+                        size: floaterSize,
+                        offset: floaterRect.topLeft,
                         direction: widget.direction,
                         effectiveDirection: direction,
                       ),

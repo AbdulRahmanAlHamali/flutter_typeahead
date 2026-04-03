@@ -290,6 +290,45 @@ If you want to force the suggestions to update, you can use the `SuggestionsCont
 mySuggestionsController.refresh();
 ```
 
+### My suggestions box grows while scrolling, then disappears and reappears
+
+The suggestions box uses the overlay to position itself relative to the text field.
+Its available size is based on the remaining screen space, which changes as you scroll.
+If the scrollable virtualizes its children (removing offscreen widgets from the tree),
+the text field gets unmounted and the suggestions box disappears.
+
+To fix this:
+
+1. Ensure the scrollable keeps the TypeAheadField in the tree while scrolling.
+   Use a non-virtualizing scrollable like `SingleChildScrollView` with a `Column`.
+   Note that `ListView` (even with `shrinkWrap: true`) still culls offscreen children.
+
+2. Constrain the maximum height of the suggestions box with `constraints: BoxConstraints(maxHeight: 200)` so it doesn't grow with available space.
+
+### My suggestions box overlaps with other pages in a PageView
+
+When the TypeAheadField is inside a `PageView` or `TabBarView` with `constrainWidth: false`,
+the suggestions box extends to the full overlay width, which can overlap adjacent pages.
+
+To fix this, wrap each page in its own `Overlay`:
+
+```dart
+PageView(
+  children: [
+    Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (context) => MyPageWithTypeAhead(),
+        ),
+      ],
+    ),
+    // ...
+  ],
+)
+```
+
+This scopes the suggestions box to the page's own overlay, so it slides out naturally with the page.
+
 ## Migrations
 
 ### From 4.x to 5.x
