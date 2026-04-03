@@ -88,7 +88,7 @@ abstract final class TypeAheadCupertinoDefaults {
   /// A Wrapper around the suggestions box of a CupertinoTypeAheadField.
   /// Adds various Cupertino specific decorations.
   static SuggestionsItemBuilder<Widget> wrapperBuilder(
-    DecorationBuilder? builder,
+    SuggestionsDecorationBuilder? builder,
   ) {
     return (context, child) {
       return DefaultTextStyle(

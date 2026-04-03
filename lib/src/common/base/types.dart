@@ -23,20 +23,20 @@ typedef SuggestionsErrorBuilder = Widget Function(
 /// Builds the text field of the suggestions field.
 ///
 /// Both the [controller] and [focusNode] must be passed to the text field.
-typedef TextFieldBuilder = Widget Function(
+typedef SuggestionsFieldBuilder = Widget Function(
   BuildContext context,
   TextEditingController controller,
   FocusNode focusNode,
 );
 
 /// Builds the decoration of the suggestions box.
-typedef DecorationBuilder = Widget Function(
+typedef SuggestionsDecorationBuilder = Widget Function(
   BuildContext context,
   Widget child,
 );
 
 /// Builds the animation for opening and closing the suggestions box.
-typedef AnimationTransitionBuilder = Widget Function(
+typedef SuggestionsAnimationBuilder = Widget Function(
   BuildContext context,
   Animation<double> animation,
   Widget child,
@@ -45,7 +45,7 @@ typedef AnimationTransitionBuilder = Widget Function(
 /// Builds the list of suggestions in the suggestions box.
 ///
 /// [children] is the list of suggestions to display built by [itemBuilder].
-typedef ListBuilder = Widget Function(
+typedef SuggestionsListBuilder = Widget Function(
   BuildContext context,
   List<Widget> children,
 );

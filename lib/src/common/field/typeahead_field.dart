@@ -50,7 +50,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   });
 
   /// Builds the text field that will be used to search for the suggestions.
-  final TextFieldBuilder builder;
+  final SuggestionsFieldBuilder builder;
 
   /// {@macro flutter_typeahead.SuggestionsSearch.textEditingController}
   final TextEditingController? controller;
@@ -95,7 +95,7 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   final ScrollController? scrollController;
 
   /// {@macro flutter_typeahead.SuggestionsBox.transitionBuilder}
-  final AnimationTransitionBuilder? transitionBuilder;
+  final SuggestionsAnimationBuilder? transitionBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsBox.animationDuration}
   final Duration? animationDuration;
@@ -134,10 +134,10 @@ abstract class RawTypeAheadField<T> extends StatefulWidget {
   final IndexedWidgetBuilder? itemSeparatorBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsBox.decorationBuilder}
-  final DecorationBuilder? decorationBuilder;
+  final SuggestionsDecorationBuilder? decorationBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsList.listBuilder}
-  final ListBuilder? listBuilder;
+  final SuggestionsListBuilder? listBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsSearch.debounce}
   final Duration? debounceDuration;

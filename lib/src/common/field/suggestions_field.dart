@@ -151,10 +151,10 @@ class SuggestionsField<T> extends StatefulWidget {
   final ScrollController? scrollController;
 
   /// {@macro flutter_typeahead.SuggestionsBox.decorationBuilder}
-  final DecorationBuilder? decorationBuilder;
+  final SuggestionsDecorationBuilder? decorationBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsBox.transitionBuilder}
-  final AnimationTransitionBuilder? transitionBuilder;
+  final SuggestionsAnimationBuilder? transitionBuilder;
 
   /// {@macro flutter_typeahead.SuggestionsBox.animationDuration}
   final Duration? animationDuration;

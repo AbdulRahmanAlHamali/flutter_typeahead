@@ -60,7 +60,7 @@ class SuggestionsBox<T> extends StatelessWidget {
   ///
   /// This widget is always built, even when the suggestions box is closed.
   /// {@endtemplate}
-  final DecorationBuilder? decorationBuilder;
+  final SuggestionsDecorationBuilder? decorationBuilder;
 
   /// {@template flutter_typeahead.SuggestionsBox.transitionBuilder}
   /// Builder function for animating the suggestions box.
@@ -85,7 +85,7 @@ class SuggestionsBox<T> extends StatelessWidget {
   /// See also:
   /// * [animationDuration], which is the duration of the animation.
   /// {@endtemplate}
-  final AnimationTransitionBuilder? transitionBuilder;
+  final SuggestionsAnimationBuilder? transitionBuilder;
 
   /// {@template flutter_typeahead.SuggestionsBox.animationDuration}
   /// Duration of the animation for showing and hiding the suggestions box.

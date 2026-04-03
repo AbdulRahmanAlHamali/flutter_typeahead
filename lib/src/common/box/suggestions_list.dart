@@ -152,7 +152,7 @@ class SuggestionsList<T> extends StatefulWidget {
   /// ),
   /// ```
   /// {@endtemplate}
-  final ListBuilder? listBuilder;
+  final SuggestionsListBuilder? listBuilder;
 
   @override
   State<SuggestionsList<T>> createState() => _SuggestionsListState<T>();

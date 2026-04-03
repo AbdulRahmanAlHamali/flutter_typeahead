@@ -76,7 +76,7 @@ abstract final class TypeAheadMaterialDefaults {
   /// A Wrapper around the suggestions box of a TypeAheadField.
   /// Adds various Material specific decorations.
   static SuggestionsItemBuilder<Widget> wrapperBuilder(
-    DecorationBuilder? builder,
+    SuggestionsDecorationBuilder? builder,
   ) {
     return (context, child) {
       return Material(
