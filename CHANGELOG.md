@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 6.0.0 - 2026-04-04
 ### Added
 - Highlighted suggestion in controller
 - `constrainWidth` parameter for suggestions box
@@ -13,15 +13,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - Suggestion highlight is tracked by index on the controller instead of focus
 
-### Removed
-- `hideWithKeyboard` parameter (use `hideOnUnfocus`)
-- `flutter_keyboard_visibility` dependency
-- `pointer_interceptor` dependency
-
 ### Fixed
 - Suggestions box resizes on scroll
 - Guard overlay render box access
 - Retain suggestions on loading
+
+### Removed
+- `hideWithKeyboard` parameter (use `hideOnUnfocus`)
+- `flutter_keyboard_visibility` dependency
+- `pointer_interceptor` dependency
 
 ## 5.2.0 - 2024-02-08
 ### Added
