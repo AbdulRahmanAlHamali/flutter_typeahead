@@ -330,6 +330,12 @@ This scopes the suggestions box to the page's own overlay, so it slides out natu
 
 ## Migrations
 
+### From 5.x to 6.x
+
+The package no longer depends on `flutter_keyboard_visibility` or `pointer_interceptor`. The following changes have been made:
+
+- `hideWithKeyboard` has been removed. This parameter never worked as intended, since closing the keyboard also loses focus, which is already handled by `hideOnUnfocus`. If you were using `hideWithKeyboard: false`, use `hideOnUnfocus: false` instead.
+
 ### From 4.x to 5.x
 
 Since version 5.x, the package is based on Dart 3 (null-safety enforced). To use this package, please upgrade your Flutter SDK.

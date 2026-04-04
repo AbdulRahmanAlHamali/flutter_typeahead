@@ -7,6 +7,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## Unreleased
 ### Added
 - Highlighted suggestion in controller
+- `constrainWidth` parameter for suggestions box
+- Exported type aliases and default builders
+
+### Changed
+- Suggestion highlight is tracked by index on the controller instead of focus
+
+### Removed
+- `hideWithKeyboard` parameter (use `hideOnUnfocus`)
+- `flutter_keyboard_visibility` dependency
+- `pointer_interceptor` dependency
+
+### Fixed
+- Suggestions box resizes on scroll
+- Guard overlay render box access
+- Retain suggestions on loading
 
 ## 5.2.0 - 2024-02-08
 ### Added
