@@ -67,7 +67,7 @@ abstract final class TypeAheadCupertinoDefaults {
           return Container(
             decoration: BoxDecoration(
               color: highlighted
-                  ? CupertinoColors.systemGrey4.withOpacity(0.5)
+                  ? CupertinoColors.systemGrey4.withValues(alpha: 0.5)
                   : null,
               borderRadius: const BorderRadius.all(Radius.circular(12)),
             ),
