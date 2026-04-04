@@ -51,7 +51,6 @@ jobs:
         with:
           message: "chore: increase version"
           default_author: github_actions
-          push: false
           add: |
             pubspec.yaml
             CHANGELOG.md
@@ -66,6 +65,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ env.VERSION }}
           body_path: changes
-
-      - name: Push version commit
-        run: git push
