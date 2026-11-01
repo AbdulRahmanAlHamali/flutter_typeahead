@@ -165,5 +165,50 @@ void main() {
 
       expect(animationValue, equals(1));
     });
+    testWidgets('does not set state after being disposed while closed',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: Column(
+              children: [
+                _OnDispose(controller.focusField),
+                SuggestionsBoxAnimation(
+                  controller: controller,
+                  child: const SizedBox(key: Key('child')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      // The sibling notifies the controller while the tree is being torn
+      // down. The box is already closed, so reverse() completes at once and
+      // its callback runs after this State has been disposed.
+      await tester.pumpWidget(const SizedBox());
+
+      expect(tester.takeException(), isNull);
+    });
   });
+}
+
+class _OnDispose extends StatefulWidget {
+  const _OnDispose(this.onDispose);
+
+  final VoidCallback onDispose;
+
+  @override
+  State<_OnDispose> createState() => _OnDisposeState();
+}
+
+class _OnDisposeState extends State<_OnDispose> {
+  @override
+  void dispose() {
+    widget.onDispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox();
 }

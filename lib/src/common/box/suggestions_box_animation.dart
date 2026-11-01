@@ -65,9 +65,12 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
       setState(() => hidden = false);
       animationController.forward();
     } else {
-      animationController.reverse().whenComplete(
-            () => setState(() => hidden = true),
-          );
+      // With nothing left to animate, reverse() hands back an already
+      // completed future, and whenComplete runs a microtask later - by which
+      // point this State may have been disposed.
+      animationController.reverse().whenComplete(() {
+        if (mounted) setState(() => hidden = true);
+      });
     }
   }
 
