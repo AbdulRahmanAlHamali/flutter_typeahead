@@ -30,6 +30,7 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
   final Duration defaultAnimationDuration = const Duration(milliseconds: 200);
 
   bool hidden = false;
+  late bool wasOpen;
 
   @override
   void initState() {
@@ -39,7 +40,8 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
       vsync: this,
       duration: animationDuration,
     );
-    hidden = !widget.controller.isOpen;
+    wasOpen = widget.controller.isOpen;
+    hidden = !wasOpen;
     if (!hidden) {
       animationController.forward();
     }
@@ -61,13 +63,17 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
   }
 
   void onOpenedChanged() {
-    if (widget.controller.isOpen) {
+    final bool isOpen = widget.controller.isOpen;
+    if (isOpen == wasOpen) return;
+    wasOpen = isOpen;
+    if (isOpen) {
       setState(() => hidden = false);
       animationController.forward();
     } else {
-      animationController.reverse().whenComplete(
-            () => setState(() => hidden = true),
-          );
+      animationController.reverse().whenComplete(() {
+        if (!mounted) return;
+        setState(() => hidden = true);
+      });
     }
   }
 

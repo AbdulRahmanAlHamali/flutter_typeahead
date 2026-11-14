@@ -87,6 +87,41 @@ void main() {
       expect(find.byKey(const Key('child')), findsNothing);
     });
 
+    testWidgets('rebuilds only when the controller opens or closes',
+        (WidgetTester tester) async {
+      controller.open();
+      int builds = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsBoxAnimation(
+              controller: controller,
+              child: const SizedBox(),
+              transitionBuilder: (context, animation, child) {
+                builds++;
+                return child;
+              },
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      builds = 0;
+
+      controller.suggestions = ['a', 'b'];
+      controller.highlighted = 1;
+      controller.isLoading = true;
+      await tester.pumpAndSettle();
+
+      expect(builds, 0);
+
+      controller.close();
+      await tester.pumpAndSettle();
+
+      expect(builds, greaterThan(0));
+    });
+
     testWidgets('uses custom transition builder', (WidgetTester tester) async {
       controller.open();
 
@@ -165,5 +200,48 @@ void main() {
 
       expect(animationValue, equals(1));
     });
+
+    testWidgets('does not set state after being disposed while closed',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: Column(
+              children: [
+                _OnDispose(controller.focusField),
+                SuggestionsBoxAnimation(
+                  controller: controller,
+                  child: const SizedBox(key: Key('child')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(const SizedBox());
+
+      expect(tester.takeException(), isNull);
+    });
   });
+}
+
+class _OnDispose extends StatefulWidget {
+  const _OnDispose(this.onDispose);
+
+  final VoidCallback onDispose;
+
+  @override
+  State<_OnDispose> createState() => _OnDisposeState();
+}
+
+class _OnDisposeState extends State<_OnDispose> {
+  @override
+  void dispose() {
+    widget.onDispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox();
 }
