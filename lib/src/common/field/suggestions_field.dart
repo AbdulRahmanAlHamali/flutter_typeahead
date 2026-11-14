@@ -218,93 +218,94 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             VerticalDirection.up => AxisDirection.up,
             VerticalDirection.down => AxisDirection.down,
           },
-        padding: EdgeInsets.only(
-          top: widget.offset?.dy ?? 5,
-          left: widget.offset?.dx ?? 0,
-          right: widget.offset?.dx ?? 0,
-        ),
-        anchor: FloaterAnchor.only(
-          left: widget.constrainWidth,
-          right: widget.constrainWidth,
-          bottom: false,
-        ),
-        autoFlip: widget.autoFlipDirection,
-        autoFlipHeight: widget.autoFlipMinHeight,
-        builder: (context) {
-          FloaterData data = Floater.of(context);
+          padding: EdgeInsets.only(
+            top: widget.offset?.dy ?? 5,
+            left: widget.offset?.dx ?? 0,
+            right: widget.offset?.dx ?? 0,
+          ),
+          anchor: FloaterAnchor.only(
+            left: widget.constrainWidth,
+            right: widget.constrainWidth,
+            bottom: false,
+          ),
+          autoFlip: widget.autoFlipDirection,
+          autoFlipHeight: widget.autoFlipMinHeight,
+          builder: (context) {
+            FloaterData data = Floater.of(context);
 
-          VerticalDirection newEffectiveDirection =
-              switch (data.effectiveDirection) {
-            AxisDirection.up => VerticalDirection.up,
-            _ => VerticalDirection.down,
-          };
-          if (newEffectiveDirection != controller.effectiveDirection) {
-            // It is generally discouraged to add side-effects in build methods.
-            // However, this is a place where we can update the effective direction
-            // of the controller easily. Adding a new Widget seemed like bloat.
-            // The post frame delay is necessary to avoid triggering a build during a build.
-            // For maximum cleanliness, we could use a StatefulWidget
-            // and update the controller in didUpdateWidget. Tread carefully.
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) return;
-              controller.effectiveDirection = newEffectiveDirection;
-            });
-          }
-
-          Widget list = SuggestionsBox(
-            controller: controller,
-            scrollController: widget.scrollController,
-            builder: (context) => widget.builder(context, controller),
-            decorationBuilder: widget.decorationBuilder,
-            transitionBuilder: widget.transitionBuilder,
-            animationDuration: widget.animationDuration,
-          );
-
-          if (widget.constraints != null) {
-            Alignment alignment = Alignment.topCenter;
-            if (widget.direction == VerticalDirection.up) {
-              alignment = Alignment.bottomCenter;
+            VerticalDirection newEffectiveDirection =
+                switch (data.effectiveDirection) {
+              AxisDirection.up => VerticalDirection.up,
+              _ => VerticalDirection.down,
+            };
+            if (newEffectiveDirection != controller.effectiveDirection) {
+              // It is generally discouraged to add side-effects in build methods.
+              // However, this is a place where we can update the effective direction
+              // of the controller easily. Adding a new Widget seemed like bloat.
+              // The post frame delay is necessary to avoid triggering a build during a build.
+              // For maximum cleanliness, we could use a StatefulWidget
+              // and update the controller in didUpdateWidget. Tread carefully.
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                controller.effectiveDirection = newEffectiveDirection;
+              });
             }
-            list = Align(
-              alignment: alignment,
-              child: ConstrainedBox(
-                constraints: widget.constraints!,
-                child: list,
-              ),
-            );
-          }
 
-          list = Semantics(
-            container: true,
-            child: list,
-          );
-
-          return list;
-        },
-        child: FloaterTarget(
-          link: link,
-          child: ConnectorWidget(
-            value: controller,
-            connect: (value) => value.$resizes.listen((_) => onResize()),
-            disconnect: (value, key) => key?.cancel(),
-            child: SuggestionsFieldScrollConnector<T>(
+            Widget list = SuggestionsBox(
               controller: controller,
-              child: SuggestionsFieldFocusConnector<T>(
+              scrollController: widget.scrollController,
+              builder: (context) => widget.builder(context, controller),
+              decorationBuilder: widget.decorationBuilder,
+              transitionBuilder: widget.transitionBuilder,
+              animationDuration: widget.animationDuration,
+            );
+
+            if (widget.constraints != null) {
+              Alignment alignment = Alignment.topCenter;
+              if (widget.direction == VerticalDirection.up) {
+                alignment = Alignment.bottomCenter;
+              }
+              list = Align(
+                alignment: alignment,
+                child: ConstrainedBox(
+                  constraints: widget.constraints!,
+                  child: list,
+                ),
+              );
+            }
+
+            list = Semantics(
+              container: true,
+              child: list,
+            );
+
+            return list;
+          },
+          child: FloaterTarget(
+            link: link,
+            child: ConnectorWidget(
+              value: controller,
+              connect: (value) => value.$resizes.listen((_) => onResize()),
+              disconnect: (value, key) => key?.cancel(),
+              child: SuggestionsFieldScrollConnector<T>(
                 controller: controller,
-                focusNode: widget.focusNode,
-                child: SuggestionsFieldHighlightConnector<T>(
+                child: SuggestionsFieldFocusConnector<T>(
                   controller: controller,
-                  child: SuggestionsFieldBoxConnector<T>(
+                  focusNode: widget.focusNode,
+                  child: SuggestionsFieldHighlightConnector<T>(
                     controller: controller,
-                    showOnFocus: widget.showOnFocus,
-                    hideOnUnfocus: widget.hideOnUnfocus,
-                    child: SuggestionsFieldTapConnector<T>(
+                    child: SuggestionsFieldBoxConnector<T>(
                       controller: controller,
-                      child: SuggestionsFieldSelectConnector<T>(
+                      showOnFocus: widget.showOnFocus,
+                      hideOnUnfocus: widget.hideOnUnfocus,
+                      child: SuggestionsFieldTapConnector<T>(
                         controller: controller,
-                        hideOnSelect: widget.hideOnSelect,
-                        onSelected: widget.onSelected,
-                        child: widget.child,
+                        child: SuggestionsFieldSelectConnector<T>(
+                          controller: controller,
+                          hideOnSelect: widget.hideOnSelect,
+                          onSelected: widget.onSelected,
+                          child: widget.child,
+                        ),
                       ),
                     ),
                   ),
@@ -313,7 +314,6 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             ),
           ),
         ),
-      ),
       ),
     );
   }
