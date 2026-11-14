@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Setup flutter
         uses: subosito/flutter-action@v2
@@ -47,7 +47,7 @@ jobs:
         run: echo "VERSION=$(cider version)" >> $GITHUB_ENV
 
       - name: Commit version increase
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v11
         with:
           message: "chore: increase version"
           default_author: github_actions
@@ -60,7 +60,7 @@ jobs:
           echo "$(cider describe ${{ env.VERSION }} --only-body)" > changes
 
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ env.VERSION }}

@@ -13,8 +13,8 @@ jobs:
     # but it is broken for flutter packages: https://github.com/dart-lang/setup-dart/issues/68
     # uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
     steps:
-      - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@b64355ae6ca0b5d484f0106a033dd1388965d06d
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@2286a0c042b44434fe26d292bbce8d34f7ec662b
       - uses: subosito/flutter-action@v2
       - name: Install dependencies
         run: dart pub get
