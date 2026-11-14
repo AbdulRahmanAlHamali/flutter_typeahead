@@ -137,6 +137,31 @@ void main() {
       expect(controller.highlighted, null);
     });
 
+    testWidgets('leaves enter key to the field when nothing is highlighted',
+        (WidgetTester tester) async {
+      controller.open();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsFieldHighlightConnector(
+              controller: controller,
+              child: const Focus(
+                autofocus: true,
+                child: SizedBox(),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final handled = await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+
+      expect(handled, isFalse);
+      expect(controller.isOpen, isTrue);
+    });
+
     testWidgets('closes suggestions when escape key is pressed',
         (WidgetTester tester) async {
       controller.open();

@@ -71,6 +71,7 @@ class _SuggestionsFieldHighlightConnectorState<T>
   @override
   void initState() {
     super.initState();
+    _updateActions();
     _createShortcuts();
   }
 
@@ -95,11 +96,17 @@ class _SuggestionsFieldHighlightConnectorState<T>
     };
   }
 
-  void _onControllerChange() {
+  void _updateActions() {
     for (final action in _actions.values) {
       // When the suggestions box is closed, the actions should be disabled.
       action.enabled = widget.controller.isOpen;
     }
+    _selectOptionAction.enabled &=
+        widget.controller.highlightedSuggestion != null;
+  }
+
+  void _onControllerChange() {
+    _updateActions();
     setState(_createShortcuts);
   }
 
