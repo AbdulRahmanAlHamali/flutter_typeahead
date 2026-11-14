@@ -279,8 +279,8 @@ class SuggestionsControllerProvider<T>
   const SuggestionsControllerProvider({
     super.key,
     required SuggestionsController<T> controller,
-    required Widget child,
-  }) : super(notifier: controller, child: child);
+    required super.child,
+  }) : super(notifier: controller);
 }
 
 /// The state of focus of the suggestions box and field.

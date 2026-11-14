@@ -1,5 +1,3 @@
-library flutter_typeahead;
-
 export 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
 export 'package:flutter_typeahead/src/common/base/types.dart';
 export 'package:flutter_typeahead/src/common/field/typeahead_field.dart';

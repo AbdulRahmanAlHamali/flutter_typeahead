@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-/// A simplified life-cycle widget for connecting to a resource <T>
+/// A simplified life-cycle widget for connecting to a resource `<T>`
 /// that may change over time.
 ///
-/// On connection, a key <R> may be returned, which can later
+/// On connection, a key `<R>` may be returned, which can later
 /// be used for disconnection. This is useful for e.g. [StreamSubscription]s.
 /// The key may also be ignored (e.g. void).
 ///
