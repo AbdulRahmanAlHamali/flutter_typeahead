@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/src/common/base/suggestions_controller.dart';
@@ -50,27 +52,60 @@ void main() {
       expect(controller.suggestions, ['test1', 'test2']);
     });
 
-    testWidgets('sets error correctly', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsSearch<String>(
-              controller: controller,
-              textEditingController: textEditingController,
-              suggestionsCallback: (pattern) async {
-                throw Exception('Failed to load');
-              },
-              debounceDuration: debounceDuration,
-              child: const SizedBox(),
+    for (final (name, thrown) in [
+      ('exception', Exception('Failed to load')),
+      ('error', StateError('Failed to load')),
+    ]) {
+      testWidgets('sets error correctly for an $name',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: SuggestionsSearch<String>(
+                controller: controller,
+                textEditingController: textEditingController,
+                suggestionsCallback: (pattern) async {
+                  throw thrown;
+                },
+                debounceDuration: debounceDuration,
+                child: const SizedBox(),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      textEditingController.text = 'test';
+        textEditingController.text = 'test';
+        await tester.pump();
+
+        expect(controller.error, thrown);
+        expect(controller.isLoading, isFalse);
+      });
+    }
+
+    testWidgets('loads when mounted with a controller left loading',
+        (WidgetTester tester) async {
+      Widget search(SuggestionsCallback<String> callback) => MaterialApp(
+            home: Material(
+              child: SuggestionsSearch<String>(
+                key: ValueKey(callback),
+                controller: controller,
+                textEditingController: textEditingController,
+                suggestionsCallback: callback,
+                debounceDuration: debounceDuration,
+                child: const SizedBox(),
+              ),
+            ),
+          );
+
+      final pending = Completer<List<String>>();
+      await tester.pumpWidget(search((pattern) => pending.future));
+      expect(controller.isLoading, isTrue);
+
+      await tester.pumpWidget(search(suggestionsCallback));
       await tester.pump();
 
-      expect(controller.error.toString(), 'Exception: Failed to load');
+      expect(controller.suggestions, ['1', '2']);
+      expect(controller.isLoading, isFalse);
     });
 
     testWidgets('reloads entries when text changes',

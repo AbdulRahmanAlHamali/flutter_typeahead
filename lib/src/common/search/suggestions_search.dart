@@ -64,6 +64,7 @@ class SuggestionsSearch<T> extends StatefulWidget {
 }
 
 class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
+  bool isLoading = false;
   bool isQueued = false;
   late String search = widget.textEditingController.text;
   late bool wasOpen = widget.controller.isOpen;
@@ -106,11 +107,12 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
     if (!mounted) return;
     if (!wasOpen) return;
 
-    if (widget.controller.isLoading) {
+    if (isLoading) {
       isQueued = true;
       return;
     }
 
+    isLoading = true;
     widget.controller.suggestions = widget.controller.suggestions;
     widget.controller.isLoading = true;
     widget.controller.error = null;
@@ -120,9 +122,11 @@ class _SuggestionsSearchState<T> extends State<SuggestionsSearch<T>> {
 
     try {
       newSuggestions = (await widget.suggestionsCallback(search))?.toList();
-    } on Exception catch (e) {
+    } catch (e) {
       newError = e;
     }
+
+    isLoading = false;
 
     if (!mounted) return;
 
