@@ -64,9 +64,10 @@ class _FloaterTarget extends SingleChildRenderObjectWidget {
 }
 
 class _RenderFloaterTarget extends RenderProxyBox {
-  _RenderFloaterTarget({RenderBox? child, required FloaterLink controller})
-    : _controller = controller,
-      super(child) {
+  _RenderFloaterTarget({
+    RenderBox? child,
+    required FloaterLink this._controller,
+  }) : super(child) {
     _controller?.addListener(_onLinkNotification);
   }
 
