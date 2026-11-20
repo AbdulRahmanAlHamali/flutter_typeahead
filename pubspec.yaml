@@ -13,12 +13,14 @@ description: A highly customizable typeahead (autocomplete) text input field for
 homepage: https://github.com/AbdulRahmanAlHamali/flutter_typeahead
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.27.0"
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.0.0
+  cupertino_ui: ^1.0.0
 
 dev_dependencies:
   flutter_test:

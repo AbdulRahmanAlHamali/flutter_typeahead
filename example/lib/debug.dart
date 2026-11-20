@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 // ignore: implementation_imports - for debugging, not used in the actual package
 import 'package:flutter_typeahead/src/common/base/floater.dart';
 
