@@ -330,6 +330,14 @@ This scopes the suggestions box to the page's own overlay, so it slides out natu
 
 ## Migrations
 
+### From 6.x to 7.x
+
+The package now uses [`material_ui`](https://pub.dev/packages/material_ui) and [`cupertino_ui`](https://pub.dev/packages/cupertino_ui) instead of `package:flutter/material.dart` and `package:flutter/cupertino.dart`, and requires Flutter 3.44.
+
+Your app needs to migrate to these packages as well. Follow [Flutter's migration guide](https://docs.flutter.dev/release/breaking-changes/material-ui-and-cupertino-ui) to migrate your app.
+
+If your app cannot migrate yet, keep using 6.x.
+
 ### From 5.x to 6.x
 
 The package no longer depends on `flutter_keyboard_visibility` or `pointer_interceptor`. The following changes have been made:
