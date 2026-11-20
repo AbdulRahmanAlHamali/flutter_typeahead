@@ -252,6 +252,7 @@ class _OverlayTabState extends State<_OverlayTab> {
 
   @override
   void dispose() {
+    _entry.remove();
     _entry.dispose();
     super.dispose();
   }
