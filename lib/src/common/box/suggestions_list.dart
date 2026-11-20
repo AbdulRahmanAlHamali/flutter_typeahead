@@ -88,7 +88,7 @@ class SuggestionsList<T> extends StatefulWidget {
   /// ```dart
   /// errorBuilder: (context, error) => Text(
   ///   '$error',
-  ///   style: TextStyle(color: Theme.of(context).errorColor),
+  ///   style: TextStyle(color: Theme.of(context).colorScheme.error),
   /// ),
   /// ```
   ///
