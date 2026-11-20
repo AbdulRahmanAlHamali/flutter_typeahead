@@ -150,7 +150,4 @@ class _ConditionalCallbackAction<T extends Intent> extends CallbackAction<T> {
 
   @override
   bool isEnabled(covariant T intent) => enabled;
-
-  @override
-  bool consumesKey(covariant T intent) => enabled;
 }

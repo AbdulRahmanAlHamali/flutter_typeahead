@@ -107,7 +107,8 @@ void main() {
       expect(controller.highlighted, 1);
     });
 
-    testWidgets('selects highlighted suggestion when enter key is pressed',
+    testWidgets(
+        'selects highlighted suggestion and consumes the enter key when pressed',
         (WidgetTester tester) async {
       controller.open();
       controller.highlighted = 1;
@@ -131,8 +132,9 @@ void main() {
         ),
       );
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      final handled = await tester.sendKeyEvent(LogicalKeyboardKey.enter);
 
+      expect(handled, isTrue);
       expect(selected, 'b');
       expect(controller.highlighted, null);
     });
@@ -162,7 +164,7 @@ void main() {
       expect(controller.isOpen, isTrue);
     });
 
-    testWidgets('closes suggestions when escape key is pressed',
+    testWidgets('closes suggestions and consumes the escape key when pressed',
         (WidgetTester tester) async {
       controller.open();
       controller.highlighted = 1;
@@ -181,8 +183,9 @@ void main() {
         ),
       );
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      final handled = await tester.sendKeyEvent(LogicalKeyboardKey.escape);
 
+      expect(handled, isTrue);
       expect(controller.isOpen, isFalse);
     });
   });
