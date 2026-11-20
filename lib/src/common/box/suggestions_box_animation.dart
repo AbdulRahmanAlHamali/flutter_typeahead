@@ -94,7 +94,7 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
             : Alignment.topCenter,
         duration: animationDuration,
         child: SizeTransition(
-          axisAlignment: -1,
+          alignment: AlignmentDirectional.topStart,
           sizeFactor: CurvedAnimation(
             parent: animationController,
             curve: Curves.fastOutSlowIn,
