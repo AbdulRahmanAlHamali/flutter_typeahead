@@ -23,9 +23,7 @@ void main() {
           home: Material(
             child: SuggestionsBox(
               controller: controller,
-              builder: (context) => const SizedBox(
-                key: Key('suggestions'),
-              ),
+              builder: (context) => const SizedBox(key: Key('suggestions')),
             ),
           ),
         ),

@@ -17,8 +17,7 @@ import 'helpers.dart';
 const _default = FloaterAnchor.only(bottom: false);
 
 // Each row: (description, direction, anchor, padding, expectedOffset, expectedSize)
-final _cases =
-    <(String, AxisDirection, FloaterAnchor, EdgeInsets, Offset, Size)>[
+final _cases = <(String, AxisDirection, FloaterAnchor, EdgeInsets, Offset, Size)>[
   // direction=down, default anchor → BC cell: offset=(300,600), size=(300,300)
   (
     'down: top=10 shrinks main start',
@@ -26,7 +25,7 @@ final _cases =
     _default,
     const EdgeInsets.only(top: 10),
     const Offset(300, 610),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
   (
     'down: bottom=10 shrinks main end',
@@ -34,7 +33,7 @@ final _cases =
     _default,
     const EdgeInsets.only(bottom: 10),
     const Offset(300, 600),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
   (
     'down: left=10 shrinks cross start',
@@ -42,7 +41,7 @@ final _cases =
     _default,
     const EdgeInsets.only(left: 10),
     const Offset(310, 600),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
   (
     'down: right=10 shrinks cross end',
@@ -50,7 +49,7 @@ final _cases =
     _default,
     const EdgeInsets.only(right: 10),
     const Offset(300, 600),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
   (
     'down: all sides LTRB(10,20,30,40)',
@@ -58,7 +57,7 @@ final _cases =
     _default,
     const EdgeInsets.fromLTRB(10, 20, 30, 40),
     const Offset(310, 620),
-    const Size(260, 240)
+    const Size(260, 240),
   ),
 
   // direction=up, default anchor → TC cell: offset=(300,0), size=(300,300)
@@ -68,7 +67,7 @@ final _cases =
     _default,
     const EdgeInsets.only(top: 10),
     const Offset(300, 0),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
   (
     'up: bottom=10 shrinks main end',
@@ -76,7 +75,7 @@ final _cases =
     _default,
     const EdgeInsets.only(bottom: 10),
     const Offset(300, 10),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
   (
     'up: left=10 shrinks cross start',
@@ -84,7 +83,7 @@ final _cases =
     _default,
     const EdgeInsets.only(left: 10),
     const Offset(310, 0),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
   (
     'up: right=10 shrinks cross end',
@@ -92,7 +91,7 @@ final _cases =
     _default,
     const EdgeInsets.only(right: 10),
     const Offset(300, 0),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
 
   // direction=left, default anchor → ML cell: offset=(0,300), size=(300,300)
@@ -102,7 +101,7 @@ final _cases =
     _default,
     const EdgeInsets.only(top: 10),
     const Offset(0, 300),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
   (
     'left: bottom=10 shrinks main end',
@@ -110,7 +109,7 @@ final _cases =
     _default,
     const EdgeInsets.only(bottom: 10),
     const Offset(10, 300),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
   (
     'left: left=10 shrinks cross start',
@@ -118,7 +117,7 @@ final _cases =
     _default,
     const EdgeInsets.only(left: 10),
     const Offset(0, 310),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
   (
     'left: right=10 shrinks cross end',
@@ -126,7 +125,7 @@ final _cases =
     _default,
     const EdgeInsets.only(right: 10),
     const Offset(0, 300),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
 
   // direction=right, default anchor → MR cell: offset=(600,300), size=(300,300)
@@ -136,7 +135,7 @@ final _cases =
     _default,
     const EdgeInsets.only(top: 10),
     const Offset(610, 300),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
   (
     'right: bottom=10 shrinks main end',
@@ -144,7 +143,7 @@ final _cases =
     _default,
     const EdgeInsets.only(bottom: 10),
     const Offset(600, 300),
-    const Size(290, 300)
+    const Size(290, 300),
   ),
   (
     'right: left=10 shrinks cross start',
@@ -152,7 +151,7 @@ final _cases =
     _default,
     const EdgeInsets.only(left: 10),
     const Offset(600, 310),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
   (
     'right: right=10 shrinks cross end',
@@ -160,7 +159,7 @@ final _cases =
     _default,
     const EdgeInsets.only(right: 10),
     const Offset(600, 300),
-    const Size(300, 290)
+    const Size(300, 290),
   ),
 
   // Non-default anchors with padding
@@ -170,7 +169,7 @@ final _cases =
     const FloaterAnchor.only(bottom: false, left: false, right: false),
     const EdgeInsets.only(left: 10),
     const Offset(10, 600),
-    const Size(890, 300)
+    const Size(890, 300),
   ),
   (
     'down T:F B:F: top=10 on expand-through',
@@ -178,7 +177,7 @@ final _cases =
     const FloaterAnchor.only(top: false, bottom: false),
     const EdgeInsets.only(top: 10),
     const Offset(300, 310),
-    const Size(300, 590)
+    const Size(300, 590),
   ),
 ];
 

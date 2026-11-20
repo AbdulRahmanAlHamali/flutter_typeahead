@@ -82,8 +82,11 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
     Widget child = widget.child;
 
     if (widget.transitionBuilder != null) {
-      child =
-          widget.transitionBuilder!(context, animationController.view, child);
+      child = widget.transitionBuilder!(
+        context,
+        animationController.view,
+        child,
+      );
     } else {
       child = AnimatedSize(
         alignment: widget.controller.effectiveDirection == VerticalDirection.up
@@ -101,10 +104,7 @@ class _SuggestionsBoxAnimationState<T> extends State<SuggestionsBoxAnimation<T>>
       );
     }
 
-    child = Visibility(
-      visible: !hidden,
-      child: child,
-    );
+    child = Visibility(visible: !hidden, child: child);
 
     return ConnectorWidget(
       value: widget.controller,

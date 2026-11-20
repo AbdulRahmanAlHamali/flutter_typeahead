@@ -16,59 +16,50 @@ void main() {
     });
 
     testWidgets(
-        'closes the suggestions box when a suggestion is selected and hideOnSelect is true',
-        (WidgetTester tester) async {
-      final connector = SuggestionsFieldSelectConnector(
-        controller: controller,
-        hideOnSelect: true,
-        child: const SizedBox(),
-      );
+      'closes the suggestions box when a suggestion is selected and hideOnSelect is true',
+      (WidgetTester tester) async {
+        final connector = SuggestionsFieldSelectConnector(
+          controller: controller,
+          hideOnSelect: true,
+          child: const SizedBox(),
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: connector,
-          ),
-        ),
-      );
+        await tester.pumpWidget(MaterialApp(home: Material(child: connector)));
 
-      controller.open();
-      expect(controller.isOpen, isTrue);
+        controller.open();
+        expect(controller.isOpen, isTrue);
 
-      controller.select('test');
-      await tester.pump();
+        controller.select('test');
+        await tester.pump();
 
-      expect(controller.isOpen, isFalse);
-    });
+        expect(controller.isOpen, isFalse);
+      },
+    );
 
     testWidgets(
-        'does not close the suggestions box when a suggestion is selected and hideOnSelect is false',
-        (WidgetTester tester) async {
-      final connector = SuggestionsFieldSelectConnector(
-        controller: controller,
-        hideOnSelect: false,
-        child: const SizedBox(),
-      );
+      'does not close the suggestions box when a suggestion is selected and hideOnSelect is false',
+      (WidgetTester tester) async {
+        final connector = SuggestionsFieldSelectConnector(
+          controller: controller,
+          hideOnSelect: false,
+          child: const SizedBox(),
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: connector,
-          ),
-        ),
-      );
+        await tester.pumpWidget(MaterialApp(home: Material(child: connector)));
 
-      controller.open();
-      expect(controller.isOpen, isTrue);
+        controller.open();
+        expect(controller.isOpen, isTrue);
 
-      controller.select('test');
-      await tester.pump();
+        controller.select('test');
+        await tester.pump();
 
-      expect(controller.isOpen, isTrue);
-    });
+        expect(controller.isOpen, isTrue);
+      },
+    );
 
-    testWidgets('calls onSelected when a suggestion is selected',
-        (WidgetTester tester) async {
+    testWidgets('calls onSelected when a suggestion is selected', (
+      WidgetTester tester,
+    ) async {
       String? selectedValue;
 
       final connector = SuggestionsFieldSelectConnector(
@@ -79,13 +70,7 @@ void main() {
         },
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: connector,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: connector)));
 
       controller.select('test');
       await tester.pump();

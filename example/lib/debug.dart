@@ -54,11 +54,11 @@ class _DebugScreenState extends State<DebugScreen> {
   }
 
   FloaterAnchor get _anchor => FloaterAnchor.only(
-        top: anchorTop,
-        bottom: anchorBottom,
-        left: anchorLeft,
-        right: anchorRight,
-      );
+    top: anchorTop,
+    bottom: anchorBottom,
+    left: anchorLeft,
+    right: anchorRight,
+  );
 }
 
 enum _DebugScenario {
@@ -107,38 +107,46 @@ class _ControlBar extends StatelessWidget {
           SegmentedButton<AxisDirection>(
             segments: const [
               ButtonSegment(
-                  value: AxisDirection.down,
-                  icon: Icon(Icons.arrow_downward, size: 16)),
+                value: AxisDirection.down,
+                icon: Icon(Icons.arrow_downward, size: 16),
+              ),
               ButtonSegment(
-                  value: AxisDirection.up,
-                  icon: Icon(Icons.arrow_upward, size: 16)),
+                value: AxisDirection.up,
+                icon: Icon(Icons.arrow_upward, size: 16),
+              ),
               ButtonSegment(
-                  value: AxisDirection.left,
-                  icon: Icon(Icons.arrow_back, size: 16)),
+                value: AxisDirection.left,
+                icon: Icon(Icons.arrow_back, size: 16),
+              ),
               ButtonSegment(
-                  value: AxisDirection.right,
-                  icon: Icon(Icons.arrow_forward, size: 16)),
+                value: AxisDirection.right,
+                icon: Icon(Icons.arrow_forward, size: 16),
+              ),
             ],
             selected: {direction},
             onSelectionChanged: (v) => onDirectionChanged(v.first),
           ),
           const SizedBox(width: 8),
           FilterChip(
-              label: const Text('T'),
-              selected: anchorTop,
-              onSelected: onAnchorTopChanged),
+            label: const Text('T'),
+            selected: anchorTop,
+            onSelected: onAnchorTopChanged,
+          ),
           FilterChip(
-              label: const Text('B'),
-              selected: anchorBottom,
-              onSelected: onAnchorBottomChanged),
+            label: const Text('B'),
+            selected: anchorBottom,
+            onSelected: onAnchorBottomChanged,
+          ),
           FilterChip(
-              label: const Text('L'),
-              selected: anchorLeft,
-              onSelected: onAnchorLeftChanged),
+            label: const Text('L'),
+            selected: anchorLeft,
+            onSelected: onAnchorLeftChanged,
+          ),
           FilterChip(
-              label: const Text('R'),
-              selected: anchorRight,
-              onSelected: onAnchorRightChanged),
+            label: const Text('R'),
+            selected: anchorRight,
+            onSelected: onAnchorRightChanged,
+          ),
           const SizedBox(width: 8),
           PopupMenuButton<_DebugScenario>(
             initialValue: scenario,
@@ -193,22 +201,28 @@ class _DebugOverlayState extends State<_DebugOverlay> {
 
   Widget _buildScenario(BuildContext context) {
     return switch (widget.scenario) {
-      _DebugScenario.basic =>
-        _BasicScenario(direction: widget.direction, anchor: widget.anchor),
-      _DebugScenario.scrollable =>
-        _ScrollableScenario(direction: widget.direction, anchor: widget.anchor),
-      _DebugScenario.pageView =>
-        _PageViewScenario(direction: widget.direction, anchor: widget.anchor),
-      _DebugScenario.nearEdge =>
-        _NearEdgeScenario(direction: widget.direction, anchor: widget.anchor),
+      _DebugScenario.basic => _BasicScenario(
+        direction: widget.direction,
+        anchor: widget.anchor,
+      ),
+      _DebugScenario.scrollable => _ScrollableScenario(
+        direction: widget.direction,
+        anchor: widget.anchor,
+      ),
+      _DebugScenario.pageView => _PageViewScenario(
+        direction: widget.direction,
+        anchor: widget.anchor,
+      ),
+      _DebugScenario.nearEdge => _NearEdgeScenario(
+        direction: widget.direction,
+        anchor: widget.anchor,
+      ),
     };
   }
 
   @override
   Widget build(BuildContext context) {
-    return Overlay(
-      initialEntries: [_scenarioEntry],
-    );
+    return Overlay(initialEntries: [_scenarioEntry]);
   }
 }
 
@@ -272,9 +286,9 @@ class _DebugFloaterState extends State<_DebugFloater> {
               child: Text(
                 '${data.size.width.round()}x${data.size.height.round()}\n'
                 '${data.effectiveDirection.name}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.blue.shade800,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.blue.shade800),
               ),
             ),
           ),
@@ -294,9 +308,9 @@ class _DebugFloaterState extends State<_DebugFloater> {
           child: Text(
             'target',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -305,10 +319,7 @@ class _DebugFloaterState extends State<_DebugFloater> {
 }
 
 class _BasicScenario extends StatelessWidget {
-  const _BasicScenario({
-    required this.direction,
-    required this.anchor,
-  });
+  const _BasicScenario({required this.direction, required this.anchor});
 
   final AxisDirection direction;
   final FloaterAnchor anchor;
@@ -322,10 +333,7 @@ class _BasicScenario extends StatelessWidget {
 }
 
 class _ScrollableScenario extends StatelessWidget {
-  const _ScrollableScenario({
-    required this.direction,
-    required this.anchor,
-  });
+  const _ScrollableScenario({required this.direction, required this.anchor});
 
   final AxisDirection direction;
   final FloaterAnchor anchor;
@@ -347,10 +355,7 @@ class _ScrollableScenario extends StatelessWidget {
 }
 
 class _PageViewScenario extends StatelessWidget {
-  const _PageViewScenario({
-    required this.direction,
-    required this.anchor,
-  });
+  const _PageViewScenario({required this.direction, required this.anchor});
 
   final AxisDirection direction;
   final FloaterAnchor anchor;
@@ -366,8 +371,10 @@ class _PageViewScenario extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Page $i',
-                      style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    'Page $i',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 16),
                   _DebugFloater(direction: direction, anchor: anchor),
                 ],
@@ -380,10 +387,7 @@ class _PageViewScenario extends StatelessWidget {
 }
 
 class _NearEdgeScenario extends StatelessWidget {
-  const _NearEdgeScenario({
-    required this.direction,
-    required this.anchor,
-  });
+  const _NearEdgeScenario({required this.direction, required this.anchor});
 
   final AxisDirection direction;
   final FloaterAnchor anchor;

@@ -40,8 +40,9 @@ void main() {
       expect(disconnectCalled, isTrue);
     });
 
-    testWidgets('calls connect and disconnect on value change',
-        (WidgetTester tester) async {
+    testWidgets('calls connect and disconnect on value change', (
+      WidgetTester tester,
+    ) async {
       bool connectCalled = false;
       bool disconnectCalled = false;
 
@@ -80,8 +81,9 @@ void main() {
       expect(disconnectCalled, isTrue);
     });
 
-    testWidgets('calls disconnect with correct key',
-        (WidgetTester tester) async {
+    testWidgets('calls disconnect with correct key', (
+      WidgetTester tester,
+    ) async {
       int? disconnectKey;
 
       await tester.pumpWidget(

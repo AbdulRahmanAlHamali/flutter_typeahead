@@ -18,10 +18,7 @@ void main() {
       controller.open();
       textEditingController = TextEditingController();
       suggestionsCallback = (pattern) async {
-        return [
-          '${pattern}1',
-          '${pattern}2',
-        ];
+        return ['${pattern}1', '${pattern}2'];
       };
       debounceDuration = const Duration(milliseconds: 0);
     });
@@ -56,8 +53,9 @@ void main() {
       ('exception', Exception('Failed to load')),
       ('error', StateError('Failed to load')),
     ]) {
-      testWidgets('sets error correctly for an $name',
-          (WidgetTester tester) async {
+      testWidgets('sets error correctly for an $name', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Material(
@@ -82,20 +80,21 @@ void main() {
       });
     }
 
-    testWidgets('loads when mounted with a controller left loading',
-        (WidgetTester tester) async {
+    testWidgets('loads when mounted with a controller left loading', (
+      WidgetTester tester,
+    ) async {
       Widget search(SuggestionsCallback<String> callback) => MaterialApp(
-            home: Material(
-              child: SuggestionsSearch<String>(
-                key: ValueKey(callback),
-                controller: controller,
-                textEditingController: textEditingController,
-                suggestionsCallback: callback,
-                debounceDuration: debounceDuration,
-                child: const SizedBox(),
-              ),
-            ),
-          );
+        home: Material(
+          child: SuggestionsSearch<String>(
+            key: ValueKey(callback),
+            controller: controller,
+            textEditingController: textEditingController,
+            suggestionsCallback: callback,
+            debounceDuration: debounceDuration,
+            child: const SizedBox(),
+          ),
+        ),
+      );
 
       final pending = Completer<List<String>>();
       await tester.pumpWidget(search((pattern) => pending.future));
@@ -108,8 +107,9 @@ void main() {
       expect(controller.isLoading, isFalse);
     });
 
-    testWidgets('reloads entries when text changes',
-        (WidgetTester tester) async {
+    testWidgets('reloads entries when text changes', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -135,8 +135,9 @@ void main() {
       expect(controller.suggestions, ['new1', 'new2']);
     });
 
-    testWidgets('reloads entries when suggestions are set to null',
-        (WidgetTester tester) async {
+    testWidgets('reloads entries when suggestions are set to null', (
+      WidgetTester tester,
+    ) async {
       int count = 0;
       await tester.pumpWidget(
         MaterialApp(

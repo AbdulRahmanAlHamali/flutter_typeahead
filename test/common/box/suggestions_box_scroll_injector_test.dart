@@ -14,8 +14,9 @@ void main() {
       scrollController.dispose();
     });
 
-    testWidgets('creates and disposes a ScrollController if none is provided',
-        (WidgetTester tester) async {
+    testWidgets('creates and disposes a ScrollController if none is provided', (
+      WidgetTester tester,
+    ) async {
       ScrollController? controller;
 
       await tester.pumpWidget(
@@ -36,15 +37,14 @@ void main() {
 
       expect(controller, isNotNull);
 
-      await tester.pumpWidget(
-        const SizedBox(),
-      );
+      await tester.pumpWidget(const SizedBox());
 
       expect(controller!.dispose, throwsFlutterError);
     });
 
-    testWidgets('exchanges the ScrollController if one is provided',
-        (WidgetTester tester) async {
+    testWidgets('exchanges the ScrollController if one is provided', (
+      WidgetTester tester,
+    ) async {
       ScrollController? controller;
 
       await tester.pumpWidget(
@@ -85,8 +85,9 @@ void main() {
       expect(controller, equals(scrollController));
     });
 
-    testWidgets('configures the PrimaryScrollController for all platforms',
-        (WidgetTester tester) async {
+    testWidgets('configures the PrimaryScrollController for all platforms', (
+      WidgetTester tester,
+    ) async {
       for (final platform in TargetPlatform.values) {
         ScrollController? controller;
         bool? shouldInherit;
@@ -100,7 +101,9 @@ void main() {
                 child: Builder(
                   builder: (context) {
                     shouldInherit = PrimaryScrollController.shouldInherit(
-                        context, Axis.vertical);
+                      context,
+                      Axis.vertical,
+                    );
                     controller = PrimaryScrollController.of(context);
                     return const SizedBox();
                   },

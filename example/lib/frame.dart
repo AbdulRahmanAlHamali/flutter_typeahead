@@ -20,13 +20,15 @@ class MaterialCupertinoFrame extends StatefulWidget {
     ValueNotifier<Map<Product, int>> products,
     SuggestionsController<Product> suggestions,
     FieldSettings settings,
-  ) exampleBuilder;
+  )
+  exampleBuilder;
 
   final Widget Function(
     BuildContext context,
     TextEditingController controller,
     FieldSettings settings,
-  ) settingsBuilder;
+  )
+  settingsBuilder;
 
   final Widget Function(
     BuildContext context,
@@ -34,13 +36,15 @@ class MaterialCupertinoFrame extends StatefulWidget {
     ValueNotifier<Map<Product, int>> products,
     SuggestionsController<Product> suggestions,
     FieldSettings settings,
-  ) cupertinoExampleBuilder;
+  )
+  cupertinoExampleBuilder;
 
   final Widget Function(
     BuildContext context,
     TextEditingController controller,
     FieldSettings settings,
-  ) cupertinoSettingsBuilder;
+  )
+  cupertinoSettingsBuilder;
 
   @override
   State<MaterialCupertinoFrame> createState() => _MaterialCupertinoFrameState();
@@ -69,11 +73,9 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                     : Brightness.light,
                 useMaterial3: true,
               ),
-              scrollBehavior:
-                  const MaterialScrollBehavior().copyWith(dragDevices: {
-                PointerDeviceKind.mouse,
-                PointerDeviceKind.touch,
-              }),
+              scrollBehavior: const MaterialScrollBehavior().copyWith(
+                dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},
+              ),
               home: Scaffold(
                 appBar: AppBar(
                   leading: IconButton(
@@ -88,8 +90,9 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                         if (DefaultTabController.of(context).index == 0) {
                           return TextButton.icon(
                             style: TextButton.styleFrom(
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.onSurface,
+                              foregroundColor: Theme.of(
+                                context,
+                              ).colorScheme.onSurface,
                             ),
                             icon: const Icon(Icons.arrow_forward),
                             onPressed: () =>
@@ -99,8 +102,9 @@ class _MaterialCupertinoFrameState extends State<MaterialCupertinoFrame> {
                         } else {
                           return TextButton.icon(
                             style: TextButton.styleFrom(
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.onSurface,
+                              foregroundColor: Theme.of(
+                                context,
+                              ).colorScheme.onSurface,
                             ),
                             icon: const Icon(Icons.arrow_back),
                             onPressed: () =>

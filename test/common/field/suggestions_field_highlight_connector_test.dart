@@ -18,33 +18,31 @@ void main() {
     });
 
     testWidgets(
-        'increments highlighted suggestion when direction down and arrow down key is pressed',
-        (WidgetTester tester) async {
-      controller.open();
+      'increments highlighted suggestion when direction down and arrow down key is pressed',
+      (WidgetTester tester) async {
+        controller.open();
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldHighlightConnector(
-              controller: controller,
-              child: const Focus(
-                autofocus: true,
-                child: SizedBox(),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: SuggestionsFieldHighlightConnector(
+                controller: controller,
+                child: const Focus(autofocus: true, child: SizedBox()),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pump();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pump();
 
-      expect(controller.highlighted, 0);
+        expect(controller.highlighted, 0);
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
 
-      expect(controller.highlighted, 1);
-    });
+        expect(controller.highlighted, 1);
+      },
+    );
 
     testWidgets(
       'decrements highlighted suggestion when direction down and arrow up key is pressed',
@@ -57,10 +55,7 @@ void main() {
             home: Material(
               child: SuggestionsFieldHighlightConnector(
                 controller: controller,
-                child: const Focus(
-                  autofocus: true,
-                  child: SizedBox(),
-                ),
+                child: const Focus(autofocus: true, child: SizedBox()),
               ),
             ),
           ),
@@ -78,69 +73,66 @@ void main() {
     );
 
     testWidgets(
-        'increments highlighted suggestion when direction up and arrow up key is pressed',
-        (WidgetTester tester) async {
-      controller.open();
-      controller.effectiveDirection = VerticalDirection.up;
+      'increments highlighted suggestion when direction up and arrow up key is pressed',
+      (WidgetTester tester) async {
+        controller.open();
+        controller.effectiveDirection = VerticalDirection.up;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldHighlightConnector(
-              controller: controller,
-              child: const Focus(
-                autofocus: true,
-                child: SizedBox(),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: SuggestionsFieldHighlightConnector(
+                controller: controller,
+                child: const Focus(autofocus: true, child: SizedBox()),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
-      await tester.pump();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+        await tester.pump();
 
-      expect(controller.highlighted, 0);
+        expect(controller.highlighted, 0);
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
 
-      expect(controller.highlighted, 1);
-    });
+        expect(controller.highlighted, 1);
+      },
+    );
 
     testWidgets(
-        'selects highlighted suggestion and consumes the enter key when pressed',
-        (WidgetTester tester) async {
-      controller.open();
-      controller.highlighted = 1;
-      String? selected;
+      'selects highlighted suggestion and consumes the enter key when pressed',
+      (WidgetTester tester) async {
+        controller.open();
+        controller.highlighted = 1;
+        String? selected;
 
-      controller.selections.listen((event) {
-        selected = event;
-      });
+        controller.selections.listen((event) {
+          selected = event;
+        });
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldHighlightConnector(
-              controller: controller,
-              child: const Focus(
-                autofocus: true,
-                child: SizedBox(),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: SuggestionsFieldHighlightConnector(
+                controller: controller,
+                child: const Focus(autofocus: true, child: SizedBox()),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      final handled = await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        final handled = await tester.sendKeyEvent(LogicalKeyboardKey.enter);
 
-      expect(handled, isTrue);
-      expect(selected, 'b');
-      expect(controller.highlighted, null);
-    });
+        expect(handled, isTrue);
+        expect(selected, 'b');
+        expect(controller.highlighted, null);
+      },
+    );
 
-    testWidgets('leaves enter key to the field when nothing is highlighted',
-        (WidgetTester tester) async {
+    testWidgets('leaves enter key to the field when nothing is highlighted', (
+      WidgetTester tester,
+    ) async {
       controller.open();
 
       await tester.pumpWidget(
@@ -148,10 +140,7 @@ void main() {
           home: Material(
             child: SuggestionsFieldHighlightConnector(
               controller: controller,
-              child: const Focus(
-                autofocus: true,
-                child: SizedBox(),
-              ),
+              child: const Focus(autofocus: true, child: SizedBox()),
             ),
           ),
         ),
@@ -164,8 +153,9 @@ void main() {
       expect(controller.isOpen, isTrue);
     });
 
-    testWidgets('closes suggestions and consumes the escape key when pressed',
-        (WidgetTester tester) async {
+    testWidgets('closes suggestions and consumes the escape key when pressed', (
+      WidgetTester tester,
+    ) async {
       controller.open();
       controller.highlighted = 1;
 
@@ -174,10 +164,7 @@ void main() {
           home: Material(
             child: SuggestionsFieldHighlightConnector(
               controller: controller,
-              child: const Focus(
-                autofocus: true,
-                child: SizedBox(),
-              ),
+              child: const Focus(autofocus: true, child: SizedBox()),
             ),
           ),
         ),

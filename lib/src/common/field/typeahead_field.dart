@@ -225,11 +225,7 @@ class _RawTypeAheadFieldState<T> extends State<RawTypeAheadField<T>> {
         itemSeparatorBuilder: widget.itemSeparatorBuilder,
         listBuilder: widget.listBuilder,
       ),
-      child: widget.builder(
-        context,
-        controller,
-        focusNode,
-      ),
+      child: widget.builder(context, controller, focusNode),
     );
   }
 }

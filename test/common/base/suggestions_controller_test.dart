@@ -168,9 +168,7 @@ void main() {
       await tester.pumpWidget(Container());
       expect(
         () => SuggestionsController.of<String>(
-          tester.element(
-            find.byType(Container),
-          ),
+          tester.element(find.byType(Container)),
         ),
         throwsFlutterError,
       );

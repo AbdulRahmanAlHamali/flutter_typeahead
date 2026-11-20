@@ -6,19 +6,13 @@ import 'package:flutter/widgets.dart';
 
 /// Holds the last known size and offset of the widget
 /// to which the floater is attached.
-typedef FloaterInfo = ({
-  Size size,
-  Offset offset,
-});
+typedef FloaterInfo = ({Size size, Offset offset});
 
 /// Connects a [Floater] with a [FloaterTarget].
 ///
 /// All public members are for internal use only.
 class FloaterLink extends ValueNotifier<FloaterInfo> {
-  FloaterLink()
-      : super(
-          (size: Size.zero, offset: Offset.zero),
-        );
+  FloaterLink() : super((size: Size.zero, offset: Offset.zero));
 
   final LayerLink layerLink = LayerLink();
 
@@ -31,11 +25,7 @@ class FloaterLink extends ValueNotifier<FloaterInfo> {
 
 /// A widgt to which a [Floater] can be attached.
 class FloaterTarget extends StatelessWidget {
-  const FloaterTarget({
-    super.key,
-    required this.link,
-    required this.child,
-  });
+  const FloaterTarget({super.key, required this.link, required this.child});
 
   final FloaterLink link;
   final Widget child;
@@ -44,32 +34,26 @@ class FloaterTarget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: link.layerLink,
-      child: _FloaterTarget(
-        link: link,
-        child: child,
-      ),
+      child: _FloaterTarget(link: link, child: child),
     );
   }
 }
 
 class _FloaterTarget extends SingleChildRenderObjectWidget {
-  const _FloaterTarget({
-    super.child,
-    required this.link,
-  });
+  const _FloaterTarget({super.child, required this.link});
 
   final FloaterLink link;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return _RenderFloaterTarget(
-      controller: link,
-    );
+    return _RenderFloaterTarget(controller: link);
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, _RenderFloaterTarget renderObject) {
+    BuildContext context,
+    _RenderFloaterTarget renderObject,
+  ) {
     renderObject.controller = link;
   }
 
@@ -80,11 +64,9 @@ class _FloaterTarget extends SingleChildRenderObjectWidget {
 }
 
 class _RenderFloaterTarget extends RenderProxyBox {
-  _RenderFloaterTarget({
-    RenderBox? child,
-    required FloaterLink controller,
-  })  : _controller = controller,
-        super(child) {
+  _RenderFloaterTarget({RenderBox? child, required FloaterLink controller})
+    : _controller = controller,
+      super(child) {
     _controller?.addListener(_onLinkNotification);
   }
 
@@ -123,10 +105,7 @@ class _RenderFloaterTarget extends RenderProxyBox {
   @override
   void performLayout() {
     super.performLayout();
-    controller?.value = (
-      size: size,
-      offset: controller!.value.offset,
-    );
+    controller?.value = (size: size, offset: controller!.value.offset);
   }
 
   @override
@@ -201,24 +180,14 @@ class FloaterAnchor {
   }
 
   @override
-  int get hashCode => Object.hash(
-        top,
-        bottom,
-        left,
-        right,
-      );
+  int get hashCode => Object.hash(top, bottom, left, right);
 
   @override
   String toString() {
     return 'FloaterAnchor(top: $top, bottom: $bottom, left: $left, right: $right)';
   }
 
-  FloaterAnchor copyWith({
-    bool? top,
-    bool? bottom,
-    bool? left,
-    bool? right,
-  }) {
+  FloaterAnchor copyWith({bool? top, bool? bottom, bool? left, bool? right}) {
     return FloaterAnchor.only(
       top: top ?? this.top,
       bottom: bottom ?? this.bottom,
@@ -298,19 +267,17 @@ class Floater extends StatefulWidget {
   static FloaterData of(BuildContext context) {
     FloaterData? data = maybeOf(context);
     if (data == null) {
-      throw FlutterError.fromParts(
-        [
-          ErrorSummary(
-            'Floater.of() called with a context '
-            'that does not contain a Floater.',
-          ),
-          ErrorDescription(
-            'No Floater ancestor could be found '
-            'starting from the context that was passed to Floater.of().',
-          ),
-          context.describeElement('The context used was'),
-        ],
-      );
+      throw FlutterError.fromParts([
+        ErrorSummary(
+          'Floater.of() called with a context '
+          'that does not contain a Floater.',
+        ),
+        ErrorDescription(
+          'No Floater ancestor could be found '
+          'starting from the context that was passed to Floater.of().',
+        ),
+        context.describeElement('The context used was'),
+      ]);
     }
     return data;
   }
@@ -379,15 +346,16 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
   }
 
   List<Object?> createDependencies() => [
-        widget.link,
-        widget.link.value,
-        widget.direction,
-        widget.anchor,
-        widget.padding,
-      ];
+    widget.link,
+    widget.link.value,
+    widget.direction,
+    widget.anchor,
+    widget.padding,
+  ];
 
   ({Size size, Offset offset, EdgeInsets viewPadding}) getOverlayConstraints(
-      OverlayState overlay) {
+    OverlayState overlay,
+  ) {
     final RenderBox? overlayBox =
         overlay.context.findRenderObject() as RenderBox?;
 
@@ -405,11 +373,7 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
     MediaQueryData mediaQuery = MediaQuery.of(overlay.context);
     EdgeInsets viewPadding = mediaQuery.padding + mediaQuery.viewInsets;
 
-    return (
-      size: overlaySize,
-      offset: overlayOffset,
-      viewPadding: viewPadding,
-    );
+    return (size: overlaySize, offset: overlayOffset, viewPadding: viewPadding);
   }
 
   /// Computes the floater's bounding rectangle in screen coordinates.
@@ -539,29 +503,29 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
   EdgeInsets mapPaddingToScreen(AxisDirection direction, EdgeInsets padding) =>
       switch (direction) {
         AxisDirection.down => EdgeInsets.only(
-            top: padding.top,
-            bottom: padding.bottom,
-            left: padding.left,
-            right: padding.right,
-          ),
+          top: padding.top,
+          bottom: padding.bottom,
+          left: padding.left,
+          right: padding.right,
+        ),
         AxisDirection.up => EdgeInsets.only(
-            bottom: padding.top,
-            top: padding.bottom,
-            left: padding.left,
-            right: padding.right,
-          ),
+          bottom: padding.top,
+          top: padding.bottom,
+          left: padding.left,
+          right: padding.right,
+        ),
         AxisDirection.left => EdgeInsets.only(
-            right: padding.top,
-            left: padding.bottom,
-            top: padding.left,
-            bottom: padding.right,
-          ),
+          right: padding.top,
+          left: padding.bottom,
+          top: padding.left,
+          bottom: padding.right,
+        ),
         AxisDirection.right => EdgeInsets.only(
-            left: padding.top,
-            right: padding.bottom,
-            top: padding.left,
-            bottom: padding.right,
-          ),
+          left: padding.top,
+          right: padding.bottom,
+          top: padding.left,
+          bottom: padding.right,
+        ),
       };
 
   /// Shrinks a rect by the given insets, clamping to zero size.
@@ -611,8 +575,9 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
             widget.anchor,
           );
 
-          floaterRect =
-              floaterRect.shift(Offset(viewPadding.left, viewPadding.top));
+          floaterRect = floaterRect.shift(
+            Offset(viewPadding.left, viewPadding.top),
+          );
 
           final screenPadding = mapPaddingToScreen(direction, widget.padding);
           floaterRect = deflateRect(floaterRect, screenPadding);
@@ -620,8 +585,8 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
           if (widget.autoFlip) {
             final mainSize =
                 direction == AxisDirection.down || direction == AxisDirection.up
-                    ? floaterRect.height
-                    : floaterRect.width;
+                ? floaterRect.height
+                : floaterRect.width;
 
             if (mainSize < widget.autoFlipHeight) {
               final opposite = flipAxisDirection(widget.direction);
@@ -632,15 +597,18 @@ class _FloaterState extends State<Floater> with WidgetsBindingObserver {
                 size,
                 widget.anchor,
               );
-              flippedRect =
-                  flippedRect.shift(Offset(viewPadding.left, viewPadding.top));
+              flippedRect = flippedRect.shift(
+                Offset(viewPadding.left, viewPadding.top),
+              );
               flippedRect = deflateRect(
-                  flippedRect, mapPaddingToScreen(opposite, widget.padding));
+                flippedRect,
+                mapPaddingToScreen(opposite, widget.padding),
+              );
 
               final flippedMainSize =
                   opposite == AxisDirection.down || opposite == AxisDirection.up
-                      ? flippedRect.height
-                      : flippedRect.width;
+                  ? flippedRect.height
+                  : flippedRect.width;
 
               if (flippedMainSize > mainSize) {
                 direction = opposite;
@@ -732,19 +700,11 @@ class FloaterData {
   }
 
   @override
-  int get hashCode => Object.hash(
-        size,
-        offset,
-        direction,
-        effectiveDirection,
-      );
+  int get hashCode => Object.hash(size, offset, direction, effectiveDirection);
 }
 
 class _FloaterProvider extends InheritedWidget {
-  const _FloaterProvider({
-    required this.data,
-    required super.child,
-  });
+  const _FloaterProvider({required this.data, required super.child});
 
   final FloaterData data;
 

@@ -22,28 +22,26 @@ class _AppState extends State<App> {
     return MaterialCupertinoFrame(
       exampleBuilder: (context, controller, products, suggestions, settings) =>
           ExampleTypeAhead(
-        controller: controller,
-        products: products,
-        settings: settings,
-        suggestions: suggestions,
-      ),
-      settingsBuilder: (context, controller, settings) => SettingsTypeAhead(
-        controller: controller,
-        settings: settings,
-      ),
+            controller: controller,
+            products: products,
+            settings: settings,
+            suggestions: suggestions,
+          ),
+      settingsBuilder: (context, controller, settings) =>
+          SettingsTypeAhead(controller: controller, settings: settings),
       cupertinoExampleBuilder:
           (context, controller, products, suggestions, settings) =>
               CupertinoExampleTypeAhead(
-        controller: controller,
-        products: products,
-        settings: settings,
-        suggestions: suggestions,
-      ),
+                controller: controller,
+                products: products,
+                settings: settings,
+                suggestions: suggestions,
+              ),
       cupertinoSettingsBuilder: (context, controller, settings) =>
           CupertinoSettingsTypeAhead(
-        controller: controller,
-        settings: settings,
-      ),
+            controller: controller,
+            settings: settings,
+          ),
     );
   }
 }
@@ -85,9 +83,9 @@ class ExampleTypeAhead extends StatelessWidget
                   controller: controller,
                   focusNode: focusNode,
                   autofocus: true,
-                  style: DefaultTextStyle.of(context)
-                      .style
-                      .copyWith(fontStyle: FontStyle.italic),
+                  style: DefaultTextStyle.of(
+                    context,
+                  ).style.copyWith(fontStyle: FontStyle.italic),
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
                     hintText: hintText,
@@ -116,8 +114,9 @@ class ExampleTypeAhead extends StatelessWidget
                 onSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
-                listBuilder:
-                    settings.gridLayout.value ? gridLayoutBuilder : null,
+                listBuilder: settings.gridLayout.value
+                    ? gridLayoutBuilder
+                    : null,
                 constrainWidth: settings.constrainWidth.value,
               ),
               Expanded(
@@ -128,21 +127,21 @@ class ExampleTypeAhead extends StatelessWidget
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         children: [
-                          Text('Shopping Cart',
-                              style: Theme.of(context).textTheme.titleLarge),
+                          Text(
+                            'Shopping Cart',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                           const Spacer(),
                           Text(
                             'Total: \$${products.total}',
                             style: Theme.of(context).textTheme.titleMedium,
-                          )
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 8),
                     if (products.value.isNotEmpty)
-                      Expanded(
-                        child: ProductList(products: products),
-                      )
+                      Expanded(child: ProductList(products: products))
                     else
                       Expanded(
                         child: Center(
@@ -151,7 +150,7 @@ class ExampleTypeAhead extends StatelessWidget
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
-                      )
+                      ),
                   ],
                 ),
               ),
@@ -214,17 +213,19 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                   autofocus: true,
                   padding: const EdgeInsets.all(12),
                   placeholder: hintText,
-                  placeholderStyle:
-                      CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                            color: CupertinoColors.placeholderText,
-                            fontStyle: FontStyle.italic,
-                          ),
+                  placeholderStyle: CupertinoTheme.of(context)
+                      .textTheme
+                      .textStyle
+                      .copyWith(
+                        color: CupertinoColors.placeholderText,
+                        fontStyle: FontStyle.italic,
+                      ),
                 ),
                 decorationBuilder: (context, child) => DecoratedBox(
                   decoration: BoxDecoration(
-                    color: CupertinoTheme.of(context)
-                        .barBackgroundColor
-                        .withAlpha(255),
+                    color: CupertinoTheme.of(
+                      context,
+                    ).barBackgroundColor.withAlpha(255),
                     border: Border.all(
                       color: CupertinoDynamicColor.resolve(
                         CupertinoColors.systemGrey4,
@@ -253,8 +254,9 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 onSelected: onSuggestionSelected,
                 suggestionsCallback: suggestionsCallback,
                 itemSeparatorBuilder: itemSeparatorBuilder,
-                listBuilder:
-                    settings.gridLayout.value ? gridLayoutBuilder : null,
+                listBuilder: settings.gridLayout.value
+                    ? gridLayoutBuilder
+                    : null,
                 constrainWidth: settings.constrainWidth.value,
               ),
               const SizedBox(height: 32),
@@ -262,36 +264,33 @@ class CupertinoExampleTypeAhead extends StatelessWidget
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    Text('Shopping Cart',
-                        style: CupertinoTheme.of(context)
-                            .textTheme
-                            .textStyle
-                            .copyWith(fontSize: 24)),
+                    Text(
+                      'Shopping Cart',
+                      style: CupertinoTheme.of(
+                        context,
+                      ).textTheme.textStyle.copyWith(fontSize: 24),
+                    ),
                     const Spacer(),
                     Text(
                       'Total: \$${products.total}',
-                      style: CupertinoTheme.of(context)
-                          .textTheme
-                          .textStyle
-                          .copyWith(fontSize: 18),
-                    )
+                      style: CupertinoTheme.of(
+                        context,
+                      ).textTheme.textStyle.copyWith(fontSize: 18),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 8),
               if (products.value.isNotEmpty)
-                Expanded(
-                  child: CupertinoProductList(products: products),
-                )
+                Expanded(child: CupertinoProductList(products: products))
               else
                 Expanded(
                   child: Center(
                     child: Text(
                       'Your cart is empty',
-                      style: CupertinoTheme.of(context)
-                          .textTheme
-                          .textStyle
-                          .copyWith(fontSize: 18),
+                      style: CupertinoTheme.of(
+                        context,
+                      ).textTheme.textStyle.copyWith(fontSize: 18),
                     ),
                   ),
                 ),
@@ -325,12 +324,7 @@ mixin SharedExampleTypeAheadConfig {
   final BorderRadius borderRadius = BorderRadius.circular(10);
   void onSuggestionSelected(Product product) {
     products.value = Map.of(
-      products.value
-        ..update(
-          product,
-          (value) => value + 1,
-          ifAbsent: () => 1,
-        ),
+      products.value..update(product, (value) => value + 1, ifAbsent: () => 1),
     );
     controller.clear();
   }
@@ -347,8 +341,8 @@ mixin SharedExampleTypeAheadConfig {
 
   Widget itemSeparatorBuilder(BuildContext context, int index) =>
       settings.dividers.value
-          ? const Divider(height: 1)
-          : const SizedBox.shrink();
+      ? const Divider(height: 1)
+      : const SizedBox.shrink();
 
   List<Widget> maybeReversed(List<Widget> children) {
     if (settings.direction.value == VerticalDirection.up) {
@@ -357,10 +351,7 @@ mixin SharedExampleTypeAheadConfig {
     return children;
   }
 
-  Widget gridLayoutBuilder(
-    BuildContext context,
-    List<Widget> items,
-  ) {
+  Widget gridLayoutBuilder(BuildContext context, List<Widget> items) {
     return GridView.builder(
       padding: const EdgeInsets.all(8),
       itemCount: items.length,
@@ -371,7 +362,8 @@ mixin SharedExampleTypeAheadConfig {
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
-      reverse: SuggestionsController.of<Product>(context).effectiveDirection ==
+      reverse:
+          SuggestionsController.of<Product>(context).effectiveDirection ==
           VerticalDirection.up,
       itemBuilder: (context, index) => items[index],
     );

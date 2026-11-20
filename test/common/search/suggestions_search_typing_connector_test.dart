@@ -19,29 +19,30 @@ void main() {
     });
 
     testWidgets(
-        'opens the suggestions list when the text changes and the box is closed',
-        (WidgetTester tester) async {
-      controller.open();
-      controller.close(retainFocus: true);
+      'opens the suggestions list when the text changes and the box is closed',
+      (WidgetTester tester) async {
+        controller.open();
+        controller.close(retainFocus: true);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsSearchTypingConnector(
-              controller: controller,
-              textEditingController: textEditingController,
-              child: const SizedBox(),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: SuggestionsSearchTypingConnector(
+                controller: controller,
+                textEditingController: textEditingController,
+                child: const SizedBox(),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(controller.isOpen, isFalse);
+        expect(controller.isOpen, isFalse);
 
-      textEditingController.text = 'test';
-      await tester.pump();
+        textEditingController.text = 'test';
+        await tester.pump();
 
-      expect(controller.isOpen, isTrue);
-    });
+        expect(controller.isOpen, isTrue);
+      },
+    );
   });
 }

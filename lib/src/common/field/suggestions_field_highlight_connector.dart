@@ -29,13 +29,14 @@ class _SuggestionsFieldHighlightConnectorState<T>
   /// Highlights the previous suggestion in the suggestions box.
   late final _previousOptionAction =
       _ConditionalCallbackAction<SuggestionsPreviousItemIntent>(
-          onInvoke: (_) => widget.controller.highlightPrevious());
+        onInvoke: (_) => widget.controller.highlightPrevious(),
+      );
 
   /// Highlights the next suggestion in the suggestions box.
   late final _nextOptionAction =
       _ConditionalCallbackAction<SuggestionsNextItemIntent>(
-    onInvoke: (_) => widget.controller.highlightNext(),
-  );
+        onInvoke: (_) => widget.controller.highlightNext(),
+      );
 
   /// Dismisses the suggestions box.
   late final _hideOptionsAction = _ConditionalCallbackAction<DismissIntent>(
@@ -51,9 +52,7 @@ class _SuggestionsFieldHighlightConnectorState<T>
     onInvoke: (_) {
       int? index = widget.controller.highlighted;
       if (index == null) return null;
-      T? highlighted = widget.controller.suggestions?.elementAtOrNull(
-        index,
-      );
+      T? highlighted = widget.controller.suggestions?.elementAtOrNull(index);
       if (highlighted == null) return null;
       widget.controller.select(highlighted);
       widget.controller.unhighlight();
@@ -80,17 +79,17 @@ class _SuggestionsFieldHighlightConnectorState<T>
       // The shortcuts are different depending on the direction of the suggestions box.
       ...switch (widget.controller.effectiveDirection) {
         VerticalDirection.up => {
-            const SingleActivator(LogicalKeyboardKey.arrowUp):
-                const SuggestionsNextItemIntent(),
-            const SingleActivator(LogicalKeyboardKey.arrowDown):
-                const SuggestionsPreviousItemIntent(),
-          },
+          const SingleActivator(LogicalKeyboardKey.arrowUp):
+              const SuggestionsNextItemIntent(),
+          const SingleActivator(LogicalKeyboardKey.arrowDown):
+              const SuggestionsPreviousItemIntent(),
+        },
         VerticalDirection.down => {
-            const SingleActivator(LogicalKeyboardKey.arrowUp):
-                const SuggestionsPreviousItemIntent(),
-            const SingleActivator(LogicalKeyboardKey.arrowDown):
-                const SuggestionsNextItemIntent(),
-          },
+          const SingleActivator(LogicalKeyboardKey.arrowUp):
+              const SuggestionsPreviousItemIntent(),
+          const SingleActivator(LogicalKeyboardKey.arrowDown):
+              const SuggestionsNextItemIntent(),
+        },
       },
       const SingleActivator(LogicalKeyboardKey.enter): const ActivateIntent(),
     };
@@ -119,10 +118,7 @@ class _SuggestionsFieldHighlightConnectorState<T>
           controller.removeListener(_onControllerChange),
       child: Shortcuts(
         shortcuts: _shortcuts,
-        child: Actions(
-          actions: _actions,
-          child: widget.child,
-        ),
+        child: Actions(actions: _actions, child: widget.child),
       ),
     );
   }
@@ -141,10 +137,7 @@ class SuggestionsNextItemIntent extends Intent {
 /// A [CallbackAction] that can be enabled or disabled.
 /// Directly inspired by the implementation in [RawAutocomplete].
 class _ConditionalCallbackAction<T extends Intent> extends CallbackAction<T> {
-  _ConditionalCallbackAction({
-    required super.onInvoke,
-    this.enabled = true,
-  });
+  _ConditionalCallbackAction({required super.onInvoke, this.enabled = true});
 
   bool enabled;
 

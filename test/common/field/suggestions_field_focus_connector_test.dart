@@ -18,8 +18,9 @@ void main() {
       focusNode.dispose();
     });
 
-    testWidgets('sets focus to blur when focus node is unfocused',
-        (WidgetTester tester) async {
+    testWidgets('sets focus to blur when focus node is unfocused', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -44,8 +45,9 @@ void main() {
       expect(controller.focusState, SuggestionsFocusState.blur);
     });
 
-    testWidgets('focuses node when focus is child',
-        (WidgetTester tester) async {
+    testWidgets('focuses node when focus is child', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -54,15 +56,9 @@ void main() {
                 SuggestionsFieldFocusConnector(
                   controller: controller,
                   focusNode: focusNode,
-                  child: Focus(
-                    focusNode: focusNode,
-                    child: const SizedBox(),
-                  ),
+                  child: Focus(focusNode: focusNode, child: const SizedBox()),
                 ),
-                const Focus(
-                  autofocus: true,
-                  child: SizedBox(),
-                ),
+                const Focus(autofocus: true, child: SizedBox()),
               ],
             ),
           ),
@@ -92,9 +88,7 @@ void main() {
                     child: const SizedBox(),
                   ),
                 ),
-                const Focus(
-                  child: SizedBox(),
-                ),
+                const Focus(child: SizedBox()),
               ],
             ),
           ),

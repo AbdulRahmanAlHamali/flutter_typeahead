@@ -3,10 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_typeahead_example/product.dart';
 
 class CheckoutDialog extends StatelessWidget {
-  const CheckoutDialog({
-    super.key,
-    required this.products,
-  });
+  const CheckoutDialog({super.key, required this.products});
 
   final ProductController products;
 
@@ -43,10 +40,7 @@ class CheckoutDialog extends StatelessWidget {
 }
 
 class CupertinoCheckoutDialog extends StatelessWidget {
-  const CupertinoCheckoutDialog({
-    super.key,
-    required this.products,
-  });
+  const CupertinoCheckoutDialog({super.key, required this.products});
 
   final ProductController products;
 
@@ -61,9 +55,9 @@ class CupertinoCheckoutDialog extends StatelessWidget {
           Text('Would you like to check out for \$${products.total}?'),
           Text(
             'This will clear your shopping cart.',
-            style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                  fontSize: 14,
-                ),
+            style: CupertinoTheme.of(
+              context,
+            ).textTheme.textStyle.copyWith(fontSize: 14),
           ),
         ],
       ),

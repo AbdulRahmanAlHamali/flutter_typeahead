@@ -44,13 +44,14 @@ class CupertinoTypeAheadField<T> extends RawTypeAheadField<T> {
     super.constrainWidth,
     super.offset,
   }) : super(
-          builder: builder ?? TypeAheadCupertinoDefaults.builder,
-          errorBuilder: errorBuilder ?? TypeAheadCupertinoDefaults.errorBuilder,
-          loadingBuilder:
-              loadingBuilder ?? TypeAheadCupertinoDefaults.loadingBuilder,
-          emptyBuilder: emptyBuilder ?? TypeAheadCupertinoDefaults.emptyBuilder,
-          itemBuilder: TypeAheadCupertinoDefaults.itemBuilder(itemBuilder),
-          decorationBuilder:
-              TypeAheadCupertinoDefaults.wrapperBuilder(decorationBuilder),
-        );
+         builder: builder ?? TypeAheadCupertinoDefaults.builder,
+         errorBuilder: errorBuilder ?? TypeAheadCupertinoDefaults.errorBuilder,
+         loadingBuilder:
+             loadingBuilder ?? TypeAheadCupertinoDefaults.loadingBuilder,
+         emptyBuilder: emptyBuilder ?? TypeAheadCupertinoDefaults.emptyBuilder,
+         itemBuilder: TypeAheadCupertinoDefaults.itemBuilder(itemBuilder),
+         decorationBuilder: TypeAheadCupertinoDefaults.wrapperBuilder(
+           decorationBuilder,
+         ),
+       );
 }

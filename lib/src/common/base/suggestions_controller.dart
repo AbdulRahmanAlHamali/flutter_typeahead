@@ -25,16 +25,14 @@ class SuggestionsController<T> extends ChangeNotifier {
   static SuggestionsController<T> of<T>(BuildContext context) {
     SuggestionsController<T>? controller = maybeOf<T>(context);
     if (controller == null) {
-      throw FlutterError.fromParts(
-        [
-          ErrorSummary('No SuggestionsController found in the context. '),
-          ErrorDescription(
-            'SuggestionsControllers are only available inside SuggestionsBox widgets.',
-          ),
-          ErrorHint('Are you inside a SuggestionsBox?'),
-          context.describeElement('The context used was')
-        ],
-      );
+      throw FlutterError.fromParts([
+        ErrorSummary('No SuggestionsController found in the context. '),
+        ErrorDescription(
+          'SuggestionsControllers are only available inside SuggestionsBox widgets.',
+        ),
+        ErrorHint('Are you inside a SuggestionsBox?'),
+        context.describeElement('The context used was'),
+      ]);
     }
     return controller;
   }

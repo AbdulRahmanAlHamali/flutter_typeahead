@@ -87,10 +87,7 @@ abstract final class TypeAheadMaterialDefaults {
   }
 
   /// The default decoration builder used by a TypeAheadField.
-  static Widget decorationBuilder(
-    BuildContext context,
-    Widget child,
-  ) {
+  static Widget decorationBuilder(BuildContext context, Widget child) {
     return Material(
       type: MaterialType.card,
       elevation: 4,
@@ -105,9 +102,6 @@ abstract final class TypeAheadMaterialDefaults {
     TextEditingController controller,
     FocusNode node,
   ) {
-    return TextField(
-      controller: controller,
-      focusNode: node,
-    );
+    return TextField(controller: controller, focusNode: node);
   }
 }

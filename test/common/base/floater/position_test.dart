@@ -127,7 +127,8 @@ List<int> _mainAxisIndices(_DirectionConfig dir, bool top, bool bottom) {
   if (top && !bottom) return [home];
   if (top && bottom) return [target];
   if (!top && !bottom) return [target, home];
-  /* !top && bottom */ return [opposite, target];
+  /* !top && bottom */
+  return [opposite, target];
 }
 
 /// Computes which cross-axis indices the floater occupies.
@@ -221,11 +222,7 @@ void main() {
                   );
 
                   expect(data, isNotNull, reason: 'FloaterData was not set');
-                  expect(
-                    data!.size,
-                    expectedSize,
-                    reason: 'size for $label',
-                  );
+                  expect(data!.size, expectedSize, reason: 'size for $label');
                   expect(
                     data.offset,
                     expectedOffset,

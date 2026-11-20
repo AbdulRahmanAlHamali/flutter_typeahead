@@ -14,57 +14,55 @@ void main() {
     tearDown(() => controller.dispose());
 
     testWidgets(
-        'opens the suggestions box when tapped if it is not open and retainFocus is true',
-        (WidgetTester tester) async {
-      controller.open();
-      controller.close(retainFocus: true);
+      'opens the suggestions box when tapped if it is not open and retainFocus is true',
+      (WidgetTester tester) async {
+        controller.open();
+        controller.close(retainFocus: true);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldTapConnector(
-              controller: controller,
-              child: InkWell(
-                onTap: () {},
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: SuggestionsFieldTapConnector(
+                controller: controller,
+                child: InkWell(onTap: () {}),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(controller.isOpen, isFalse);
+        expect(controller.isOpen, isFalse);
 
-      await tester.tap(find.byType(InkWell));
-      await tester.pump();
+        await tester.tap(find.byType(InkWell));
+        await tester.pump();
 
-      expect(controller.isOpen, isTrue);
-    });
+        expect(controller.isOpen, isTrue);
+      },
+    );
 
     testWidgets(
-        'does not open the suggestions box when tapped if it is not open and retainFocus is false',
-        (WidgetTester tester) async {
-      controller.open();
-      controller.close(retainFocus: false);
+      'does not open the suggestions box when tapped if it is not open and retainFocus is false',
+      (WidgetTester tester) async {
+        controller.open();
+        controller.close(retainFocus: false);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: SuggestionsFieldTapConnector(
-              controller: controller,
-              child: InkWell(
-                onTap: () {},
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: SuggestionsFieldTapConnector(
+                controller: controller,
+                child: InkWell(onTap: () {}),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(controller.isOpen, isFalse);
+        expect(controller.isOpen, isFalse);
 
-      await tester.tap(find.byType(InkWell));
-      await tester.pump();
+        await tester.tap(find.byType(InkWell));
+        await tester.pump();
 
-      expect(controller.isOpen, isFalse);
-    });
+        expect(controller.isOpen, isFalse);
+      },
+    );
   });
 }

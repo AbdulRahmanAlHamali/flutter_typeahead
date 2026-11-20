@@ -15,8 +15,9 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('starts hidden when the controller is not open',
-        (WidgetTester tester) async {
+    testWidgets('starts hidden when the controller is not open', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -31,8 +32,9 @@ void main() {
       expect(find.byKey(const Key('child')), findsNothing);
     });
 
-    testWidgets('starts visible when the controller is open',
-        (WidgetTester tester) async {
+    testWidgets('starts visible when the controller is open', (
+      WidgetTester tester,
+    ) async {
       controller.open();
       await tester.pumpWidget(
         MaterialApp(
@@ -48,8 +50,9 @@ void main() {
       expect(find.byKey(const Key('child')), findsOneWidget);
     });
 
-    testWidgets('becomes visible when the controller opens',
-        (WidgetTester tester) async {
+    testWidgets('becomes visible when the controller opens', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -67,8 +70,9 @@ void main() {
       expect(find.byKey(const Key('child')), findsOneWidget);
     });
 
-    testWidgets('becomes hidden when the controller closes',
-        (WidgetTester tester) async {
+    testWidgets('becomes hidden when the controller closes', (
+      WidgetTester tester,
+    ) async {
       controller.open();
       await tester.pumpWidget(
         MaterialApp(
@@ -87,8 +91,9 @@ void main() {
       expect(find.byKey(const Key('child')), findsNothing);
     });
 
-    testWidgets('rebuilds only when the controller opens or closes',
-        (WidgetTester tester) async {
+    testWidgets('rebuilds only when the controller opens or closes', (
+      WidgetTester tester,
+    ) async {
       controller.open();
       int builds = 0;
 
@@ -136,12 +141,12 @@ void main() {
               child: const SizedBox(key: Key('child')),
               transitionBuilder: (context, animation, child) =>
                   ValueListenableBuilder(
-                valueListenable: animation,
-                builder: (context, value, _) {
-                  animationValue = animation.value;
-                  return child;
-                },
-              ),
+                    valueListenable: animation,
+                    builder: (context, value, _) {
+                      animationValue = animation.value;
+                      return child;
+                    },
+                  ),
             ),
           ),
         ),
@@ -177,12 +182,12 @@ void main() {
               child: const SizedBox(),
               transitionBuilder: (context, animation, child) =>
                   ValueListenableBuilder(
-                valueListenable: animation,
-                builder: (context, value, _) {
-                  animationValue = animation.value;
-                  return child;
-                },
-              ),
+                    valueListenable: animation,
+                    builder: (context, value, _) {
+                      animationValue = animation.value;
+                      return child;
+                    },
+                  ),
             ),
           ),
         ),
@@ -201,8 +206,9 @@ void main() {
       expect(animationValue, equals(1));
     });
 
-    testWidgets('does not set state after being disposed while closed',
-        (WidgetTester tester) async {
+    testWidgets('does not set state after being disposed while closed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(

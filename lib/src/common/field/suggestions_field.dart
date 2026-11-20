@@ -49,7 +49,8 @@ class SuggestionsField<T> extends StatefulWidget {
   final Widget Function(
     BuildContext context,
     SuggestionsController<T> controller,
-  ) builder;
+  )
+  builder;
 
   /// {@template flutter_typeahead.SuggestionsField.fieldBuilder}
   /// The child of the suggestions field.
@@ -235,9 +236,9 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
 
             VerticalDirection newEffectiveDirection =
                 switch (data.effectiveDirection) {
-              AxisDirection.up => VerticalDirection.up,
-              _ => VerticalDirection.down,
-            };
+                  AxisDirection.up => VerticalDirection.up,
+                  _ => VerticalDirection.down,
+                };
             if (newEffectiveDirection != controller.effectiveDirection) {
               // It is generally discouraged to add side-effects in build methods.
               // However, this is a place where we can update the effective direction
@@ -274,10 +275,7 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
               );
             }
 
-            list = Semantics(
-              container: true,
-              child: list,
-            );
+            list = Semantics(container: true, child: list);
 
             return list;
           },

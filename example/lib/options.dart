@@ -72,27 +72,25 @@ class FieldSettings extends ChangeNotifier {
   }
 
   List<FieldOption> get values => [
-        cupertino,
-        darkMode,
-        direction,
-        gridLayout,
-        dividers,
-        constrainWidth,
-        loadingDelay,
-        retainOnLoading,
-        debounce,
-        hideOnSelect,
-        hideOnUnfocus,
-      ];
+    cupertino,
+    darkMode,
+    direction,
+    gridLayout,
+    dividers,
+    constrainWidth,
+    loadingDelay,
+    retainOnLoading,
+    debounce,
+    hideOnSelect,
+    hideOnUnfocus,
+  ];
 
   List<FieldOption> search(String pattern) {
-    return values.where(
-      (setting) {
-        String title = setting.title.toLowerCase().split(' ').join('');
-        String search = pattern.toLowerCase().split(' ').join('');
-        return title.contains(search);
-      },
-    ).toList();
+    return values.where((setting) {
+      String title = setting.title.toLowerCase().split(' ').join('');
+      String search = pattern.toLowerCase().split(' ').join('');
+      return title.contains(search);
+    }).toList();
   }
 
   final ToggleFieldOption cupertino = ToggleFieldOption(
@@ -106,7 +104,8 @@ class FieldSettings extends ChangeNotifier {
   final ToggleFieldOption darkMode = ToggleFieldOption(
     key: 'darkMode',
     title: 'Dark Mode',
-    value: SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+    value:
+        SchedulerBinding.instance.platformDispatcher.platformBrightness ==
         Brightness.dark,
     icon: Icons.dark_mode,
     iconFalse: Icons.light_mode,
@@ -117,10 +116,7 @@ class FieldSettings extends ChangeNotifier {
     title: 'Direction',
     value: VerticalDirection.down,
     icon: Icons.swap_vert,
-    choices: [
-      VerticalDirection.up,
-      VerticalDirection.down,
-    ],
+    choices: [VerticalDirection.up, VerticalDirection.down],
   );
 
   final ToggleFieldOption gridLayout = ToggleFieldOption(

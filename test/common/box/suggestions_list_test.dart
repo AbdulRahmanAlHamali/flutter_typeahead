@@ -16,22 +16,23 @@ void main() {
     setUp(() {
       controller = SuggestionsController();
       suggestions = ['test1', 'test2', 'test3'];
-      itemBuilder =
-          (context, suggestion) => Text(key: Key(suggestion), suggestion);
-      loadingBuilder =
-          (context) => const Text(key: Key('loading'), 'Loading...');
-      errorBuilder =
-          (context, error) => Text(key: const Key('error'), '$error');
-      emptyBuilder =
-          (context) => const Text(key: Key('empty'), 'No suggestions');
+      itemBuilder = (context, suggestion) =>
+          Text(key: Key(suggestion), suggestion);
+      loadingBuilder = (context) =>
+          const Text(key: Key('loading'), 'Loading...');
+      errorBuilder = (context, error) =>
+          Text(key: const Key('error'), '$error');
+      emptyBuilder = (context) =>
+          const Text(key: Key('empty'), 'No suggestions');
     });
 
     tearDown(() {
       controller.dispose();
     });
 
-    testWidgets('retains previous suggestions when current becomes null',
-        (WidgetTester tester) async {
+    testWidgets('retains previous suggestions when current becomes null', (
+      WidgetTester tester,
+    ) async {
       controller.suggestions = suggestions;
       controller.isLoading = false;
 
@@ -59,8 +60,9 @@ void main() {
       expect(find.byKey(const Key('loading')), findsNothing);
     });
 
-    testWidgets('shows loading when retainOnLoading is false',
-        (WidgetTester tester) async {
+    testWidgets('shows loading when retainOnLoading is false', (
+      WidgetTester tester,
+    ) async {
       controller.isLoading = true;
 
       await tester.pumpWidget(
@@ -81,8 +83,9 @@ void main() {
       expect(find.byKey(const Key('loading')), findsOneWidget);
     });
 
-    testWidgets('shows error when controller has error',
-        (WidgetTester tester) async {
+    testWidgets('shows error when controller has error', (
+      WidgetTester tester,
+    ) async {
       controller.error = 'An error occurred';
 
       await tester.pumpWidget(
@@ -102,8 +105,9 @@ void main() {
       expect(find.byKey(const Key('error')), findsOneWidget);
     });
 
-    testWidgets('shows empty when suggestions list is empty',
-        (WidgetTester tester) async {
+    testWidgets('shows empty when suggestions list is empty', (
+      WidgetTester tester,
+    ) async {
       controller.suggestions = [];
 
       await tester.pumpWidget(
@@ -145,8 +149,9 @@ void main() {
       expect(find.byKey(const Key('test3')), findsOneWidget);
     });
 
-    testWidgets('reverses list when direction is up',
-        (WidgetTester tester) async {
+    testWidgets('reverses list when direction is up', (
+      WidgetTester tester,
+    ) async {
       controller.suggestions = suggestions;
       controller.effectiveDirection = VerticalDirection.up;
 
@@ -180,10 +185,8 @@ void main() {
               loadingBuilder: loadingBuilder,
               errorBuilder: errorBuilder,
               emptyBuilder: emptyBuilder,
-              listBuilder: (context, children) => GridView.count(
-                crossAxisCount: 2,
-                children: children,
-              ),
+              listBuilder: (context, children) =>
+                  GridView.count(crossAxisCount: 2, children: children),
             ),
           ),
         ),

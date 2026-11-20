@@ -39,10 +39,7 @@ abstract final class TypeAheadCupertinoDefaults {
       child: Text(
         'No Items Found!',
         textAlign: TextAlign.start,
-        style: TextStyle(
-          color: CupertinoColors.inactiveGray,
-          fontSize: 18,
-        ),
+        style: TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
       ),
     );
   }
@@ -99,10 +96,7 @@ abstract final class TypeAheadCupertinoDefaults {
   }
 
   /// The default decoration builder used by a CupertinoTypeAheadField.
-  static Widget decorationBuilder(
-    BuildContext context,
-    Widget child,
-  ) {
+  static Widget decorationBuilder(BuildContext context, Widget child) {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: CupertinoTheme.of(context).barBackgroundColor.withAlpha(255),
@@ -125,9 +119,6 @@ abstract final class TypeAheadCupertinoDefaults {
     TextEditingController controller,
     FocusNode node,
   ) {
-    return CupertinoTextField(
-      controller: controller,
-      focusNode: node,
-    );
+    return CupertinoTextField(controller: controller, focusNode: node);
   }
 }

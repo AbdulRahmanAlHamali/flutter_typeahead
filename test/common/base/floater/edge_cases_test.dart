@@ -26,26 +26,37 @@ void main() {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 200, targetTop: 200, targetWidth: 0, targetHeight: 0);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 200,
+        targetTop: 200,
+        targetWidth: 0,
+        targetHeight: 0,
+      );
 
       expect(data, isNotNull);
       expect(data!.size.width, 0);
       expect(data.size.height, 200);
     });
 
-    testWidgets('zero-size target with L:F R:F gets full width',
-        (tester) async {
+    testWidgets('zero-size target with L:F R:F gets full width', (
+      tester,
+    ) async {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 200,
-          targetTop: 200,
-          targetWidth: 0,
-          targetHeight: 0,
-          anchor: const FloaterAnchor.only(
-              bottom: false, left: false, right: false));
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 200,
+        targetTop: 200,
+        targetWidth: 0,
+        targetHeight: 0,
+        anchor: const FloaterAnchor.only(
+          bottom: false,
+          left: false,
+          right: false,
+        ),
+      );
 
       expect(data, isNotNull);
       expect(data!.size.width, 400);
@@ -61,8 +72,13 @@ void main() {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 0, targetTop: 350, targetWidth: 100, targetHeight: 50);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 0,
+        targetTop: 350,
+        targetWidth: 100,
+        targetHeight: 50,
+      );
 
       expect(data, isNotNull);
       expect(data!.size.height, 0);
@@ -72,8 +88,13 @@ void main() {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 0, targetTop: 0, targetWidth: 100, targetHeight: 50);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 0,
+        targetTop: 0,
+        targetWidth: 100,
+        targetHeight: 50,
+      );
 
       expect(data, isNotNull);
       expect(data!.size.height, 350);
@@ -84,12 +105,14 @@ void main() {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 300,
-          targetTop: 100,
-          targetWidth: 100,
-          targetHeight: 50,
-          direction: AxisDirection.right);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 300,
+        targetTop: 100,
+        targetWidth: 100,
+        targetHeight: 50,
+        direction: AxisDirection.right,
+      );
 
       expect(data, isNotNull);
       expect(data!.size.width, 0);
@@ -102,18 +125,21 @@ void main() {
     // direction=up: space above = 350
     // autoFlip should switch to up.
 
-    testWidgets('flips from down to up when insufficient space',
-        (tester) async {
+    testWidgets('flips from down to up when insufficient space', (
+      tester,
+    ) async {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 100,
-          targetTop: 350,
-          targetWidth: 200,
-          targetHeight: 30,
-          autoFlip: true,
-          autoFlipHeight: 100);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 100,
+        targetTop: 350,
+        targetWidth: 200,
+        targetHeight: 30,
+        autoFlip: true,
+        autoFlipHeight: 100,
+      );
 
       expect(data, isNotNull);
       expect(data!.effectiveDirection, AxisDirection.up);
@@ -124,32 +150,37 @@ void main() {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 100,
-          targetTop: 100,
-          targetWidth: 200,
-          targetHeight: 30,
-          autoFlip: true,
-          autoFlipHeight: 100);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 100,
+        targetTop: 100,
+        targetWidth: 200,
+        targetHeight: 30,
+        autoFlip: true,
+        autoFlipHeight: 100,
+      );
 
       expect(data, isNotNull);
       expect(data!.effectiveDirection, AxisDirection.down);
       expect(data.size.height, 270);
     });
 
-    testWidgets('flips from left to right when insufficient space',
-        (tester) async {
+    testWidgets('flips from left to right when insufficient space', (
+      tester,
+    ) async {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 20,
-          targetTop: 100,
-          targetWidth: 30,
-          targetHeight: 200,
-          direction: AxisDirection.left,
-          autoFlip: true,
-          autoFlipHeight: 100);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 20,
+        targetTop: 100,
+        targetWidth: 30,
+        targetHeight: 200,
+        direction: AxisDirection.left,
+        autoFlip: true,
+        autoFlipHeight: 100,
+      );
 
       expect(data, isNotNull);
       expect(data!.effectiveDirection, AxisDirection.right);
@@ -160,12 +191,14 @@ void main() {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 100,
-          targetTop: 350,
-          targetWidth: 200,
-          targetHeight: 30,
-          autoFlip: false);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 100,
+        targetTop: 350,
+        targetWidth: 200,
+        targetHeight: 30,
+        autoFlip: false,
+      );
 
       expect(data, isNotNull);
       expect(data!.effectiveDirection, AxisDirection.down);
@@ -182,28 +215,33 @@ void main() {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 100,
-          targetTop: 100,
-          targetWidth: 200,
-          targetHeight: 200,
-          padding: const EdgeInsets.only(top: 150));
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 100,
+        targetTop: 100,
+        targetWidth: 200,
+        targetHeight: 200,
+        padding: const EdgeInsets.only(top: 150),
+      );
 
       expect(data, isNotNull);
       expect(data!.size.height, 0);
     });
 
-    testWidgets('padding exactly equal to space gives zero size',
-        (tester) async {
+    testWidgets('padding exactly equal to space gives zero size', (
+      tester,
+    ) async {
       setupView(tester, 400);
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 100,
-          targetTop: 100,
-          targetWidth: 200,
-          targetHeight: 200,
-          padding: const EdgeInsets.only(top: 100));
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 100,
+        targetTop: 100,
+        targetWidth: 200,
+        targetHeight: 200,
+        padding: const EdgeInsets.only(top: 100),
+      );
 
       expect(data, isNotNull);
       expect(data!.size.height, 0);
@@ -221,8 +259,13 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 50, targetTop: 20, targetWidth: 100, targetHeight: 30);
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 50,
+        targetTop: 20,
+        targetWidth: 100,
+        targetHeight: 30,
+      );
 
       expect(data, isNotNull);
       expect(data!.offset, const Offset(50, 50));
@@ -234,13 +277,18 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tearDownView(tester));
 
-      final data = await pumpFloater(tester,
-          targetLeft: 50,
-          targetTop: 20,
-          targetWidth: 100,
-          targetHeight: 30,
-          anchor: const FloaterAnchor.only(
-              bottom: false, left: false, right: false));
+      final data = await pumpFloater(
+        tester,
+        targetLeft: 50,
+        targetTop: 20,
+        targetWidth: 100,
+        targetHeight: 30,
+        anchor: const FloaterAnchor.only(
+          bottom: false,
+          left: false,
+          right: false,
+        ),
+      );
 
       expect(data, isNotNull);
       expect(data!.offset, const Offset(0, 50));

@@ -34,9 +34,9 @@ class SettingsTypeAhead extends StatelessWidget
               controller: controller,
               focusNode: focusNode,
               autofocus: true,
-              style: DefaultTextStyle.of(context)
-                  .style
-                  .copyWith(fontStyle: FontStyle.italic),
+              style: DefaultTextStyle.of(
+                context,
+              ).style.copyWith(fontStyle: FontStyle.italic),
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 hintText: hintText,
@@ -59,9 +59,9 @@ class SettingsTypeAhead extends StatelessWidget
                     title: Text(setting.title),
                     secondary: icon != null ? Icon(icon) : null,
                     value: setting.value,
-                    onChanged: (_) =>
-                        SuggestionsController.of<FieldOption>(context)
-                            .select(setting),
+                    onChanged: (_) => SuggestionsController.of<FieldOption>(
+                      context,
+                    ).select(setting),
                   ),
                 );
               } else if (setting is ChoiceFieldOption) {
@@ -128,11 +128,11 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
               autofocus: true,
               padding: const EdgeInsets.all(12),
               placeholder: hintText,
-              placeholderStyle:
-                  CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                        color: CupertinoColors.placeholderText,
-                        fontStyle: FontStyle.italic,
-                      ),
+              placeholderStyle: CupertinoTheme.of(context).textTheme.textStyle
+                  .copyWith(
+                    color: CupertinoColors.placeholderText,
+                    fontStyle: FontStyle.italic,
+                  ),
             ),
             itemBuilder: (context, setting) {
               if (setting is ToggleFieldOption) {
@@ -146,9 +146,9 @@ class CupertinoSettingsTypeAhead extends StatelessWidget
                   title: Text(setting.title),
                   trailing: CupertinoCheckbox(
                     value: setting.value,
-                    onChanged: (_) =>
-                        SuggestionsController.of<FieldOption>(context)
-                            .select(setting),
+                    onChanged: (_) => SuggestionsController.of<FieldOption>(
+                      context,
+                    ).select(setting),
                   ),
                 );
               } else if (setting is ChoiceFieldOption) {
@@ -190,8 +190,8 @@ mixin SharedSettingsTypeAheadConfig {
 
   Widget itemSeparatorBuilder(BuildContext context, int index) =>
       settings.dividers.value
-          ? const Divider(height: 1)
-          : const SizedBox.shrink();
+      ? const Divider(height: 1)
+      : const SizedBox.shrink();
 
   Widget gridLayoutBuilder(BuildContext context, List<Widget> items) {
     return GridView.builder(
@@ -207,7 +207,7 @@ mixin SharedSettingsTypeAheadConfig {
       ),
       reverse:
           SuggestionsController.of<FieldOption>(context).effectiveDirection ==
-              VerticalDirection.up,
+          VerticalDirection.up,
       itemBuilder: (context, index) => items.toList()[index],
     );
   }

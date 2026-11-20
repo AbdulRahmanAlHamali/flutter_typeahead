@@ -16,8 +16,9 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('calls onChanged when text changes',
-        (WidgetTester tester) async {
+    testWidgets('calls onChanged when text changes', (
+      WidgetTester tester,
+    ) async {
       String? lastTextValue;
 
       await tester.pumpWidget(
@@ -38,8 +39,9 @@ void main() {
       expect(lastTextValue, equals('test text'));
     });
 
-    testWidgets('does not call onChanged when text does not change',
-        (WidgetTester tester) async {
+    testWidgets('does not call onChanged when text does not change', (
+      WidgetTester tester,
+    ) async {
       controller.text = 'initial text';
       String? lastTextValue;
 
@@ -63,8 +65,9 @@ void main() {
       expect(lastTextValue, isNull);
     });
 
-    testWidgets('calls onChanged immediately if duration is Duration.zero',
-        (WidgetTester tester) async {
+    testWidgets('calls onChanged immediately if duration is Duration.zero', (
+      WidgetTester tester,
+    ) async {
       String? lastTextValue;
 
       await tester.pumpWidget(

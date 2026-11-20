@@ -44,13 +44,14 @@ class TypeAheadField<T> extends RawTypeAheadField<T> {
     super.constrainWidth,
     super.offset,
   }) : super(
-          builder: builder ?? TypeAheadMaterialDefaults.builder,
-          errorBuilder: errorBuilder ?? TypeAheadMaterialDefaults.errorBuilder,
-          loadingBuilder:
-              loadingBuilder ?? TypeAheadMaterialDefaults.loadingBuilder,
-          emptyBuilder: emptyBuilder ?? TypeAheadMaterialDefaults.emptyBuilder,
-          itemBuilder: TypeAheadMaterialDefaults.itemBuilder(itemBuilder),
-          decorationBuilder:
-              TypeAheadMaterialDefaults.wrapperBuilder(decorationBuilder),
-        );
+         builder: builder ?? TypeAheadMaterialDefaults.builder,
+         errorBuilder: errorBuilder ?? TypeAheadMaterialDefaults.errorBuilder,
+         loadingBuilder:
+             loadingBuilder ?? TypeAheadMaterialDefaults.loadingBuilder,
+         emptyBuilder: emptyBuilder ?? TypeAheadMaterialDefaults.emptyBuilder,
+         itemBuilder: TypeAheadMaterialDefaults.itemBuilder(itemBuilder),
+         decorationBuilder: TypeAheadMaterialDefaults.wrapperBuilder(
+           decorationBuilder,
+         ),
+       );
 }

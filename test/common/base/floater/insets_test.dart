@@ -19,100 +19,103 @@ const _default = FloaterAnchor.only(bottom: false);
 //   down default → BC: offset=(300,600), size=(300,300)
 //   up default   → TC: offset=(300,0),   size=(300,300)
 
-final _cases = <(
-  String,
-  AxisDirection,
-  FloaterAnchor,
-  EdgeInsets,
-  EdgeInsets,
-  EdgeInsets,
-  Offset,
-  Size
-)>[
-  // Keyboard (viewInsets) shrinks downward floater
-  (
-    'keyboard shrinks down floater',
-    AxisDirection.down,
-    _default,
-    EdgeInsets.zero,
-    const EdgeInsets.only(bottom: 100),
-    EdgeInsets.zero,
-    const Offset(300, 600),
-    const Size(300, 200)
-  ),
+final _cases =
+    <
+      (
+        String,
+        AxisDirection,
+        FloaterAnchor,
+        EdgeInsets,
+        EdgeInsets,
+        EdgeInsets,
+        Offset,
+        Size,
+      )
+    >[
+      // Keyboard (viewInsets) shrinks downward floater
+      (
+        'keyboard shrinks down floater',
+        AxisDirection.down,
+        _default,
+        EdgeInsets.zero,
+        const EdgeInsets.only(bottom: 100),
+        EdgeInsets.zero,
+        const Offset(300, 600),
+        const Size(300, 200),
+      ),
 
-  // Keyboard does not affect upward floater
-  (
-    'keyboard does not affect up floater',
-    AxisDirection.up,
-    _default,
-    EdgeInsets.zero,
-    const EdgeInsets.only(bottom: 100),
-    EdgeInsets.zero,
-    const Offset(300, 0),
-    const Size(300, 300)
-  ),
+      // Keyboard does not affect upward floater
+      (
+        'keyboard does not affect up floater',
+        AxisDirection.up,
+        _default,
+        EdgeInsets.zero,
+        const EdgeInsets.only(bottom: 100),
+        EdgeInsets.zero,
+        const Offset(300, 0),
+        const Size(300, 300),
+      ),
 
-  // Status bar (top padding) shrinks upward floater
-  (
-    'status bar shrinks up floater',
-    AxisDirection.up,
-    _default,
-    const EdgeInsets.only(top: 50),
-    EdgeInsets.zero,
-    EdgeInsets.zero,
-    const Offset(300, 50),
-    const Size(300, 250)
-  ),
+      // Status bar (top padding) shrinks upward floater
+      (
+        'status bar shrinks up floater',
+        AxisDirection.up,
+        _default,
+        const EdgeInsets.only(top: 50),
+        EdgeInsets.zero,
+        EdgeInsets.zero,
+        const Offset(300, 50),
+        const Size(300, 250),
+      ),
 
-  // Status bar does not affect downward floater
-  (
-    'status bar does not affect down floater',
-    AxisDirection.down,
-    _default,
-    const EdgeInsets.only(top: 50),
-    EdgeInsets.zero,
-    EdgeInsets.zero,
-    const Offset(300, 600),
-    const Size(300, 300)
-  ),
+      // Status bar does not affect downward floater
+      (
+        'status bar does not affect down floater',
+        AxisDirection.down,
+        _default,
+        const EdgeInsets.only(top: 50),
+        EdgeInsets.zero,
+        EdgeInsets.zero,
+        const Offset(300, 600),
+        const Size(300, 300),
+      ),
 
-  // Left inset shrinks full-width floater
-  (
-    'left inset shrinks full-width floater',
-    AxisDirection.down,
-    const FloaterAnchor.only(bottom: false, left: false, right: false),
-    const EdgeInsets.only(left: 50),
-    EdgeInsets.zero,
-    EdgeInsets.zero,
-    const Offset(50, 600),
-    const Size(850, 300)
-  ),
+      // Left inset shrinks full-width floater
+      (
+        'left inset shrinks full-width floater',
+        AxisDirection.down,
+        const FloaterAnchor.only(bottom: false, left: false, right: false),
+        const EdgeInsets.only(left: 50),
+        EdgeInsets.zero,
+        EdgeInsets.zero,
+        const Offset(50, 600),
+        const Size(850, 300),
+      ),
 
-  // Right inset shrinks rightward floater
-  (
-    'right inset shrinks right floater',
-    AxisDirection.right,
-    _default,
-    const EdgeInsets.only(right: 80),
-    EdgeInsets.zero,
-    EdgeInsets.zero,
-    const Offset(600, 300),
-    const Size(220, 300)
-  ),
+      // Right inset shrinks rightward floater
+      (
+        'right inset shrinks right floater',
+        AxisDirection.right,
+        _default,
+        const EdgeInsets.only(right: 80),
+        EdgeInsets.zero,
+        EdgeInsets.zero,
+        const Offset(600, 300),
+        const Size(220, 300),
+      ),
 
-  // View insets + floater padding stack
-  (
-    'keyboard + padding.top stack on down floater',
-    AxisDirection.down,
-    _default,
-    EdgeInsets.zero,
-    const EdgeInsets.only(bottom: 100),
-    const EdgeInsets.only(top: 10),
-    const Offset(300, 610),
-    const Size(300, 190)
-  ),
-];
+      // View insets + floater padding stack
+      (
+        'keyboard + padding.top stack on down floater',
+        AxisDirection.down,
+        _default,
+        EdgeInsets.zero,
+        const EdgeInsets.only(bottom: 100),
+        const EdgeInsets.only(top: 10),
+        const Offset(300, 610),
+        const Size(300, 190),
+      ),
+    ];
 
 void main() {
   for (final (
@@ -123,8 +126,9 @@ void main() {
         viewInsets,
         padding,
         expectedOffset,
-        expectedSize
-      ) in _cases) {
+        expectedSize,
+      )
+      in _cases) {
     testWidgets(desc, (tester) async {
       tester.view.physicalSize = const Size(defaultSpace, defaultSpace);
       tester.view.devicePixelRatio = 1.0;
