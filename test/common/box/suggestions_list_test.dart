@@ -60,6 +60,38 @@ void main() {
       expect(find.byKey(const Key('loading')), findsNothing);
     });
 
+    testWidgets('retains no suggestions from before a failed load', (
+      WidgetTester tester,
+    ) async {
+      controller.suggestions = suggestions;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: SuggestionsList(
+              controller: controller,
+              retainOnLoading: true,
+              itemBuilder: itemBuilder,
+              loadingBuilder: loadingBuilder,
+              errorBuilder: errorBuilder,
+              emptyBuilder: emptyBuilder,
+            ),
+          ),
+        ),
+      );
+
+      controller.suggestions = null;
+      controller.error = 'An error occurred';
+      await tester.pump();
+
+      controller.error = null;
+      controller.isLoading = true;
+      await tester.pump();
+
+      expect(find.byKey(const Key('loading')), findsOneWidget);
+      expect(find.byKey(const Key('test1')), findsNothing);
+    });
+
     testWidgets('shows loading when retainOnLoading is false', (
       WidgetTester tester,
     ) async {

@@ -173,9 +173,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>> {
           if (widget.controller.isLoading) {
             suggestions = suggestions ?? _previousSuggestions;
           } else {
-            if (suggestions != null) {
-              _previousSuggestions = suggestions;
-            }
+            _previousSuggestions = suggestions;
           }
         } else {
           _previousSuggestions = null;
