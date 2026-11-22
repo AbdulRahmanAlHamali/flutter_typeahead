@@ -342,7 +342,7 @@ If your app cannot migrate yet, keep using 6.x.
 
 The package no longer depends on `flutter_keyboard_visibility` or `pointer_interceptor`. The following changes have been made:
 
-- `hideWithKeyboard` has been removed. This parameter never worked as intended, since closing the keyboard also loses focus, which is already handled by `hideOnUnfocus`. If you were using `hideWithKeyboard: false`, use `hideOnUnfocus: false` instead.
+- `hideWithKeyboard` has been removed. Closing the keyboard usually unfocuses the field, so `hideOnUnfocus` closed the box even with `hideWithKeyboard: false`. Replace `hideWithKeyboard: false` with `hideOnUnfocus: false`.
 
 ### From 4.x to 5.x
 
