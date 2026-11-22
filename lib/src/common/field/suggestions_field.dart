@@ -262,10 +262,15 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             );
 
             if (widget.constraints != null) {
-              Alignment alignment = Alignment.topCenter;
-              if (widget.direction == VerticalDirection.up) {
-                alignment = Alignment.bottomCenter;
-              }
+              // The constraints are applied inside the space the floater
+              // occupies, so the box has to be aligned to the side of that
+              // space that touches the field. That side depends on the
+              // direction the floater actually opened in, not on the
+              // requested one, which may have been flipped.
+              Alignment alignment = switch (newEffectiveDirection) {
+                VerticalDirection.up => Alignment.bottomCenter,
+                VerticalDirection.down => Alignment.topCenter,
+              };
               list = Align(
                 alignment: alignment,
                 child: ConstrainedBox(
