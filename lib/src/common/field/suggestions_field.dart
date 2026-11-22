@@ -262,10 +262,10 @@ class _SuggestionsFieldState<T> extends State<SuggestionsField<T>> {
             );
 
             if (widget.constraints != null) {
-              Alignment alignment = Alignment.topCenter;
-              if (widget.direction == VerticalDirection.up) {
-                alignment = Alignment.bottomCenter;
-              }
+              Alignment alignment = switch (newEffectiveDirection) {
+                VerticalDirection.up => Alignment.bottomCenter,
+                VerticalDirection.down => Alignment.topCenter,
+              };
               list = Align(
                 alignment: alignment,
                 child: ConstrainedBox(
