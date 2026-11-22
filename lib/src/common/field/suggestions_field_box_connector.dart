@@ -23,13 +23,16 @@ class SuggestionsFieldBoxConnector<T> extends StatefulWidget {
 }
 
 class _SuggestionsFieldBoxConnectorState<T>
-    extends State<SuggestionsFieldBoxConnector<T>> {
+    extends State<SuggestionsFieldBoxConnector<T>>
+    with WidgetsBindingObserver {
   late bool wasFocused;
   late bool wasOpen;
+  double keyboardInset = 0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     wasOpen = widget.controller.isOpen;
     wasFocused = widget.controller.focusState.hasFocus;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -41,6 +44,29 @@ class _SuggestionsFieldBoxConnectorState<T>
         widget.controller.focusField();
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    keyboardInset = View.of(context).viewInsets.bottom;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (!mounted) return;
+    double inset = View.of(context).viewInsets.bottom;
+    bool keyboardHidden = keyboardInset > 0 && inset == 0;
+    keyboardInset = inset;
+    if (!keyboardHidden || !widget.hideOnUnfocus) return;
+    if (widget.controller.focusState != SuggestionsFocusState.field) return;
+    widget.controller.close(retainFocus: true);
   }
 
   void onControllerFocus() {

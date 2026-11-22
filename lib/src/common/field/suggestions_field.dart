@@ -125,9 +125,9 @@ class SuggestionsField<T> extends StatefulWidget {
   final bool showOnFocus;
 
   /// {@template flutter_typeahead.SuggestionsField.hideOnUnfocus}
-  /// Whether the suggestions box should be hidden when the child of the suggestions box loses focus.
+  /// Whether the suggestions box hides when the field loses focus or the keyboard closes.
   ///
-  /// If disabled, the suggestions box will remain open when the user taps outside of the suggestions box.
+  /// When false, the box stays open after a tap outside it or after the keyboard closes.
   ///
   /// Defaults to true.
   /// {@endtemplate}

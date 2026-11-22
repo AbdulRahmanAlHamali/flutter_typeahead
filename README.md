@@ -166,7 +166,7 @@ You can do so with the following parameters:
 - `hideOnEmpty`: Hide the suggestions box when there are no suggestions. This ignores the `emptyBuilder`.
 - `hideOnError`: Hide the suggestions box when there is an error retrieving suggestions. This ignores the `errorBuilder`.
 - `hideOnSelect`: Hide the suggestions box when a suggestion is selected. `True` by default.
-- `hideOnUnfocus`: Hide the suggestions box when the `TextField` loses focus. `True` by default.
+- `hideOnUnfocus`: Hide the suggestions box when the `TextField` loses focus or the keyboard closes. `True` by default.
 
 You can also very generally hide the suggestions box by returning `null` from the `suggestionsCallback`.
 This is different from returning an empty list, which will show the empty widget.
@@ -235,7 +235,7 @@ Options to do so are as follows:
 On the `TypeAheadField`:
 
 - `showOnFocus` (default: `true`): Show the suggestions box when the `TextField` gains focus.
-- `hideOnUnfocus` (default: `true`): Hide the suggestions box when the `TextField` loses focus.
+- `hideOnUnfocus` (default: `true`): Hide the suggestions box when the `TextField` loses focus or the keyboard closes.
 
 On the `SuggestionsController`:
 
